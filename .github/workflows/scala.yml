@@ -42,19 +42,19 @@ jobs:
         - name: Assembly uber jar
           run: sbt assembly       
           
-#         - name: Upload Artifacts
-#           uses: actions/upload-artifact@v2
-#           with:
-#             name: Artifacts
-#             path: ./target/scala-3.2.0/ISIQuiz.jar  
+        - name: Upload Artifacts
+          uses: actions/upload-artifact@v2
+          with:
+            name: Artifacts
+            path: ./target/scala-3.2.0/ISIQuiz.jar  
           
         - name: Clone Repo with Checkout 
           uses: actions/checkout@v2 
    
-#         - name: Download Artifacts
-#           uses: actions/download-artifact@v2
-#           with:
-#             name: Artifacts
+        - name: Download Artifacts
+          uses: actions/download-artifact@v2
+          with:
+            name: Artifacts
 
         - name: Extract Date
           shell: bash
@@ -74,7 +74,8 @@ jobs:
             echo $TAG
             hub release create -m "$TAG" "$TAG" || true
             tree
-            JAR="./target/scala-3.2.0/ISIQuiz.jar"
+            ls
+            JAR="./ISIQuiz.jar"
             gh release upload "$TAG" "$JAR" --clobber
             rm $JAR
             done
