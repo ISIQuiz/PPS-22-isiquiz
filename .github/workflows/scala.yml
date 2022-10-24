@@ -40,9 +40,49 @@ jobs:
             distribution: 'temurin'
             cache: 'sbt'
         - name: Assembly uber jar
-          run: sbt assembly
-        - name: Upload Artifacts
-          uses: actions/upload-artifact@v2
-          with:
-            name: Artifacts
-            path: ./target/scala-3.2.0/ISIQuiz.jar
+          run: sbt assembly       
+          
+#         - name: Upload Artifacts
+#           uses: actions/upload-artifact@v2
+#           with:
+#             name: Artifacts
+#             path: ./target/scala-3.2.0/ISIQuiz.jar  
+          
+        - name: Clone Repo with Checkout 
+          uses: actions/checkout@v2 
+   
+#         - name: Download Artifacts
+#           uses: actions/download-artifact@v2
+#           with:
+#             name: Artifacts
+
+        - name: Extract Date
+          shell: bash
+          id: extract_date
+          run: |
+            echo "::set-output name=DATE::Release-$(date +%F_%H-%M)"
+        - name: Print Output Step
+          run: echo ${{ steps.extract_date.outputs.DATE }}
+        - name: Deploy
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          run: |
+            git config --global user.name "${{ secrets.NAME }}"
+            git config --global user.email "${{ secrets.EMAIL }}"
+            TAG="${{ steps.extract_date.outputs.DATE }}"
+            MSG="${{ github.event.head_commit.message }}"
+            echo $TAG
+            hub release create -m "$TAG" "$TAG" || true
+            tree
+            for f in ./target/scala-3.2.0/*.jar; do
+              echo "Delivering file: $f"
+              gh release upload "$TAG" "$f" --clobber
+              rm $f
+            done
+          
+          
+          
+          
+          
+          
+
