@@ -74,10 +74,9 @@ jobs:
             echo $TAG
             hub release create -m "$TAG" "$TAG" || true
             tree
-            for f in ./target/scala-3.2.0/*.jar; do
-              echo "Delivering file: $f"
-              gh release upload "$TAG" "$f" --clobber
-              rm $f
+            JAR="./target/scala-3.2.0/ISIQuiz.jar"
+            gh release upload "$TAG" "$JAR" --clobber
+            rm $JAR
             done
           
           
