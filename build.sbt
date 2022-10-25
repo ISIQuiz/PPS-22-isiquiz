@@ -5,7 +5,9 @@ ThisBuild / scalaVersion := "3.2.0"
 
 lazy val root = (project in file("."))
   .settings(
+    assembly / assemblyOption ~= { _.withCacheOutput(false) },
     assembly / assemblyJarName := "ISIQuiz.jar",
+    assembly / assemblyOutputPath := file("target/ISIQuiz.jar"),
     libraryDependencies ++= Seq(
       //"org.scalactic" %% "scalactic" % "3.2.14",
       "org.scalatest" %% "scalatest" % "3.2.14" % "test"
