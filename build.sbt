@@ -10,6 +10,6 @@ lazy val root = (project in file("."))
     assembly / assemblyOutputPath := file("target/ISIQuiz.jar"),
     libraryDependencies ++= Seq(
       //"org.scalactic" %% "scalactic" % "3.2.14",
-      "org.scalatest" %% "scalatest" % "3.2.14" % "test"
-    )
+      "org.scalatest" %% "scalatest" % "3.2.14" % "test",
+    ),
   )
