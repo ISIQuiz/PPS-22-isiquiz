@@ -1,14 +1,15 @@
 package controllerTest
 
 import org.scalatest.funsuite.AnyFunSuite
-import view.View.*
-import controller.Controller.*
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
+import controller.Controller.*
+import view.MainMenu.*
+import view.SettingsMenu.*
 
 
 class TestApplicationController extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
 
-  var controller: ApplicationControllerImpl = ApplicationControllerImpl()
+  var controller: ApplicationController = ApplicationControllerImpl()
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -16,12 +17,12 @@ class TestApplicationController extends AnyFunSuite with BeforeAndAfterAll with 
   }
 
   test("Application should start in main menu page") {
-    assert(controller.currentPage.isInstanceOf[Page[MainMenuController, MainMenuView]])
+    assert(controller.currentPage.isInstanceOf[Page[MainMenuController, MainMenuViewImpl]])
   }
 
   test("Going from main menu to settings page when action is performed") {
     controller.handle(ApplicationControllerAction.SETTINGS)
-    assert(controller.currentPage.isInstanceOf[Page[SettingsController, SettingsView]])
+    assert(controller.currentPage.isInstanceOf[Page[SettingsController, SettingsMenuViewImpl]])
   }
 
 end TestApplicationController

@@ -1,6 +1,8 @@
 package controller
 
 import view.View.*
+import view.MainMenu.*
+import view.SettingsMenu.*
 
 object Controller:
 
@@ -19,8 +21,9 @@ object Controller:
 
   case class Page[C, V](var pageController: C, var pageView: V)
 
-  class ApplicationControllerImpl(private var _currentPage: Page[PageController, PageView] = Page[PageController, PageView](MainMenuController(), MainMenuView())) extends ApplicationController :
+  class ApplicationControllerImpl(private var _currentPage: Page[PageController, PageView] = Page[PageController, PageView](MainMenuController(), MainMenuViewImpl())) extends ApplicationController :
     override def currentPage = _currentPage
     override def currentPage_(pageController: PageController, pageView: PageView) = _currentPage = Page[PageController, PageView](pageController, pageView)
     override def handle(action: ApplicationControllerAction): Unit = action match
-      case ApplicationControllerAction.SETTINGS => currentPage_(SettingsController(), SettingsView())
+      case ApplicationControllerAction.SETTINGS => currentPage_(SettingsController(), SettingsMenuViewImpl())
+    currentPage.pageView.draw()
