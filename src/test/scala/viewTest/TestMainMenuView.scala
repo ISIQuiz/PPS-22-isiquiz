@@ -15,13 +15,16 @@ class TestMainMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeAnd
   }
 
   test("Main menu view should draw main menu") {
-    assert(mainMenuView.draw() == println(
-      "Menu principale:\n" +
-        "1) Gioca\n" +
-        "2) Statistiche\n" +
-        "3) Impostazioni\n" +
-        "4) Esci"
-    ))
+    // TODO: Not actually asserting that System.out is expected output
+    assert(mainMenuView.draw() == {
+      println(
+        "Menu principale:\n" +
+          "1) Gioca\n" +
+          "2) Statistiche\n" +
+          "3) Impostazioni\n" +
+          "4) Esci"
+      )
+    })
   }
 
 end TestMainMenuView
