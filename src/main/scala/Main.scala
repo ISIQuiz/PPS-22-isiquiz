@@ -1,2 +1,4 @@
+import controller.Controller.*
+
 @main def run() =
-  print("Hello world!")
+  val applicationController: ApplicationController = ApplicationControllerImpl
