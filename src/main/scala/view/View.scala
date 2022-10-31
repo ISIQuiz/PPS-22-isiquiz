@@ -1,10 +1,15 @@
 package view
 
+import controller.Controller.ApplicationControllerImpl
+import controller.Controller.Action
+
 object View:
 
   /** PageView should include all behaviours common between different pages views */
   trait PageView:
     def draw(): Unit
+    def sendEvent[T](action: Action[T]): Unit =
+      ApplicationControllerImpl.handle(action)
 
 object MainMenu:
   import View.*

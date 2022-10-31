@@ -15,11 +15,8 @@ object Controller:
   /** Defines the logic of the settings page */
   class SettingsController extends PageController
 
-  /** Enumerates all the possible actions that happens in the general application
-   * These actions could be, for example, changing a page, quitting the application, etc.
-   */
-  enum ApplicationControllerAction:
-    case SETTINGS
+  /** Generic application action with a descriptive name and an optional value */
+  case class Action[T](var actionName: String, var actionValue: Option[T])
 
   /** Provides a binder between the page logic and the relative page view */
   case class Page[C, V](var pageController: C, var pageView: V)
@@ -28,15 +25,17 @@ object Controller:
   trait ApplicationController:
     def currentPage: Page[PageController, PageView]
     def currentPage_(pageController: PageController, pageView: PageView): Unit
-    def handle(action: ApplicationControllerAction): Unit
+    def handle[T](action: Action[T]): Unit
 
-  /** Extends ApplicationController trait
-   * @constructor creates a new current page which, by default, is the main menu page
-   * @param _currentPage the current page of the application
+  /** Extends ApplicationController trait providing the current page data and a generic handler for the application
+   * Application controller object used as a bridge with Application view
    */
-  class ApplicationControllerImpl(private var _currentPage: Page[PageController, PageView] = Page[PageController, PageView](MainMenuController(), MainMenuViewImpl())) extends ApplicationController :
-    override def currentPage = _currentPage
-    override def currentPage_(pageController: PageController, pageView: PageView) = _currentPage = Page[PageController, PageView](pageController, pageView)
-    override def handle(action: ApplicationControllerAction): Unit = action match
-      case ApplicationControllerAction.SETTINGS => currentPage_(SettingsController(), SettingsMenuViewImpl())
+  object ApplicationControllerImpl extends ApplicationController:
+    private var _currentPage: Page[PageController, PageView] = Page[PageController, PageView](new MainMenuController, MainMenuViewImpl())
+    override def currentPage: Page[PageController, PageView] = _currentPage
+    override def currentPage_(pageController: PageController, pageView: PageView): Unit = _currentPage = Page[PageController, PageView](pageController, pageView)
+    override def handle[T](action: Action[T]): Unit = action match
+      case Action("Settings", _) => currentPage_(new SettingsController, SettingsMenuViewImpl())
+      // TODO: Add custom exception for action not available
+      case _ => ???
     currentPage.pageView.draw()

@@ -1,9 +1,12 @@
 package viewTest
 
+import controller.Controller
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import view.View.*
 import view.MainMenu.*
+import controller.Controller.*
+import view.SettingsMenu.*
 
 class TestMainMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
 
@@ -25,6 +28,11 @@ class TestMainMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeAnd
           "4) Esci"
       )
     })
+  }
+
+  test("Should change to settings menu when settings is selected") {
+    mainMenuView.sendEvent(Action("Settings", Option.empty))
+    assert(ApplicationControllerImpl.currentPage.isInstanceOf[Page[SettingsController, SettingsMenuViewImpl]])
   }
 
 end TestMainMenuView
