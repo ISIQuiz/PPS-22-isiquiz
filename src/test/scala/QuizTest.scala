@@ -1,4 +1,4 @@
-import Quiz.{Answer, changeCorrect, changeText, getText, isCorrect, makeCorrect, makeWrong}
+import Quiz.*
 import org.scalatest.funsuite.AnyFunSuite
 
 class QuizTest extends AnyFunSuite:
@@ -8,6 +8,13 @@ class QuizTest extends AnyFunSuite:
     Answer("risposta", true)
     Answer("risposta", false)
     assert(true)
+  }
+
+  test("Get/Change Text Answer") {
+    val a = Answer("risposta", true)
+    assert(getText(a) == "risposta")
+    val b = changeText(a, "nuovarisposta")
+    assert(getText(b) == "nuovarisposta")
   }
 
   test("isCorrect Answer") {
@@ -30,12 +37,20 @@ class QuizTest extends AnyFunSuite:
     assert(!isCorrect(d))
   }
 
-  test("Change Text Answer") {
+  test("AnswerList") {
     val a = Answer("risposta", true)
-    assert(getText(a)== "risposta")
-    val b = changeText(a, "nuovarisposta")
-    assert(getText(b) == "nuovarisposta")
-  }
+    val a2 = Answer("risposta", false)
+    val a3 = Answer("risposta", false)
 
+    import AnswerList.*
+    val answerList: AnswerList = cons(a , cons(a2 , cons(a3 , empty() )))
+
+    
+    assert(countAnswers(answerList)==3)
+
+    val a4 = Answer("risposta", true)
+    val answerList2 = addAnswer(answerList)(a4)
+
+  }
 
 end QuizTest
