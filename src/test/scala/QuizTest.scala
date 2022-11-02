@@ -45,8 +45,9 @@ class QuizTest extends AnyFunSuite:
     import AnswerList.*
     val answerList: AnswerList = cons(a , cons(a2 , cons(a3 , empty() )))
 
-    
-    assert(countAnswers(answerList)==3)
+
+    assert(countAnswers(answerList) == 3)
+    assert(countAnswersTR(answerList) == 3)
 
     val a4 = Answer("risposta", true)
     val answerList2 = addAnswer(answerList)(a4)
