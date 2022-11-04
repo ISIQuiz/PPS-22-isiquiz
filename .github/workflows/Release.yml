@@ -59,7 +59,22 @@ jobs:
           JAR="./ISIQuiz.jar"
           gh release upload "$TAG" "$JAR" --clobber
           rm $JAR
-          
+  TelegramSuccessJob:
+    needs: [ UploadRelease ] #when finished successfully this job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send custom Telegram message
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.event_name }} event on
+            github.com/${{ github.repository }}, 
+            <b>${{ github.event.head_commit.message }}</b>
+            ✅ <b>RELEASE SUCCEDED</b> ✅
+          format: html
+          disable_web_page_preview: true
           
           
           
