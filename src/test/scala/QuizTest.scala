@@ -1,56 +1,75 @@
 import Quiz.*
 import org.scalatest.funsuite.AnyFunSuite
 
-class QuizTest extends AnyFunSuite:
+class QuizTest extends AnyFunSuite :
 
+
+  val a1 = Answer("answer", true)
+  val a2 = Answer("answer", false)
+  val a3 = Answer("answer", false)
 
   test("Creation Answer") {
-    Answer("risposta", true)
-    Answer("risposta", false)
+    Answer("answer", true)
+    Answer("answer", false)
     assert(true)
   }
 
   test("Get/Change Text Answer") {
-    val a = Answer("risposta", true)
-    assert(getText(a) == "risposta")
-    val b = changeText(a, "nuovarisposta")
-    assert(getText(b) == "nuovarisposta")
+    assert(getText(a1) == "answer")
+    val b = changeText(a1, "new-answer")
+    assert(getText(b) == "new-answer")
   }
 
   test("isCorrect Answer") {
-    val a = Answer("risposta", true)
-    assert(isCorrect(a))
-    val b = Answer("risposta", false)
+    assert(isCorrect(a1))
+    val b = Answer("answer", false)
     assert(!isCorrect(b))
   }
 
   test("Change Right Answer") {
-    val a = Answer("risposta", true)
-    assert(isCorrect(a))
-    val b = changeCorrect(false)(a)
+    assert(isCorrect(a1))
+    val b = changeCorrect(false)(a1)
     assert(!isCorrect(b))
-    assert(isCorrect(changeCorrect(true)(Answer("risposta", false))))
+    assert(isCorrect(changeCorrect(true)(Answer("answer", false))))
 
-    val c = makeCorrect(a)
-    assert(isCorrect(c))
-    val d = makeWrong(b)
+    val corrAns = makeCorrect(a1)
+    assert(isCorrect(corrAns))
+    val d = makeWrong(corrAns)
     assert(!isCorrect(d))
   }
 
   test("AnswerList") {
-    val a = Answer("risposta", true)
-    val a2 = Answer("risposta", false)
-    val a3 = Answer("risposta", false)
-
     import AnswerList.*
-    val answerList: AnswerList = cons(a , cons(a2 , cons(a3 , empty() )))
+    val answerList: AnswerList = cons(a1, cons(a2, cons(a3, empty())))
 
 
     assert(countAnswers(answerList) == 3)
     assert(countAnswersTR(answerList) == 3)
 
-    val a4 = Answer("risposta", true)
+    val a4 = Answer("answer", true)
     val answerList2 = addAnswer(answerList)(a4)
+
+    assert(countAnswers(answerList2) == 4)
+    assert(countAnswersTR(answerList2) == 4)
+
+    assert(getCorrect(answerList) == cons(a1, empty()))
+    assert(getCorrect(answerList2) == cons(a4, cons(a1, empty())))
+
+    println(printAnswers(answerList2))
+  }
+
+
+  test("Quiz") {
+    import AnswerList.*
+    import Quiz.*
+    val answerList: AnswerList = cons(a1, cons(a2, cons(a3, empty())))
+
+    val quiz: Quiz = Quiz("question", answerList)
+    assert(getCorrectAnswers(quiz) == cons(a1, empty()))
+
+    println(quiz)
+    println(printQuiz(quiz))
+    println(printQuizFull(quiz))
 
   }
 
