@@ -1,0 +1,34 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  # called by another workflow
+  workflow_call:
+
+jobs:
+  Test:      
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run tests
+        run: sbt test
+  TelegramSuccessTestForPRJob:
+    needs: [ Test ] #when finished successfully this job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send custom Telegram message
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.event_name }} event on
+            github.com/${{ github.repository }}
+            by ${{ github.actor }}
+          format: html
+          disable_web_page_preview: true
+
+          
+          
+
