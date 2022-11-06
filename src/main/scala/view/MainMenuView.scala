@@ -18,6 +18,6 @@ object MainMenuView:
       4 -> MainMenuController.AvailableActions.Quit
     )
 
-    override def draw(): String =
+    override def draw[T](update: Option[T]): String =
       println("Menu principale:\n1) Gioca\n2) Statistiche\n3) Impostazioni\n4) Esci")
       "MainMenu"

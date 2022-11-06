@@ -16,6 +16,6 @@ object SelectMenuView:
       2 -> SelectMenuController.AvailableActions.Start
     )
 
-    override def draw(): String =
+    override def draw[T](update: Option[T]): String =
       println("Menu selezione:\n1) Menu principale\n2) Avvia quiz")
       "SelectMenu"

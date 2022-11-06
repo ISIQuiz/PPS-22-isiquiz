@@ -14,6 +14,12 @@ class SettingsMenuController extends PageController :
   import AppController.AvailablePages
   import SettingsMenuController.*
 
+  override def updateUI[T](update: Option[T]): Unit =
+    AppController.currentPage.pageView.draw(update)
+    AppController.currentPage.pageView.handleInput()
+
+  override def nextIteration(): Unit = updateUI(Option.empty)
+  
   override def handle[T](action: Enumeration, value: Option[T]): Unit = action match
     case AvailableActions.Back => back
 

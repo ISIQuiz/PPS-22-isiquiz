@@ -8,13 +8,13 @@ import view.MainMenuView.*
 import view.SelectMenuView.*
 import view.StandardGameView.*
 
-object TestSelectMenuViewView:
+object TestSelectMenuView:
   private var _input: String = null
   def input: String = _input
   def input_(input: String): Unit = _input = input
 
-class TestSelectMenuViewView extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
-  import TestSelectMenuViewView.*
+class TestSelectMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
+  import TestSelectMenuView.*
 
   class SelectMenuViewTest extends SelectMenuViewImpl:
     override def inputReader() = input
@@ -27,7 +27,7 @@ class TestSelectMenuViewView extends AnyFunSuite with BeforeAndAfterAll with Bef
   }
 
   test("Select menu view should draw select menu") {
-    assert(selectMenuView.draw() == "SelectMenu")
+    assert(selectMenuView.draw(Option.empty) == "SelectMenu")
   }
 
   test("Selecting back should return to main menu") {
@@ -40,4 +40,4 @@ class TestSelectMenuViewView extends AnyFunSuite with BeforeAndAfterAll with Bef
     assert(AppController.currentPage.isInstanceOf[Page[StandardGameController, StandardGameView]])
   }
 
-end TestSelectMenuViewView
+end TestSelectMenuView

@@ -10,6 +10,6 @@ object View:
   /** PageView should include all behaviours common between different pages views */
   trait PageView:
     val actionsMap: Map[Int, Enumeration]
-    def draw(): String
+    def draw[T](update: Option[T]): String
     def inputReader() = readLine
     def handleInput(): Unit = sendEvent(actionsMap(inputReader().toInt), Option.empty)

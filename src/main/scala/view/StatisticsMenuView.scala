@@ -15,6 +15,6 @@ object StatisticsMenuView:
       1 -> StatisticsMenuController.AvailableActions.Back
     )
 
-    override def draw(): String =
+    override def draw[T](update: Option[T]): String =
       println("Menu statistiche:\n1) Menu statistiche")
       "StatisticsMenu"

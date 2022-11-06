@@ -2,6 +2,8 @@ package view
 
 import View.*
 import controller.StandardGameController
+import model.Answer.AnswerImpl
+import model.GameStage.*
 
 object StandardGameView:
 
@@ -15,6 +17,11 @@ object StandardGameView:
       1 -> StandardGameController.AvailableActions.Back
     )
 
-    override def draw(): String =
-      println("Standard quiz:\n1) Termina quiz")
+    override def draw[T](update: Option[T]): String =
+      println("Standard quiz:")
+      update.get.asInstanceOf[GameStage].courseInGame.foreach(savedCourse => savedCourse.quizList.foreach(savedQuiz =>
+        println("1) Termina quiz");
+        println(s"${savedQuiz.text}");
+        savedQuiz.answerList.foreach(answer => println(answer.text))
+      ))
       "StandardGame"

@@ -1,5 +1,6 @@
 package controller
 
+import controller.Controller.AppController.currentPage
 import controller.MainMenuController.*
 import controller.SelectMenuController.*
 import controller.StatisticsMenuController.*
@@ -18,7 +19,9 @@ object Controller:
     def handle[T](action: Enumeration, value: Option[T]): Unit
 
   /** PageController should include all behaviours common between different pages controllers */
-  trait PageController extends Controller
+  trait PageController extends Controller:
+    def nextIteration(): Unit
+    def updateUI[T](update: Option[T]): Unit
 
   /** Provides a binder between the page logic and the relative page view */
   case class Page[C, V](var pageController: C, var pageView: V)
@@ -47,5 +50,4 @@ object Controller:
 
     def startApp():Unit =
       while(true)
-        currentPage.pageView.draw()
-        currentPage.pageView.handleInput()
+        currentPage.pageController.nextIteration()
