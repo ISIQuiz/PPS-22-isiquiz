@@ -4,6 +4,13 @@ package model
  *  Trait for a quiz
  */
 trait Quiz:
-  def quizText: String
+  /**
+   * @return text of the quiz
+   */
+  def text: String
+
+  /**
+   * @return max score 
+   */
   def maxScore: Int
-  def imagePath: String
+  def imagePath: Option[String]
