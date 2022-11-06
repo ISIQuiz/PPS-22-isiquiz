@@ -3,8 +3,8 @@ package viewTest
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import controller.Controller.*
-import controller.Controller.{AppController, SelectMenuController}
-import view.MainMenu.*
+import controller.{MainMenuController, SelectMenuController}
+import view.MainMenuView.*
 import view.SelectMenu.*
 
 object TestSelectMenuView:
@@ -22,7 +22,7 @@ class TestSelectMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeA
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    AppController.handle(AppController.AvailablePages.Select, Option.empty)
+    AppController.handle(AppController.AvailablePages.SelectMenu, Option.empty)
   }
 
   test("Select menu view should draw select menu") {
@@ -31,7 +31,6 @@ class TestSelectMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeA
 
   test("Selecting back should return to main menu") {
     input_("1")
-    selectMenuView.handleInput()
     assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, MainMenuView]])
   }
 

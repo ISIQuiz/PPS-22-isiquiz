@@ -3,8 +3,8 @@ package viewTest
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import controller.Controller.*
-import controller.Controller.{AppController, SelectMenuController, StatisticsMenuController, SettingsMenuController}
-import view.MainMenu.*
+import controller.{MainMenuController, SelectMenuController, StatisticsMenuController, SettingsMenuController}
+import view.MainMenuView.*
 import view.SelectMenu.*
 import view.StatisticsMenu.*
 import view.SettingsMenu.*
@@ -33,8 +33,7 @@ class TestMainMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeAnd
 
   test("Should change to select menu when play is selected") {
     input_("1")
-    mainMenuView.handleInput()
-    assert(AppController.currentPage.isInstanceOf[Page[SettingsMenuController, SettingsMenuView]])
+    assert(AppController.currentPage.isInstanceOf[Page[SelectMenuController, SelectMenuView]])
   }
 
 end TestMainMenuView
