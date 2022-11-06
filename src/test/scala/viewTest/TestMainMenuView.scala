@@ -5,9 +5,9 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import controller.Controller.*
 import controller.{MainMenuController, SelectMenuController, StatisticsMenuController, SettingsMenuController}
 import view.MainMenuView.*
-import view.SelectMenu.*
-import view.StatisticsMenu.*
-import view.SettingsMenu.*
+import view.SelectMenuView.*
+import view.StatisticsMenuView.*
+import view.SettingsMenuView.*
 
 object TestMainMenuView:
   private var _input: String = null

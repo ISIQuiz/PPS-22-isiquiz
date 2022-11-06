@@ -6,9 +6,10 @@ import controller.StatisticsMenuController.*
 import controller.SettingsMenuController.*
 import view.View.*
 import view.MainMenuView.*
-import view.SelectMenu.*
-import view.StatisticsMenu.*
-import view.SettingsMenu.*
+import view.SelectMenuView.*
+import view.StatisticsMenuView.*
+import view.SettingsMenuView.*
+import view.StandardGameView.*
 
 object Controller:
 
@@ -34,12 +35,14 @@ object Controller:
       case SelectMenu
       case SettingsMenu
       case StatisticsMenu
+      case StandardGame
 
     override def handle[T](action: Enumeration, value: Option[T]): Unit = action match
       case AvailablePages.MainMenu =>  currentPage_(new MainMenuController, MainMenuViewImpl())
       case AvailablePages.SelectMenu => currentPage_(new SelectMenuController, SelectMenuViewImpl())
       case AvailablePages.StatisticsMenu => currentPage_(new StatisticsMenuController, StatisticsMenuViewImpl())
       case AvailablePages.SettingsMenu => currentPage_(new SettingsMenuController, SettingsMenuViewImpl())
+      case AvailablePages.StandardGame => currentPage_(new StandardGameController, StandardGameViewImpl())
       case _ => currentPage.pageController.handle(action, value)
 
     def startApp():Unit =

@@ -7,9 +7,9 @@ import controller.Controller.AppController.*
 
 import controller.{MainMenuController, SelectMenuController, StatisticsMenuController, SettingsMenuController}
 import view.MainMenuView.*
-import view.SelectMenu.*
-import view.StatisticsMenu.*
-import view.SettingsMenu.*
+import view.SelectMenuView.*
+import view.StatisticsMenuView.*
+import view.SettingsMenuView.*
 
 class TestApplicationController extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
 

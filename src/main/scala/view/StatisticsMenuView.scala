@@ -3,7 +3,7 @@ package view
 import View.*
 import controller.StatisticsMenuController
 
-object StatisticsMenu:
+object StatisticsMenuView:
 
   /** SettingsMenuView define aspects of a general StatisticsMenuView */
   trait StatisticsMenuView extends PageView

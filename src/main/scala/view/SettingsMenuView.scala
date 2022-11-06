@@ -3,7 +3,7 @@ package view
 import View.*
 import controller.SettingsMenuController
 
-object SettingsMenu:
+object SettingsMenuView:
 
   /** SettingsMenuView define aspects of a general SettingsMenuView */
   trait SettingsMenuView extends PageView

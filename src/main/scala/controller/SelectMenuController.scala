@@ -4,9 +4,10 @@ import controller.Controller.{AppController, PageController}
 
 /** Companion object of select menu controller */
 object SelectMenuController:
-  
+
   enum AvailableActions extends Enumeration:
     case Back
+    case Start
 
 /** Defines the logic of the select page */
 class SelectMenuController extends PageController:
@@ -16,5 +17,8 @@ class SelectMenuController extends PageController:
 
   override def handle[T](action: Enumeration, value: Option[T]): Unit = action match
     case AvailableActions.Back => back
+    case AvailableActions.Start => start
 
   def back: Unit = AppController.handle(AvailablePages.MainMenu, Option.empty)
+
+  def start: Unit = AppController.handle(AvailablePages.StandardGame, Option.empty)

@@ -3,17 +3,18 @@ package viewTest
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import controller.Controller.*
-import controller.{MainMenuController, SelectMenuController}
+import controller.{MainMenuController, SelectMenuController, StandardGameController}
 import view.MainMenuView.*
-import view.SelectMenu.*
+import view.SelectMenuView.*
+import view.StandardGameView.*
 
-object TestSelectMenuView:
+object TestSelectMenuViewView:
   private var _input: String = null
   def input: String = _input
   def input_(input: String): Unit = _input = input
 
-class TestSelectMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
-  import TestSelectMenuView.*
+class TestSelectMenuViewView extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
+  import TestSelectMenuViewView.*
 
   class SelectMenuViewTest extends SelectMenuViewImpl:
     override def inputReader() = input
@@ -34,4 +35,9 @@ class TestSelectMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeA
     assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, MainMenuView]])
   }
 
-end TestSelectMenuView
+  test("Selecting start should start a quiz") {
+    input_("2")
+    assert(AppController.currentPage.isInstanceOf[Page[StandardGameController, StandardGameView]])
+  }
+
+end TestSelectMenuViewView
