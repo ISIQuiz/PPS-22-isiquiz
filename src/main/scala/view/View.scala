@@ -12,4 +12,6 @@ object View:
     val actionsMap: Map[Int, Enumeration]
     def draw[T](update: Option[T]): String
     def inputReader() = readLine
-    def handleInput(): Unit = sendEvent(actionsMap(inputReader().toInt), Option.empty)
+    def handleInput(): Unit =
+      val input = inputReader()
+      sendEvent(actionsMap(input.toInt), Option(input))

@@ -27,4 +27,3 @@ class StandardGameController extends PageController:
     case AvailableActions.Back => back
 
   def back: Unit = AppController.handle(AvailablePages.SelectMenu, Option.empty)
-

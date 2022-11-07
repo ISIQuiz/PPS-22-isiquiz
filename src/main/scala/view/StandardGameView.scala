@@ -22,6 +22,6 @@ object StandardGameView:
       update.get.asInstanceOf[GameStage].courseInGame.foreach(savedCourse => savedCourse.quizList.foreach(savedQuiz =>
         println("1) Termina quiz");
         println(s"${savedQuiz.text}");
-        savedQuiz.answerList.foreach(answer => println(answer.text))
+        savedQuiz.answerList.zipWithIndex.foreach(answer => println(answer._2 + 1 + ") " + answer._1.text))
       ))
       "StandardGame"
