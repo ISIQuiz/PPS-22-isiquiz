@@ -1,38 +1,39 @@
 package viewTest
 
-import controller.Controller
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
-import view.View.*
-import view.MainMenu.*
 import controller.Controller.*
-import view.SettingsMenu.*
+import controller.{MainMenuController, SelectMenuController, StatisticsMenuController, SettingsMenuController}
+import view.MainMenuView.*
+import view.SelectMenuView.*
+import view.StatisticsMenuView.*
+import view.SettingsMenuView.*
+
+object TestMainMenuView:
+  private var _input: String = null
+  def input: String = _input
+  def input_(input: String): Unit = _input = input
 
 class TestMainMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
+  import TestMainMenuView.*
 
-  var mainMenuView: MainMenuView= new MainMenuViewImpl
+  class MainMenuViewTest extends MainMenuViewImpl:
+    override def inputReader() = input
+
+  var mainMenuView: MainMenuView = new MainMenuViewTest
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    mainMenuView = MainMenuViewImpl()
+    AppController.handle(AppController.AvailablePages.MainMenu, Option.empty)
   }
 
   test("Main menu view should draw main menu") {
-    // TODO: Not actually asserting that System.out is expected output
-    assert(mainMenuView.draw() == {
-      println(
-        "Menu principale:\n" +
-          "1) Gioca\n" +
-          "2) Statistiche\n" +
-          "3) Impostazioni\n" +
-          "4) Esci"
-      )
-    })
+    assert(mainMenuView.draw(Option.empty) == "MainMenu")
   }
 
-  test("Should change to settings menu when settings is selected") {
-    mainMenuView.sendEvent(Action("Settings", Option.empty))
-    assert(ApplicationControllerImpl.currentPage.isInstanceOf[Page[SettingsController, SettingsMenuViewImpl]])
+  test("Should change to select menu when play is selected") {
+    input_("1")
+    assert(AppController.currentPage.isInstanceOf[Page[SelectMenuController, SelectMenuView]])
   }
 
 end TestMainMenuView
