@@ -1,4 +1,4 @@
-import Quiz.*
+import model.Quiz.*
 import org.scalatest.funsuite.AnyFunSuite
 
 class QuizTest extends AnyFunSuite :

@@ -2,7 +2,6 @@ package view
 
 import View.*
 import controller.StandardGameController
-import model.Answer.AnswerImpl
 import model.GameStage.*
 
 object StandardGameView:
@@ -19,9 +18,8 @@ object StandardGameView:
 
     override def draw[T](update: Option[T]): String =
       println("Standard quiz:")
-      update.get.asInstanceOf[GameStage].courseInGame.foreach(savedCourse => savedCourse.quizList.foreach(savedQuiz =>
+      update.get.asInstanceOf[GameStage].courseInGame.foreach(savedCourse => savedCourse.quizList.foreach(quiz =>
         println("1) Termina quiz");
-        println(s"${savedQuiz.text}");
-        savedQuiz.answerList.zipWithIndex.foreach(answer => println(answer._2 + 1 + ") " + answer._1.text))
+        println(quiz);
       ))
       "StandardGame"
