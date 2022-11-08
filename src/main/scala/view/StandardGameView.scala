@@ -18,8 +18,10 @@ object StandardGameView:
 
     override def draw[T](update: Option[T]): String =
       println("Standard quiz:")
-      update.get.asInstanceOf[GameStage].courseInGame.foreach(savedCourse => savedCourse.quizList.foreach(quiz =>
-        println("1) Termina quiz");
-        println(quiz);
-      ))
+      if (update.isDefined){
+        update.get.asInstanceOf[GameStage].courseInGame.foreach(savedCourse => savedCourse.quizList.foreach(quiz =>
+          println("1) Termina quiz");
+          println(quiz);
+        ))
+      }
       "StandardGame"

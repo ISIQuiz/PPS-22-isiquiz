@@ -1,17 +1,20 @@
 package model
 
+import model.Answer.Answer
+import model.Quiz.AnswerList.{cons, empty}
+import model.Quiz.{AnswerList, Quiz}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
 
 class SavedCourseTest extends AnyFunSuite with Matchers:
 
-  val a1: List[Answer] = List()
+  val ansList: AnswerList = AnswerList.empty()
 
-  val q1 = SavedQuiz("quiz1", 12, Some("image1.png"), a1)
-  val q2 = SavedQuiz("quiz2", 13, Some("image2.png"), a1)
-  val q3 = SavedQuiz("quiz3", 8, Some("image3.png"), a1)
-  val q4 = SavedQuiz("quiz4", 20, Some("image4.png"), a1)
+  val q1 = Quiz("quiz1",ansList, 12, Some("image1.png"))
+  val q2 = Quiz("quiz2",ansList, 13, Some("image2.png"))
+  val q3 = Quiz("quiz3",ansList, 8, Some("image3.png"))
+  val q4 = Quiz("quiz4",ansList, 20, Some("image4.png"))
 
   /* Simple list of SavedQuiz */
   val quizList = List(q1, q2, q3, q4)
@@ -75,7 +78,7 @@ class SavedCourseTest extends AnyFunSuite with Matchers:
   }
 
   test("Testing change quiz list") {
-    val quizListChanged: List[SavedQuiz] = List(q1, q2)
+    val quizListChanged: List[Quiz] = List(q1, q2)
 
     val savedCourseChanged = SavedCourse.changeQuizList(savedCourse, quizListChanged)
     savedCourseChanged.quizList.size shouldEqual 2

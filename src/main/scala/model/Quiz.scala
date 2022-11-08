@@ -55,7 +55,7 @@ object Quiz:
    * @param maxScore
    * @param imagePath
    */
-  case class Quiz(question: String, answerList: AnswerList, maxScore:Int, imagePath:Option[String]) {
+  case class Quiz(question: String, answerList: AnswerList, maxScore:Int, imagePath:Option[String]=None) {
     // Overriding toString method to print directly requires parenthesis
     override def toString(): String = printQuiz(this)
   }
@@ -84,11 +84,18 @@ object Quiz:
    */
   def changeImagePath(quiz: Quiz, imagePath: Option[String]): Quiz = Quiz(quiz.question, quiz.answerList, quiz.maxScore, imagePath)
 
+  /**
+   *  Gets the question of a quiz
+   * @param quiz
+   * @return
+   */
+  def getQuestion(quiz:Quiz):String = quiz match
+    case Quiz(q,_,_,_) => q
 
   /**
-   * Change text of a quiz
+   * Change question of a quiz
    *
-   * @param Quiz the  quiz to edit
+   * @param Quiz the quiz to edit
    * @param text a new quiz text question
    * @return Quiz
    */
