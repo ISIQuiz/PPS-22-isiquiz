@@ -13,14 +13,18 @@ object StandardGameView:
   class StandardGameViewImpl extends StandardGameView:
 
     override val actionsMap: Map[Int, Enumeration] = Map(
-      1 -> StandardGameController.AvailableActions.Back
+      0 -> StandardGameController.AvailableActions.Back,
+      1 -> StandardGameController.AvailableActions.SelectAnswer,
+      2 -> StandardGameController.AvailableActions.SelectAnswer,
+      3 -> StandardGameController.AvailableActions.SelectAnswer,
+      4 -> StandardGameController.AvailableActions.SelectAnswer
     )
 
     override def draw[T](update: Option[T]): String =
       println("Standard quiz:")
       if (update.isDefined){
         update.get.asInstanceOf[GameStage].courseInGame.foreach(savedCourse => savedCourse.quizList.foreach(quiz =>
-          println("1) Termina quiz");
+          println("0) Termina quiz");
           println(quiz);
         ))
       }
