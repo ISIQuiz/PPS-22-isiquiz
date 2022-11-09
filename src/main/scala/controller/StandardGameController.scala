@@ -8,6 +8,7 @@ object StandardGameController:
 
   enum AvailableActions extends Enumeration:
     case Back
+    case SelectAnswer
 
 /** Defines the logic of the select page */
 class StandardGameController extends PageController:
@@ -25,5 +26,9 @@ class StandardGameController extends PageController:
 
   override def handle[T](action: Enumeration, value: Option[T]): Unit = action match
     case AvailableActions.Back => back
+    case AvailableActions.SelectAnswer => selectAnswer(value)
 
   def back: Unit = AppController.handle(AvailablePages.SelectMenu, Option.empty)
+
+  def selectAnswer[T](value: Option[T]): Unit =
+    println(value.get)
