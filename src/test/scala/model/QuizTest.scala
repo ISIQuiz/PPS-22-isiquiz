@@ -1,5 +1,8 @@
-import Quiz.*
+package model
+
 import org.scalatest.funsuite.AnyFunSuite
+import model.Answer.*
+import model.Quiz.AnswerList
 
 class QuizTest extends AnyFunSuite :
 
@@ -39,7 +42,7 @@ class QuizTest extends AnyFunSuite :
   }
 
   test("AnswerList") {
-    import AnswerList.*
+    import model.Quiz.AnswerList.*
     val answerList: AnswerList = cons(a1, cons(a2, cons(a3, empty())))
 
 
@@ -64,7 +67,7 @@ class QuizTest extends AnyFunSuite :
     import Quiz.*
     val answerList: AnswerList = cons(a1, cons(a2, cons(a3, empty())))
 
-    val quiz: Quiz = Quiz("question", answerList)
+    val quiz: Quiz = Quiz("question", answerList, 10)
     assert(getCorrectAnswers(quiz) == cons(a1, empty()))
 
     println(quiz)
