@@ -29,7 +29,6 @@ object Quiz:
       def countAnswersTRCounter(counter: Int)(answerList: AnswerList): Int = answerList match
         case Cons(_, tail) => countAnswersTRCounter(counter + 1)(tail)
         case Empty() => counter
-
       countAnswersTRCounter(0)(answerList)
 
     import model.Answer.isCorrect
@@ -37,6 +36,14 @@ object Quiz:
       case Cons(h, tail) if isCorrect(h) => Cons(h, getCorrect(tail))
       case Cons(h, tail) => getCorrect(tail)
       case Empty() => Empty()
+
+    def getCorrectIndex(answerList: AnswerList): Int =
+      @annotation.tailrec
+      def getCorrectIndexCounter(counter: Int)(answerList: AnswerList): Int = answerList match
+        case Cons(h, _) if isCorrect(h) => counter
+        case Cons(_, tail) => getCorrectIndexCounter(counter + 1)(tail)
+        case Empty() => -1
+      getCorrectIndexCounter(0)(answerList)
 
     def addAnswer(answerList: AnswerList)(answer: Answer): AnswerList = Cons(answer, answerList)
 
