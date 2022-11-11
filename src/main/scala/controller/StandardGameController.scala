@@ -49,32 +49,19 @@ class StandardGameController extends PageController, GameController:
 //    println(getCorrectIndex(gameStage.quizInGame.answers))
 //    println(value.get.toString + " | " + getCorrect(gameStage.quizInGame.answers))
 
-  override def nextQuiz(): QuizInGame =
-    val selectedCourse = gameStage.courseInGame(randomNumberGenerator(1, gameStage.courseInGame.length).head)
-    val selectedQuiz = chooseQuiz(selectedCourse)
-    val selectedAnswers = chooseAnswers(selectedQuiz)
-    QuizInGame.apply(selectedCourse, selectedQuiz, selectedAnswers)
+  override def nextQuiz(): QuizInGame = ???
 
   override def chooseQuiz(course: SavedCourse): Quiz = ???
 
   override def chooseAnswers(quiz: Quiz): List[Answer] =
-    val r = scala.util.Random
+    val allCorrectAnswers = gameStage.quizInGame.quiz.answerList.filter(answer => answer.isCorrect)
+    val allWrongAnswers = gameStage.quizInGame.quiz.answerList.filter(answer => !answer.isCorrect)
 
-    //val correctAnswers = gameStage.quizInGame.quiz.answerList.filter(giuste)
-    //val wrongAnswers = gameStage.quizInGame.quiz.answerList.filter(sbagliate)
-    //val oneCorrectAnswer = gameStage.quizInGame.quiz.answerList(r.nextInt(countAnswers(correctAnswers)))
+    val correctAnswers = randomNumberGenerator(1, allCorrectAnswers.size).map(allCorrectAnswers)
+    val wrongAnswers = randomNumberGenerator(3, allWrongAnswers.size).map(allWrongAnswers)
 
-    //val randomIndexes = randomNumberGenerator(3, countAnswers(wrongAnswers))
-    //val answers: AnswerList = for i <- 0 until randomIndexes.size yield AnswerList.addAnswer(wrongAnswers(randomIndexes(i)))
-
-    ???
+    scala.util.Random.shuffle(correctAnswers ::: wrongAnswers)
 
   override def endQuiz(): Unit = ???
 
-  def randomNumberGenerator(quantity: Int, range: Int): List[Int] =
-    val r = scala.util.Random
-    val randomNumbers = for i <- 0 until quantity yield r.nextInt(range)
-    checkNumbersAreDifferent(randomNumbers.toList)
-    randomNumbers.toList
-
-  def checkNumbersAreDifferent(numbers: List[Int]): Boolean = if numbers.size == numbers.distinct.size then true else false
+  def randomNumberGenerator(quantity: Int, range: Int): List[Int] = scala.util.Random.shuffle(0 to range).take(quantity).toList
