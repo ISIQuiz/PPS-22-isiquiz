@@ -1,6 +1,7 @@
 package controller
 
 import controller.Controller.{AppController, PageController}
+import view.View
 
 /** Companion object of settings menu controller */
 object SettingsMenuController:
@@ -14,7 +15,7 @@ class SettingsMenuController extends PageController :
   import AppController.AvailablePages
   import SettingsMenuController.*
 
-  override def updateUI[T](update: Option[T]): Unit =
+  override def updateUI[T](update: View.UIUpdate[Any]): Unit =
     AppController.currentPage.pageView.draw(update)
     AppController.currentPage.pageView.handleInput()
 

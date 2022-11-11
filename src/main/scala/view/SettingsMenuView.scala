@@ -15,6 +15,6 @@ object SettingsMenuView:
       1 -> SettingsMenuController.AvailableActions.Back
     )
 
-    override def draw[T](update: Option[T]): String =
+    override def draw[T](update: UIUpdate[T]): String =
       println("Menu impostazioni:\n1) Menu principale")
       "SettingsMenu"

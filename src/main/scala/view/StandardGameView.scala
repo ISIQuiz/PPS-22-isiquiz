@@ -8,6 +8,9 @@ object StandardGameView:
 
   /** StandardGameView define aspects of a general StandardGameView */
   trait StandardGameView extends PageView
+    enum UpdateType extends Enumeration:
+      case NewQuiz
+      case AnswerFeedback
 
   /** A basic implementation of a SelectMenuView  */
   class StandardGameViewImpl extends StandardGameView:
@@ -20,12 +23,16 @@ object StandardGameView:
       4 -> StandardGameController.AvailableActions.SelectAnswer
     )
 
-    override def draw[T](update: Option[T]): String =
-      println("Standard quiz:")
-      if (update.isDefined){
-        update.get.asInstanceOf[GameStage].courseInGame.foreach(savedCourse => savedCourse.quizList.foreach(quiz =>
-          println("0) Termina quiz");
-          println(quiz);
-        ))
-      }
-      "StandardGame"
+    override def draw[T](update: UIUpdate[T]): String = update.updateType match
+      case UpdateType.NewQuiz =>
+        println("Standard quiz:")
+        if (update.updateValue.isDefined){
+          update.updateValue.get.asInstanceOf[GameStage].courseInGame.foreach(savedCourse => savedCourse.quizList.foreach(quiz =>
+            println("0) Termina quiz");
+            println(quiz);
+          ))
+        }
+        "StandardGame"
+      case UpdateType.AnswerFeedback =>
+        println(update)
+        "StandardGameUpdate"

@@ -21,7 +21,7 @@ object Controller:
   /** PageController should include all behaviours common between different pages controllers */
   trait PageController extends Controller:
     def nextIteration(): Unit
-    def updateUI[T](update: Option[T]): Unit
+    def updateUI[T](update: UIUpdate[T]): Unit
 
   /** Provides a binder between the page logic and the relative page view */
   case class Page[C, V](var pageController: C, var pageView: V)
