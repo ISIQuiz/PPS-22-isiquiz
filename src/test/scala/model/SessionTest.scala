@@ -5,20 +5,20 @@ import model.Quiz.AnswerList.{cons, empty}
 import model.Quiz.{AnswerList, Quiz}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import resources.SampleCourseListForTest
+import resources.SampleCourseList
 
 
 class SessionTest extends AnyFunSuite with Matchers{
 
-  val session = Session(SampleCourseListForTest.courseList)
+  val session = Session(SampleCourseList.courseList)
 
   println(session.toString)
 
   test("New session test") {
-    session.savedCourses.size shouldEqual SampleCourseListForTest.courseList.size
+    session.savedCourses.size shouldEqual SampleCourseList.courseList.size
   }
 
-  test("Test if the course identifier of the Session first course changed") {
+  test("Check if the course identifier of the first element of course list in Session changed") {
 
     val courseList = session.savedCourses
     val course = courseList.apply(0)
