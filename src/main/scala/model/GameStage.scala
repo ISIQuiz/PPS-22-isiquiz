@@ -3,10 +3,9 @@ package model
 import model.CourseIdentifier.CourseIdentifierImpl
 import model.SavedCourse.SavedCourseImpl
 import model.Quiz.*
-import model.Answer.Answer
-import AnswerList.{cons, *}
+import model.Answer.*
 
-case class QuizInGame(course: Course, quiz: Quiz, answers: AnswerList)
+case class QuizInGame(course: Course, quiz: Quiz, answers: List[Answer])
 
 object GameStage:
 
@@ -35,16 +34,7 @@ object GameStage:
             question = "Domanda 1: 2+2 = ?",
             maxScore = 10,
             imagePath = Option.empty,
-            answerList =
-              cons(Answer(text = "1", false),
-                cons(Answer(text = "2", false),
-                  cons(Answer(text = "4", true),
-                    cons(Answer(text = "8", false),
-                      empty()
-                    )
-                  )
-                )
-              )
+            answerList = List(Answer(text = "1", false),Answer(text = "2", false),Answer(text = "4", true),Answer(text = "8", false))
           )
         )
       )

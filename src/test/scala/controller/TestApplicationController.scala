@@ -1,4 +1,4 @@
-package controllerTest
+package controller
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}

@@ -34,7 +34,6 @@ object SavedCourse:
             quizList: List[Quiz]): SavedCourse =
     SavedCourseImpl(courseId, description, quizList)
 
-
   /** Case class for saved course model
   * @param description description of the course (optional)
   * @param quizList quiz list of saved quiz
@@ -71,4 +70,3 @@ object SavedCourse:
   def changeQuizList(savedCourse: SavedCourse, quizList: List[Quiz]): SavedCourse = savedCourse match
     case SavedCourseImpl(courseId, description, _) =>
       SavedCourse(courseId, description, quizList)
-
