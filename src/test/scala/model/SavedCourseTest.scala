@@ -1,15 +1,13 @@
 package model
 
 import model.Answer.Answer
-import model.Quiz.AnswerList.{cons, empty}
-import model.Quiz.{AnswerList, Quiz}
+import model.Quiz.*
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
-
 class SavedCourseTest extends AnyFunSuite with Matchers:
 
-  val ansList: AnswerList = AnswerList.empty()
+  val ansList: List[Answer] = List()
 
   val q1 = Quiz("quiz1",ansList, 12, Some("image1.png"))
   val q2 = Quiz("quiz2",ansList, 13, Some("image2.png"))

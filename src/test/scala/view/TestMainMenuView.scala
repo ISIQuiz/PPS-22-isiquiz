@@ -1,4 +1,4 @@
-package viewTest
+package view
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}

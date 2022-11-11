@@ -1,8 +1,6 @@
 package model
 
-import model.Answer.Answer
-import model.Quiz.AnswerList.{cons, empty}
-import model.Quiz.{AnswerList, Quiz}
+import model.Answer.*
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import resources.SampleCourseList

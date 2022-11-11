@@ -1,9 +1,8 @@
 package resources
 
-import model.Answer.Answer
+import model.Answer.*
 import model.CourseIdentifier.CourseIdentifierImpl
-import model.Quiz.AnswerList.{cons, empty}
-import model.Quiz.Quiz
+import model.Quiz.*
 import model.SavedCourse
 
 object SampleCourseList:
@@ -23,15 +22,11 @@ object SampleCourseList:
           question = "Domanda somma: 2+2 = ?",
           maxScore = 5,
           imagePath = Option.empty,
-          answerList =
-            cons(Answer(text = "1", false),
-              cons(Answer(text = "2", false),
-                cons(Answer(text = "4", true),
-                  cons(Answer(text = "8", false),
-                    empty()
-                  )
-                )
-              )
+          answerList = List(
+            Answer(text = "1", false),
+              Answer(text = "2", false),
+                Answer(text = "4", true),
+                  Answer(text = "8", false)
             )
         ),
         // Domanda sottrazione
@@ -39,15 +34,11 @@ object SampleCourseList:
           question = "Domanda sottrazione: 2-2 = ?",
           maxScore = 6,
           imagePath = Option.empty,
-          answerList =
-            cons(Answer(text = "0", true),
-              cons(Answer(text = "2", false),
-                cons(Answer(text = "1", false),
-                  cons(Answer(text = "6", false),
-                    empty()
-                  )
-                )
-              )
+          answerList = List(
+            Answer(text = "0", true),
+              Answer(text = "2", false),
+                Answer(text = "1", false),
+                  Answer(text = "6", false)
             )
         ),
         // Domanda moltiplicazione
@@ -55,15 +46,11 @@ object SampleCourseList:
           question = "Domanda moltiplicazione: 2x2 = ?",
           maxScore = 14,
           imagePath = Option.empty,
-          answerList =
-            cons(Answer(text = "1", false),
-              cons(Answer(text = "2", false),
-                cons(Answer(text = "4", true),
-                  cons(Answer(text = "8", false),
-                    empty()
-                  )
-                )
-              )
+          answerList = List(
+            Answer(text = "1", false),
+              Answer(text = "2", false),
+                Answer(text = "4", true),
+                  Answer(text = "8", false)
             )
         ),
         // Domanda divisione
@@ -71,15 +58,11 @@ object SampleCourseList:
           question = "Domanda divisione: 2:2 = ?",
           maxScore = 12,
           imagePath = Option.empty,
-          answerList =
-            cons(Answer(text = "1", true),
-              cons(Answer(text = "2", false),
-                cons(Answer(text = "4", false),
-                  cons(Answer(text = "8", false),
-                    empty()
-                  )
-                )
-              )
+          answerList = List(
+            Answer(text = "1", true),
+              Answer(text = "2", false),
+                Answer(text = "4", false),
+                  Answer(text = "8", false)
             )
         ),
       )
@@ -98,15 +81,11 @@ object SampleCourseList:
           question = "Domanda somma: 3+3 = ?",
           maxScore = 7,
           imagePath = Option.empty,
-          answerList =
-            cons(Answer(text = "1", false),
-              cons(Answer(text = "2", false),
-                cons(Answer(text = "6", true),
-                  cons(Answer(text = "8", false),
-                    empty()
-                  )
-                )
-              )
+          answerList = List(
+            Answer(text = "1", false),
+              Answer(text = "2", false),
+                Answer(text = "6", true),
+                  Answer(text = "8", false)
             )
         ),
         // Domanda sottrazione
@@ -114,15 +93,11 @@ object SampleCourseList:
           question = "Domanda sottrazione: 3-3 = ?",
           maxScore = 4,
           imagePath = Option.empty,
-          answerList =
-            cons(Answer(text = "0", true),
-              cons(Answer(text = "2", false),
-                cons(Answer(text = "1", false),
-                  cons(Answer(text = "6", false),
-                    empty()
-                  )
-                )
-              )
+          answerList = List(
+            Answer(text = "0", true),
+              Answer(text = "2", false),
+                Answer(text = "1", false),
+                  Answer(text = "6", false)
             )
         ),
         // Domanda moltiplicazione
@@ -130,15 +105,11 @@ object SampleCourseList:
           question = "Domanda moltiplicazione: 3x3 = ?",
           maxScore = 12,
           imagePath = Option.empty,
-          answerList =
-            cons(Answer(text = "1", false),
-              cons(Answer(text = "2", false),
-                cons(Answer(text = "9", true),
-                  cons(Answer(text = "8", false),
-                    empty()
-                  )
-                )
-              )
+          answerList = List(
+            Answer(text = "1", false),
+              Answer(text = "2", false),
+                Answer(text = "9", true),
+                  Answer(text = "8", false)
             )
         ),
         // Domanda divisione
@@ -146,15 +117,11 @@ object SampleCourseList:
           question = "Domanda divisione: 3:3 = ?",
           maxScore = 13,
           imagePath = Option.empty,
-          answerList =
-            cons(Answer(text = "1", true),
-              cons(Answer(text = "2", false),
-                cons(Answer(text = "4", false),
-                  cons(Answer(text = "8", false),
-                    empty()
-                  )
-                )
-              )
+          answerList = List(
+            Answer(text = "1", true),
+              Answer(text = "2", false),
+                Answer(text = "4", false),
+                  Answer(text = "8", false)
             )
         ),
       )
@@ -173,15 +140,11 @@ object SampleCourseList:
           question = "Domanda somma: 4+4 = ?",
           maxScore = 7,
           imagePath = Option.empty,
-          answerList =
-            cons(Answer(text = "1", false),
-              cons(Answer(text = "2", false),
-                cons(Answer(text = "6", false),
-                  cons(Answer(text = "8", true),
-                    empty()
-                  )
-                )
-              )
+          answerList = List(
+            Answer(text = "1", false),
+              Answer(text = "2", false),
+                Answer(text = "6", false),
+                  Answer(text = "8", true)
             )
         ),
         // Domanda sottrazione
@@ -189,15 +152,11 @@ object SampleCourseList:
           question = "Domanda sottrazione: 4-4 = ?",
           maxScore = 4,
           imagePath = Option.empty,
-          answerList =
-            cons(Answer(text = "0", true),
-              cons(Answer(text = "2", false),
-                cons(Answer(text = "1", false),
-                  cons(Answer(text = "6", false),
-                    empty()
-                  )
-                )
-              )
+          answerList = List(
+            Answer(text = "0", true),
+              Answer(text = "2", false),
+                Answer(text = "1", false),
+                  Answer(text = "6", false)
             )
         ),
         // Domanda moltiplicazione
@@ -205,15 +164,11 @@ object SampleCourseList:
           question = "Domanda moltiplicazione: 4x4 = ?",
           maxScore = 12,
           imagePath = Option.empty,
-          answerList =
-            cons(Answer(text = "1", false),
-              cons(Answer(text = "2", false),
-                cons(Answer(text = "16", true),
-                  cons(Answer(text = "8", false),
-                    empty()
-                  )
-                )
-              )
+          answerList = List(
+            Answer(text = "1", false),
+              Answer(text = "2", false),
+                Answer(text = "16", true),
+                  Answer(text = "8", false)
             )
         ),
         // Domanda divisione
@@ -221,15 +176,11 @@ object SampleCourseList:
           question = "Domanda divisione: 4:4 = ?",
           maxScore = 13,
           imagePath = Option.empty,
-          answerList =
-            cons(Answer(text = "1", true),
-              cons(Answer(text = "2", false),
-                cons(Answer(text = "4", false),
-                  cons(Answer(text = "8", false),
-                    empty()
-                  )
-                )
-              )
+          answerList = List(
+            Answer(text = "1", true),
+              Answer(text = "2", false),
+                Answer(text = "4", false),
+                  Answer(text = "8", false)
             )
         ),
       )

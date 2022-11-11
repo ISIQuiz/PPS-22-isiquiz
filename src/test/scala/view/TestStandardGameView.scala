@@ -1,4 +1,4 @@
-package viewTest
+package view
 
 import controller.Controller.*
 import controller.{MainMenuController, SelectMenuController, StandardGameController}

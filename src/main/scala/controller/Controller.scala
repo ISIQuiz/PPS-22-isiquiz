@@ -7,12 +7,16 @@ import controller.StatisticsMenuController.*
 import controller.SettingsMenuController.*
 import model.{SavedCourse, Session}
 import resources.SampleCourseList
+import controller.AddCourseMenuController.*
+import controller.AddQuizMenuController.*
 import view.View.*
 import view.MainMenuView.*
 import view.SelectMenuView.*
 import view.StatisticsMenuView.*
 import view.SettingsMenuView.*
 import view.StandardGameView.*
+import view.AddCourseMenuView.*
+import view.AddQuizMenuView.*
 
 object Controller:
 
@@ -46,6 +50,8 @@ object Controller:
       case SettingsMenu
       case StatisticsMenu
       case StandardGame
+      case AddCourseMenu
+      case AddQuizMenu
 
     override def handle[T](action: Enumeration, value: Option[T]): Unit = action match
       case AvailablePages.MainMenu =>  currentPage_(new MainMenuController, MainMenuViewImpl())
@@ -53,6 +59,8 @@ object Controller:
       case AvailablePages.StatisticsMenu => currentPage_(new StatisticsMenuController, StatisticsMenuViewImpl())
       case AvailablePages.SettingsMenu => currentPage_(new SettingsMenuController, SettingsMenuViewImpl())
       case AvailablePages.StandardGame => currentPage_(new StandardGameController, StandardGameViewImpl())
+      case AvailablePages.AddCourseMenu => currentPage_(new AddCourseMenuController, AddCourseMenuViewImpl())
+      case AvailablePages.AddQuizMenu => currentPage_(new AddQuizMenuController, AddQuizMenuViewImpl())
       case _ => currentPage.pageController.handle(action, value)
 
     def startApp():Unit =

@@ -1,53 +1,13 @@
 package model
 
-import model.Answer.Answer
-import model.Quiz.AnswerList
-import model.Quiz.AnswerList.{Cons, Empty}
+import model.Answer.*
+import model.Quiz.*
 
 /**
  * Module quiz contains all the definitions of a single question and answers
  * and the functions to operate with it
  */
 object Quiz:
-
-  enum AnswerList:
-    private case Cons(head: Answer, tail: AnswerList)
-    private case Empty()
-
-  object AnswerList:
-
-    def cons(h: Answer, t: AnswerList): AnswerList = Cons(h, t)
-
-    def empty(): AnswerList = Empty()
-
-    def countAnswers(answerList: AnswerList): Int = answerList match
-      case Cons(_, tail) => 1 + countAnswers(tail)
-      case Empty() => 0
-
-    def countAnswersTR(answerList: AnswerList): Int =
-      @annotation.tailrec
-      def countAnswersTRCounter(counter: Int)(answerList: AnswerList): Int = answerList match
-        case Cons(_, tail) => countAnswersTRCounter(counter + 1)(tail)
-        case Empty() => counter
-
-      countAnswersTRCounter(0)(answerList)
-
-    import model.Answer.isCorrect
-    def getCorrect(answerList: AnswerList): AnswerList = answerList match
-      case Cons(h, tail) if isCorrect(h) => Cons(h, getCorrect(tail))
-      case Cons(h, tail) => getCorrect(tail)
-      case Empty() => Empty()
-
-    def addAnswer(answerList: AnswerList)(answer: Answer): AnswerList = Cons(answer, answerList)
-
-    def printAnswers(answerList: AnswerList, wSolutions: Boolean = false): String =
-      def _printAnswers(wSolutions: Boolean = wSolutions)(statingCounter: Int)(answerList: AnswerList): String = answerList match
-        case Cons(ans, t) => s"\t$statingCounter)" + (if (wSolutions) ans.isCorrect else "") + " " + ans.text + "\n" + _printAnswers(wSolutions)(statingCounter + 1)(t)
-        case _ => ""
-
-      _printAnswers(wSolutions)(1)(answerList)
-
-
   /**
    *  A quiz with quesiton and answers
    * @param question
@@ -55,16 +15,16 @@ object Quiz:
    * @param maxScore
    * @param imagePath
    */
-  case class Quiz(question: String, answerList: AnswerList, maxScore:Int, imagePath:Option[String]=None) {
+  case class Quiz(question: String, answerList: List[Answer], maxScore:Int, imagePath:Option[String]=None) {
     // Overriding toString method to print directly requires parenthesis
     override def toString(): String = printQuiz(this)
   }
 
-  def getCorrectAnswers(quiz: Quiz): AnswerList = AnswerList.getCorrect(quiz.answerList)
+  def getCorrectAnswers(quiz: Quiz): List[Answer] = quiz.answerList.filter(answer => isCorrect(answer))
 
-  import model.Quiz.AnswerList.printAnswers
-  val printQuiz: Quiz => String = quiz => quiz.question + "\n" + printAnswers(quiz.answerList)
-  val printQuizFull: Quiz => String = quiz => quiz.question + "\n" + printAnswers(quiz.answerList, true)
+  val printQuiz: Quiz => String = quiz => quiz.question + "\n" + quiz.answerList.map(answer => s"${quiz.answerList.indexOf(answer)+1}) ${getText(answer)}")
+  val printQuizFull: Quiz => String = quiz => quiz.question + "\n" +
+    quiz.answerList.map(answer => s"${quiz.answerList.indexOf(answer)+1}) ${getText(answer)} ${isCorrect(answer)}")
 
   /**
    * Change max score of a quiz
@@ -108,4 +68,6 @@ object Quiz:
    * @param answerList a new answer list
    * @return Quiz
    */
-  def changeAnswerList(quiz: Quiz, answerList: AnswerList): Quiz = Quiz(quiz.question, answerList, quiz.maxScore, quiz.imagePath)
+  def changeAnswerList(quiz: Quiz, answerList: List[Answer]): Quiz = Quiz(quiz.question, answerList, quiz.maxScore, quiz.imagePath)
+
+  def getAllAnswers(quiz: Quiz): List[Answer] = quiz.answerList
