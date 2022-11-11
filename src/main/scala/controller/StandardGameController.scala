@@ -49,9 +49,13 @@ class StandardGameController extends PageController, GameController:
 //    println(getCorrectIndex(gameStage.quizInGame.answers))
 //    println(value.get.toString + " | " + getCorrect(gameStage.quizInGame.answers))
 
-  override def nextQuiz(): QuizInGame = ???
+  override def nextQuiz(): QuizInGame =
+    val selectedCourse = gameStage.courseInGame(randomNumberGenerator(1, gameStage.courseInGame.size).head)
+    val selectedQuiz = chooseQuiz(selectedCourse)
+    val selectedAnswers = chooseAnswers(selectedQuiz)
+    QuizInGame.apply(selectedCourse, selectedQuiz, selectedAnswers)
 
-  override def chooseQuiz(course: SavedCourse): Quiz = ???
+  override def chooseQuiz(course: SavedCourse): Quiz = course.quizList(randomNumberGenerator(1, course.quizList.size).head)
 
   override def chooseAnswers(quiz: Quiz): List[Answer] =
     val allCorrectAnswers = gameStage.quizInGame.quiz.answerList.filter(answer => answer.isCorrect)
@@ -64,4 +68,4 @@ class StandardGameController extends PageController, GameController:
 
   override def endQuiz(): Unit = ???
 
-  def randomNumberGenerator(quantity: Int, range: Int): List[Int] = scala.util.Random.shuffle(0 to range).take(quantity).toList
+  def randomNumberGenerator(quantity: Int, range: Int): List[Int] = scala.util.Random.shuffle(0 to range-1).take(quantity).toList
