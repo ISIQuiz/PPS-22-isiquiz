@@ -5,6 +5,8 @@ import controller.MainMenuController.*
 import controller.SelectMenuController.*
 import controller.StatisticsMenuController.*
 import controller.SettingsMenuController.*
+import model.{SavedCourse, Session}
+import resources.SampleCourseList
 import view.View.*
 import view.MainMenuView.*
 import view.SelectMenuView.*
@@ -33,6 +35,11 @@ object Controller:
     def currentPage: Page[PageController, PageView] = _currentPage
     def currentPage_(pageController: PageController, pageView: PageView): Unit = _currentPage = Page[PageController, PageView](pageController, pageView)
 
+    // Init var session with a default saved course list
+    private var _session: Session = Session()
+    def session: Session = _session
+    def session_(savedCourses: List[SavedCourse]): Unit = _session = Session.changeSavedCourses(savedCourses)
+    
     enum AvailablePages extends Enumeration:
       case MainMenu
       case SelectMenu
@@ -49,5 +56,6 @@ object Controller:
       case _ => currentPage.pageController.handle(action, value)
 
     def startApp():Unit =
+      // TODO Init the session from file: session_(getListFromFile())
       while(true)
         currentPage.pageController.nextIteration()

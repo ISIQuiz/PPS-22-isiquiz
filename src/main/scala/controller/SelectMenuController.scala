@@ -1,6 +1,7 @@
 package controller
 
 import controller.Controller.{AppController, PageController}
+import model.Session
 
 /** Companion object of select menu controller */
 object SelectMenuController:
@@ -15,11 +16,14 @@ class SelectMenuController extends PageController:
   import AppController.AvailablePages
   import SelectMenuController.*
 
+  // Get session from application controller
+  def getSession: Session = AppController.session
+
   override def updateUI[T](update: Option[T]): Unit =
     AppController.currentPage.pageView.draw(update)
     AppController.currentPage.pageView.handleInput()
 
-  override def nextIteration(): Unit = updateUI(Option.empty)
+  override def nextIteration(): Unit = updateUI(Option(getSession))
 
   override def handle[T](action: Enumeration, value: Option[T]): Unit = action match
     case AvailableActions.Back => back
