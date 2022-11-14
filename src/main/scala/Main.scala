@@ -1,4 +1,4 @@
-import controller.Controller.*
+import controller.*
 
 @main def run() =
   AppController.startApp()

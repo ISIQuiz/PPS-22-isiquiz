@@ -1,12 +1,13 @@
 package controller
 
-import controller.Controller.{AppController, PageController}
+import controller.{AppController, PageController}
+import controller.actions.{Action, ParameterlessAction, BackAction}
+import view.{View, StandardGameView}
+import view.updates.{ViewUpdate, ParameterlessViewUpdate}
 import model.GameStage.{GameStage, GameStageImpl}
 import model.Quiz.AnswerList.{getCorrect, getCorrectIndex}
 import model.Quiz.{AnswerList, Quiz}
 import model.QuizInGame
-import view.StandardGameView
-import view.View.UIUpdate
 
 trait GameController:
   def nextQuiz(): QuizInGame
@@ -17,39 +18,36 @@ trait GameController:
 /** Companion object of standard game controller */
 object StandardGameController:
 
-  enum AvailableActions extends Enumeration:
-    case Back
-    case SelectAnswer
+  case object Back extends ParameterlessAction
+  case class SelectAnswer[T](actionParameter: Option[T]) extends Action(actionParameter)
+
 
 /** Defines the logic of the select page */
 class StandardGameController extends PageController:
 
-  import AppController.AvailablePages
   import StandardGameController.*
 
   val gameStage: GameStage = new GameStageImpl
 
-  override def updateUI[T](update: UIUpdate[T]): Unit =
+  override def handle[T](action: Action[T]): Unit = action match
+    case Back => AppController.handle(AppController.MainMenu)
+    case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
+
+  override def nextIteration(): Unit = ???
+//    nextQuiz()
+//    updateUI(StandardGameView.Option(gameStage))
+
+  override def updateUI[T](update: ViewUpdate[T]): Unit =
     AppController.currentPage.pageView.draw(update)
     AppController.currentPage.pageView.handleInput()
 
-  override def nextIteration(): Unit =
-//    nextQuiz()
-    updateUI(Option(gameStage))
-
-  override def handle[T](action: Enumeration, value: Option[T]): Unit = action match
-    case AvailableActions.Back => back
-    case AvailableActions.SelectAnswer => selectAnswer(value)
-
-  def back: Unit = AppController.handle(AvailablePages.SelectMenu, Option.empty)
-
-  def selectAnswer[T](value: Option[T]): Unit =
-    if value.get.toString.toInt -1 == getCorrectIndex(gameStage.quizInGame.answers) then
-      updateUI(UIUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Giusta")))
+  def selectAnswer[T](actionParameter: Option[T]): Unit =
+    if actionParameter.get.toString.toInt -1 == getCorrectIndex(gameStage.quizInGame.answers) then
+//      updateUI(ViewUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Giusta")))
 //      nextIteration()
-//      println("Risposta GIUSTA!")
+      println("Risposta GIUSTA!")
     else
-      updateUI(UIUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Sbagliata")))
-//      println("Risposta SBAGLIATA!")
+//      updateUI(ViewUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Sbagliata")))
+      println("Risposta SBAGLIATA!")
 //    println(getCorrectIndex(gameStage.quizInGame.answers))
 //    println(value.get.toString + " | " + getCorrect(gameStage.quizInGame.answers))
