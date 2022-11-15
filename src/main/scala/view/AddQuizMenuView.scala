@@ -1,6 +1,7 @@
 package view
 
 import controller.AddQuizMenuController
+import scala.collection.mutable.Map
 import view.View.*
 
 object AddQuizMenuView:

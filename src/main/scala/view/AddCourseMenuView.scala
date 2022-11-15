@@ -2,6 +2,7 @@ package view
 
 import controller.AddCourseMenuController
 import view.View.*
+import scala.collection.mutable.Map
 
 object AddCourseMenuView:
 

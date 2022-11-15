@@ -20,12 +20,12 @@ object StandardGameController:
     case SelectAnswer
 
 /** Defines the logic of the select page */
-class StandardGameController extends PageController, GameController:
+class StandardGameController(game: GameStageImpl) extends PageController, GameController:
 
   import AppController.AvailablePages
   import StandardGameController.*
 
-  val gameStage: GameStage = new GameStageImpl
+  val gameStage: GameStage = game
 
   override def updateUI[T](update: Option[T]): Unit =
     AppController.currentPage.pageView.draw(update)

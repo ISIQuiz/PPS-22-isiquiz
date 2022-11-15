@@ -1,6 +1,7 @@
 package view
 
 import View.*
+import scala.collection.mutable.Map
 import controller.MainMenuController
 
 object MainMenuView:

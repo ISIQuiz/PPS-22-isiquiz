@@ -2,6 +2,7 @@ package view
 
 import View.*
 import controller.StatisticsMenuController
+import scala.collection.mutable.Map
 
 object StatisticsMenuView:
 

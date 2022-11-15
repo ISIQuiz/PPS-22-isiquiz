@@ -9,6 +9,7 @@ import model.{SavedCourse, Session}
 import resources.SampleCourseList
 import controller.AddCourseMenuController.*
 import controller.AddQuizMenuController.*
+import model.GameStage.GameStageImpl
 import view.View.*
 import view.MainMenuView.*
 import view.SelectMenuView.*
@@ -58,7 +59,7 @@ object Controller:
       case AvailablePages.SelectMenu => currentPage_(new SelectMenuController, SelectMenuViewImpl())
       case AvailablePages.StatisticsMenu => currentPage_(new StatisticsMenuController, StatisticsMenuViewImpl())
       case AvailablePages.SettingsMenu => currentPage_(new SettingsMenuController, SettingsMenuViewImpl())
-      case AvailablePages.StandardGame => currentPage_(new StandardGameController, StandardGameViewImpl())
+      case AvailablePages.StandardGame => currentPage_(new StandardGameController(value.get.asInstanceOf[GameStageImpl]), StandardGameViewImpl())
       case AvailablePages.AddCourseMenu => currentPage_(new AddCourseMenuController, AddCourseMenuViewImpl())
       case AvailablePages.AddQuizMenu => currentPage_(new AddQuizMenuController, AddQuizMenuViewImpl())
       case _ => currentPage.pageController.handle(action, value)

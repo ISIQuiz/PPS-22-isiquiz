@@ -2,6 +2,7 @@ package view
 
 import controller.Controller.AppController
 import scala.io.StdIn.readLine
+import scala.collection.mutable.Map
 
 object View:
 

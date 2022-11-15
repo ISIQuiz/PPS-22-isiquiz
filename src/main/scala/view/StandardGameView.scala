@@ -3,6 +3,7 @@ package view
 import View.*
 import controller.StandardGameController
 import model.GameStage.*
+import scala.collection.mutable.Map
 
 object StandardGameView:
 
