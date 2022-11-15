@@ -23,9 +23,9 @@ object SelectMenuView:
 
     override def draw[T](update: ViewUpdate[T]): String =
       println("Menu selezione:\n1) Menu principale\n2) Avvia quiz")
-      if (update.isDefined) {
+      if (update.updateParameter.isDefined) {
         // Get courses from Option
-        val savedCourses = update.get.asInstanceOf[Session].savedCourses
+        val savedCourses = update.updateParameter.get.asInstanceOf[Session].savedCourses
         // Map courses with index and number of quiz
         val printCourses = savedCourses.map(savedCourse =>
           s"${savedCourses.indexOf(savedCourse)+1}) ${savedCourse.courseId.courseName} (${savedCourse.quizList.size} quiz)")

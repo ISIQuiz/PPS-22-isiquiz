@@ -4,7 +4,6 @@ import controller.{AppController, PageController}
 import controller.actions.{Action, ParameterlessAction, BackAction}
 import view.{View, StandardGameView}
 import view.updates.{ViewUpdate, ParameterlessViewUpdate}
-import controller.Controller.{AppController, PageController}
 import model.Answer.Answer
 import model.GameStage.{GameStage, GameStageImpl}
 import model.{QuizInGame, SavedCourse}
@@ -44,13 +43,15 @@ class StandardGameController extends PageController, GameController:
     AppController.currentPage.pageView.draw(update)
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
-    if actionParameter.get.toString.toInt -1 == getCorrectIndex(gameStage.quizInGame.answers) then
+    ???
+    // TODO: Fix selected answer check
+//    if actionParameter.get.toString.toInt -1 == getCorrectIndex(gameStage.quizInGame.answers) then
 //      updateUI(ViewUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Giusta")))
 //      nextIteration()
-      println("Risposta GIUSTA!")
-    else
+//      println("Risposta GIUSTA!")
+//    else
 //      updateUI(ViewUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Sbagliata")))
-      println("Risposta SBAGLIATA!")
+//      println("Risposta SBAGLIATA!")
 //    println(getCorrectIndex(gameStage.quizInGame.answers))
 //    println(value.get.toString + " | " + getCorrect(gameStage.quizInGame.answers))
 
