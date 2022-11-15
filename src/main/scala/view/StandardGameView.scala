@@ -2,7 +2,7 @@ package view
 
 import View.*
 import view.updates.{ViewUpdate, ParameterlessViewUpdate}
-import controller.StandardGameController
+import controller.StandardGameController.*
 import controller.actions.{Action, ParameterlessAction}
 import model.GameStage.*
 
@@ -19,23 +19,25 @@ object StandardGameView:
   class StandardGameViewImpl extends StandardGameView:
 
     override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      0 -> StandardGameController.Back.asInstanceOf[Action[T]],
-      1 -> StandardGameController.SelectAnswer(Option(1)).asInstanceOf[Action[T]],
-      2 -> StandardGameController.SelectAnswer(Option(2)).asInstanceOf[Action[T]],
-      3 -> StandardGameController.SelectAnswer(Option(3)).asInstanceOf[Action[T]],
-      4 -> StandardGameController.SelectAnswer(Option(4)).asInstanceOf[Action[T]]
+      0 -> Back.asInstanceOf[Action[T]],
+      1 -> SelectAnswer(Option(1)).asInstanceOf[Action[T]],
+      2 -> SelectAnswer(Option(2)).asInstanceOf[Action[T]],
+      3 -> SelectAnswer(Option(3)).asInstanceOf[Action[T]],
+      4 -> SelectAnswer(Option(4)).asInstanceOf[Action[T]]
     )
 
     override def draw[T](update: ViewUpdate[T]): String = update match
       case DefaultUpdate =>
         println("Standard quiz:")
-        if (update.updateParameter.isDefined){
-          update.updateParameter.get.asInstanceOf[GameStage].courseInGame.foreach(savedCourse => savedCourse.quizList.foreach(quiz =>
-            println("0) Termina quiz");
+        println("0) Termina quiz");
+        "StandardGame"
+      case NewQuizUpdate(updateParameter: Option[T]) =>
+        if (updateParameter.isDefined){
+          updateParameter.get.asInstanceOf[GameStage].courseInGame.foreach(savedCourse => savedCourse.quizList.foreach(quiz =>
             println(quiz);
           ))
         }
-        "StandardGame"
+        "StandardGameUpdate"
       case AnswerFeedbackUpdate(updateParameter: Option[T]) =>
         println(updateParameter)
         "StandardGameUpdate"

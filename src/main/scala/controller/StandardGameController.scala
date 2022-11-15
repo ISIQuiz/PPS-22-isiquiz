@@ -36,11 +36,11 @@ class StandardGameController extends PageController:
   override def nextIteration(): Unit =
 //    nextQuiz()
     updateUI(StandardGameView.DefaultUpdate)
-    updateUI(StandardGameView.AnswerFeedbackUpdate(Option(gameStage)))
+    updateUI(StandardGameView.NewQuizUpdate(Option(gameStage)))
+    AppController.currentPage.pageView.handleInput()
 
   override def updateUI[T](update: ViewUpdate[T]): Unit =
     AppController.currentPage.pageView.draw(update)
-    AppController.currentPage.pageView.handleInput()
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
     if actionParameter.get.toString.toInt -1 == getCorrectIndex(gameStage.quizInGame.answers) then
