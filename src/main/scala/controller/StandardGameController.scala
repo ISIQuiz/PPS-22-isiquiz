@@ -19,7 +19,7 @@ trait GameController:
 object StandardGameController:
 
   case object Back extends ParameterlessAction
-  case class SelectAnswer[T](actionParameter: Option[T]) extends Action(actionParameter)
+  case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
 
 /** Defines the logic of the select page */
@@ -33,9 +33,10 @@ class StandardGameController extends PageController:
     case Back => AppController.handle(AppController.MainMenu)
     case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
 
-  override def nextIteration(): Unit = ???
+  override def nextIteration(): Unit =
 //    nextQuiz()
-//    updateUI(StandardGameView.Option(gameStage))
+    updateUI(StandardGameView.DefaultUpdate)
+    updateUI(StandardGameView.AnswerFeedbackUpdate(Option(gameStage)))
 
   override def updateUI[T](update: ViewUpdate[T]): Unit =
     AppController.currentPage.pageView.draw(update)

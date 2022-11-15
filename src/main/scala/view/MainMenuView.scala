@@ -1,9 +1,10 @@
 package view
 
 import View.*
-import view.updates.{ViewUpdate, ParameterlessViewUpdate}
+import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import controller.MainMenuController
-import controller.actions.Action
+import controller.MainMenuController.*
+import controller.actions.{Action, ParameterlessAction}
 
 object MainMenuView:
 
@@ -15,11 +16,11 @@ object MainMenuView:
   /** A basic implementation of a MainMenuView  */
   class MainMenuViewImpl extends MainMenuView:
 
-    override val actionsMap: Map[Int, Action[T]] = Map(
-      1 -> MainMenuController.Select,
-      2 -> MainMenuController.Statistics,
-      3 -> MainMenuController.Settings,
-      4 -> MainMenuController.Quit
+    override def actionsMap[T]: Map[Int, Action[T]] = Map(
+      1 -> Select.asInstanceOf[Action[T]],
+      2 -> Statistics.asInstanceOf[Action[T]],
+      3 -> Settings.asInstanceOf[Action[T]],
+      4 -> Quit.asInstanceOf[Action[T]]
     )
 
     override def draw[T](update: ViewUpdate[T]): String =

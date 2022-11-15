@@ -19,7 +19,7 @@ class SelectMenuController extends PageController:
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(AppController.MainMenu)
-    case Start => AppController.handle(AppController.SelectMenu)
+    case Start => AppController.handle(AppController.StandardGame)
 
   override def nextIteration(): Unit =
     updateUI(SelectMenuView.DefaultUpdate)

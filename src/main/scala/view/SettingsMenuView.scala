@@ -1,7 +1,7 @@
 package view
 
 import View.*
-import view.updates.ParameterlessViewUpdate
+import view.updates.{ViewUpdate, ParameterlessViewUpdate}
 import controller.SettingsMenuController
 import controller.actions.Action
 
@@ -15,8 +15,8 @@ object SettingsMenuView:
   /** A basic implementation of a SettingsMenuView  */
   class SettingsMenuViewImpl extends SettingsMenuView:
 
-    override val actionsMap: Map[Int, Action[T]] = Map(
-      1 -> SettingsMenuController.AvailableActions.Back
+    override def actionsMap[T]: Map[Int, Action[T]] = Map(
+      1 -> SettingsMenuController.Back.asInstanceOf[Action[T]]
     )
 
     override def draw[T](update: ViewUpdate[T]): String =

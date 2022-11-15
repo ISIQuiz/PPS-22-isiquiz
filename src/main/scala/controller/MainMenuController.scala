@@ -19,7 +19,7 @@ class MainMenuController extends PageController:
   import MainMenuController.*
 
   override def handle[T](action: Action[T]): Unit = action match
-    case Select => AppController.handle(AppController.MainMenu)
+    case Select => AppController.handle(AppController.SelectMenu)
     case Statistics => AppController.handle(AppController.StatisticsMenu)
     case Settings => AppController.handle(AppController.SettingsMenu)
     case Quit => System.exit(0)
