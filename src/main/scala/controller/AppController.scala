@@ -41,7 +41,7 @@ object AppController extends Controller :
     case AddCourseMenu => currentPage_(new AddCourseMenuController, AddCourseMenuViewImpl())
     case AddQuizMenu => currentPage_(new AddQuizMenuController, AddQuizMenuViewImpl())
     case action: Action[T] => currentPage.pageController.handle(action)
-    case _ => throw new IllegalArgumentException
+    case null => throw new IllegalArgumentException
 
   def startApp(): Unit =
     // TODO Init the session from file: session_(getListFromFile())
