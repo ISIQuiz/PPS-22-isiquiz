@@ -9,6 +9,8 @@ import view.updates.{ViewUpdate, ParameterlessViewUpdate}
 object SettingsMenuController:
 
   case object Back extends ParameterlessAction
+  case object AddCourse extends ParameterlessAction
+  case object AddQuiz extends ParameterlessAction
 
 /** Defines the logic of the settings page */
 class SettingsMenuController extends PageController :
@@ -17,6 +19,8 @@ class SettingsMenuController extends PageController :
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(AppController.MainMenu)
+    case AddCourse => AppController.handle(AppController.AddCourseMenu)
+    case AddQuiz => AppController.handle(AppController.AddQuizMenu)
 
   override def nextIteration(): Unit =
     updateUI(SettingsMenuView.DefaultUpdate)

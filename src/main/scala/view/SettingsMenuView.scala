@@ -17,8 +17,10 @@ object SettingsMenuView:
 
     override def actionsMap[T]: Map[Int, Action[T]] = Map(
       1 -> SettingsMenuController.Back.asInstanceOf[Action[T]]
+      2 -> SettingsMenuController.AddCourse.asInstanceOf[Action[T]],
+      3 -> SettingsMenuControllerAddQuiz.asInstanceOf[Action[T]]
     )
 
     override def draw[T](update: ViewUpdate[T]): String =
-      println("Menu impostazioni:\n1) Menu principale")
+      println("Menu impostazioni:\n1) Menu principale\n2) Aggiungi corso\n3) Aggiungi quiz")
       "SettingsMenu"

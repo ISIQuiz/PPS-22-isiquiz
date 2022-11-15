@@ -2,10 +2,7 @@ package model
 
 import org.scalatest.funsuite.AnyFunSuite
 import model.Answer.*
-import model.Quiz.AnswerList
-
 class QuizTest extends AnyFunSuite :
-
 
   val a1 = Answer("answer", true)
   val a2 = Answer("answer", false)
@@ -42,38 +39,33 @@ class QuizTest extends AnyFunSuite :
   }
 
   test("AnswerList") {
-    import model.Quiz.AnswerList.*
-    val answerList: AnswerList = cons(a1, cons(a2, cons(a3, empty())))
+    import model.Quiz.*
+    val answerList: List[Answer] = List(a1, a2, a3)
 
-
-    assert(countAnswers(answerList) == 3)
-    assert(countAnswersTR(answerList) == 3)
+    assert(answerList.size == 3)
 
     val a4 = Answer("answer", true)
-    val answerList2 = addAnswer(answerList)(a4)
+    val answerList2 = answerList ::: List(a4)
 
-    assert(countAnswers(answerList2) == 4)
-    assert(countAnswersTR(answerList2) == 4)
+    assert(answerList2.size == 4)
 
-    assert(getCorrect(answerList) == cons(a1, empty()))
-    assert(getCorrect(answerList2) == cons(a4, cons(a1, empty())))
+    assert(answerList.filter(answer => answer.isCorrect) == List(a1))
+    assert(answerList2.filter(answer => answer.isCorrect) == List(a4, a1))
 
-    println(printAnswers(answerList2))
+    println(answerList2.toString())
   }
 
-
   test("Quiz") {
-    import AnswerList.*
     import Quiz.*
-    val answerList: AnswerList = cons(a1, cons(a2, cons(a3, empty())))
+    val answerList: List[Answer] = List(a1, a2, a3)
 
     val quiz: Quiz = Quiz("question", answerList, 10)
-    assert(getCorrectAnswers(quiz) == cons(a1, empty()))
+    assert(getCorrectAnswers(quiz) == List(a1))
 
     println(quiz)
     println(printQuiz(quiz))
     println(printQuizFull(quiz))
-
+    println(getAllAnswers(quiz).toString)
   }
 
 end QuizTest

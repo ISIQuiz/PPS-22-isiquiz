@@ -1,11 +1,12 @@
-package controllerTest
+package controller
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import controller.Controller.*
 import controller.Controller.AppController.*
-
-import controller.{MainMenuController, SelectMenuController, StatisticsMenuController, SettingsMenuController}
+import controller.{MainMenuController, SelectMenuController, SettingsMenuController, StatisticsMenuController}
+import model.Session
+import resources.SampleCourseList
 import view.MainMenuView.*
 import view.SelectMenuView.*
 import view.StatisticsMenuView.*
@@ -39,6 +40,10 @@ class TestApplicationController extends AnyFunSuite with BeforeAndAfterAll with 
   test("Going from main menu to settings page when action is performed") {
     AppController.handle(AvailablePages.SettingsMenu, Option.empty)
     assert(AppController.currentPage.isInstanceOf[Page[SettingsMenuController, SettingsMenuView]])
+  }
+
+  test("Application should start with default Session value") {
+    assert(AppController.session.isInstanceOf[Session])
   }
 
 end TestApplicationController
