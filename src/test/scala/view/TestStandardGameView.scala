@@ -1,12 +1,12 @@
 package view
 
-import controller.Controller.*
-import controller.{MainMenuController, SelectMenuController, StandardGameController}
+import controller.{AppController, Controller, MainMenuController, SelectMenuController, StandardGameController}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import view.MainMenuView.*
 import view.SelectMenuView.*
 import view.StandardGameView.*
+import view.updates.ParameterlessViewUpdate
 
 object TestStandardGameView:
   private var _input: String = null
@@ -23,11 +23,11 @@ class TestStandardGameView extends AnyFunSuite with BeforeAndAfterAll with Befor
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    AppController.handle(AppController.AvailablePages.StandardGame, Option.empty)
+    AppController.handle(AppController.StandardGame)
   }
 
   test("Standard game view should draw standard game menu") {
-    assert(standardGameView.draw(Option.empty) == "StandardGame")
+    assert(standardGameView.draw(StandardGameView.DefaultUpdate) == "StandardGame")
   }
 
 end TestStandardGameView

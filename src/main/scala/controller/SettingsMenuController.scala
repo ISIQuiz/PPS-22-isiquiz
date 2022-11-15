@@ -1,34 +1,30 @@
 package controller
 
-import controller.Controller.{AppController, PageController}
+import controller.{AppController, PageController}
+import controller.actions.{Action, ParameterlessAction}
+import view.{View, SettingsMenuView}
+import view.updates.{ViewUpdate, ParameterlessViewUpdate}
 
 /** Companion object of settings menu controller */
 object SettingsMenuController:
 
-  enum AvailableActions extends Enumeration :
-    case Back
-    case AddCourse
-    case AddQuiz
+  case object Back extends ParameterlessAction
+  case object AddCourse extends ParameterlessAction
+  case object AddQuiz extends ParameterlessAction
 
 /** Defines the logic of the settings page */
 class SettingsMenuController extends PageController :
 
-  import AppController.AvailablePages
   import SettingsMenuController.*
 
-  override def updateUI[T](update: Option[T]): Unit =
+  override def handle[T](action: Action[T]): Unit = action match
+    case Back => AppController.handle(AppController.MainMenu)
+    case AddCourse => AppController.handle(AppController.AddCourseMenu)
+    case AddQuiz => AppController.handle(AppController.AddQuizMenu)
+
+  override def nextIteration(): Unit =
+    updateUI(SettingsMenuView.DefaultUpdate)
+
+  override def updateUI[T](update: ViewUpdate[T]): Unit =
     AppController.currentPage.pageView.draw(update)
     AppController.currentPage.pageView.handleInput()
-
-  override def nextIteration(): Unit = updateUI(Option.empty)
-  
-  override def handle[T](action: Enumeration, value: Option[T]): Unit = action match
-    case AvailableActions.Back => back
-    case AvailableActions.AddCourse => addCourse
-    case AvailableActions.AddQuiz => addQuiz
-
-  def back: Unit = AppController.handle(AvailablePages.MainMenu, Option.empty)
-
-  def addCourse: Unit = AppController.handle(AvailablePages.AddCourseMenu, Option.empty)
-
-  def addQuiz: Unit = AppController.handle(AvailablePages.AddQuizMenu, Option.empty)
