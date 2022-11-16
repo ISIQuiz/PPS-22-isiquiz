@@ -17,8 +17,8 @@ object AddCourseMenuView:
   /** A basic implementation of a AddCourseMenuView  */
   class AddCourseMenuViewImpl extends AddCourseMenuView:
 
-    override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      1 -> Back.asInstanceOf[Action[T]]
+    override val actionsMap: Map[Int, Action[Any]] = Map(
+      1 -> Back.asInstanceOf[Action[Any]]
     )
 
     override def draw[T](update: ViewUpdate[T]): String =

@@ -2,7 +2,8 @@ package controller
 
 import controller.Controller
 import controller.actions.{Action, ParameterlessAction}
-import model.{Session, SavedCourse}
+import model.GameStage.GameStageImpl
+import model.{SavedCourse, Session}
 import view.View.PageView
 import view.MainMenuView.*
 import view.SelectMenuView.*
@@ -28,16 +29,16 @@ object AppController extends Controller :
   case object SelectMenu extends ParameterlessAction
   case object StatisticsMenu extends ParameterlessAction
   case object SettingsMenu extends ParameterlessAction
-  case object StandardGame extends ParameterlessAction
   case object AddCourseMenu extends ParameterlessAction
   case object AddQuizMenu extends ParameterlessAction
+  case class StandardGame[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
   override def handle[T](action: Action[T]): Unit = action match
     case MainMenu => currentPage_(new MainMenuController, MainMenuViewImpl())
     case SelectMenu => currentPage_(new SelectMenuController, SelectMenuViewImpl())
     case StatisticsMenu => currentPage_(new StatisticsMenuController, StatisticsMenuViewImpl())
     case SettingsMenu => currentPage_(new SettingsMenuController, SettingsMenuViewImpl())
-    case StandardGame => currentPage_(new StandardGameController, StandardGameViewImpl())
+    case StandardGame(actionParameter) => currentPage_(new StandardGameController(actionParameter.get.asInstanceOf[GameStageImpl]), StandardGameViewImpl())
     case AddCourseMenu => currentPage_(new AddCourseMenuController, AddCourseMenuViewImpl())
     case AddQuizMenu => currentPage_(new AddQuizMenuController, AddQuizMenuViewImpl())
     case action: Action[T] => currentPage.pageController.handle(action)

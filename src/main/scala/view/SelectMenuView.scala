@@ -10,6 +10,7 @@ import model.Session
 object SelectMenuView:
 
   case object DefaultUpdate extends ParameterlessViewUpdate
+  case class CourseUpdate[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
 
   /** SettingsMenuView define aspects of a general SelectMenuView */
   trait SelectMenuView extends PageView
@@ -17,22 +18,25 @@ object SelectMenuView:
   /** A basic implementation of a SelectMenuView */
   class SelectMenuViewImpl extends SelectMenuView :
 
-    override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      0 -> SelectMenuController.Back.asInstanceOf[Action[T]]
+    override val actionsMap: Map[Int, Action[Any]] = Map(
+      0 -> SelectMenuController.Back.asInstanceOf[Action[Any]]
     )
 
-    override def draw[T](update: ViewUpdate[T]): String =
-      println("Menu selezione:")
-      if update.updateParameter.isDefined then
-        // Get courses from Option
-        val savedCourses = update.updateParameter.get.asInstanceOf[Session].savedCourses
-        // Map courses with index and number of quiz
-        val printCourses = savedCourses.map(savedCourse =>
-          s"${savedCourses.indexOf(savedCourse)+1}) ${savedCourse.courseId.courseName} (${savedCourse.quizList.size} quiz)")
-        // Print courses list
-        printCourses.foreach(course => println(course))
-        savedCourses.foreach(course => actionsMap += (savedCourses.indexOf(course)+1 -> SelectMenuController.AvailableActions.Selection(Option(savedCourses.indexOf(course)+1))))
-
-      println("0) Menu principale")
-      println("Seleziona un corso:")
-      "SelectMenu"
+    override def draw[T](update: ViewUpdate[T]): String = update match
+      case DefaultUpdate =>
+        println("Menu selezione:")
+        println("0) Menu principale")
+        println("Seleziona un corso:")
+        "DefaultUpdate"
+      case CourseUpdate(updateParameter) =>
+        if update.updateParameter.isDefined then
+          // Get courses from Option
+          val savedCourses = update.updateParameter.get.asInstanceOf[Session].savedCourses
+          // Map courses with index and number of quiz
+          val printCourses = savedCourses.map(savedCourse =>
+            s"${savedCourses.indexOf(savedCourse)+1}) ${savedCourse.courseId.courseName} (${savedCourse.quizList.size} quiz)")
+          // Print courses list
+          printCourses.foreach(course => println(course))
+          savedCourses.foreach(course => actionsMap += (savedCourses.indexOf(course)+1 -> SelectMenuController.Selection(actionParameter = Option(savedCourses.indexOf(course)+1))))
+        "CourseUpdate"
+      case _ => "Errore"

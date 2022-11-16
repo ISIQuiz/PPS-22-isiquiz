@@ -19,12 +19,12 @@ object StandardGameView:
   /** A basic implementation of a SelectMenuView  */
   class StandardGameViewImpl extends StandardGameView:
 
-    override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      0 -> Back.asInstanceOf[Action[T]],
-      1 -> SelectAnswer(Option(1)).asInstanceOf[Action[T]],
-      2 -> SelectAnswer(Option(2)).asInstanceOf[Action[T]],
-      3 -> SelectAnswer(Option(3)).asInstanceOf[Action[T]],
-      4 -> SelectAnswer(Option(4)).asInstanceOf[Action[T]]
+    override val actionsMap: Map[Int, Action[Any]] = Map(
+      0 -> Back.asInstanceOf[Action[Any]],
+      1 -> SelectAnswer(Option(1)).asInstanceOf[Action[Any]],
+      2 -> SelectAnswer(Option(2)).asInstanceOf[Action[Any]],
+      3 -> SelectAnswer(Option(3)).asInstanceOf[Action[Any]],
+      4 -> SelectAnswer(Option(4)).asInstanceOf[Action[Any]]
     )
 
     override def draw[T](update: ViewUpdate[T]): String = update match

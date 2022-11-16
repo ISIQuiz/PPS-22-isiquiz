@@ -23,11 +23,9 @@ object StandardGameController:
 
 
 /** Defines the logic of the select page */
-class StandardGameController(game: GameStageImpl) extends PageController, GameController:
+class StandardGameController(val gameStage: GameStageImpl) extends PageController, GameController:
 
   import StandardGameController.*
-
-  val gameStage: GameStage = game
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(AppController.MainMenu)
