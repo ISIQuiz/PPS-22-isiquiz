@@ -1,5 +1,6 @@
 package view
 
+import controller.{AppController, Controller, MainMenuController, SelectMenuController, StandardGameController}
 import controller.Controller.*
 import controller.{MainMenuController, SelectMenuController, StandardGameController}
 import model.Answer.Answer
@@ -9,6 +10,7 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import view.MainMenuView.*
 import view.SelectMenuView.*
 import view.StandardGameView.*
+import view.updates.ParameterlessViewUpdate
 import model.GameStage.GameStageImpl
 import model.Quiz.Quiz
 import model.SavedCourse.SavedCourseImpl
@@ -23,7 +25,7 @@ class TestStandardGameView extends AnyFunSuite with BeforeAndAfterAll with Befor
 
   class StandardGameViewTest extends StandardGameViewImpl:
     override def inputReader() = input
-    
+
   val course = SavedCourseImpl(
     courseId = CourseIdentifierImpl(
       courseName = "Paradigmi di Programmazione e Sviluppo",
@@ -50,11 +52,11 @@ class TestStandardGameView extends AnyFunSuite with BeforeAndAfterAll with Befor
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    AppController.handle(AppController.AvailablePages.StandardGame, Option(GameStageImpl(List(course))))
+    AppController.handle(AppController.StandardGame, Option(GameStageImpl(List(course))))
   }
 
   test("Standard game view should draw standard game menu") {
-    assert(standardGameView.draw(Option.empty) == "StandardGame")
+    assert(standardGameView.draw(StandardGameView.DefaultUpdate) == "StandardGame")
   }
 
 end TestStandardGameView

@@ -1,11 +1,15 @@
 package view
 
 import View.*
+import view.updates.{ViewUpdate, ParameterlessViewUpdate}
 import controller.SelectMenuController
+import controller.actions.{Action, ParameterlessAction}
 import scala.collection.mutable.Map
 import model.Session
 
 object SelectMenuView:
+
+  case object DefaultUpdate extends ParameterlessViewUpdate
 
   /** SettingsMenuView define aspects of a general SelectMenuView */
   trait SelectMenuView extends PageView
@@ -13,16 +17,15 @@ object SelectMenuView:
   /** A basic implementation of a SelectMenuView */
   class SelectMenuViewImpl extends SelectMenuView :
 
-    override val actionsMap: Map[Int, Enumeration] = Map(
-      0 -> SelectMenuController.AvailableActions.Back
+    override def actionsMap[T]: Map[Int, Action[T]] = Map(
+      0 -> SelectMenuController.Back.asInstanceOf[Action[T]]
     )
 
-    override def draw[T](update: Option[T]): String =
+    override def draw[T](update: ViewUpdate[T]): String =
       println("Menu selezione:")
-      
-      if update.isDefined then
+      if update.updateParameter.isDefined then
         // Get courses from Option
-        val savedCourses = update.get.asInstanceOf[Session].savedCourses
+        val savedCourses = update.updateParameter.get.asInstanceOf[Session].savedCourses
         // Map courses with index and number of quiz
         val printCourses = savedCourses.map(savedCourse =>
           s"${savedCourses.indexOf(savedCourse)+1}) ${savedCourse.courseId.courseName} (${savedCourse.quizList.size} quiz)")

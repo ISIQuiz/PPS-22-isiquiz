@@ -1,26 +1,26 @@
 package controller
 
-import controller.Controller.{AppController, PageController}
+import controller.actions.{Action, ParameterlessAction}
+import controller.{AppController, PageController}
+import view.AddCourseMenuView
+import view.updates.ViewUpdate
 
 /** Companion object of add quiz menu controller */
 object AddQuizMenuController:
 
-  enum AvailableActions extends Enumeration :
-    case Back
+  case object Back extends ParameterlessAction
 
 /** Defines the logic of the add course page */
 class AddQuizMenuController extends PageController :
 
   import AddQuizMenuController.*
-  import AppController.AvailablePages
 
-  override def updateUI[T](update: Option[T]): Unit =
+  override def handle[T](action: Action[T]): Unit = action match
+    case Back => AppController.handle(AppController.SettingsMenu)
+
+  override def nextIteration(): Unit =
+    updateUI(AddCourseMenuView.DefaultUpdate)
+
+  override def updateUI[T](update: ViewUpdate[T]): Unit =
     AppController.currentPage.pageView.draw(update)
     AppController.currentPage.pageView.handleInput()
-
-  override def nextIteration(): Unit = updateUI(Option.empty)
-  
-  override def handle[T](action: Enumeration, value: Option[T]): Unit = action match
-    case AvailableActions.Back => back
-
-  def back: Unit = AppController.handle(AvailablePages.SettingsMenu, Option.empty)

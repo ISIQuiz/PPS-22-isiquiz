@@ -1,18 +1,18 @@
 package controller
 
-import controller.Controller.AppController.{session, session_}
-import controller.Controller.{AppController, PageController}
-import model.GameStage.GameStageImpl
-import model.Session.changeSavedCourses
-import model.{SavedCourse, Session}
+import controller.{AppController, PageController}
+import controller.actions.{Action, ParameterlessAction, BackAction}
+import view.{View, SelectMenuView}
+import view.updates.{ViewUpdate, ParameterlessViewUpdate}
+import controller.{AppController, PageController}
+import model.Session
 
 /** Companion object of select menu controller */
 object SelectMenuController:
 
-  enum AvailableActions extends Enumeration:
-    case Back
-    case Start
-    case Selection(value: Option[Int])
+  case object Back extends ParameterlessAction
+  case object Start extends ParameterlessAction
+
 
 /** Defines the logic of the select page */
 class SelectMenuController extends PageController:
@@ -20,24 +20,16 @@ class SelectMenuController extends PageController:
   import AppController.AvailablePages
   import SelectMenuController.*
 
+  override def handle[T](action: Action[T]): Unit = action match
+    case Back => AppController.handle(AppController.MainMenu)
+    case Start => AppController.handle(AppController.StandardGame)
+
   // Get session from application controller
   def getSession: Session = AppController.session
 
-  override def updateUI[T](update: Option[T]): Unit =
+  override def nextIteration(): Unit =
+    updateUI(SelectMenuView.DefaultUpdate)
+
+  override def updateUI[T](update: ViewUpdate[T]): Unit =
     AppController.currentPage.pageView.draw(update)
     AppController.currentPage.pageView.handleInput()
-
-  override def nextIteration(): Unit = updateUI(Option(getSession))
-
-  override def handle[T](action: Enumeration, value: Option[T]): Unit = action match
-    case AvailableActions.Back => back
-    case AvailableActions.Start => start
-    case AvailableActions.Selection(value) => selection(value.get)
-
-  def back: Unit = AppController.handle(AvailablePages.MainMenu, Option.empty)
-
-  def start: Unit = AppController.handle(AvailablePages.StandardGame, Option.empty)
-
-  def selection(value: Int): Unit =
-    val newCourse = getSession.savedCourses(value - 1)
-    AppController.handle(AvailablePages.StandardGame, Option(GameStageImpl(List(newCourse))))

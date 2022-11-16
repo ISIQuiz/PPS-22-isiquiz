@@ -2,8 +2,7 @@ package view
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
-import controller.Controller.*
-import controller.{MainMenuController, SelectMenuController, StatisticsMenuController, SettingsMenuController}
+import controller.{AppController, Controller, MainMenuController, Page, SelectMenuController, SettingsMenuController, StatisticsMenuController}
 import view.MainMenuView.*
 import view.SelectMenuView.*
 import view.StatisticsMenuView.*
@@ -24,11 +23,11 @@ class TestMainMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeAnd
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    AppController.handle(AppController.AvailablePages.MainMenu, Option.empty)
+    AppController.handle(AppController.MainMenu)
   }
 
   test("Main menu view should draw main menu") {
-    assert(mainMenuView.draw(Option.empty) == "MainMenu")
+    assert(mainMenuView.draw(MainMenuView.DefaultUpdate) == "MainMenu")
   }
 
   test("Should change to select menu when play is selected") {
