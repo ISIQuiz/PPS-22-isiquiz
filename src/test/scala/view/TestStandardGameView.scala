@@ -1,7 +1,8 @@
 package view
 
 import controller.{AppController, Controller, MainMenuController, SelectMenuController, StandardGameController}
-import controller.Controller.*
+import controller.Controller
+import controller.actions.Action
 import controller.{MainMenuController, SelectMenuController, StandardGameController}
 import model.Answer.Answer
 import model.CourseIdentifier.CourseIdentifierImpl
@@ -52,7 +53,7 @@ class TestStandardGameView extends AnyFunSuite with BeforeAndAfterAll with Befor
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    AppController.handle(AppController.StandardGame, Option(GameStageImpl(List(course))))
+    AppController.handle(AppController.StandardGame(Option(GameStageImpl(List(course)))))
   }
 
   test("Standard game view should draw standard game menu") {
