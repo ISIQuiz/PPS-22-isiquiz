@@ -5,6 +5,7 @@ import controller.actions.Action
 import view.updates.ViewUpdate
 
 import scala.io.StdIn.readLine
+import scala.collection.mutable.Map
 
 object View:
 
@@ -12,9 +13,9 @@ object View:
 
   /** PageView should include all behaviours common between different pages views */
   trait PageView:
-    def actionsMap[T]: Map[Int, Action[T]]
+    val actionsMap: Map[String, Action[Any]]
     def draw[T](update: ViewUpdate[T]): String
     def inputReader() = readLine
     def handleInput(): Unit =
       val input = inputReader()
-      sendEvent(actionsMap(input.toInt))
+      sendEvent(actionsMap(input))

@@ -2,6 +2,7 @@ package view
 
 import View.*
 import view.updates.{ViewUpdate, ParameterlessViewUpdate}
+import scala.collection.mutable.Map
 import controller.SettingsMenuController
 import controller.actions.Action
 
@@ -15,10 +16,10 @@ object SettingsMenuView:
   /** A basic implementation of a SettingsMenuView  */
   class SettingsMenuViewImpl extends SettingsMenuView:
 
-    override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      1 -> SettingsMenuController.Back.asInstanceOf[Action[T]],
-      2 -> SettingsMenuController.AddCourse.asInstanceOf[Action[T]],
-      3 -> SettingsMenuController.AddQuiz.asInstanceOf[Action[T]]
+    override val actionsMap: Map[String, Action[Any]] = Map(
+      "1" -> SettingsMenuController.Back.asInstanceOf[Action[Any]],
+      "2" -> SettingsMenuController.AddCourse.asInstanceOf[Action[Any]],
+      "3" -> SettingsMenuController.AddQuiz.asInstanceOf[Action[Any]]
     )
 
     override def draw[T](update: ViewUpdate[T]): String =
