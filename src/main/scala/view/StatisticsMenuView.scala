@@ -16,8 +16,8 @@ object StatisticsMenuView:
   /** A basic implementation of a StatisticsMenuView  */
   class StatisticsMenuViewImpl extends StatisticsMenuView:
 
-    override val actionsMap: Map[Int, Action[Any]] = Map(
-      1 -> StatisticsMenuController.Back.asInstanceOf[Action[Any]]
+    override val actionsMap: Map[String, Action[Any]] = Map(
+      "1" -> StatisticsMenuController.Back.asInstanceOf[Action[Any]]
     )
 
     override def draw[T](update: ViewUpdate[T]): String =

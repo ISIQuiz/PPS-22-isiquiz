@@ -14,8 +14,8 @@ object AddQuizMenuView:
   /** A basic implementation of a AddQuizMenuView  */
   class AddQuizMenuViewImpl extends AddQuizMenuView:
 
-    override val actionsMap: Map[Int, Action[Any]] = Map(
-      1 -> AddQuizMenuController.Back.asInstanceOf[Action[Any]]
+    override val actionsMap: Map[String, Action[Any]] = Map(
+      "1" -> AddQuizMenuController.Back.asInstanceOf[Action[Any]]
     )
 
     override def draw[T](update: ViewUpdate[T]): String =

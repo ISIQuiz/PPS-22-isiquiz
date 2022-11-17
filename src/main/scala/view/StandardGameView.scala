@@ -4,7 +4,7 @@ import View.*
 import view.updates.{ViewUpdate, ParameterlessViewUpdate}
 import controller.StandardGameController.*
 import controller.actions.{Action, ParameterlessAction}
-import model.GameStage.*
+import model.GameStage
 import scala.collection.mutable.Map
 
 object StandardGameView:
@@ -19,12 +19,12 @@ object StandardGameView:
   /** A basic implementation of a SelectMenuView  */
   class StandardGameViewImpl extends StandardGameView:
 
-    override val actionsMap: Map[Int, Action[Any]] = Map(
-      0 -> Back.asInstanceOf[Action[Any]],
-      1 -> SelectAnswer(Option(1)).asInstanceOf[Action[Any]],
-      2 -> SelectAnswer(Option(2)).asInstanceOf[Action[Any]],
-      3 -> SelectAnswer(Option(3)).asInstanceOf[Action[Any]],
-      4 -> SelectAnswer(Option(4)).asInstanceOf[Action[Any]]
+    override val actionsMap: Map[String, Action[Any]] = Map(
+      "0" -> Back.asInstanceOf[Action[Any]],
+      "1" -> SelectAnswer(Option(1)).asInstanceOf[Action[Any]],
+      "2" -> SelectAnswer(Option(2)).asInstanceOf[Action[Any]],
+      "3" -> SelectAnswer(Option(3)).asInstanceOf[Action[Any]],
+      "4" -> SelectAnswer(Option(4)).asInstanceOf[Action[Any]]
     )
 
     override def draw[T](update: ViewUpdate[T]): String = update match
@@ -34,7 +34,7 @@ object StandardGameView:
         "StandardGame"
       case NewQuizUpdate(updateParameter: Option[T]) =>
         if (updateParameter.isDefined){
-          updateParameter.get.asInstanceOf[GameStage].courseInGame.foreach(savedCourse => savedCourse.quizList.foreach(quiz =>
+          updateParameter.get.asInstanceOf[GameStage].coursesInGame.foreach(savedCourse => savedCourse.quizList.foreach(quiz =>
             println(quiz);
           ))
         }

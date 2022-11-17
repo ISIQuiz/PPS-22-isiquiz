@@ -16,10 +16,10 @@ object SettingsMenuView:
   /** A basic implementation of a SettingsMenuView  */
   class SettingsMenuViewImpl extends SettingsMenuView:
 
-    override val actionsMap: Map[Int, Action[Any]] = Map(
-      1 -> SettingsMenuController.Back.asInstanceOf[Action[Any]],
-      2 -> SettingsMenuController.AddCourse.asInstanceOf[Action[Any]],
-      3 -> SettingsMenuController.AddQuiz.asInstanceOf[Action[Any]]
+    override val actionsMap: Map[String, Action[Any]] = Map(
+      "1" -> SettingsMenuController.Back.asInstanceOf[Action[Any]],
+      "2" -> SettingsMenuController.AddCourse.asInstanceOf[Action[Any]],
+      "3" -> SettingsMenuController.AddQuiz.asInstanceOf[Action[Any]]
     )
 
     override def draw[T](update: ViewUpdate[T]): String =

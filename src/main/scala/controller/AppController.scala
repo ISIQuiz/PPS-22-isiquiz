@@ -2,7 +2,7 @@ package controller
 
 import controller.Controller
 import controller.actions.{Action, ParameterlessAction}
-import model.GameStage.GameStageImpl
+import model.GameStage
 import model.{SavedCourse, Session}
 import view.View.PageView
 import view.MainMenuView.*
@@ -38,7 +38,7 @@ object AppController extends Controller :
     case SelectMenu => currentPage_(new SelectMenuController, SelectMenuViewImpl())
     case StatisticsMenu => currentPage_(new StatisticsMenuController, StatisticsMenuViewImpl())
     case SettingsMenu => currentPage_(new SettingsMenuController, SettingsMenuViewImpl())
-    case StandardGame(actionParameter) => currentPage_(new StandardGameController(actionParameter.get.asInstanceOf[GameStageImpl]), StandardGameViewImpl())
+    case StandardGame(actionParameter) => currentPage_(new StandardGameController(actionParameter.get.asInstanceOf[GameStage]), StandardGameViewImpl())
     case AddCourseMenu => currentPage_(new AddCourseMenuController, AddCourseMenuViewImpl())
     case AddQuizMenu => currentPage_(new AddQuizMenuController, AddQuizMenuViewImpl())
     case action: Action[T] => currentPage.pageController.handle(action)

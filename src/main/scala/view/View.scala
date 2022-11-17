@@ -13,9 +13,9 @@ object View:
 
   /** PageView should include all behaviours common between different pages views */
   trait PageView:
-    val actionsMap: Map[Int, Action[Any]]
+    val actionsMap: Map[String, Action[Any]]
     def draw[T](update: ViewUpdate[T]): String
     def inputReader() = readLine
     def handleInput(): Unit =
       val input = inputReader()
-      sendEvent(actionsMap(input.toInt))
+      sendEvent(actionsMap(input))
