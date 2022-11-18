@@ -17,5 +17,3 @@ trait PageController extends Controller:
 
 /** Provides a binder between the page logic and the relative page view */
 case class Page[C, V](var pageController: C, var pageView: V)
-
-
