@@ -17,6 +17,13 @@ trait FileHandler:
   def readFile(filePath: String): Try[String]
 
   /**
+   * Read resource file from path
+   * @param filePath a string with file path
+   * @return a Try[String] with the file content
+   */
+  def readResource(filePath: String): Try[String]
+
+  /**
    * Write the string in a file
    * @param filePath a string with file path
    * @param fileContent a string with file content
@@ -35,6 +42,9 @@ object FileHandler:
 
     override def readFile(filePath: String): Try[String] =
       Using(Source.fromFile(filePath))(_.mkString)
+
+    override def readResource(filePath: String): Try[String] =
+      Using(Source.fromResource(filePath))(_.mkString)
     
     override def writeFile(filePath: String, fileContent: String): Try[Unit] =
       Try(Files.writeString(Paths.get(filePath), fileContent))
