@@ -5,6 +5,7 @@ import controller.AddCourseMenuController.*
 import controller.actions.Action
 import view.View.*
 import view.updates.{ViewUpdate, ParameterlessViewUpdate}
+import scala.collection.mutable.Map
 
 object AddCourseMenuView:
 
@@ -16,8 +17,8 @@ object AddCourseMenuView:
   /** A basic implementation of a AddCourseMenuView  */
   class AddCourseMenuViewImpl extends AddCourseMenuView:
 
-    override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      1 -> Back
+    override val actionsMap: Map[String, Action[Any]] = Map(
+      "1" -> Back
     )
 
     override def draw[T](update: ViewUpdate[T]): String =

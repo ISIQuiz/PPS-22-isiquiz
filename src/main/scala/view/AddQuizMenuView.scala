@@ -2,6 +2,7 @@ package view
 
 import controller.actions.Action
 import controller.AddQuizMenuController
+import scala.collection.mutable.Map
 import controller.AddQuizMenuController.*
 import view.View.*
 import view.updates.ViewUpdate
@@ -14,8 +15,8 @@ object AddQuizMenuView:
   /** A basic implementation of a AddQuizMenuView  */
   class AddQuizMenuViewImpl extends AddQuizMenuView:
 
-    override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      1 -> Back
+    override val actionsMap: Map[String, Action[Any]] = Map(
+      "1" -> Back
     )
 
     override def draw[T](update: ViewUpdate[T]): String =

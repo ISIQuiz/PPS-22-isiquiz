@@ -5,6 +5,7 @@ import view.updates.{ViewUpdate, ParameterlessViewUpdate}
 import controller.StatisticsMenuController
 import controller.StatisticsMenuController.*
 import controller.actions.Action
+import scala.collection.mutable.Map
 
 object StatisticsMenuView:
 
@@ -16,8 +17,8 @@ object StatisticsMenuView:
   /** A basic implementation of a StatisticsMenuView  */
   class StatisticsMenuViewImpl extends StatisticsMenuView:
 
-    override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      1 -> Back
+    override val actionsMap: Map[String, Action[Any]] = Map(
+      "1" -> Back
     )
 
     override def draw[T](update: ViewUpdate[T]): String =

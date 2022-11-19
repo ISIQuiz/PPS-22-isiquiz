@@ -6,7 +6,7 @@ import controller.actions.{Action, BackAction, ParameterlessAction}
 import view.{StandardGameView, View}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import model.Answer.Answer
-import model.GameStage.{GameStage, GameStageImpl}
+import model.GameStage
 import model.{QuizInGame, SavedCourse}
 import model.Quiz.Quiz
 import model.settings.StandardGameSettings
@@ -24,11 +24,9 @@ object StandardGameController:
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
 /** Defines the logic of the select page */
-class StandardGameController extends PageController, GameController:
+class StandardGameController(val gameStage: GameStage) extends PageController, GameController:
 
   import StandardGameController.*
-
-  val gameStage: GameStage = new GameStageImpl
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenu)
@@ -57,7 +55,7 @@ class StandardGameController extends PageController, GameController:
 //    println(value.get.toString + " | " + getCorrect(gameStage.quizInGame.answers))
 
   override def nextQuiz(): QuizInGame =
-    val selectedCourse = gameStage.courseInGame(randomNumberGenerator(1, gameStage.courseInGame.size).head)
+    val selectedCourse = gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)
     val selectedQuiz = chooseQuiz(selectedCourse)
     val selectedAnswers = chooseAnswers(selectedQuiz)
     QuizInGame.apply(selectedCourse, selectedQuiz, selectedAnswers)

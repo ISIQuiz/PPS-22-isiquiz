@@ -2,6 +2,7 @@ package view
 
 import View.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+import scala.collection.mutable.Map
 import controller.MainMenuController
 import controller.MainMenuController.*
 import controller.actions.{Action, ParameterlessAction}
@@ -16,11 +17,11 @@ object MainMenuView:
   /** A basic implementation of a MainMenuView  */
   class MainMenuViewImpl extends MainMenuView:
 
-    override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      1 -> Select,
-      2 -> Statistics,
-      3 -> Settings,
-      4 -> Quit
+    override val actionsMap: Map[String, Action[Any]] = Map(
+      "1" -> Select,
+      "2" -> Statistics,
+      "3" -> Settings,
+      "4" -> Quit
     )
 
     override def draw[T](update: ViewUpdate[T]) =

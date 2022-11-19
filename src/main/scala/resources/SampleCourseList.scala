@@ -3,13 +3,12 @@ package resources
 import model.Answer.*
 import model.CourseIdentifier.CourseIdentifierImpl
 import model.Quiz.*
-import model.SavedCourse
-
+import model.SavedCourse.SavedCourseImpl
 object SampleCourseList:
 
   def courseList = List(
     // Corso: Paradigmi di Programmazione e Sviluppo
-    SavedCourse(
+    SavedCourseImpl(
       courseId = CourseIdentifierImpl(
         courseName = "Paradigmi di Programmazione e Sviluppo",
         degreeName = "Laurea Magistrale in Ingegneria e Scienze Informatiche",
@@ -68,7 +67,7 @@ object SampleCourseList:
       )
     ),
     // Sistemi Operativi
-    SavedCourse(
+    SavedCourseImpl(
       courseId = CourseIdentifierImpl(
         courseName = "Sistemi Operativi",
         degreeName = "Laurea in Ingegneria e Scienze Informatiche",
@@ -127,7 +126,7 @@ object SampleCourseList:
       )
     ),
     // Sistemi Informativi
-    SavedCourse(
+    SavedCourseImpl(
       courseId = CourseIdentifierImpl(
         courseName = "Sistemi Informativi",
         degreeName = "Laurea Magistrale in Ingegneria e Scienze Informatiche",

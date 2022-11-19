@@ -26,7 +26,7 @@ class TestSelectMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeA
   }
 
   test("Select menu view should draw select menu") {
-    assert(selectMenuView.draw(SelectMenuView.DefaultUpdate) == "SelectMenu")
+    assert(selectMenuView.draw(SelectMenuView.DefaultUpdate) == "DefaultUpdate")
   }
 
   test("Selecting back should return to main menu") {
