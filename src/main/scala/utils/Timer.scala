@@ -21,10 +21,11 @@ case class TimerImpl[T](var time: Long) extends Timer[T]:
   override def startTimer(): Unit =
     cancellable = interruptableFuture[T] { () =>
       val latch = new CountDownLatch(1)
-      latch.await(time, TimeUnit.SECONDS).asInstanceOf[T]
+      latch.await(time, TimeUnit.SECONDS)
+      AppController.currentPage.pageController.handle(TimeExpired).asInstanceOf[T]
     }
 
-    cancellable._1.onComplete( { case _ => AppController.currentPage.pageController.handle(TimeExpired).asInstanceOf[T] } )
+    cancellable._1.onComplete( { case _ => println("timer completed") } )
 
   override def stopTimer(): Unit =
     cancellable._2.apply()

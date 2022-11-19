@@ -10,7 +10,7 @@ import model.GameStage
 import model.{QuizInGame, SavedCourse}
 import model.Quiz.Quiz
 import model.settings.StandardGameSettings
-import utils.{Timer, TimerImpl}
+import utils.{TerminalInput, TerminalInputImpl, Timer, TimerImpl}
 
 trait GameController:
   def nextQuiz(): QuizInGame
@@ -28,17 +28,23 @@ object StandardGameController:
 /** Defines the logic of the select page */
 class StandardGameController(val gameStage: GameStage) extends PageController, GameController:
 
+  val timer: Timer[Unit] = TimerImpl(10)
+  val inputReader: TerminalInput[Unit] = TerminalInputImpl[Unit]()
+
   import StandardGameController.*
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenu)
-    case TimeExpired => println("Time expired")
+    case TimeExpired =>
+      println("Time expired")
+      inputReader.stopInput()
     case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
 
   override def nextIteration(): Unit =
 //    nextQuiz()
-    val timer: Timer[Unit] = TimerImpl(10)
+
     timer.startTimer()
+    inputReader.readInput()
 
 //    timer.stopTimer()
 
@@ -50,7 +56,8 @@ class StandardGameController(val gameStage: GameStage) extends PageController, G
     AppController.currentPage.pageView.draw(update)
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
-    ???
+    timer.stopTimer()
+    println(actionParameter.get)
     // TODO: Fix selected answer check
 //    if actionParameter.get.toString.toInt -1 == getCorrectIndex(gameStage.quizInGame.answers) then
 //      updateUI(ViewUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Giusta")))
