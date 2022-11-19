@@ -17,12 +17,12 @@ object MainMenuView:
   class MainMenuViewImpl extends MainMenuView:
 
     override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      1 -> Select.asInstanceOf[Action[T]],
-      2 -> Statistics.asInstanceOf[Action[T]],
-      3 -> Settings.asInstanceOf[Action[T]],
-      4 -> Quit.asInstanceOf[Action[T]]
+      1 -> Select,
+      2 -> Statistics,
+      3 -> Settings,
+      4 -> Quit
     )
 
-    override def draw[T](update: ViewUpdate[T]): String =
+    override def draw[T](update: ViewUpdate[T]) =
       println("Menu principale:\n1) Gioca\n2) Statistiche\n3) Impostazioni\n4) Esci")
       "MainMenu"

@@ -2,6 +2,7 @@ package view
 
 import controller.actions.Action
 import controller.AddQuizMenuController
+import controller.AddQuizMenuController.*
 import view.View.*
 import view.updates.ViewUpdate
 
@@ -14,7 +15,7 @@ object AddQuizMenuView:
   class AddQuizMenuViewImpl extends AddQuizMenuView:
 
     override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      1 -> AddQuizMenuController.Back.asInstanceOf[Action[T]]
+      1 -> Back
     )
 
     override def draw[T](update: ViewUpdate[T]): String =

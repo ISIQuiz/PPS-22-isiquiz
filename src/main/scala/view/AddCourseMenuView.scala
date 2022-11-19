@@ -1,7 +1,7 @@
 package view
 
 import controller.AddCourseMenuController
-import controller.AddCourseMenuController.Back
+import controller.AddCourseMenuController.*
 import controller.actions.Action
 import view.View.*
 import view.updates.{ViewUpdate, ParameterlessViewUpdate}
@@ -17,7 +17,7 @@ object AddCourseMenuView:
   class AddCourseMenuViewImpl extends AddCourseMenuView:
 
     override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      1 -> Back.asInstanceOf[Action[T]]
+      1 -> Back
     )
 
     override def draw[T](update: ViewUpdate[T]): String =

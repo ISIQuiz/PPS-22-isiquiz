@@ -1,9 +1,12 @@
 package controller
 
 import controller.{AppController, PageController}
+import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
-import view.{View, MainMenuView}
-import view.updates.{ViewUpdate, ParameterlessViewUpdate}
+import view.{MainMenuView, View}
+import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+
+import java.util.logging.Level
 
 /** Companion object of main menu controller */
 object MainMenuController:
@@ -19,9 +22,9 @@ class MainMenuController extends PageController:
   import MainMenuController.*
 
   override def handle[T](action: Action[T]): Unit = action match
-    case Select => AppController.handle(AppController.SelectMenu)
-    case Statistics => AppController.handle(AppController.StatisticsMenu)
-    case Settings => AppController.handle(AppController.SettingsMenu)
+    case Select => AppController.handle(SelectMenu)
+    case Statistics => AppController.handle(StatisticsMenu)
+    case Settings => AppController.handle(SettingsMenu)
     case Quit => System.exit(0)
 
   override def nextIteration(): Unit =

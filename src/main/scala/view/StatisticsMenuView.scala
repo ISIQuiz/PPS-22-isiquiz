@@ -3,6 +3,7 @@ package view
 import View.*
 import view.updates.{ViewUpdate, ParameterlessViewUpdate}
 import controller.StatisticsMenuController
+import controller.StatisticsMenuController.*
 import controller.actions.Action
 
 object StatisticsMenuView:
@@ -16,7 +17,7 @@ object StatisticsMenuView:
   class StatisticsMenuViewImpl extends StatisticsMenuView:
 
     override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      1 -> StatisticsMenuController.Back.asInstanceOf[Action[T]]
+      1 -> Back
     )
 
     override def draw[T](update: ViewUpdate[T]): String =

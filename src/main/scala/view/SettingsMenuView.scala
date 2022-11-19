@@ -3,6 +3,7 @@ package view
 import View.*
 import view.updates.{ViewUpdate, ParameterlessViewUpdate}
 import controller.SettingsMenuController
+import controller.SettingsMenuController.*
 import controller.actions.Action
 
 object SettingsMenuView:
@@ -16,9 +17,9 @@ object SettingsMenuView:
   class SettingsMenuViewImpl extends SettingsMenuView:
 
     override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      1 -> SettingsMenuController.Back.asInstanceOf[Action[T]],
-      2 -> SettingsMenuController.AddCourse.asInstanceOf[Action[T]],
-      3 -> SettingsMenuController.AddQuiz.asInstanceOf[Action[T]]
+      1 -> Back,
+      2 -> AddCourse,
+      3 -> AddQuiz
     )
 
     override def draw[T](update: ViewUpdate[T]): String =

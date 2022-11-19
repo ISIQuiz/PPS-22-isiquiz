@@ -1,6 +1,7 @@
 package controller
 
 import controller.{AppController, PageController}
+import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction, BackAction}
 import view.{View, SelectMenuView}
 import view.updates.{ViewUpdate, ParameterlessViewUpdate}
@@ -20,8 +21,8 @@ class SelectMenuController extends PageController:
   import SelectMenuController.*
 
   override def handle[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(AppController.MainMenu)
-    case Start => AppController.handle(AppController.StandardGame)
+    case Back => AppController.handle(MainMenu)
+    case Start => AppController.handle(StandardGame)
 
   // Get session from application controller
   def getSession: Session = AppController.session

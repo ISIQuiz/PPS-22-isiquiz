@@ -3,6 +3,7 @@ package view
 import View.*
 import view.updates.{ViewUpdate, ParameterlessViewUpdate}
 import controller.SelectMenuController
+import controller.SelectMenuController.*
 import controller.actions.{Action, ParameterlessAction}
 import model.Session
 
@@ -17,8 +18,8 @@ object SelectMenuView:
   class SelectMenuViewImpl extends SelectMenuView :
 
     override def actionsMap[T]: Map[Int, Action[T]] = Map(
-      1 -> SelectMenuController.Back.asInstanceOf[Action[T]],
-      2 -> SelectMenuController.Start.asInstanceOf[Action[T]]
+      1 -> Back,
+      2 -> Start
     )
 
     override def draw[T](update: ViewUpdate[T]): String =
