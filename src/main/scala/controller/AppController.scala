@@ -4,6 +4,8 @@ import controller.Controller
 import controller.actions.{Action, ParameterlessAction}
 import model.GameStage
 import model.{SavedCourse, Session}
+import utils.Configuration.SavedCoursesFilePath
+import utils.{CourseJsonParser, FileHandler}
 import view.View.PageView
 import view.MainMenuView.*
 import view.SelectMenuView.*
@@ -12,6 +14,7 @@ import view.SettingsMenuView.*
 import view.StandardGameView.*
 import view.AddCourseMenuView.*
 import view.AddQuizMenuView.*
+import scala.util.Success
 
 /** Controller for the general logic of the application */
 object AppController extends Controller :
@@ -45,5 +48,24 @@ object AppController extends Controller :
     case null => throw new IllegalArgumentException
 
   def startApp(): Unit =
+    loadCoursesFromFile()
     while (true)
       currentPage.pageController.nextIteration()
+
+  // Read courses list from a JSON file and deserialize it
+  def loadCoursesFromFile(): Unit =
+    val fileHandler = FileHandler()
+    val courseJsonParser = CourseJsonParser()
+
+    // Read resource file
+    fileHandler.readResource(SavedCoursesFilePath) match
+      case Success(jsonString: String) =>
+        // Deserialize the JSON string
+        courseJsonParser.deserializeSavedCourses(jsonString) match
+          case Success(savedCourses: List[SavedCourse]) => session_(savedCourses)
+          case _ =>
+            //println("ERROR DESERIALIZE JSON")
+            //IllegalArgumentException()
+      case _ =>
+        //println("ERROR FIND FILE JSON")
+        //FileNotFoundException()
