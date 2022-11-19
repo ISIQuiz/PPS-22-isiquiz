@@ -10,6 +10,7 @@ import model.GameStage
 import model.{QuizInGame, SavedCourse}
 import model.Quiz.Quiz
 import model.settings.StandardGameSettings
+import utils.{Timer, TimerImpl}
 
 trait GameController:
   def nextQuiz(): QuizInGame
@@ -21,6 +22,7 @@ trait GameController:
 object StandardGameController:
 
   case object Back extends ParameterlessAction
+  case object TimeExpired extends ParameterlessAction
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
 /** Defines the logic of the select page */
@@ -30,10 +32,16 @@ class StandardGameController(val gameStage: GameStage) extends PageController, G
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenu)
+    case TimeExpired => println("Time expired")
     case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
 
   override def nextIteration(): Unit =
 //    nextQuiz()
+    val timer: Timer[Unit] = TimerImpl(10)
+    timer.startTimer()
+
+//    timer.stopTimer()
+
     updateUI(StandardGameView.DefaultUpdate)
     updateUI(StandardGameView.NewQuizUpdate(Option(gameStage)))
     AppController.currentPage.pageView.handleInput()

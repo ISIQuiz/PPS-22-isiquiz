@@ -3,6 +3,7 @@ package controller
 import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
+import utils.{Timer, TimerImpl}
 import view.{MainMenuView, View}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
