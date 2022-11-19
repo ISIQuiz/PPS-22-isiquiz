@@ -1,9 +1,10 @@
 package controller
 
 import controller.{AppController, PageController}
-import controller.actions.{Action, BackAction, ParameterlessAction}
-import view.{SelectMenuView, View}
-import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+import controller.AppController.*
+import controller.actions.{Action, ParameterlessAction, BackAction}
+import view.{View, SelectMenuView}
+import view.updates.{ViewUpdate, ParameterlessViewUpdate}
 import controller.{AppController, PageController}
 import model.{GameStage, Session}
 import model.GameStage.*

@@ -1,6 +1,7 @@
 package controller
 
 import controller.{AppController, PageController}
+import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
 import view.{AddCourseMenuView, StandardGameView}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
@@ -16,7 +17,7 @@ class AddCourseMenuController extends PageController:
   import AddCourseMenuController.*
 
   override def handle[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(AppController.SettingsMenu)
+    case Back => AppController.handle(SettingsMenu)
 
   override def nextIteration(): Unit =
     updateUI(AddCourseMenuView.DefaultUpdate)

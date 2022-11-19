@@ -1,13 +1,15 @@
 package controller
 
 import controller.{AppController, PageController}
-import controller.actions.{Action, ParameterlessAction, BackAction}
-import view.{View, StandardGameView}
-import view.updates.{ViewUpdate, ParameterlessViewUpdate}
+import controller.AppController.*
+import controller.actions.{Action, BackAction, ParameterlessAction}
+import view.{StandardGameView, View}
+import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import model.Answer.Answer
 import model.GameStage
 import model.{QuizInGame, SavedCourse}
 import model.Quiz.Quiz
+import model.settings.StandardGameSettings
 
 trait GameController:
   def nextQuiz(): QuizInGame
@@ -21,14 +23,13 @@ object StandardGameController:
   case object Back extends ParameterlessAction
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
-
 /** Defines the logic of the select page */
 class StandardGameController(val gameStage: GameStage) extends PageController, GameController:
 
   import StandardGameController.*
 
   override def handle[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(AppController.MainMenu)
+    case Back => AppController.handle(MainMenu)
     case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
 
   override def nextIteration(): Unit =
