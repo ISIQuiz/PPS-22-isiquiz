@@ -1,7 +1,8 @@
 package view
 
 import View.*
-import view.updates.{ViewUpdate, ParameterlessViewUpdate}
+import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+import controller.StandardGameController
 import controller.StandardGameController.*
 import controller.actions.{Action, ParameterlessAction}
 import model.GameStage
@@ -20,11 +21,11 @@ object StandardGameView:
   class StandardGameViewImpl extends StandardGameView:
 
     override val actionsMap: Map[String, Action[Any]] = Map(
-      "0" -> Back.asInstanceOf[Action[Any]],
-      "1" -> SelectAnswer(Option(1)).asInstanceOf[Action[Any]],
-      "2" -> SelectAnswer(Option(2)).asInstanceOf[Action[Any]],
-      "3" -> SelectAnswer(Option(3)).asInstanceOf[Action[Any]],
-      "4" -> SelectAnswer(Option(4)).asInstanceOf[Action[Any]]
+      "0" -> Back,
+      "1" -> SelectAnswer(Option(1)),
+      "2" -> SelectAnswer(Option(2)),
+      "3" -> SelectAnswer(Option(3)),
+      "4" -> SelectAnswer(Option(4))
     )
 
     override def draw[T](update: ViewUpdate[T]): String = update match

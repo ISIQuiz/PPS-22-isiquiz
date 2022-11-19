@@ -3,6 +3,7 @@ package view
 import View.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import controller.SelectMenuController
+import controller.SelectMenuController.*
 import controller.actions.{Action, ParameterlessAction}
 import scala.collection.mutable.{ListBuffer, Map}
 import model.{SavedCourse, Session}
@@ -19,8 +20,8 @@ object SelectMenuView:
   class SelectMenuViewImpl extends SelectMenuView :
 
     override val actionsMap: Map[String, Action[Any]] = Map(
-      "M" -> SelectMenuController.Back.asInstanceOf[Action[Any]],
-      "S" -> SelectMenuController.Start.asInstanceOf[Action[Any]]
+      "M" -> Back,
+      "S" -> Start
     )
 
     override def draw[T](update: ViewUpdate[T]): String = update match

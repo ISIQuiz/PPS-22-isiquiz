@@ -2,6 +2,7 @@ package controller
 
 import controller.actions.{Action, ParameterlessAction}
 import controller.{AppController, PageController}
+import controller.AppController.*
 import view.AddCourseMenuView
 import view.updates.ViewUpdate
 
@@ -16,7 +17,7 @@ class AddQuizMenuController extends PageController :
   import AddQuizMenuController.*
 
   override def handle[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(AppController.SettingsMenu)
+    case Back => AppController.handle(SettingsMenu)
 
   override def nextIteration(): Unit =
     updateUI(AddCourseMenuView.DefaultUpdate)
