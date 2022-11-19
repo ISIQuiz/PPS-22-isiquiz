@@ -23,7 +23,7 @@ object AppController extends Controller :
   // Init var session with a default saved course list
   private var _session: Session = Session()
   def session: Session = _session
-  def session_(savedCourses: List[SavedCourse]): Unit = _session = Session.changeSavedCourses(savedCourses)
+  def session_(savedCourses: List[SavedCourse]): Unit = _session = Session.changeSavedCourses(session, savedCourses)
 
   case object MainMenu extends ParameterlessAction
   case object SelectMenu extends ParameterlessAction
@@ -45,6 +45,5 @@ object AppController extends Controller :
     case null => throw new IllegalArgumentException
 
   def startApp(): Unit =
-    // TODO Init the session from file: session_(getListFromFile())
     while (true)
       currentPage.pageController.nextIteration()

@@ -3,17 +3,18 @@ package model
 import model.Answer.*
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import resources.SampleCourseList
+import utils.DefaultCourseList
+import utils.DefaultCourseList.defaultCourseList
 
 
 class SessionTest extends AnyFunSuite with Matchers{
 
-  val session = Session(SampleCourseList.courseList)
+  val session = Session(DefaultCourseList.defaultCourseList)
 
   println(session.toString)
 
   test("New session test") {
-    session.savedCourses.size shouldEqual SampleCourseList.courseList.size
+    session.savedCourses.size shouldEqual defaultCourseList.size
   }
 
   test("Check if the course identifier of the first element of course list in Session changed") {
@@ -29,7 +30,7 @@ class SessionTest extends AnyFunSuite with Matchers{
     val courseListChanged = courseList.updated(0, courseChanged)
 
     // Session with edited saved course list
-    val sessionChanged = Session.changeSavedCourses(courseListChanged)
+    val sessionChanged = Session.changeSavedCourses(session, courseListChanged)
 
     // Check if course id has changed
     sessionChanged.savedCourses.apply(0).courseId shouldEqual courseIdChanged

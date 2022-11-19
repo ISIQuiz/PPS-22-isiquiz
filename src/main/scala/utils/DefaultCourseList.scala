@@ -1,15 +1,15 @@
-package resources
+package utils
 
-import model.Answer.*
-import model.CourseIdentifier.CourseIdentifierImpl
-import model.Quiz.*
-import model.SavedCourse.SavedCourseImpl
-object SampleCourseList:
+import model.Answer.Answer
+import model.Quiz.Quiz
+import model.{CourseIdentifier, SavedCourse}
 
-  def courseList = List(
+object DefaultCourseList:
+
+  def defaultCourseList = List(
     // Corso: Paradigmi di Programmazione e Sviluppo
-    SavedCourseImpl(
-      courseId = CourseIdentifierImpl(
+    SavedCourse(
+      courseId = CourseIdentifier(
         courseName = "Paradigmi di Programmazione e Sviluppo",
         degreeName = "Laurea Magistrale in Ingegneria e Scienze Informatiche",
         universityName = "Università di Bologna"
@@ -23,10 +23,10 @@ object SampleCourseList:
           imagePath = Option.empty,
           answerList = List(
             Answer(text = "1", false),
-              Answer(text = "2", false),
-                Answer(text = "4", true),
-                  Answer(text = "8", false)
-            )
+            Answer(text = "2", false),
+            Answer(text = "4", true),
+            Answer(text = "8", false)
+          )
         ),
         // Domanda sottrazione
         Quiz(
@@ -35,10 +35,10 @@ object SampleCourseList:
           imagePath = Option.empty,
           answerList = List(
             Answer(text = "0", true),
-              Answer(text = "2", false),
-                Answer(text = "1", false),
-                  Answer(text = "6", false)
-            )
+            Answer(text = "2", false),
+            Answer(text = "1", false),
+            Answer(text = "6", false)
+          )
         ),
         // Domanda moltiplicazione
         Quiz(
@@ -47,10 +47,10 @@ object SampleCourseList:
           imagePath = Option.empty,
           answerList = List(
             Answer(text = "1", false),
-              Answer(text = "2", false),
-                Answer(text = "4", true),
-                  Answer(text = "8", false)
-            )
+            Answer(text = "2", false),
+            Answer(text = "4", true),
+            Answer(text = "8", false)
+          )
         ),
         // Domanda divisione
         Quiz(
@@ -59,16 +59,16 @@ object SampleCourseList:
           imagePath = Option.empty,
           answerList = List(
             Answer(text = "1", true),
-              Answer(text = "2", false),
-                Answer(text = "4", false),
-                  Answer(text = "8", false)
-            )
+            Answer(text = "2", false),
+            Answer(text = "4", false),
+            Answer(text = "8", false)
+          )
         ),
       )
     ),
     // Sistemi Operativi
-    SavedCourseImpl(
-      courseId = CourseIdentifierImpl(
+    SavedCourse(
+      courseId = CourseIdentifier(
         courseName = "Sistemi Operativi",
         degreeName = "Laurea in Ingegneria e Scienze Informatiche",
         universityName = "Università di Bologna"
@@ -82,10 +82,10 @@ object SampleCourseList:
           imagePath = Option.empty,
           answerList = List(
             Answer(text = "1", false),
-              Answer(text = "2", false),
-                Answer(text = "6", true),
-                  Answer(text = "8", false)
-            )
+            Answer(text = "2", false),
+            Answer(text = "6", true),
+            Answer(text = "8", false)
+          )
         ),
         // Domanda sottrazione
         Quiz(
@@ -94,10 +94,10 @@ object SampleCourseList:
           imagePath = Option.empty,
           answerList = List(
             Answer(text = "0", true),
-              Answer(text = "2", false),
-                Answer(text = "1", false),
-                  Answer(text = "6", false)
-            )
+            Answer(text = "2", false),
+            Answer(text = "1", false),
+            Answer(text = "6", false)
+          )
         ),
         // Domanda moltiplicazione
         Quiz(
@@ -106,10 +106,10 @@ object SampleCourseList:
           imagePath = Option.empty,
           answerList = List(
             Answer(text = "1", false),
-              Answer(text = "2", false),
-                Answer(text = "9", true),
-                  Answer(text = "8", false)
-            )
+            Answer(text = "2", false),
+            Answer(text = "9", true),
+            Answer(text = "8", false)
+          )
         ),
         // Domanda divisione
         Quiz(
@@ -118,16 +118,16 @@ object SampleCourseList:
           imagePath = Option.empty,
           answerList = List(
             Answer(text = "1", true),
-              Answer(text = "2", false),
-                Answer(text = "4", false),
-                  Answer(text = "8", false)
-            )
+            Answer(text = "2", false),
+            Answer(text = "4", false),
+            Answer(text = "8", false)
+          )
         ),
       )
     ),
     // Sistemi Informativi
-    SavedCourseImpl(
-      courseId = CourseIdentifierImpl(
+    /*SavedCourse(
+      courseId = CourseIdentifier(
         courseName = "Sistemi Informativi",
         degreeName = "Laurea Magistrale in Ingegneria e Scienze Informatiche",
         universityName = "Università di Bologna"
@@ -183,5 +183,5 @@ object SampleCourseList:
             )
         ),
       )
-    )
+    )*/
   )

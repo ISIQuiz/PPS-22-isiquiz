@@ -6,8 +6,10 @@ import model.{CourseIdentifier, SavedCourse}
 import play.api.libs.json.*
 import utils.CourseJsonLabels.*
 
+import scala.util.{Success, Try}
+
 /** Trait for the [[SavedCourse]] parser */
-trait CourseParser:
+trait CourseJsonParser:
 
   /**
    * Serialize the SavedCourse list in a JSON string
@@ -19,18 +21,18 @@ trait CourseParser:
   /**
    * Deserialize the JSON string in a SavedCourse list
    * @param jsonString the string to deserialize
-   * @return a saved course list
+   * @return a [[Try]] saved course list
    */
-  def deserializeSavedCourses(jsonString: String): List[SavedCourse]
+  def deserializeSavedCourses(jsonString: String): Try[List[SavedCourse]]
 
 /** Companion object of [[SavedCourse]] parser*/
-object CourseParser:
+object CourseJsonParser:
 
-  /** Creates a new [[CourseParser]] */
-  def apply(): CourseParser = new CourseParserImpl()
+  /** Creates a new [[CourseJsonParser]] */
+  def apply(): CourseJsonParser = new CourseJsonParserImpl()
 
   // Implementation of CourseParser trait
-  private class CourseParserImpl extends CourseParser:
+  private class CourseJsonParserImpl extends CourseJsonParser:
 
     override def serializeSavedCourses(savedCourses: List[SavedCourse]): String =
       Json.prettyPrint(JsArray(savedCourses.map(serializeObject)))
@@ -69,17 +71,22 @@ object CourseParser:
         )
       case _ => JsObject.empty
 
-    
-    override def deserializeSavedCourses(jsonString: String): List[SavedCourse] =
-      val jsonArray = Json.parse(jsonString).as[JsArray]
-      jsonArray.value.map(
-        course =>
-          SavedCourse(
-            courseId = deserializeCourseIdentifier((course \ CourseIdentifierLabel).as[JsObject]),
-            description = (course \ DescriptionLabel).asOpt[String],
-            quizList = deserializeQuizList((course \ QuizListLabel).as[JsArray])
-        )
-      ).toList
+    override def deserializeSavedCourses(jsonString: String): Try[List[SavedCourse]] =
+      for {
+        // Check if string is empty
+        _ <- Try(if (jsonString.isEmpty) throw IllegalArgumentException())
+        // Check if json file is correct
+        jsonArray <- Try(Json.parse(jsonString).as[JsArray])
+      } yield {
+        jsonArray.value.map(
+          course =>
+            SavedCourse(
+              courseId = deserializeCourseIdentifier((course \ CourseIdentifierLabel).as[JsObject]),
+              description = (course \ DescriptionLabel).asOpt[String],
+              quizList = deserializeQuizList((course \ QuizListLabel).as[JsArray])
+            )
+        ).toList
+      }
 
     // Deserialize the JSON object in a CourseIdentifier
     private def deserializeCourseIdentifier(jsonObject: JsObject): CourseIdentifier =
