@@ -2,10 +2,12 @@ package view
 
 import View.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+
 import scala.collection.mutable.Map
 import controller.MainMenuController
 import controller.MainMenuController.*
 import controller.actions.{Action, ParameterlessAction}
+import utils.{TerminalInput, TerminalInputImpl}
 
 object MainMenuView:
 
@@ -24,6 +26,7 @@ object MainMenuView:
       "4" -> Quit
     )
 
-    override def draw[T](update: ViewUpdate[T]) =
+    override def updateUI[T](update: ViewUpdate[T]) =
       println("Menu principale:\n1) Gioca\n2) Statistiche\n3) Impostazioni\n4) Esci")
+      handleInput()
       "MainMenu"

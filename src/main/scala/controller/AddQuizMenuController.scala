@@ -6,6 +6,9 @@ import controller.AppController.*
 import view.AddCourseMenuView
 import view.updates.ViewUpdate
 
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+
 /** Companion object of add quiz menu controller */
 object AddQuizMenuController:
 
@@ -16,12 +19,10 @@ class AddQuizMenuController extends PageController :
 
   import AddQuizMenuController.*
 
-  override def handle[T](action: Action[T]): Unit = action match
+  override def matchAction[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(SettingsMenu)
 
   override def nextIteration(): Unit =
-    updateUI(AddCourseMenuView.DefaultUpdate)
-
-  override def updateUI[T](update: ViewUpdate[T]): Unit =
-    AppController.currentPage.pageView.draw(update)
-    AppController.currentPage.pageView.handleInput()
+    AppController.currentPage.pageView.updateUI(AddCourseMenuView.DefaultUpdate)
+    Await.ready(actionPromise.future, Duration.Inf)
+    AppController.currentPage.pageController.nextIteration()

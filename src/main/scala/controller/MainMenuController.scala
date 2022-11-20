@@ -7,7 +7,10 @@ import utils.{Timer, TimerImpl}
 import view.{MainMenuView, View}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
-import java.util.logging.Level
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future, Promise}
+import concurrent.ExecutionContext.Implicits.global
+import scala.util.Try
 
 /** Companion object of main menu controller */
 object MainMenuController:
@@ -22,16 +25,13 @@ class MainMenuController extends PageController:
 
   import MainMenuController.*
 
-  override def handle[T](action: Action[T]): Unit = action match
+  override def matchAction[T](action: Action[T]): Unit = action match
     case Select => AppController.handle(SelectMenu)
     case Statistics => AppController.handle(StatisticsMenu)
     case Settings => AppController.handle(SettingsMenu)
     case Quit => System.exit(0)
 
   override def nextIteration(): Unit =
-    updateUI(MainMenuView.DefaultUpdate)
-
-  override def updateUI[T](update: ViewUpdate[T]): Unit  =
-    AppController.currentPage.pageView.draw(update)
-    AppController.currentPage.pageView.handleInput()
-
+    AppController.currentPage.pageView.updateUI(MainMenuView.DefaultUpdate)
+    Await.ready(actionPromise.future, Duration.Inf)
+    AppController.currentPage.pageController.nextIteration()

@@ -8,21 +8,21 @@ import java.util.concurrent.{CountDownLatch, TimeUnit}
 import scala.concurrent.{Future, Promise}
 import concurrent.ExecutionContext.Implicits.global
 
-trait Timer[T]:
+trait Timer:
 
-  var cancellable: (Future[T], () => Boolean)
+  var cancellable: (Future[Unit], () => Boolean)
   def startTimer(): Unit
   def stopTimer(): Unit
 
-case class TimerImpl[T](var time: Long) extends Timer[T]:
+case class TimerImpl(var time: Long) extends Timer:
 
-  var cancellable: (Future[T], () => Boolean) = _
+  var cancellable: (Future[Unit], () => Boolean) = _
 
   override def startTimer(): Unit =
-    cancellable = interruptableFuture[T] { () =>
+    cancellable = interruptableFuture[Unit] { () =>
       val latch = new CountDownLatch(1)
       latch.await(time, TimeUnit.SECONDS)
-      AppController.currentPage.pageController.handle(TimeExpired).asInstanceOf[T]
+      AppController.currentPage.pageController.handle(TimeExpired)
     }
 
     cancellable._1.onComplete( { case _ => println("timer completed") } )

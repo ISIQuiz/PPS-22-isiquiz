@@ -2,10 +2,14 @@ package view
 
 import controller.AppController
 import controller.actions.Action
+import utils.{TerminalInput, TerminalInputImpl}
 import view.updates.ViewUpdate
 
 import scala.io.StdIn.readLine
 import scala.collection.mutable.Map
+import concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Await
+import scala.util.{Failure, Success}
 
 object View:
 
@@ -14,8 +18,15 @@ object View:
   /** PageView should include all behaviours common between different pages views */
   trait PageView:
     val actionsMap: Map[String, Action[Any]]
-    def draw[T](update: ViewUpdate[T]): String
+    def updateUI[T](update: ViewUpdate[T]): String
     def inputReader() = readLine
+    val terminalInput: TerminalInput = TerminalInputImpl()
     def handleInput(): Unit =
-      val input = inputReader()
-      sendEvent(actionsMap(input))
+      terminalInput.readInput().onComplete( _ match
+          case Success(value) =>
+            terminalInput.cancellable._2.apply()
+            sendEvent(actionsMap(value))
+          case Failure(exception) => throw exception
+      )
+
+//      val input = terminalInput.readInput()._1.result(sendEvent(actionsMap(terminalInput.readInput()._1.result)))

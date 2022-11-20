@@ -27,7 +27,7 @@ class TestMainMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeAnd
   }
 
   test("Main menu view should draw main menu") {
-    assert(mainMenuView.draw(MainMenuView.DefaultUpdate) == "MainMenu")
+    assert(mainMenuView.updateUI(MainMenuView.DefaultUpdate) == "MainMenu")
   }
 
   test("Should change to select menu when play is selected") {

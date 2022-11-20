@@ -45,6 +45,7 @@ object AppController extends Controller :
     case null => throw new IllegalArgumentException
 
   def startApp(): Unit =
+    println("AppController started")
     // TODO Init the session from file: session_(getListFromFile())
-    while (true)
-      currentPage.pageController.nextIteration()
+//    while (true)
+    currentPage.pageController.nextIteration()

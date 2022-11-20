@@ -21,6 +21,7 @@ object AddCourseMenuView:
       "1" -> Back
     )
 
-    override def draw[T](update: ViewUpdate[T]): String =
+    override def updateUI[T](update: ViewUpdate[T]): String =
       println("Menu aggiunta corsi:\n1) Menu principale")
+      handleInput()
       "AddCourseMenu"

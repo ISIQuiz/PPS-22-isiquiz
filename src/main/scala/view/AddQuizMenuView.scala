@@ -19,6 +19,7 @@ object AddQuizMenuView:
       "1" -> Back
     )
 
-    override def draw[T](update: ViewUpdate[T]): String =
+    override def updateUI[T](update: ViewUpdate[T]): String =
       println("Menu aggiunta quiz:\n1) Menu principale")
+      handleInput()
       "AddQuizMenu"

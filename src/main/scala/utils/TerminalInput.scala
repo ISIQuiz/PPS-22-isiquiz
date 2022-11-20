@@ -8,23 +8,29 @@ import java.util.concurrent.{CountDownLatch, TimeUnit}
 import scala.concurrent.{Future, Promise}
 import concurrent.ExecutionContext.Implicits.global
 import scala.io.StdIn.readLine
+import scala.util.{Failure, Success}
 
-trait TerminalInput[T]:
+trait TerminalInput:
 
-  var cancellable: (Future[T], () => Boolean)
-  def readInput(): Unit
+  var cancellable: (Future[String], () => Boolean)
+  def readInput(): Future[String]
   def stopInput(): Unit
 
-case class TerminalInputImpl[T]() extends TerminalInput[T]:
+case class TerminalInputImpl() extends TerminalInput:
 
-  var cancellable: (Future[T], () => Boolean) = _
+  var cancellable: (Future[String], () => Boolean) = _
 
-  override def readInput(): Unit =
-    cancellable = interruptableFuture[T] { () =>
-      AppController.currentPage.pageController.handle(SelectAnswer(Option(readLine.toInt))).asInstanceOf[T]
+  override def readInput(): Future[String] =
+    cancellable = interruptableFuture[String] { () =>
+//      AppController.currentPage.pageController.handle(SelectAnswer(Option(readLine.toInt))).asInstanceOf[T]
+      readLine()
     }
+    cancellable._1
 
-    cancellable._1.onComplete( { case _ => println("read completed") } )
+//  cancellable._1.onComplete( _ match
+//    case Success(value) => value
+//    case Failure(exception) => throw exception
+//  )
 
   override def stopInput(): Unit =
     cancellable._2.apply()

@@ -12,6 +12,9 @@ import model.Quiz.Quiz
 import model.settings.StandardGameSettings
 import utils.{TerminalInput, TerminalInputImpl, Timer, TimerImpl}
 
+import scala.concurrent.{Await, Promise}
+import scala.concurrent.duration.Duration
+
 trait GameController:
   def nextQuiz(): QuizInGame
   def chooseQuiz(course: SavedCourse): Quiz
@@ -28,32 +31,27 @@ object StandardGameController:
 /** Defines the logic of the select page */
 class StandardGameController(val gameStage: GameStage) extends PageController, GameController:
 
-  val timer: Timer[Unit] = TimerImpl(10)
-  val inputReader: TerminalInput[Unit] = TerminalInputImpl[Unit]()
+  val timer: Timer = TimerImpl(10)
+//  val inputReader: TerminalInput = TerminalInputImpl()
 
   import StandardGameController.*
 
-  override def handle[T](action: Action[T]): Unit = action match
+  override def matchAction[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenu)
     case TimeExpired =>
       println("Time expired")
-      inputReader.stopInput()
+//      inputReader.stopInput()
     case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
 
   override def nextIteration(): Unit =
+    actionPromise = Promise[Unit]
 //    nextQuiz()
-
     timer.startTimer()
-    inputReader.readInput()
-
 //    timer.stopTimer()
-
-    updateUI(StandardGameView.DefaultUpdate)
-    updateUI(StandardGameView.NewQuizUpdate(Option(gameStage)))
-    AppController.currentPage.pageView.handleInput()
-
-  override def updateUI[T](update: ViewUpdate[T]): Unit =
-    AppController.currentPage.pageView.draw(update)
+    AppController.currentPage.pageView.updateUI(StandardGameView.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(StandardGameView.NewQuizUpdate(Option(gameStage)))
+    Await.ready(actionPromise.future, Duration.Inf)
+    AppController.currentPage.pageController.nextIteration()
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
     timer.stopTimer()

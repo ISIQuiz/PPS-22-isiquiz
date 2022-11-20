@@ -24,12 +24,13 @@ object SelectMenuView:
       "S" -> Start
     )
 
-    override def draw[T](update: ViewUpdate[T]): String = update match
+    override def updateUI[T](update: ViewUpdate[T]): String = update match
       case DefaultUpdate =>
         println("Menu selezione:")
         println("M) Menu principale")
         println("S) Inizia il gioco")
         println("Seleziona un corso:")
+        handleInput()
         "DefaultUpdate"
       case CourseUpdate(updateParameter) =>
         if update.updateParameter.isDefined then

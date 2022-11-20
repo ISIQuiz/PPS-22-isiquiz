@@ -57,7 +57,7 @@ class TestStandardGameView extends AnyFunSuite with BeforeAndAfterAll with Befor
   }
 
   test("Standard game view should draw standard game menu") {
-    assert(standardGameView.draw(StandardGameView.DefaultUpdate) == "StandardGame")
+    assert(standardGameView.updateUI(StandardGameView.DefaultUpdate) == "StandardGame")
   }
 
 end TestStandardGameView
