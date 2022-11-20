@@ -26,7 +26,7 @@ object AppController extends Controller :
   // Init var session with a default saved course list
   private var _session: Session = Session()
   def session: Session = _session
-  def session_(savedCourses: List[SavedCourse]): Unit = _session = Session.changeSavedCourses(session, savedCourses)
+  def changeSavedCourses(savedCourses: List[SavedCourse]): Unit = _session = Session.changeSavedCourses(session, savedCourses)
 
   case object MainMenu extends ParameterlessAction
   case object SelectMenu extends ParameterlessAction
@@ -62,7 +62,7 @@ object AppController extends Controller :
       case Success(jsonString: String) =>
         // Deserialize the JSON string
         courseJsonParser.deserializeSavedCourses(jsonString) match
-          case Success(savedCourses: List[SavedCourse]) => session_(savedCourses)
+          case Success(savedCourses: List[SavedCourse]) => changeSavedCourses(savedCourses)
           case _ =>
             //println("ERROR DESERIALIZE JSON")
             //IllegalArgumentException()
