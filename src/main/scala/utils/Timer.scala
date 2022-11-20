@@ -9,7 +9,7 @@ import scala.concurrent.{Future, Promise}
 import concurrent.ExecutionContext.Implicits.global
 
 trait Timer[T]:
-//  var cancellableFuture: (Future[T], () => Boolean)
+
   var cancellable: (Future[T], () => Boolean)
   def startTimer(): Unit
   def stopTimer(): Unit

@@ -10,7 +10,7 @@ import concurrent.ExecutionContext.Implicits.global
 import scala.io.StdIn.readLine
 
 trait TerminalInput[T]:
-//  var cancellableFuture: (Future[T], () => Boolean)
+
   var cancellable: (Future[T], () => Boolean)
   def readInput(): Unit
   def stopInput(): Unit
