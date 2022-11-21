@@ -30,7 +30,7 @@ class SelectMenuController extends PageController:
   override def matchAction[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(AppController.MainMenu)
     case Start => AppController.handle(AppController.StandardGame(Option(gameStage)))
-    case Custom =>  AppController.handle(AppController.CustomMenu)
+    case Custom =>  AppController.handle(AppController.CustomMenu(Option(gameStage)))
     case Selection(actionParameter) => modifySelectedCourses(actionParameter)
 
   // Get session from application controller

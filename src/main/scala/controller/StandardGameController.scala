@@ -31,8 +31,7 @@ object StandardGameController:
 /** Defines the logic of the select page */
 class StandardGameController(val gameStage: GameStage) extends PageController, GameController:
 
-  val timer: Timer = TimerImpl(10)
-//  val inputReader: TerminalInput = TerminalInputImpl()
+  val timer: Timer = TimerImpl(gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime)
 
   import StandardGameController.*
 
