@@ -32,10 +32,8 @@ class AddQuizMenuController extends PageController :
   override def nextIteration(): Unit =
     updateUI(AddQuizMenuView.DefaultPrint)
     if courseSelected.isEmpty then
-      println("course not defined")
       updateUI(AddQuizMenuView.AskCoursePrint(Option(AppController.session.savedCourses)))
     else
-      println("course defined")
       updateUI(AddQuizMenuView.AskQuizPrint)
 
 
@@ -44,8 +42,6 @@ class AddQuizMenuController extends PageController :
 
   private def addQuiz[T](actionParameter: Option[Quiz]): Unit =
     quizToAdd = actionParameter
-    println("quiz added here")
-    println(AppController.session.savedCourses.indexOf(courseSelected.get))
     val newSavedCourse = SavedCourse.changeQuizList(courseSelected.get, courseSelected.get.quizList.::(quizToAdd.get))
     val newListCourses = AppController.session.savedCourses.filterNot(course => course == courseSelected).appended(newSavedCourse)
     AppController.changeSavedCourses(newListCourses)
