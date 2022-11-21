@@ -20,7 +20,7 @@ class AddQuizMenuController extends PageController :
     case Back => AppController.handle(SettingsMenu)
 
   override def nextIteration(): Unit =
-    updateUI(AddCourseMenuView.DefaultUpdate)
+    updateUI(AddCourseMenuView.DefaultPrint)
 
   override def updateUI[T](update: ViewUpdate[T]): Unit =
     AppController.currentPage.pageView.draw(update)
