@@ -30,6 +30,7 @@ class AddQuizMenuController extends PageController :
     case AddQuizAction(actionParameter) => addQuiz(actionParameter)
 
   override def nextIteration(): Unit =
+
     updateUI(AddQuizMenuView.DefaultPrint)
     if courseSelected.isEmpty then
       updateUI(AddQuizMenuView.AskCoursePrint(Option(AppController.session.savedCourses)))
