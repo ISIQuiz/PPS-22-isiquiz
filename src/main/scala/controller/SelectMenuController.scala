@@ -32,7 +32,6 @@ class SelectMenuController extends PageController:
   def getSession: Session = AppController.session
 
   override def nextIteration(): Unit =
-
     updateUI(SelectMenuView.DefaultUpdate)
     updateUI(SelectMenuView.CourseUpdate(Option(getSession.savedCourses.map(course => (course,gameStage.coursesInGame.contains(course))))))
     AppController.currentPage.pageView.handleInput()
