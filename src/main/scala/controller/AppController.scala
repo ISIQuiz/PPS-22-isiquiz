@@ -12,6 +12,7 @@ import view.SettingsMenuView.*
 import view.StandardGameView.*
 import view.AddCourseMenuView.*
 import view.AddQuizMenuView.*
+import view.CustomMenuView.*
 
 /** Controller for the general logic of the application */
 object AppController extends Controller :
@@ -31,6 +32,7 @@ object AppController extends Controller :
   case object SettingsMenu extends ParameterlessAction
   case object AddCourseMenu extends ParameterlessAction
   case object AddQuizMenu extends ParameterlessAction
+  case object CustomMenu extends ParameterlessAction
   case class StandardGame[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
   override def handle[T](action: Action[T]): Unit = action match
@@ -41,6 +43,7 @@ object AppController extends Controller :
     case StandardGame(actionParameter) => currentPage_(new StandardGameController(actionParameter.get.asInstanceOf[GameStage]), StandardGameViewImpl())
     case AddCourseMenu => currentPage_(new AddCourseMenuController, AddCourseMenuViewImpl())
     case AddQuizMenu => currentPage_(new AddQuizMenuController, AddQuizMenuViewImpl())
+    case CustomMenu => currentPage_(new CustomMenuController, CustomMenuViewImpl())
     case action: Action[T] => currentPage.pageController.handle(action)
     case null => throw new IllegalArgumentException
 

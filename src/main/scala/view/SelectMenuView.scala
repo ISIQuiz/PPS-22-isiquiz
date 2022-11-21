@@ -21,7 +21,8 @@ object SelectMenuView:
 
     override val actionsMap: Map[String, Action[Any]] = Map(
       "M" -> Back,
-      "S" -> Start
+      "S" -> Start,
+      "C" -> Custom
     )
 
     override def updateUI[T](update: ViewUpdate[T]): String = update match
@@ -29,6 +30,7 @@ object SelectMenuView:
         println("Menu selezione:")
         println("M) Menu principale")
         println("S) Inizia il gioco")
+        println("C) Impostazioni personalizzate")
         println("Seleziona un corso:")
         handleInput()
         "DefaultUpdate"

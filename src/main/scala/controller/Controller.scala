@@ -15,13 +15,25 @@ trait Controller:
 
 /** PageController should include all behaviours common between different pages controllers */
 trait PageController extends Controller:
+
+  /** Defines the logic of an iteration (step) in the corresponding page controller */
   def nextIteration(): Unit
+
+  /** Promise to await a performed action */
   var actionPromise: Promise[Unit] = Promise[Unit]
 
+  /** Handles and action matching it with all the actions available in the page controller and completes the promise on the action
+   * @param action the action performed
+   * @tparam T the type of optional parameter of the action
+   */
   override def handle[T](action: Action[T]): Unit =
     matchAction(action)
     actionPromise.complete(Try {})
 
+  /** Should match the action with all the available action and execute the corresponding logic
+   * @param action the action performed
+   * @tparam T the type of optional parameter of the action
+   */
   def matchAction[T](action: Action[T]): Unit
 
 /** Provides a binder between the page logic and the relative page view */
