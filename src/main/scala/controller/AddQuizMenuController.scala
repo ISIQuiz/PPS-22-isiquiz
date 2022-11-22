@@ -33,11 +33,11 @@ class AddQuizMenuController extends PageController :
     case AddQuizAction(actionParameter) => addQuiz(actionParameter)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(AddCourseMenuView.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(AddQuizMenuView.DefaultUpdate)
     if courseSelected.isEmpty then
-      updateUI(AddQuizMenuView.AskCoursePrint(Option(AppController.session.savedCourses)))
+      AppController.currentPage.pageView.updateUI(AddQuizMenuView.AskCoursePrint(Option(AppController.session.savedCourses)))
     else
-      updateUI(AddQuizMenuView.AskQuizPrint)
+      AppController.currentPage.pageView.updateUI(AddQuizMenuView.AskQuizPrint)
     Await.ready(actionPromise.future, Duration.Inf)
     AppController.currentPage.pageController.nextIteration()
 
@@ -46,5 +46,5 @@ class AddQuizMenuController extends PageController :
     val newSavedCourse = SavedCourse.changeQuizList(courseSelected.get, courseSelected.get.quizList.::(quizToAdd.get))
     val newListCourses = AppController.session.savedCourses.filterNot(course => course == courseSelected).appended(newSavedCourse)
     AppController.changeSavedCourses(newListCourses)
-    updateUI(AddQuizMenuView.QuizPrint(quizToAdd))
+    AppController.currentPage.pageView.updateUI(AddQuizMenuView.QuizPrint(quizToAdd))
     AppController.handle(SettingsMenu)

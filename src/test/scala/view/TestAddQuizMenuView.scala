@@ -24,10 +24,3 @@ class TestAddQuizMenuView extends AnyFunSuite with BeforeAndAfterAll with Before
     override def inputReader() = inputsIterator.next()
 
   var addQuizMenuView: AddQuizMenuView = new AddQuizMenuViewTest
-
-
-  test("Default Print should be drawn") {
-    assert(addQuizMenuView.draw(AddQuizMenuView.DefaultPrint) == "DefaultPrint")
-  }
-
-

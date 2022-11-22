@@ -12,7 +12,7 @@ import scala.io.StdIn.readLine
 
 object AddCourseMenuView:
 
-  case object DefaultPrint extends ParameterlessViewUpdate
+  case object DefaultUpdate extends ParameterlessViewUpdate
   case class CoursePrint(override val updateParameter: Option[SavedCourse]) extends ViewUpdate(updateParameter)
   case object AskCoursePrint extends ParameterlessViewUpdate
 
@@ -27,7 +27,7 @@ object AddCourseMenuView:
     )
 
     override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
-      case DefaultPrint =>
+      case DefaultUpdate =>
         println("Menu aggiunta corsi:\n1) Menu principale")
         println("Aggiunta corso:")
         handleInput()

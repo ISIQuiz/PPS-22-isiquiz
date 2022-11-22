@@ -34,5 +34,5 @@ class AddCourseMenuController extends PageController:
   def addCourse(actionParameter:Option[SavedCourse]):Unit =
     val newListCourses = AppController.session.savedCourses.appended(actionParameter.get)
     AppController.changeSavedCourses(newListCourses)
-    updateUI(AddCourseMenuView.CoursePrint(actionParameter))
+    AppController.currentPage.pageView.updateUI(AddCourseMenuView.CoursePrint(actionParameter))
     AppController.handle(SettingsMenu)

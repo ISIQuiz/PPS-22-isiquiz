@@ -14,7 +14,7 @@ import scala.io.StdIn.readLine
 
 object AddQuizMenuView:
 
-  case object DefaultPrint extends ParameterlessViewUpdate
+  case object DefaultUpdate extends ParameterlessViewUpdate
   case class AskCoursePrint[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
   case class QuizPrint[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
   case object AskQuizPrint extends ParameterlessViewUpdate
@@ -29,9 +29,9 @@ object AddQuizMenuView:
     override val actionsMap: Map[String, Action[Any]] = Map(
       "B" -> Back,
     )
-    
+
     override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
-      case DefaultPrint =>
+      case DefaultUpdate =>
         println("Menu aggiunta quiz:\n1) Menu principale")
         println("Aggiunta quiz:")
         handleInput()

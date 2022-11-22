@@ -22,8 +22,3 @@ class TestAddCourseMenuView extends AnyFunSuite with BeforeAndAfterAll with Befo
     override def inputReader() = inputsIterator.next()
 
   var addCourseMenuView: AddCourseMenuView = new AddCourseMenuViewTest
-
-
-  test("Default Print should be drawn") {
-    assert(addCourseMenuView.draw(AddCourseMenuView.DefaultPrint) == "AddCourseMenu")
-  }
