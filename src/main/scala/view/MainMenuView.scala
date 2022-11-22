@@ -26,7 +26,6 @@ object MainMenuView:
       "4" -> Quit
     )
 
-    override def updateUI[T](update: ViewUpdate[T]) =
+    override def updateUI[T](update: ViewUpdate[Any]): Unit =
       println("Menu principale:\n1) Gioca\n2) Statistiche\n3) Impostazioni\n4) Esci")
       handleInput()
-      "MainMenu"

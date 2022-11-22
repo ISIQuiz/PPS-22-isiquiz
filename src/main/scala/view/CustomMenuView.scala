@@ -24,7 +24,7 @@ object CustomMenuView:
       "M" -> Back
     )
 
-    override def updateUI[T](update: ViewUpdate[T]): String = update match
+    override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
       case DefaultUpdate =>
         println("Menu impostazioni personalizzate:\nM) Menu principale")
 
@@ -43,9 +43,3 @@ object CustomMenuView:
         checkControls(helpsNumber)
         val gameSettings: GameSettings = StandardGameSettings(quizMaxTime.toInt, maxQuizzes.toInt, helpsNumber.toInt)
         sendEvent(NewGameSettings(Option(gameSettings)))
-//          handleInput()
-          // TODO: add match and add case for each step with handleInput at the end of the case
-          // case SetMaxTimeUpdate
-          // print Imposta tempo massimo:
-          // handleInput()
-        "CustomMenu"

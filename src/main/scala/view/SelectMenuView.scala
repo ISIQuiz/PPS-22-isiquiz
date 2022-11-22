@@ -25,7 +25,7 @@ object SelectMenuView:
       "C" -> Custom
     )
 
-    override def updateUI[T](update: ViewUpdate[T]): String = update match
+    override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
       case DefaultUpdate =>
         println("Menu selezione:")
         println("M) Menu principale")
@@ -33,7 +33,6 @@ object SelectMenuView:
         println("C) Impostazioni personalizzate")
         println("Seleziona un corso:")
         handleInput()
-        "DefaultUpdate"
       case CourseUpdate(updateParameter) =>
         if update.updateParameter.isDefined then
           val savedCourses: List[(SavedCourse, Boolean)] = updateParameter.get.asInstanceOf[List[(SavedCourse, Boolean)]]
@@ -52,5 +51,3 @@ object SelectMenuView:
             println(s"${courseIndex}) [${courseSelection}] ${courseName} (${courseQuizzesNumber} quiz)")
             actionsMap += (courseIndex.toString -> SelectMenuController.Selection(Option(courseIndex)))
           )
-        "CourseUpdate"
-      case _ => "Errore"

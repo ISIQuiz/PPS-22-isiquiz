@@ -18,7 +18,7 @@ object View:
   /** PageView should include all behaviours common between different pages views */
   trait PageView:
     val actionsMap: Map[String, Action[Any]]
-    def updateUI[T](update: ViewUpdate[T]): String
+    def updateUI[T](update: ViewUpdate[Any]): Unit
     def inputReader() = readLine
     val terminalInput: TerminalInput = TerminalInputImpl()
     def handleInput(): Unit =

@@ -21,7 +21,6 @@ object StatisticsMenuView:
       "1" -> Back
     )
 
-    override def updateUI[T](update: ViewUpdate[T]): String =
+    override def updateUI[T](update: ViewUpdate[Any]): Unit =
       println("Menu statistiche:\n1) Menu principale")
       handleInput()
-      "StatisticsMenu"

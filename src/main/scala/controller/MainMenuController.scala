@@ -34,4 +34,5 @@ class MainMenuController extends PageController:
   override def nextIteration(): Unit =
     AppController.currentPage.pageView.updateUI(MainMenuView.DefaultUpdate)
     Await.ready(actionPromise.future, Duration.Inf)
-    AppController.currentPage.pageController.nextIteration()
+    //logic
+    AppController.currentPage.pageController.nextIteration() // or change page
