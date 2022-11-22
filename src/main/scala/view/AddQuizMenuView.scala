@@ -46,7 +46,6 @@ object AddQuizMenuView:
         import model.Quiz.*
         println("Quiz Aggiunto!")
         println(printQuizFull(quiz.get.asInstanceOf[Quiz]))
-        sendEvent(Back)
         "DefaultPrint"
       case AskQuizPrint =>
         println("Inserisci domanda:")
@@ -65,7 +64,7 @@ object AddQuizMenuView:
         var imagePath:Option[String] = None
         if "s"==readLine.toLowerCase then
           println("inserisci image path:")
-          imagePath = Some(readLine())
+          imagePath = Some(readLine)
         import model.Quiz.Quiz
         import controller.AddQuizMenuController.AddQuizAction
         sendEvent(AddQuizAction(Option(Quiz(question, answerList, score, imagePath))))

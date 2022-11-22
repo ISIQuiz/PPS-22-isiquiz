@@ -47,3 +47,4 @@ class AddQuizMenuController extends PageController :
     val newListCourses = AppController.session.savedCourses.filterNot(course => course == courseSelected).appended(newSavedCourse)
     AppController.changeSavedCourses(newListCourses)
     updateUI(AddQuizMenuView.QuizPrint(quizToAdd))
+    AppController.handle(SettingsMenu)
