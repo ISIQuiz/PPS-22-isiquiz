@@ -6,7 +6,7 @@ import controller.Controller
 import controller.AppController.*
 import controller.{MainMenuController, SelectMenuController, SettingsMenuController, StatisticsMenuController}
 import model.Session
-import resources.SampleCourseList
+import utils.DefaultCourseList
 import view.MainMenuView.*
 import view.SelectMenuView.*
 import view.StatisticsMenuView.*

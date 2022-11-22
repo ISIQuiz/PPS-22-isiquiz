@@ -1,13 +1,19 @@
 package controller
 
 import controller.{AppController, PageController}
-import controller.actions.{Action, ParameterlessAction, BackAction}
-import view.{View, StandardGameView}
-import view.updates.{ViewUpdate, ParameterlessViewUpdate}
+import controller.AppController.*
+import controller.actions.{Action, BackAction, ParameterlessAction}
+import view.{StandardGameView, View}
+import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import model.Answer.Answer
 import model.GameStage
 import model.{QuizInGame, SavedCourse}
 import model.Quiz.Quiz
+import model.settings.StandardGameSettings
+import utils.{TerminalInput, TerminalInputImpl, Timer, TimerImpl}
+
+import scala.concurrent.{Await, Promise}
+import scala.concurrent.duration.Duration
 
 trait GameController:
   def nextQuiz(): QuizInGame
@@ -19,31 +25,38 @@ trait GameController:
 object StandardGameController:
 
   case object Back extends ParameterlessAction
+  case object TimeExpired extends ParameterlessAction
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
-
 
 /** Defines the logic of the select page */
 class StandardGameController(val game: GameStage) extends PageController, GameController:
+
+  val timer: Timer = TimerImpl(gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime)
 
   import StandardGameController.*
 
   val gameStage: GameStage = game
 
-  override def handle[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(AppController.MainMenu)
+  override def matchAction[T](action: Action[T]): Unit = action match
+    case Back => AppController.handle(MainMenu)
+    case TimeExpired =>
+      println("Time expired")
+//      inputReader.stopInput()
     case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
 
   override def nextIteration(): Unit =
-    nextQuiz()
-    updateUI(StandardGameView.DefaultUpdate)
-    updateUI(StandardGameView.NewQuizUpdate(Option(gameStage)))
-    AppController.currentPage.pageView.handleInput()
-
-  override def updateUI[T](update: ViewUpdate[T]): Unit =
-    AppController.currentPage.pageView.draw(update)
+    actionPromise = Promise[Unit]
+//    nextQuiz()
+    AppController.currentPage.pageView.updateUI(StandardGameView.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(StandardGameView.NewQuizUpdate(Option(gameStage)))
+    timer.startTimer()
+    Await.ready(actionPromise.future, Duration.Inf)
+//    timer.stopTimer()
+    AppController.currentPage.pageController.nextIteration()
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
-    ???
+    timer.stopTimer()
+    println(actionParameter.get)
     // TODO: Fix selected answer check
 //    if actionParameter.get.toString.toInt -1 == getCorrectIndex(gameStage.quizInGame.answers) then
 //      updateUI(ViewUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Giusta")))

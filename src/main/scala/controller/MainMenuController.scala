@@ -1,9 +1,16 @@
 package controller
 
 import controller.{AppController, PageController}
+import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
-import view.{View, MainMenuView}
-import view.updates.{ViewUpdate, ParameterlessViewUpdate}
+import utils.{Timer, TimerImpl}
+import view.{MainMenuView, View}
+import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future, Promise}
+import concurrent.ExecutionContext.Implicits.global
+import scala.util.Try
 
 /** Companion object of main menu controller */
 object MainMenuController:
@@ -18,16 +25,14 @@ class MainMenuController extends PageController:
 
   import MainMenuController.*
 
-  override def handle[T](action: Action[T]): Unit = action match
-    case Select => AppController.handle(AppController.SelectMenu)
-    case Statistics => AppController.handle(AppController.StatisticsMenu)
-    case Settings => AppController.handle(AppController.SettingsMenu)
+  override def matchAction[T](action: Action[T]): Unit = action match
+    case Select => AppController.handle(SelectMenu)
+    case Statistics => AppController.handle(StatisticsMenu)
+    case Settings => AppController.handle(SettingsMenu)
     case Quit => System.exit(0)
 
   override def nextIteration(): Unit =
-    updateUI(MainMenuView.DefaultUpdate)
-
-  override def updateUI[T](update: ViewUpdate[T]): Unit  =
-    AppController.currentPage.pageView.draw(update)
-    AppController.currentPage.pageView.handleInput()
-
+    AppController.currentPage.pageView.updateUI(MainMenuView.DefaultUpdate)
+    Await.ready(actionPromise.future, Duration.Inf)
+    //logic
+    AppController.currentPage.pageController.nextIteration() // or change page

@@ -1,7 +1,8 @@
 package view
 
 import View.*
-import view.updates.{ViewUpdate, ParameterlessViewUpdate}
+import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+import controller.StandardGameController
 import controller.StandardGameController.*
 import controller.actions.{Action, ParameterlessAction}
 import model.GameStage
@@ -23,12 +24,10 @@ object StandardGameView:
       "0" -> Back.asInstanceOf[Action[Any]]
     )
 
-    override def draw[T](update: ViewUpdate[T]): String = update match
+    override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
       case DefaultUpdate =>
         println("Standard quiz:")
         println("0) Termina quiz")
-
-        "StandardGame"
       case NewQuizUpdate(updateParameter: Option[T]) =>
         if updateParameter.isDefined then
           val quizInGame = updateParameter.get.asInstanceOf[GameStage].quizInGame
@@ -38,7 +37,5 @@ object StandardGameView:
           quizInGame.answers.foreach(answer => actionsMap += ((quizInGame.answers.indexOf(answer) + 1).toString -> SelectAnswer(Option(quizInGame.answers.indexOf(answer) + 1)).asInstanceOf[Action[Any]]))
           println("Seleziona una risposta:")
           printAnswers.foreach(answer => println(answer))
-        "StandardGameUpdate"
       case AnswerFeedbackUpdate(updateParameter: Option[T]) =>
         println(updateParameter)
-        "StandardGameUpdate"

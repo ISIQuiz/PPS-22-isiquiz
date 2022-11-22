@@ -4,8 +4,9 @@ import model.CourseIdentifier.CourseIdentifierImpl
 import model.SavedCourse.SavedCourseImpl
 import model.Quiz.*
 import model.Answer.*
+import model.settings.{GameSettings, StandardGameSettings}
 
 case class QuizInGame(course: Course, quiz: Quiz, answers: List[Answer])
 
-case class GameStage(var coursesInGame: List[SavedCourse] = List(), var quizInGame: QuizInGame = null):
+class GameStage(var coursesInGame: List[SavedCourse] = List(), var quizInGame: QuizInGame = null, var gameSettings: GameSettings = StandardGameSettings())
   def quizInGame_(_quizInGame: QuizInGame) = quizInGame = _quizInGame

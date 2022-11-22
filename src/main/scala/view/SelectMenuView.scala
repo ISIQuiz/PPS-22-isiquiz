@@ -3,6 +3,7 @@ package view
 import View.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import controller.SelectMenuController
+import controller.SelectMenuController.*
 import controller.actions.{Action, ParameterlessAction}
 import scala.collection.mutable.{ListBuffer, Map}
 import model.{SavedCourse, Session}
@@ -19,17 +20,19 @@ object SelectMenuView:
   class SelectMenuViewImpl extends SelectMenuView :
 
     override val actionsMap: Map[String, Action[Any]] = Map(
-      "M" -> SelectMenuController.Back.asInstanceOf[Action[Any]],
-      "S" -> SelectMenuController.Start.asInstanceOf[Action[Any]]
+      "M" -> Back,
+      "S" -> Start,
+      "C" -> Custom
     )
 
-    override def draw[T](update: ViewUpdate[T]): String = update match
+    override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
       case DefaultUpdate =>
         println("Menu selezione:")
         println("M) Menu principale")
         println("S) Inizia il gioco")
+        println("C) Impostazioni personalizzate")
         println("Seleziona un corso:")
-        "DefaultUpdate"
+        handleInput()
       case CourseUpdate(updateParameter) =>
         if update.updateParameter.isDefined then
           val savedCourses: List[(SavedCourse, Boolean)] = updateParameter.get.asInstanceOf[List[(SavedCourse, Boolean)]]
@@ -48,5 +51,3 @@ object SelectMenuView:
             println(s"${courseIndex}) [${courseSelection}] ${courseName} (${courseQuizzesNumber} quiz)")
             actionsMap += (courseIndex.toString -> SelectMenuController.Selection(Option(courseIndex)))
           )
-        "CourseUpdate"
-      case _ => "Errore"

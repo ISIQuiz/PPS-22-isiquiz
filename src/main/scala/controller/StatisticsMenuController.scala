@@ -1,9 +1,13 @@
 package controller
 
 import controller.{AppController, PageController}
-import controller.actions.{Action, ParameterlessAction, BackAction}
-import view.{View, StatisticsMenuView}
-import view.updates.{ViewUpdate, ParameterlessViewUpdate}
+import controller.AppController.*
+import controller.actions.{Action, BackAction, ParameterlessAction}
+import view.{StatisticsMenuView, View}
+import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
 /** Companion object of statistics menu controller */
 object StatisticsMenuController:
@@ -15,12 +19,10 @@ class StatisticsMenuController extends PageController :
 
   import StatisticsMenuController.*
 
-  override def handle[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(AppController.MainMenu)
+  override def matchAction[T](action: Action[T]): Unit = action match
+    case Back => AppController.handle(MainMenu)
 
   override def nextIteration(): Unit =
-    updateUI(StatisticsMenuView.DefaultUpdate)
-
-  override def updateUI[T](update: ViewUpdate[T]): Unit =
-    AppController.currentPage.pageView.draw(update)
-    AppController.currentPage.pageView.handleInput()
+    AppController.currentPage.pageView.updateUI(StatisticsMenuView.DefaultUpdate)
+    Await.ready(actionPromise.future, Duration.Inf)
+    AppController.currentPage.pageController.nextIteration()
