@@ -7,4 +7,5 @@ import model.Answer.*
 
 case class QuizInGame(course: Course, quiz: Quiz, answers: List[Answer])
 
-case class GameStage(var coursesInGame: List[SavedCourse] = List(), var quizInGame: QuizInGame = null)
+case class GameStage(var coursesInGame: List[SavedCourse] = List(), var quizInGame: QuizInGame = null):
+  def quizInGame_(_quizInGame: QuizInGame) = quizInGame = _quizInGame

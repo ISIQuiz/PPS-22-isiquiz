@@ -20,24 +20,24 @@ object StandardGameView:
   class StandardGameViewImpl extends StandardGameView:
 
     override val actionsMap: Map[String, Action[Any]] = Map(
-      "0" -> Back.asInstanceOf[Action[Any]],
-      "1" -> SelectAnswer(Option(1)).asInstanceOf[Action[Any]],
-      "2" -> SelectAnswer(Option(2)).asInstanceOf[Action[Any]],
-      "3" -> SelectAnswer(Option(3)).asInstanceOf[Action[Any]],
-      "4" -> SelectAnswer(Option(4)).asInstanceOf[Action[Any]]
+      "0" -> Back.asInstanceOf[Action[Any]]
     )
 
     override def draw[T](update: ViewUpdate[T]): String = update match
       case DefaultUpdate =>
         println("Standard quiz:")
-        println("0) Termina quiz");
+        println("0) Termina quiz")
+
         "StandardGame"
       case NewQuizUpdate(updateParameter: Option[T]) =>
-        if (updateParameter.isDefined){
-          updateParameter.get.asInstanceOf[GameStage].coursesInGame.foreach(savedCourse => savedCourse.quizList.foreach(quiz =>
-            println(quiz);
-          ))
-        }
+        if updateParameter.isDefined then
+          val quizInGame = updateParameter.get.asInstanceOf[GameStage].quizInGame
+          val printAnswers = quizInGame.answers.map(answer =>
+            s"${quizInGame.answers.indexOf(answer) + 1}) ${answer.text}")
+          println(quizInGame.quiz.question)
+          quizInGame.answers.foreach(answer => actionsMap += ((quizInGame.answers.indexOf(answer) + 1).toString -> SelectAnswer(Option(quizInGame.answers.indexOf(answer) + 1)).asInstanceOf[Action[Any]]))
+          println("Seleziona una risposta:")
+          printAnswers.foreach(answer => println(answer))
         "StandardGameUpdate"
       case AnswerFeedbackUpdate(updateParameter: Option[T]) =>
         println(updateParameter)

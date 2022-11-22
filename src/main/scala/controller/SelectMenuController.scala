@@ -5,7 +5,7 @@ import controller.actions.{Action, BackAction, ParameterlessAction}
 import view.{SelectMenuView, View}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import controller.{AppController, PageController}
-import model.{GameStage, Session}
+import model.{GameStage, QuizInGame, Session}
 import model.GameStage.*
 
 /** Companion object of select menu controller */

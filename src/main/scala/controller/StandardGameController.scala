@@ -23,16 +23,18 @@ object StandardGameController:
 
 
 /** Defines the logic of the select page */
-class StandardGameController(val gameStage: GameStage) extends PageController, GameController:
+class StandardGameController(val game: GameStage) extends PageController, GameController:
 
   import StandardGameController.*
+
+  val gameStage: GameStage = game
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(AppController.MainMenu)
     case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
 
   override def nextIteration(): Unit =
-//    nextQuiz()
+    nextQuiz()
     updateUI(StandardGameView.DefaultUpdate)
     updateUI(StandardGameView.NewQuizUpdate(Option(gameStage)))
     AppController.currentPage.pageView.handleInput()
@@ -57,13 +59,15 @@ class StandardGameController(val gameStage: GameStage) extends PageController, G
     val selectedCourse = gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)
     val selectedQuiz = chooseQuiz(selectedCourse)
     val selectedAnswers = chooseAnswers(selectedQuiz)
-    QuizInGame.apply(selectedCourse, selectedQuiz, selectedAnswers)
+    val quizInGame = QuizInGame.apply(selectedCourse, selectedQuiz, selectedAnswers)
+    gameStage.quizInGame_(quizInGame)
+    quizInGame
 
   override def chooseQuiz(course: SavedCourse): Quiz = course.quizList(randomNumberGenerator(1, course.quizList.size).head)
 
   override def chooseAnswers(quiz: Quiz): List[Answer] =
-    val allCorrectAnswers = gameStage.quizInGame.quiz.answerList.filter(answer => answer.isCorrect)
-    val allWrongAnswers = gameStage.quizInGame.quiz.answerList.filter(answer => !answer.isCorrect)
+    val allCorrectAnswers = quiz.answerList.filter(answer => answer.isCorrect)
+    val allWrongAnswers = quiz.answerList.filter(answer => !answer.isCorrect)
 
     val correctAnswers = randomNumberGenerator(1, allCorrectAnswers.size).map(allCorrectAnswers)
     val wrongAnswers = randomNumberGenerator(3, allWrongAnswers.size).map(allWrongAnswers)
