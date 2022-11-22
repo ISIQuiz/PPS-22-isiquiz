@@ -10,6 +10,10 @@ import model.GameStage
 import model.{QuizInGame, SavedCourse}
 import model.Quiz.Quiz
 import model.settings.StandardGameSettings
+import utils.{TerminalInput, TerminalInputImpl, Timer, TimerImpl}
+
+import scala.concurrent.{Await, Promise}
+import scala.concurrent.duration.Duration
 
 trait GameController:
   def nextQuiz(): QuizInGame
@@ -21,28 +25,36 @@ trait GameController:
 object StandardGameController:
 
   case object Back extends ParameterlessAction
+  case object TimeExpired extends ParameterlessAction
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
 /** Defines the logic of the select page */
 class StandardGameController(val gameStage: GameStage) extends PageController, GameController:
 
+  val timer: Timer = TimerImpl(gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime)
+
   import StandardGameController.*
 
-  override def handle[T](action: Action[T]): Unit = action match
+  override def matchAction[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenu)
+    case TimeExpired =>
+      println("Time expired")
+//      inputReader.stopInput()
     case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
 
   override def nextIteration(): Unit =
+    actionPromise = Promise[Unit]
 //    nextQuiz()
-    updateUI(StandardGameView.DefaultUpdate)
-    updateUI(StandardGameView.NewQuizUpdate(Option(gameStage)))
-    AppController.currentPage.pageView.handleInput()
-
-  override def updateUI[T](update: ViewUpdate[T]): Unit =
-    AppController.currentPage.pageView.draw(update)
+    AppController.currentPage.pageView.updateUI(StandardGameView.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(StandardGameView.NewQuizUpdate(Option(gameStage)))
+    timer.startTimer()
+    Await.ready(actionPromise.future, Duration.Inf)
+//    timer.stopTimer()
+    AppController.currentPage.pageController.nextIteration()
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
-    ???
+    timer.stopTimer()
+    println(actionParameter.get)
     // TODO: Fix selected answer check
 //    if actionParameter.get.toString.toInt -1 == getCorrectIndex(gameStage.quizInGame.answers) then
 //      updateUI(ViewUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Giusta")))

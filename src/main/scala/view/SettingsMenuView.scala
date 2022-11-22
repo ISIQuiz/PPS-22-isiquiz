@@ -23,6 +23,6 @@ object SettingsMenuView:
       "3" -> AddQuiz
     )
 
-    override def draw[T](update: ViewUpdate[T]): String =
+    override def updateUI[T](update: ViewUpdate[Any]): Unit =
       println("Menu impostazioni:\n1) Menu principale\n2) Aggiungi corso\n3) Aggiungi quiz")
-      "SettingsMenu"
+      handleInput()

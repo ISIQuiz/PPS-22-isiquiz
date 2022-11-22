@@ -28,18 +28,16 @@ object StandardGameView:
       "4" -> SelectAnswer(Option(4))
     )
 
-    override def draw[T](update: ViewUpdate[T]): String = update match
+    override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
       case DefaultUpdate =>
         println("Standard quiz:")
-        println("0) Termina quiz");
-        "StandardGame"
+        println("0) Termina quiz")
+        handleInput()
       case NewQuizUpdate(updateParameter: Option[T]) =>
         if (updateParameter.isDefined){
           updateParameter.get.asInstanceOf[GameStage].coursesInGame.foreach(savedCourse => savedCourse.quizList.foreach(quiz =>
             println(quiz);
           ))
         }
-        "StandardGameUpdate"
       case AnswerFeedbackUpdate(updateParameter: Option[T]) =>
         println(updateParameter)
-        "StandardGameUpdate"

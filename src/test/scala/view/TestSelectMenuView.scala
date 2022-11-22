@@ -25,10 +25,6 @@ class TestSelectMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeA
     AppController.handle(AppController.SelectMenu)
   }
 
-  test("Select menu view should draw select menu") {
-    assert(selectMenuView.draw(SelectMenuView.DefaultUpdate) == "DefaultUpdate")
-  }
-
   test("Selecting back should return to main menu") {
     input_("1")
     assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, MainMenuView]])

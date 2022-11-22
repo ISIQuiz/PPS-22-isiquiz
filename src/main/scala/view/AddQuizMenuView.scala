@@ -14,7 +14,7 @@ import scala.io.StdIn.readLine
 
 object AddQuizMenuView:
 
-  case object DefaultPrint extends ParameterlessViewUpdate
+  case object DefaultUpdate extends ParameterlessViewUpdate
   case class AskCoursePrint[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
   case class QuizPrint[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
   case object AskQuizPrint extends ParameterlessViewUpdate
@@ -29,11 +29,12 @@ object AddQuizMenuView:
     override val actionsMap: Map[String, Action[Any]] = Map(
       "B" -> Back,
     )
-    
-    override def draw[T](update: ViewUpdate[T]): String = update match
-      case DefaultPrint =>
+
+    override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
+      case DefaultUpdate =>
+        println("Menu aggiunta quiz:\n1) Menu principale")
         println("Aggiunta quiz:")
-        "DefaultPrint"
+        handleInput()
       case AskCoursePrint(param) =>
         println("Seleziona il corso al quale aggiungere la domanda")
         val courseList = param.get.asInstanceOf[List[SavedCourse]]
@@ -41,12 +42,10 @@ object AddQuizMenuView:
         val courseIndex = readLine.toInt
         import controller.AddQuizMenuController.AddCourseAction
         sendEvent(AddCourseAction(courseList.lift(courseIndex)))
-        "DefaultPrint"
       case QuizPrint(quiz) =>
         import model.Quiz.*
         println("Quiz Aggiunto!")
         println(printQuizFull(quiz.get.asInstanceOf[Quiz]))
-        "DefaultPrint"
       case AskQuizPrint =>
         println("Inserisci domanda:")
         val question = readLine
@@ -68,5 +67,3 @@ object AddQuizMenuView:
         import model.Quiz.Quiz
         import controller.AddQuizMenuController.AddQuizAction
         sendEvent(AddQuizAction(Option(Quiz(question, answerList, score, imagePath))))
-        "DefaultPrint"
-

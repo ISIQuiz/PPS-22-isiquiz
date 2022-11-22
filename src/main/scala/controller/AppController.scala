@@ -14,6 +14,7 @@ import view.SettingsMenuView.*
 import view.StandardGameView.*
 import view.AddCourseMenuView.*
 import view.AddQuizMenuView.*
+import view.CustomMenuView.*
 import scala.util.Success
 
 /** Controller for the general logic of the application */
@@ -34,6 +35,7 @@ object AppController extends Controller :
   case object SettingsMenu extends ParameterlessAction
   case object AddCourseMenu extends ParameterlessAction
   case object AddQuizMenu extends ParameterlessAction
+  case class CustomMenu[T](override val actionParameter: Option[T]) extends Action(actionParameter)
   case class StandardGame[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
   override def handle[T](action: Action[T]): Unit = action match
@@ -44,13 +46,13 @@ object AppController extends Controller :
     case StandardGame(actionParameter) => currentPage_(new StandardGameController(actionParameter.get.asInstanceOf[GameStage]), StandardGameViewImpl())
     case AddCourseMenu => currentPage_(new AddCourseMenuController, AddCourseMenuViewImpl())
     case AddQuizMenu => currentPage_(new AddQuizMenuController, AddQuizMenuViewImpl())
+    case CustomMenu(actionParameter) => currentPage_(new CustomMenuController(actionParameter.get.asInstanceOf[GameStage]), CustomMenuViewImpl())
     case action: Action[T] => currentPage.pageController.handle(action)
     case null => throw new IllegalArgumentException
 
   def startApp(): Unit =
     loadCoursesFromFile()
-    while (true)
-      currentPage.pageController.nextIteration()
+    currentPage.pageController.nextIteration()
 
   // Read courses list from a JSON file and deserialize it
   def loadCoursesFromFile(): Unit =

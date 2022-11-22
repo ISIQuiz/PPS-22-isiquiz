@@ -21,16 +21,18 @@ object SelectMenuView:
 
     override val actionsMap: Map[String, Action[Any]] = Map(
       "M" -> Back,
-      "S" -> Start
+      "S" -> Start,
+      "C" -> Custom
     )
 
-    override def draw[T](update: ViewUpdate[T]): String = update match
+    override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
       case DefaultUpdate =>
         println("Menu selezione:")
         println("M) Menu principale")
         println("S) Inizia il gioco")
+        println("C) Impostazioni personalizzate")
         println("Seleziona un corso:")
-        "DefaultUpdate"
+        handleInput()
       case CourseUpdate(updateParameter) =>
         if update.updateParameter.isDefined then
           val savedCourses: List[(SavedCourse, Boolean)] = updateParameter.get.asInstanceOf[List[(SavedCourse, Boolean)]]
@@ -49,5 +51,3 @@ object SelectMenuView:
             println(s"${courseIndex}) [${courseSelection}] ${courseName} (${courseQuizzesNumber} quiz)")
             actionsMap += (courseIndex.toString -> SelectMenuController.Selection(Option(courseIndex)))
           )
-        "CourseUpdate"
-      case _ => "Errore"
