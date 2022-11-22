@@ -17,6 +17,9 @@ object View:
 
   /** PageView should include all behaviours common between different pages views */
   trait PageView:
+    /**
+     * Map between input and actions of the controllers
+     */
     val actionsMap: Map[String, Action[Any]]
     def updateUI[T](update: ViewUpdate[Any]): Unit
     def inputReader() = readLine

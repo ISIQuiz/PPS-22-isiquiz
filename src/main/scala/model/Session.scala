@@ -1,6 +1,10 @@
 package model
 
-import resources.SampleCourseList
+import utils.Configuration.SavedCoursesFilePath
+import utils.DefaultCourseList.defaultCourseList
+import utils.{CourseJsonParser, DefaultCourseList, FileHandler}
+
+import scala.util.{Failure, Success, Try}
 
 /**
  * Trait needed to manage a game session
@@ -23,7 +27,7 @@ object Session:
    * @param savedCourses the list of saved course, if empty it uses a sample list
    * @return Session
    */
-  def apply(savedCourses: List[SavedCourse] = SampleCourseList.courseList): Session = SessionImpl(savedCourses)
+  def apply(savedCourses: List[SavedCourse] = defaultCourseList): Session = SessionImpl(savedCourses)
 
   /**
    * Case class for session model
@@ -36,5 +40,6 @@ object Session:
    * @param savedCourses the new saved course list
    * @return Session
    */
-  def changeSavedCourses(savedCourses: List[SavedCourse]): Session = SessionImpl(savedCourses)
+  def changeSavedCourses(session: Session, savedCourses: List[SavedCourse]): Session = session match
+    case SessionImpl(_) => SessionImpl(savedCourses)
 
