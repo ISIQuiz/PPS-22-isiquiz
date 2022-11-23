@@ -39,4 +39,4 @@ object StandardGameView:
           println("Seleziona una risposta:")
           printAnswers.foreach(answer => println(answer))
       case AnswerFeedbackUpdate(updateParameter: Option[T]) =>
-        println(updateParameter)
+        println(updateParameter.get)
