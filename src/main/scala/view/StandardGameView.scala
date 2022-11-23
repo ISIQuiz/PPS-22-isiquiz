@@ -15,7 +15,7 @@ object StandardGameView:
   case class AnswerFeedbackUpdate[T](override val updateParameter: Option[T]) extends ViewUpdate[T](updateParameter)
 
   /** StandardGameView define aspects of a general StandardGameView */
-  trait StandardGameView extends PageView
+  trait StandardGameView extends TerminalView
 
   /** A basic implementation of a SelectMenuView  */
   class StandardGameViewImpl extends StandardGameView:

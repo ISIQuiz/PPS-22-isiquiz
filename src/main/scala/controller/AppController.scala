@@ -6,7 +6,7 @@ import model.GameStage
 import model.{SavedCourse, Session}
 import utils.Configuration.SavedCoursesFilePath
 import utils.{CourseJsonParser, FileHandler}
-import view.View.PageView
+import view.View.{PageView, TerminalView, ViewFactory}
 import view.MainMenuView.*
 import view.SelectMenuView.*
 import view.StatisticsMenuView.*
@@ -15,12 +15,13 @@ import view.StandardGameView.*
 import view.AddCourseMenuView.*
 import view.AddQuizMenuView.*
 import view.CustomMenuView.*
+
 import scala.util.Success
 
 /** Controller for the general logic of the application */
 object AppController extends Controller :
 
-  private var _currentPage: Page[PageController, PageView] = Page[PageController, PageView](new MainMenuController, MainMenuViewImpl())
+  private var _currentPage: Page[PageController, PageView] = Page[PageController, PageView](new MainMenuController, ViewFactory.create(MainMenu))
   def currentPage: Page[PageController, PageView] = _currentPage
   def currentPage_(pageController: PageController, pageView: PageView): Unit = _currentPage = Page[PageController, PageView](pageController, pageView)
 
@@ -39,7 +40,7 @@ object AppController extends Controller :
   case class StandardGame[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
   override def handle[T](action: Action[T]): Unit = action match
-    case MainMenu => currentPage_(new MainMenuController, MainMenuViewImpl())
+    case MainMenu => currentPage_(new MainMenuController, ViewFactory.create(MainMenu))
     case SelectMenu => currentPage_(new SelectMenuController, SelectMenuViewImpl())
     case StatisticsMenu => currentPage_(new StatisticsMenuController, StatisticsMenuViewImpl())
     case SettingsMenu => currentPage_(new SettingsMenuController, SettingsMenuViewImpl())

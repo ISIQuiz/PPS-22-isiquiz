@@ -12,7 +12,7 @@ object SettingsMenuView:
   case object DefaultUpdate extends ParameterlessViewUpdate
 
   /** SettingsMenuView define aspects of a general SettingsMenuView */
-  trait SettingsMenuView extends PageView
+  trait SettingsMenuView extends TerminalView
 
   /** A basic implementation of a SettingsMenuView  */
   class SettingsMenuViewImpl extends SettingsMenuView:

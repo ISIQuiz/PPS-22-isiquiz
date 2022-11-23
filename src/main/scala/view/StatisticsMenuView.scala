@@ -12,7 +12,7 @@ object StatisticsMenuView:
   case object DefaultUpdate extends ParameterlessViewUpdate
 
   /** SettingsMenuView define aspects of a general StatisticsMenuView */
-  trait StatisticsMenuView extends PageView
+  trait StatisticsMenuView extends TerminalView
 
   /** A basic implementation of a StatisticsMenuView  */
   class StatisticsMenuViewImpl extends StatisticsMenuView:

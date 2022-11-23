@@ -15,7 +15,7 @@ object CustomMenuView:
   case object DefaultUpdate extends ParameterlessViewUpdate
 
   /** CustomMenuView define aspects of a general CustomMenuView */
-  trait CustomMenuView extends PageView
+  trait CustomMenuView extends TerminalView
 
   /** A basic implementation of a CustomMenuView  */
   class CustomMenuViewImpl extends CustomMenuView:

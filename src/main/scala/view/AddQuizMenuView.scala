@@ -21,7 +21,7 @@ object AddQuizMenuView:
 
 
   /** AddQuizMenuView define aspects of a general AddQuizMenuView */
-  trait AddQuizMenuView extends PageView
+  trait AddQuizMenuView extends TerminalView
 
   /** A basic implementation of a AddQuizMenuView  */
   class AddQuizMenuViewImpl extends AddQuizMenuView:

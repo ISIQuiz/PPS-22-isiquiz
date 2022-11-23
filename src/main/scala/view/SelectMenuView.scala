@@ -14,7 +14,7 @@ object SelectMenuView:
   case class CourseUpdate[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
 
   /** SettingsMenuView define aspects of a general SelectMenuView */
-  trait SelectMenuView extends PageView
+  trait SelectMenuView extends TerminalView
 
   /** A basic implementation of a SelectMenuView */
   class SelectMenuViewImpl extends SelectMenuView :

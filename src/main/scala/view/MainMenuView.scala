@@ -14,7 +14,7 @@ object MainMenuView:
   case object DefaultUpdate extends ParameterlessViewUpdate
 
   /** MainMenuView define aspects of a general MainMenuView */
-  trait MainMenuView extends PageView
+  trait MainMenuView extends TerminalView
 
   /** A basic implementation of a MainMenuView  */
   class MainMenuViewImpl extends MainMenuView:

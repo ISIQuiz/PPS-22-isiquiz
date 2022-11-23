@@ -17,7 +17,7 @@ object AddCourseMenuView:
   case object AskCoursePrint extends ParameterlessViewUpdate
 
 /** AddCourseMenuView define aspects of a general AddCourseMenuView */
-  trait AddCourseMenuView extends PageView
+  trait AddCourseMenuView extends TerminalView
 
   /** A basic implementation of a AddCourseMenuView  */
   class AddCourseMenuViewImpl extends AddCourseMenuView:
