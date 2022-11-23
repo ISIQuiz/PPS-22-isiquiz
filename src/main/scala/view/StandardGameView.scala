@@ -28,6 +28,7 @@ object StandardGameView:
       case DefaultUpdate =>
         println("Standard quiz:")
         println("0) Termina quiz")
+        handleInput()
       case NewQuizUpdate(updateParameter: Option[T]) =>
         if updateParameter.isDefined then
           val quizInGame = updateParameter.get.asInstanceOf[GameStage].quizInGame
@@ -38,4 +39,4 @@ object StandardGameView:
           println("Seleziona una risposta:")
           printAnswers.foreach(answer => println(answer))
       case AnswerFeedbackUpdate(updateParameter: Option[T]) =>
-        println(updateParameter)
+        println(updateParameter.get)

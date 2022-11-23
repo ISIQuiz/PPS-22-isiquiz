@@ -54,18 +54,17 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
     AppController.currentPage.pageController.nextIteration()
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
+    var checkAnswer : String = ""
     timer.stopTimer()
-    println(actionParameter.get)
-    // TODO: Fix selected answer check
-//    if actionParameter.get.toString.toInt -1 == getCorrectIndex(gameStage.quizInGame.answers) then
-//      updateUI(ViewUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Giusta")))
-//      nextIteration()
-//      println("Risposta GIUSTA!")
-//    else
-//      updateUI(ViewUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Sbagliata")))
-//      println("Risposta SBAGLIATA!")
-//    println(getCorrectIndex(gameStage.quizInGame.answers))
-//    println(value.get.toString + " | " + getCorrect(gameStage.quizInGame.answers))
+
+    if actionParameter.isDefined then
+      if gameStage.quizInGame.answers(actionParameter.get.asInstanceOf[Int] - 1).isCorrect then
+        checkAnswer = "Risposta GIUSTA!"
+      else
+        checkAnswer = "Risposta SBAGLIATA!"
+        
+      AppController.currentPage.pageView.updateUI(StandardGameView.AnswerFeedbackUpdate(Option(checkAnswer)))
+      nextIteration()
 
   override def nextQuiz(): QuizInGame =
     val selectedCourse = gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)
