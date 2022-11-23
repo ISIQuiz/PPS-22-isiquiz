@@ -4,7 +4,7 @@ import controller.MainMenuController
 import controller.MainMenuController.*
 import controller.actions.{Action, ParameterlessAction}
 import scalafx.Includes._
-import scalafx.application.JFXApp3
+import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
 import scalafx.scene.paint.Color._
 import scalafx.scene.shape.Rectangle
@@ -19,10 +19,10 @@ object FXMainMenuView:
   case object DefaultUpdate extends ParameterlessViewUpdate
 
   /** MainMenuView define aspects of a general MainMenuView */
-  trait MainMenuView extends ScalaFXView
+  trait MainMenuFXView extends ScalaFXView
 
   /** A basic implementation of a MainMenuView  */
-  class FXMainMenuViewImpl extends MainMenuView, JFXApp3:
+  class FXMainMenuViewImpl extends MainMenuFXView, JFXApp3:
     override def start(): Unit = {
       stage = new JFXApp3.PrimaryStage {
         title.value = "Hello Stage"

@@ -19,12 +19,12 @@ class TestApplicationController extends AnyFunSuite with BeforeAndAfterAll with 
   }
 
   test("Application should start in main menu page") {
-    assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, MainMenuView]])
+    assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, MainMenuTerminalView]])
   }
 
   test("Application should go to main menu page when action is performed") {
     AppController.handle(AppController.MainMenu)
-    assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, MainMenuView]])
+    assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, MainMenuTerminalView]])
   }
 
   test("Going from main menu to select page when action is performed") {

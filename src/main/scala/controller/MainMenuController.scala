@@ -4,6 +4,7 @@ import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
 import utils.{Timer, TimerImpl}
+import view.ScalaFX.FXMainMenuView.FXMainMenuViewImpl
 import view.{MainMenuView, View}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 

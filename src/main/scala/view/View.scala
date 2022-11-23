@@ -4,7 +4,7 @@ import controller.AppController
 import controller.AppController.MainMenu
 import controller.actions.{Action, ParameterlessAction}
 import utils.{TerminalInput, TerminalInputImpl}
-import view.MainMenuView.MainMenuViewImpl
+import view.MainMenuView.MainMenuTerminalViewImpl
 import view.updates.ViewUpdate
 
 import scala.io.StdIn.readLine
@@ -28,7 +28,10 @@ object View:
       def currentGUIType: GUIType = _currentGUIType
       def currentGUIType_(guiType: GUIType): Unit = _currentGUIType = guiType
     def create(page: ParameterlessAction): PageView = page match
-      case MainMenu => if GUIType == GUIType.Terminal then new MainMenuViewImpl() else new FXMainMenuViewImpl()
+      case MainMenu => if _currentGUIType == GUIType.Terminal then new MainMenuTerminalViewImpl() else
+
+        val mainMenu = new FXMainMenuViewImpl()
+        mainMenu
 
   /** PageView should include all behaviours common between different pages views */
   trait PageView:

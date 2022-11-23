@@ -27,7 +27,7 @@ class TestSelectMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeA
 
   test("Selecting back should return to main menu") {
     input_("1")
-    assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, MainMenuView]])
+    assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, MainMenuTerminalView]])
   }
 
   test("Selecting start should start a quiz") {

@@ -14,10 +14,10 @@ object MainMenuView:
   case object DefaultUpdate extends ParameterlessViewUpdate
 
   /** MainMenuView define aspects of a general MainMenuView */
-  trait MainMenuView extends TerminalView
+  trait MainMenuTerminalView extends TerminalView
 
   /** A basic implementation of a MainMenuView  */
-  class MainMenuViewImpl extends MainMenuView:
+  class MainMenuTerminalViewImpl extends MainMenuTerminalView:
 
     override val actionsMap: Map[String, Action[Any]] = Map(
       "1" -> Select,
