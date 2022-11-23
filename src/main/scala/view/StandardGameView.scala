@@ -28,6 +28,7 @@ object StandardGameView:
       case DefaultUpdate =>
         println("Standard quiz:")
         println("0) Termina quiz")
+        handleInput()
       case NewQuizUpdate(updateParameter: Option[T]) =>
         if updateParameter.isDefined then
           val quizInGame = updateParameter.get.asInstanceOf[GameStage].quizInGame

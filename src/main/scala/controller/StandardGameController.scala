@@ -56,7 +56,12 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
   def selectAnswer[T](actionParameter: Option[T]): Unit =
     timer.stopTimer()
     println(actionParameter.get)
-    // TODO: Fix selected answer check
+
+    if actionParameter.isDefined then
+      if gameStage.quizInGame.answers(actionParameter.get.asInstanceOf[Int] - 1).isCorrect then
+        println("Risposta GIUSTA!")
+      else
+        println("Risposta SBAGLIATA!")
 //    if actionParameter.get.toString.toInt -1 == getCorrectIndex(gameStage.quizInGame.answers) then
 //      updateUI(ViewUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Giusta")))
 //      nextIteration()
