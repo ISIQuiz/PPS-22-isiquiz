@@ -3,11 +3,12 @@ package controller
 import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
-import view.{SelectMenuView, View}
+import view.View
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import controller.{AppController, PageController}
 import model.{GameStage, Session}
 import model.GameStage.*
+import view.terminalUI.TerminalSelectMenu
 
 import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
@@ -28,9 +29,9 @@ class SelectMenuController extends PageController:
   var gameStage = GameStage()
 
   override def matchAction[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(AppController.MainMenu)
-    case Start => AppController.handle(AppController.StandardGame(Option(gameStage)))
-    case Custom =>  AppController.handle(AppController.CustomMenu(Option(gameStage)))
+    case Back => AppController.handle(AppController.MainMenuAction)
+    case Start => AppController.handle(AppController.StandardGameAction(Option(gameStage)))
+    case Custom =>  AppController.handle(AppController.CustomMenuAction(Option(gameStage)))
     case Selection(actionParameter) => modifySelectedCourses(actionParameter)
 
   // Get session from application controller
@@ -38,8 +39,8 @@ class SelectMenuController extends PageController:
 
   override def nextIteration(): Unit =
     actionPromise = Promise[Unit]
-    AppController.currentPage.pageView.updateUI(SelectMenuView.DefaultUpdate)
-    AppController.currentPage.pageView.updateUI(SelectMenuView.CourseUpdate(Option(getSession.savedCourses.map(course => (course,gameStage.coursesInGame.contains(course))))))
+    AppController.currentPage.pageView.updateUI(TerminalSelectMenu.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(TerminalSelectMenu.CourseUpdate(Option(getSession.savedCourses.map(course => (course,gameStage.coursesInGame.contains(course))))))
     Await.ready(actionPromise.future, Duration.Inf)
     AppController.currentPage.pageController.nextIteration()
 

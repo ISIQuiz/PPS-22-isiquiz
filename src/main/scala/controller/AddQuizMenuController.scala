@@ -5,7 +5,7 @@ import controller.{AppController, PageController}
 import controller.AppController.*
 import model.{Course, SavedCourse}
 import model.Quiz.Quiz
-import view.AddQuizMenuView
+import view.terminalUI.TerminalAddQuizMenu
 import view.updates.ViewUpdate
 
 import scala.concurrent.Await
@@ -28,16 +28,16 @@ class AddQuizMenuController extends PageController :
   var quizToAdd:Option[Quiz] = Option.empty
 
   override def matchAction[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(SettingsMenu)
+    case Back => AppController.handle(SettingsMenuAction)
     case AddCourseAction(actionParameter) => courseSelected = actionParameter
     case AddQuizAction(actionParameter) => addQuiz(actionParameter)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(AddQuizMenuView.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.DefaultUpdate)
     if courseSelected.isEmpty then
-      AppController.currentPage.pageView.updateUI(AddQuizMenuView.AskCoursePrint(Option(AppController.session.savedCourses)))
+      AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.AskCoursePrint(Option(AppController.session.savedCourses)))
     else
-      AppController.currentPage.pageView.updateUI(AddQuizMenuView.AskQuizPrint)
+      AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.AskQuizPrint)
     Await.ready(actionPromise.future, Duration.Inf)
     AppController.currentPage.pageController.nextIteration()
 
@@ -46,5 +46,5 @@ class AddQuizMenuController extends PageController :
     val newSavedCourse = SavedCourse.changeQuizList(courseSelected.get, courseSelected.get.quizList.::(quizToAdd.get))
     val newListCourses = AppController.session.savedCourses.filterNot(course => course == courseSelected).appended(newSavedCourse)
     AppController.changeSavedCourses(newListCourses)
-    AppController.currentPage.pageView.updateUI(AddQuizMenuView.QuizPrint(quizToAdd))
-    AppController.handle(SettingsMenu)
+    AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.QuizPrint(quizToAdd))
+    AppController.handle(SettingsMenuAction)

@@ -3,27 +3,27 @@ package view
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import controller.{AppController, Controller, MainMenuController, Page, SelectMenuController, SettingsMenuController, StatisticsMenuController}
-import view.MainMenuView.*
-import view.SelectMenuView.*
-import view.StatisticsMenuView.*
-import view.SettingsMenuView.*
+import view.terminalUI.TerminalMainMenu.*
+import view.terminalUI.TerminalSelectMenu.*
+import view.terminalUI.TerminalStatisticsMenu.*
+import view.terminalUI.TerminalSettingsMenu.*
 
-object TestMainMenuTerminalView:
+object TestMainMenuViewActionTerminalView:
   private var _input: String = null
   def input: String = _input
   def input_(input: String): Unit = _input = input
 
-class TestMainMenuTerminalView extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
-  import TestMainMenuTerminalView.*
+class TestMainMenuViewActionTerminalView extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
+  import TestMainMenuViewActionTerminalView.*
 
-  class MainMenuTerminalViewTest extends MainMenuTerminalViewImpl:
+  class TerminalViewTest extends TerminalMainMenu:
     override def inputReader() = input
 
-  var mainMenuView: MainMenuTerminalView = new MainMenuTerminalViewTest
+  var mainMenuView: MainMenuTerminalView = new TerminalViewTest
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    AppController.handle(AppController.MainMenu)
+    AppController.handle(AppController.MainMenuAction)
   }
 
   test("Should change to select menu when play is selected") {
@@ -31,4 +31,4 @@ class TestMainMenuTerminalView extends AnyFunSuite with BeforeAndAfterAll with B
     assert(AppController.currentPage.isInstanceOf[Page[SelectMenuController, SelectMenuView]])
   }
 
-end TestMainMenuTerminalView
+end TestMainMenuViewActionTerminalView

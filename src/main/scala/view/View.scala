@@ -1,10 +1,19 @@
 package view
 
 import controller.AppController
-import controller.AppController.MainMenu
+import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
+import javafx.fxml.FXMLLoader
+import javafx.stage.StageStyle
+import scalafx.application.JFXApp3
+import scalafx.application.JFXApp3.PrimaryStage
+import scalafx.scene.Scene
+import scalafx.stage.Stage
 import utils.{TerminalInput, TerminalInputImpl}
-import view.MainMenuView.MainMenuTerminalViewImpl
+import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalMainMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
+import view.graphicUI.GraphicMainMenu.*
+import view.graphicUI.GraphicMainMenu
+import view.graphicUI.GraphicDefaultMenu
 import view.updates.ViewUpdate
 
 import scala.io.StdIn.readLine
@@ -12,33 +21,47 @@ import scala.collection.mutable.Map
 import concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Await
 import scala.util.{Failure, Success}
-
-import view.ScalaFX.FXMainMenuView.*
+import scalafx.Includes.jfxScene2sfx
+import scalafx.scene.SceneIncludes.jfxScene2sfx
+import scalafx.stage.Stage.sfxStage2jfx
+import view.View.ViewFactory.GUIType.*
 
 object View:
+
+  private var _stage: PrimaryStage = new JFXApp3.PrimaryStage {
+    title.value = "ISIQuiz"
+    resizable = false
+//    initStyle(StageStyle.UNDECORATED)
+  }
 
   def sendEvent[T](action: Action[T]): Unit = AppController.handle(action)
 
   object ViewFactory:
+
     enum GUIType:
       case Terminal
       case ScalaFX
 
     private var _currentGUIType: GUIType = GUIType.Terminal
-      def currentGUIType: GUIType = _currentGUIType
-      def currentGUIType_(guiType: GUIType): Unit = _currentGUIType = guiType
-    def create(page: ParameterlessAction): PageView = page match
-      case MainMenu => if _currentGUIType == GUIType.Terminal then new MainMenuTerminalViewImpl() else
+    def currentGUIType: GUIType = _currentGUIType
+    def currentGUIType_(guiType: GUIType): Unit = _currentGUIType = guiType
 
-        val mainMenu = new FXMainMenuViewImpl()
-        mainMenu
+    def create[T](page: Action[T]): PageView = page match
+      case MainMenuAction => if _currentGUIType == Terminal then new TerminalMainMenu() else new GraphicMainMenu(_stage)
+      case SelectMenuAction => if _currentGUIType == Terminal then new TerminalSelectMenu() else new GraphicDefaultMenu(_stage)
+      case StatisticsMenuAction => if _currentGUIType == Terminal then new TerminalStatisticsMenu() else new GraphicDefaultMenu(_stage)
+      case SettingsMenuAction => if _currentGUIType == Terminal then new TerminalSettingsMenu() else new GraphicDefaultMenu(_stage)
+      case AddCourseMenuAction => if _currentGUIType == Terminal then new TerminalAddCourseMenu() else new GraphicDefaultMenu(_stage)
+      case AddQuizMenuAction => if _currentGUIType == Terminal then new TerminalAddQuizMenu() else new GraphicDefaultMenu(_stage)
+      case CustomMenuAction(_) => if _currentGUIType == Terminal then new TerminalCustomMenu() else new GraphicDefaultMenu(_stage)
+      case StandardGameAction(_) => if _currentGUIType == Terminal then new TerminalStandardGameMenu() else new GraphicDefaultMenu(_stage)
 
   /** PageView should include all behaviours common between different pages views */
   trait PageView:
     def updateUI[T](update: ViewUpdate[Any]): Unit
     // TODO: Maybe move handleInput def to PageView trait
 
-  trait ScalaFXView extends PageView
+  trait GraphicView extends PageView
 
   trait TerminalView extends PageView:
     /**

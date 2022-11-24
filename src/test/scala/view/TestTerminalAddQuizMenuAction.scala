@@ -10,13 +10,13 @@ import model.Quiz.Quiz
 import model.SavedCourse.SavedCourseImpl
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
-import view.MainMenuView.*
-import view.SelectMenuView.*
-import view.AddQuizMenuView.*
+import view.terminalUI.TerminalMainMenu.*
+import view.terminalUI.TerminalSelectMenu.*
+import view.terminalUI.TerminalAddQuizMenu.*
 import view.updates.ParameterlessViewUpdate
 
 
-class TestAddQuizMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
+class TestTerminalAddQuizMenuAction extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
 
   var inputsIterator = Iterator("")
 

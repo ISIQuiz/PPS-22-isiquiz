@@ -7,10 +7,10 @@ import controller.AppController.*
 import controller.{MainMenuController, SelectMenuController, SettingsMenuController, StatisticsMenuController}
 import model.Session
 import utils.DefaultCourseList
-import view.MainMenuView.*
-import view.SelectMenuView.*
-import view.StatisticsMenuView.*
-import view.SettingsMenuView.*
+import view.terminalUI.TerminalMainMenu.*
+import view.terminalUI.TerminalSelectMenu.*
+import view.terminalUI.TerminalStatisticsMenu.*
+import view.terminalUI.TerminalSettingsMenu.*
 
 class TestApplicationController extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
 
@@ -23,22 +23,22 @@ class TestApplicationController extends AnyFunSuite with BeforeAndAfterAll with 
   }
 
   test("Application should go to main menu page when action is performed") {
-    AppController.handle(AppController.MainMenu)
+    AppController.handle(AppController.MainMenuAction)
     assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, MainMenuTerminalView]])
   }
 
   test("Going from main menu to select page when action is performed") {
-    AppController.handle(AppController.SelectMenu)
+    AppController.handle(AppController.SelectMenuAction)
     assert(AppController.currentPage.isInstanceOf[Page[SelectMenuController, SelectMenuView]])
   }
 
   test("Going from main menu to statistics page when action is performed") {
-    AppController.handle(AppController.StatisticsMenu)
+    AppController.handle(AppController.StatisticsMenuAction)
     assert(AppController.currentPage.isInstanceOf[Page[StatisticsMenuController, StatisticsMenuView]])
   }
 
   test("Going from main menu to settings page when action is performed") {
-    AppController.handle(AppController.SettingsMenu)
+    AppController.handle(AppController.SettingsMenuAction)
     assert(AppController.currentPage.isInstanceOf[Page[SettingsMenuController, SettingsMenuView]])
   }
 

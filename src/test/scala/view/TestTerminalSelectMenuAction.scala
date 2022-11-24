@@ -3,17 +3,17 @@ package view
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import controller.{AppController, Controller, MainMenuController, Page, SelectMenuController, StandardGameController}
-import view.MainMenuView.*
-import view.SelectMenuView.*
-import view.StandardGameView.*
+import view.terminalUI.TerminalMainMenu.*
+import view.terminalUI.TerminalSelectMenu.*
+import view.terminalUI.TerminalStandardGameMenu.*
 
-object TestSelectMenuView:
+object TestTerminalSelectMenuAction:
   private var _input: String = null
   def input: String = _input
   def input_(input: String): Unit = _input = input
 
-class TestSelectMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
-  import TestSelectMenuView.*
+class TestTerminalSelectMenuAction extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
+  import TestTerminalSelectMenuAction.*
 
   class SelectMenuViewTest extends SelectMenuViewImpl:
     override def inputReader() = input
@@ -22,7 +22,7 @@ class TestSelectMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeA
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    AppController.handle(AppController.SelectMenu)
+    AppController.handle(AppController.SelectMenuAction)
   }
 
   test("Selecting back should return to main menu") {
@@ -35,4 +35,4 @@ class TestSelectMenuView extends AnyFunSuite with BeforeAndAfterAll with BeforeA
     assert(AppController.currentPage.isInstanceOf[Page[StandardGameController, StandardGameView]])
   }
 
-end TestSelectMenuView
+end TestTerminalSelectMenuAction
