@@ -10,17 +10,18 @@ import model.Quiz.Quiz
 import model.SavedCourse.SavedCourseImpl
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
+import view.terminalUI.TerminalAddQuizMenu
 import view.terminalUI.TerminalMainMenu.*
 import view.terminalUI.TerminalSelectMenu.*
 import view.terminalUI.TerminalAddQuizMenu.*
 import view.updates.ParameterlessViewUpdate
 
 
-class TestTerminalAddQuizMenuAction extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
+class TestTerminalAddQuizMenu extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
 
   var inputsIterator = Iterator("")
 
-  class AddQuizMenuViewTest extends AddQuizMenuViewImpl:
+  class TerminalAddQuizMenuTest extends TerminalAddQuizMenu:
     override def inputReader() = inputsIterator.next()
 
-  var addQuizMenuView: AddQuizMenuView = new AddQuizMenuViewTest
+  var terminalAddQuizMenu: TerminalAddQuizMenu = new TerminalAddQuizMenuTest

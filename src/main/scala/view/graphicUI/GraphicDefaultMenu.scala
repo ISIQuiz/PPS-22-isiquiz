@@ -4,7 +4,6 @@ import javafx.fxml.FXML
 import javafx.scene.control.Label
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
-//import scalafx.scene.layout.Pane
 import javafx.scene.layout.Pane
 import utils.PaneLoader
 import view.View.GraphicView

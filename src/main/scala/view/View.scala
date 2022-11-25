@@ -17,7 +17,6 @@ import view.graphicUI.GraphicMainMenu.*
 import view.graphicUI.GraphicMainMenu
 import view.graphicUI.GraphicDefaultMenu
 import view.updates.ViewUpdate
-
 import scala.io.StdIn.readLine
 import scala.collection.mutable.Map
 import concurrent.ExecutionContext.Implicits.global
@@ -38,7 +37,6 @@ object View:
     resizable = false
     scene = _scene
     onCloseRequest = _ => System.exit(0)
-//    initStyle(StageStyle.UNDECORATED)
   }
 
   def sendEvent[T](action: Action[T]): Unit = AppController.handle(action)
@@ -66,7 +64,6 @@ object View:
   /** PageView should include all behaviours common between different pages views */
   trait PageView:
     def updateUI[T](update: ViewUpdate[Any]): Unit
-    // TODO: Maybe move handleInput def to PageView trait
 
   trait GraphicView extends PageView
 

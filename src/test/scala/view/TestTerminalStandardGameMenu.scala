@@ -15,16 +15,17 @@ import view.updates.ParameterlessViewUpdate
 import model.Quiz.Quiz
 import model.SavedCourse.SavedCourseImpl
 import model.GameStage
+import view.terminalUI.TerminalStandardGameMenu
 
-object TestTerminalStandardGameAction:
+object TestTerminalStandardGameMenu:
   private var _input: String = null
   def input: String = _input
   def input_(input: String): Unit = _input = input
 
-class TestTerminalStandardGameAction extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
-  import TestTerminalStandardGameAction.*
+class TestTerminalStandardGameMenu extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
+  import TestTerminalStandardGameMenu.*
 
-  class StandardGameViewTest extends StandardGameViewImpl:
+  class TerminalStandardGameMenuTest extends TerminalStandardGameMenu:
     override def inputReader() = input
 
   val course = SavedCourseImpl(
@@ -49,12 +50,12 @@ class TestTerminalStandardGameAction extends AnyFunSuite with BeforeAndAfterAll 
     )
   )
 
-  var standardGameView: StandardGameView = new StandardGameViewTest
+  var terminalStandardGameMenu: TerminalStandardGameMenu = new TerminalStandardGameMenuTest
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     AppController.handle(AppController.StandardGameAction(Option(GameStage(List(course)))))
   }
 
-end TestTerminalStandardGameAction
+end TestTerminalStandardGameMenu
 
