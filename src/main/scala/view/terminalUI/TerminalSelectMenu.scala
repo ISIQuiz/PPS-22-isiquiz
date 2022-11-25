@@ -7,10 +7,11 @@ import model.{SavedCourse, Session}
 import view.View.TerminalView
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import view.SelectMenuView.*
+
 import scala.collection.mutable.{ListBuffer, Map}
 
 object TerminalSelectMenu:
-  
+
   case object DefaultUpdate extends ParameterlessViewUpdate
   case class CourseUpdate[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
 
@@ -23,6 +24,7 @@ class TerminalSelectMenu extends TerminalView:
     "C" -> Custom
   )
 
+  import TerminalSelectMenu.*
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case DefaultUpdate =>
       println("Menu selezione:")

@@ -47,7 +47,7 @@ object View:
     def currentGUIType_(guiType: GUIType): Unit = _currentGUIType = guiType
 
     def create[T](page: Action[T]): PageView = page match
-      case MainMenuAction => if _currentGUIType == Terminal then new TerminalMainMenu() else new GraphicMainMenu(_stage)
+      case MainMenuAction => if _currentGUIType == Terminal then {new GraphicDefaultMenu(_stage); new TerminalMainMenu()} else new GraphicMainMenu(_stage)
       case SelectMenuAction => if _currentGUIType == Terminal then new TerminalSelectMenu() else new GraphicDefaultMenu(_stage)
       case StatisticsMenuAction => if _currentGUIType == Terminal then new TerminalStatisticsMenu() else new GraphicDefaultMenu(_stage)
       case SettingsMenuAction => if _currentGUIType == Terminal then new TerminalSettingsMenu() else new GraphicDefaultMenu(_stage)
