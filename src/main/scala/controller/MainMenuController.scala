@@ -4,7 +4,6 @@ import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
 import utils.{Timer, TimerImpl}
-import view.graphicUI.GraphicMainMenu.FXMainMenuViewImpl
 import view.View
 import view.terminalUI.TerminalMainMenu
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}

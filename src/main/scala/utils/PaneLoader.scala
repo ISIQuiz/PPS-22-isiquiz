@@ -1,20 +1,30 @@
 package utils
 
 import javafx.fxml.FXMLLoader
-import javafx.scene.layout.{GridPane, Pane}
-import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
-import scalafx.Includes.jfxScene2sfx
-import scalafx.scene.SceneIncludes.jfxScene2sfx
+import scalafx.scene.Parent
+import javafx.scene.layout.{GridPane}
+//import scalafx.scene.layout.Pane
+import javafx.scene.layout.Pane
+import scalafx.application.JFXApp3.PrimaryStage
 import view.View.GraphicView
 
 object PaneLoader:
 
-  protected val loader: FXMLLoader = FXMLLoader()
 
-  def loadPane(stage: PrimaryStage, controller: GraphicView, fileName: String): Unit =
+  def loadPane(basePanel: Pane, controller: GraphicView, fileName: String): Unit =
+    var loader: FXMLLoader = FXMLLoader()
     loader.setController(controller)
     loader.setLocation(getClass.getResource(s"/fxml/$fileName"))
-    stage.scene = new Scene()
+//    stage.scene = new Scene()
+//    stage.scene.root.value
+//    stage.scene.value.root.value
+//    println(stage.scene.value.root.value)
     val panel: Pane = loader.load[Pane]
-    stage.scene.value.content.add(panel)
+    basePanel.getChildren.clear()
+    basePanel.getChildren.add(panel)
+//    basePanel.component.setCenter(panel)
+//    stage.scene.value.root.value = panel
+//    stage.scene.value.setRoot(panel)
+//    stage.scene.value.content.add(panel)
+//    stage.scene.root.value = panel

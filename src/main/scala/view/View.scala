@@ -3,7 +3,9 @@ package view
 import controller.AppController
 import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
+import javafx.event.Event
 import javafx.fxml.FXMLLoader
+import javafx.scene.layout.Pane
 import javafx.stage.StageStyle
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
@@ -28,9 +30,14 @@ import view.View.ViewFactory.GUIType.*
 
 object View:
 
+  private val _scene = Scene(1280, 720)
+  private val _basePanel: Pane = Pane()
+  _scene.root.value = _basePanel
   private var _stage: PrimaryStage = new JFXApp3.PrimaryStage {
     title.value = "ISIQuiz"
     resizable = false
+    scene = _scene
+    onCloseRequest = _ => System.exit(0)
 //    initStyle(StageStyle.UNDECORATED)
   }
 
@@ -47,14 +54,14 @@ object View:
     def currentGUIType_(guiType: GUIType): Unit = _currentGUIType = guiType
 
     def create[T](page: Action[T]): PageView = page match
-      case MainMenuAction => if _currentGUIType == Terminal then {new GraphicDefaultMenu(_stage); new TerminalMainMenu()} else new GraphicMainMenu(_stage)
-      case SelectMenuAction => if _currentGUIType == Terminal then new TerminalSelectMenu() else new GraphicDefaultMenu(_stage)
-      case StatisticsMenuAction => if _currentGUIType == Terminal then new TerminalStatisticsMenu() else new GraphicDefaultMenu(_stage)
-      case SettingsMenuAction => if _currentGUIType == Terminal then new TerminalSettingsMenu() else new GraphicDefaultMenu(_stage)
-      case AddCourseMenuAction => if _currentGUIType == Terminal then new TerminalAddCourseMenu() else new GraphicDefaultMenu(_stage)
-      case AddQuizMenuAction => if _currentGUIType == Terminal then new TerminalAddQuizMenu() else new GraphicDefaultMenu(_stage)
-      case CustomMenuAction(_) => if _currentGUIType == Terminal then new TerminalCustomMenu() else new GraphicDefaultMenu(_stage)
-      case StandardGameAction(_) => if _currentGUIType == Terminal then new TerminalStandardGameMenu() else new GraphicDefaultMenu(_stage)
+      case MainMenuAction => if _currentGUIType == Terminal then {new GraphicDefaultMenu(_basePanel); new TerminalMainMenu()} else new GraphicMainMenu(_basePanel)
+      case SelectMenuAction => if _currentGUIType == Terminal then new TerminalSelectMenu() else new GraphicDefaultMenu(_basePanel)
+      case StatisticsMenuAction => if _currentGUIType == Terminal then new TerminalStatisticsMenu() else new GraphicDefaultMenu(_basePanel)
+      case SettingsMenuAction => if _currentGUIType == Terminal then new TerminalSettingsMenu() else new GraphicDefaultMenu(_basePanel)
+      case AddCourseMenuAction => if _currentGUIType == Terminal then new TerminalAddCourseMenu() else new GraphicDefaultMenu(_basePanel)
+      case AddQuizMenuAction => if _currentGUIType == Terminal then new TerminalAddQuizMenu() else new GraphicDefaultMenu(_basePanel)
+      case CustomMenuAction(_) => if _currentGUIType == Terminal then new TerminalCustomMenu() else new GraphicDefaultMenu(_basePanel)
+      case StandardGameAction(_) => if _currentGUIType == Terminal then new TerminalStandardGameMenu() else new GraphicDefaultMenu(_basePanel)
 
   /** PageView should include all behaviours common between different pages views */
   trait PageView:

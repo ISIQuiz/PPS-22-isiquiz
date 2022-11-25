@@ -3,6 +3,9 @@ package view.graphicUI
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import scalafx.application.JFXApp3.PrimaryStage
+import scalafx.scene.Scene
+//import scalafx.scene.layout.Pane
+import javafx.scene.layout.Pane
 import utils.PaneLoader
 import view.View.GraphicView
 import view.updates.ViewUpdate
@@ -10,8 +13,8 @@ import view.updates.ViewUpdate
 object GraphicDefaultMenu
 
 /** Default menu graphic interface  */
-class GraphicDefaultMenu(stage: PrimaryStage) extends GraphicView:
+class GraphicDefaultMenu(basePanel: Pane) extends GraphicView:
 
-  PaneLoader.loadPane(stage, this, "default.fxml")
+  PaneLoader.loadPane(basePanel, this, "default.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = {}
