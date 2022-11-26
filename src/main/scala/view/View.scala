@@ -14,9 +14,9 @@ import scalafx.stage.Stage
 import utils.{TerminalInput, TerminalInputImpl}
 import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalMainMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
 import view.graphicUI.GraphicMainMenu.*
-import view.graphicUI.GraphicMainMenu
-import view.graphicUI.GraphicDefaultMenu
+import view.graphicUI.{GraphicCustomMenu, GraphicDefaultMenu, GraphicMainMenu, GraphicSelectMenu, GraphicStandardGameMenu}
 import view.updates.ViewUpdate
+
 import scala.io.StdIn.readLine
 import scala.collection.mutable.Map
 import concurrent.ExecutionContext.Implicits.global
