@@ -3,7 +3,7 @@ package controller
 import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
-import view.{StandardGameView, View}
+import view.View
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import model.Answer.Answer
 import model.GameStage
@@ -11,6 +11,7 @@ import model.{QuizInGame, SavedCourse}
 import model.Quiz.Quiz
 import model.settings.StandardGameSettings
 import utils.{TerminalInput, TerminalInputImpl, Timer, TimerImpl}
+import view.terminalUI.TerminalStandardGameMenu
 
 import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
@@ -29,15 +30,14 @@ object StandardGameController:
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
 /** Defines the logic of the select page */
-class StandardGameController(val game: GameStage) extends PageController, GameController:
+class StandardGameController(val gameStage: GameStage) extends PageController, GameController:
 
-  val gameStage: GameStage = game
   val timer: Timer = TimerImpl(gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime)
 
   import StandardGameController.*
 
   override def matchAction[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(MainMenu)
+    case Back => AppController.handle(MainMenuAction)
     case TimeExpired =>
       println("Time expired")
 //      inputReader.stopInput()
@@ -45,40 +45,39 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
 
   override def nextIteration(): Unit =
     actionPromise = Promise[Unit]
-    nextQuiz()
-    AppController.currentPage.pageView.updateUI(StandardGameView.DefaultUpdate)
-    AppController.currentPage.pageView.updateUI(StandardGameView.NewQuizUpdate(Option(gameStage)))
+//    nextQuiz()
+    AppController.currentPage.pageView.updateUI(TerminalStandardGameMenu.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(TerminalStandardGameMenu.NewQuizUpdate(Option(gameStage)))
     timer.startTimer()
     Await.ready(actionPromise.future, Duration.Inf)
 //    timer.stopTimer()
     AppController.currentPage.pageController.nextIteration()
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
-    var checkAnswer : String = ""
     timer.stopTimer()
-
-    if actionParameter.isDefined then
-      if gameStage.quizInGame.answers(actionParameter.get.asInstanceOf[Int] - 1).isCorrect then
-        checkAnswer = "Risposta GIUSTA!"
-      else
-        checkAnswer = "Risposta SBAGLIATA!"
-        
-      AppController.currentPage.pageView.updateUI(StandardGameView.AnswerFeedbackUpdate(Option(checkAnswer)))
-      nextIteration()
+    println(actionParameter.get)
+    // TODO: Fix selected answer check
+//    if actionParameter.get.toString.toInt -1 == getCorrectIndex(gameStage.quizInGame.answers) then
+//      updateUI(ViewUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Giusta")))
+//      nextIteration()
+//      println("Risposta GIUSTA!")
+//    else
+//      updateUI(ViewUpdate(StandardGameView.UpdateType.AnswerFeedback, Option("Sbagliata")))
+//      println("Risposta SBAGLIATA!")
+//    println(getCorrectIndex(gameStage.quizInGame.answers))
+//    println(value.get.toString + " | " + getCorrect(gameStage.quizInGame.answers))
 
   override def nextQuiz(): QuizInGame =
     val selectedCourse = gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)
     val selectedQuiz = chooseQuiz(selectedCourse)
     val selectedAnswers = chooseAnswers(selectedQuiz)
-    val quizInGame = QuizInGame.apply(selectedCourse, selectedQuiz, selectedAnswers)
-    gameStage.quizInGame_(quizInGame)
-    quizInGame
+    QuizInGame.apply(selectedCourse, selectedQuiz, selectedAnswers)
 
   override def chooseQuiz(course: SavedCourse): Quiz = course.quizList(randomNumberGenerator(1, course.quizList.size).head)
 
   override def chooseAnswers(quiz: Quiz): List[Answer] =
-    val allCorrectAnswers = quiz.answerList.filter(answer => answer.isCorrect)
-    val allWrongAnswers = quiz.answerList.filter(answer => !answer.isCorrect)
+    val allCorrectAnswers = gameStage.quizInGame.quiz.answerList.filter(answer => answer.isCorrect)
+    val allWrongAnswers = gameStage.quizInGame.quiz.answerList.filter(answer => !answer.isCorrect)
 
     val correctAnswers = randomNumberGenerator(1, allCorrectAnswers.size).map(allCorrectAnswers)
     val wrongAnswers = randomNumberGenerator(3, allWrongAnswers.size).map(allWrongAnswers)
