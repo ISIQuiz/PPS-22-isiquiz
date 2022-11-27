@@ -64,7 +64,7 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
       else
         checkAnswer = "Risposta SBAGLIATA!"
 
-      AppController.currentPage.pageView.updateUI(StandardGameView.AnswerFeedbackUpdate(Option(checkAnswer)))
+      AppController.currentPage.pageView.updateUI(TerminalStandardGameMenu.AnswerFeedbackUpdate(Option(checkAnswer)))
       nextIteration()
 
   override def nextQuiz(): QuizInGame =
