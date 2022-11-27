@@ -8,6 +8,7 @@ import model.Quiz.*
  * and the functions to operate with it
  */
 object Quiz:
+  
   /**
    *  A quiz with quesiton and answers
    * @param question
@@ -69,5 +70,3 @@ object Quiz:
    * @return Quiz
    */
   def changeAnswerList(quiz: Quiz, answerList: List[Answer]): Quiz = Quiz(quiz.question, answerList, quiz.maxScore, quiz.imagePath)
-
-  def getAllAnswers(quiz: Quiz): List[Answer] = quiz.answerList

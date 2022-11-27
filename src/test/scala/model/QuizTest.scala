@@ -65,7 +65,7 @@ class QuizTest extends AnyFunSuite :
     println(quiz)
     println(printQuiz(quiz))
     println(printQuizFull(quiz))
-    println(getAllAnswers(quiz).toString)
+    println(quiz.answerList.toString)
   }
 
 end QuizTest

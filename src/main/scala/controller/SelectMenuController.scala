@@ -6,7 +6,7 @@ import controller.actions.{Action, BackAction, ParameterlessAction}
 import view.View
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import controller.{AppController, PageController}
-import model.{GameStage, Session}
+import model.{GameStage, QuizInGame, Session}
 import model.GameStage.*
 import view.terminalUI.TerminalSelectMenu
 

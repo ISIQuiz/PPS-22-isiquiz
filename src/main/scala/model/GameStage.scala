@@ -8,4 +8,5 @@ import model.settings.{GameSettings, StandardGameSettings}
 
 case class QuizInGame(course: Course, quiz: Quiz, answers: List[Answer])
 
-class GameStage(var coursesInGame: List[SavedCourse] = List(), var quizInGame: QuizInGame = null, var gameSettings: GameSettings = StandardGameSettings())
+class GameStage(var coursesInGame: List[SavedCourse] = List(), var quizInGame: QuizInGame = null, var gameSettings: GameSettings = StandardGameSettings()):
+  def quizInGame_(_quizInGame: QuizInGame) = quizInGame = _quizInGame
