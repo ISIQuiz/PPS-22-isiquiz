@@ -3,7 +3,8 @@ package controller
 import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
-import view.{SettingsMenuView, View}
+import view.View
+import view.terminalUI.TerminalSettingsMenu
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
 import scala.concurrent.Await
@@ -22,11 +23,11 @@ class SettingsMenuController extends PageController :
   import SettingsMenuController.*
 
   override def matchAction[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(MainMenu)
-    case AddCourse => AppController.handle(AddCourseMenu)
-    case AddQuiz => AppController.handle(AddQuizMenu)
+    case Back => AppController.handle(MainMenuAction)
+    case AddCourse => AppController.handle(AddCourseMenuAction)
+    case AddQuiz => AppController.handle(AddQuizMenuAction)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(SettingsMenuView.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(TerminalSettingsMenu.DefaultUpdate)
     Await.ready(actionPromise.future, Duration.Inf)
     AppController.currentPage.pageController.nextIteration()
