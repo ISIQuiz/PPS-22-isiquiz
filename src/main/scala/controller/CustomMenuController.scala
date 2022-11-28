@@ -27,7 +27,7 @@ class CustomMenuController(var gameStage: GameStage) extends PageController :
   var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
 
   override def handle[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(MainMenuAction)
+    case Back => AppController.handle(SelectMenuAction)
     case NewGameSettings(actionParameter) =>
       gameStage.gameSettings = actionParameter.get.asInstanceOf[GameSettings]
       AppController.handle(AppController.StandardGameAction(Option(gameStage)))
