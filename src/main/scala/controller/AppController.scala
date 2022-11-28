@@ -16,10 +16,12 @@ import view.terminalUI.TerminalAddCourseMenu.*
 import view.terminalUI.TerminalAddQuizMenu.*
 import view.terminalUI.TerminalCustomMenu.*
 
+import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
+import scala.concurrent.duration.TimeUnit
 import scala.util.Success
 
 /** Controller for the general logic of the application */
-object AppController extends Controller, Runnable:
+object AppController extends Controller:
 
   private var _currentPage: Page[PageController, PageView] = Page[PageController, PageView](new MainMenuController, ViewFactory.create(MainMenuAction))
   def currentPage: Page[PageController, PageView] = _currentPage
@@ -51,12 +53,11 @@ object AppController extends Controller, Runnable:
     case action: Action[T] => currentPage.pageController.handle(action)
     case null => throw new IllegalArgumentException
 
-  override def run(): Unit =
-    currentPage.pageController.nextIteration()
 
   def startApp(): Unit =
     loadCoursesFromFile()
-    currentPage.pageController.nextIteration()
+    val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
+    scheduler.scheduleAtFixedRate(() => currentPage.pageController.nextIteration(), 0, 1000, TimeUnit.MILLISECONDS)
 
   // Read courses list from a JSON file and deserialize it
   def loadCoursesFromFile(): Unit =

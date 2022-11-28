@@ -23,7 +23,7 @@ class CustomMenuController(var gameStage: GameStage) extends PageController :
 
   import CustomMenuController.*
 
-  override def matchAction[T](action: Action[T]): Unit = action match
+  override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)
     case NewGameSettings(actionParameter) =>
       gameStage.gameSettings = actionParameter.get.asInstanceOf[GameSettings]
@@ -31,5 +31,3 @@ class CustomMenuController(var gameStage: GameStage) extends PageController :
 
   override def nextIteration(): Unit =
     AppController.currentPage.pageView.updateUI(TerminalCustomMenu.DefaultUpdate)
-    Await.ready(actionPromise.future, Duration.Inf)
-    AppController.currentPage.pageController.nextIteration()

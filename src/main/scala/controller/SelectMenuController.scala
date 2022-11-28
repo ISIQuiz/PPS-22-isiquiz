@@ -28,7 +28,7 @@ class SelectMenuController extends PageController:
 
   var gameStage = GameStage()
 
-  override def matchAction[T](action: Action[T]): Unit = action match
+  override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(AppController.MainMenuAction)
     case Start => AppController.handle(AppController.StandardGameAction(Option(gameStage)))
     case Custom =>  AppController.handle(AppController.CustomMenuAction(Option(gameStage)))
@@ -38,11 +38,8 @@ class SelectMenuController extends PageController:
   def getSession: Session = AppController.session
 
   override def nextIteration(): Unit =
-    actionPromise = Promise[Unit]
     AppController.currentPage.pageView.updateUI(TerminalSelectMenu.DefaultUpdate)
     AppController.currentPage.pageView.updateUI(TerminalSelectMenu.CourseUpdate(Option(getSession.savedCourses.map(course => (course,gameStage.coursesInGame.contains(course))))))
-    Await.ready(actionPromise.future, Duration.Inf)
-    AppController.currentPage.pageController.nextIteration()
 
   private def modifySelectedCourses[T](courseIndex: Option[T]): Unit =
     val selectedCourse = getSession.savedCourses(courseIndex.get.asInstanceOf[Int] - 1)

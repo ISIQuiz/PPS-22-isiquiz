@@ -22,12 +22,10 @@ class SettingsMenuController extends PageController :
 
   import SettingsMenuController.*
 
-  override def matchAction[T](action: Action[T]): Unit = action match
+  override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)
     case AddCourse => AppController.handle(AddCourseMenuAction)
     case AddQuiz => AppController.handle(AddQuizMenuAction)
 
   override def nextIteration(): Unit =
     AppController.currentPage.pageView.updateUI(TerminalSettingsMenu.DefaultUpdate)
-    Await.ready(actionPromise.future, Duration.Inf)
-    AppController.currentPage.pageController.nextIteration()

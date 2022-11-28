@@ -12,7 +12,6 @@ import model.Quiz.Quiz
 import model.settings.StandardGameSettings
 import utils.{TerminalInput, TerminalInputImpl, Timer, TimerImpl}
 import view.terminalUI.TerminalStandardGameMenu
-
 import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
@@ -37,7 +36,7 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
 
   import StandardGameController.*
 
-  override def matchAction[T](action: Action[T]): Unit = action match
+  override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)
     case TimeExpired =>
       println("Time expired")
@@ -45,14 +44,11 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
     case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
 
   override def nextIteration(): Unit =
-    actionPromise = Promise[Unit]
-    nextQuiz()
+//    nextQuiz()
     AppController.currentPage.pageView.updateUI(TerminalStandardGameMenu.DefaultUpdate)
     AppController.currentPage.pageView.updateUI(TerminalStandardGameMenu.NewQuizUpdate(Option(gameStage)))
-    timer.startTimer()
-    Await.ready(actionPromise.future, Duration.Inf)
+//    timer.startTimer()
 //    timer.stopTimer()
-    AppController.currentPage.pageController.nextIteration()
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
     var checkAnswer : String = ""

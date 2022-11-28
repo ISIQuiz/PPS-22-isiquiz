@@ -29,7 +29,7 @@ class MainMenuController extends PageController:
 
   import MainMenuController.*
 
-  override def matchAction[T](action: Action[T]): Unit = action match
+  override def handle[T](action: Action[T]): Unit = action match
     case Select => AppController.handle(SelectMenuAction)
     case Statistics => AppController.handle(StatisticsMenuAction)
     case Settings => AppController.handle(SettingsMenuAction)
@@ -37,6 +37,3 @@ class MainMenuController extends PageController:
 
   override def nextIteration(): Unit =
     AppController.currentPage.pageView.updateUI(DefaultUpdate)
-    Await.ready(actionPromise.future, Duration.Inf)
-    //logic
-    AppController.currentPage.pageController.nextIteration() // or change page

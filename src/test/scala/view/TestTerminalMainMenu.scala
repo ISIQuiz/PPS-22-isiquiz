@@ -4,6 +4,8 @@ import controller.AppController.MainMenuAction
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import controller.{AppController, Controller, MainMenuController, Page, SelectMenuController, SettingsMenuController, StatisticsMenuController}
+import view.View.ViewFactory
+import view.View.ViewFactory.GUIType.Terminal
 import view.terminalUI.{TerminalMainMenu, TerminalSelectMenu}
 import view.terminalUI.TerminalMainMenu.*
 import view.terminalUI.TerminalSelectMenu.*

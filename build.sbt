@@ -2,6 +2,8 @@ ThisBuild / name := "ISIQuiz"
 ThisBuild / version := "0.0.0"
 ThisBuild / scalaVersion := "3.2.0"
 
+//Compile / run / test / mainClass := Some("myPackage.aMainClass")
+
 lazy val osNames = Seq("linux", "mac", "win")
 
 lazy val root = (project in file("."))

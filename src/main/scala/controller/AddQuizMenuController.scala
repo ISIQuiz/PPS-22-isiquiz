@@ -27,7 +27,7 @@ class AddQuizMenuController extends PageController :
   var courseSelected:Option[SavedCourse] = Option.empty
   var quizToAdd:Option[Quiz] = Option.empty
 
-  override def matchAction[T](action: Action[T]): Unit = action match
+  override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(SettingsMenuAction)
     case AddCourseAction(actionParameter) => courseSelected = actionParameter
     case AddQuizAction(actionParameter) => addQuiz(actionParameter)
@@ -38,8 +38,6 @@ class AddQuizMenuController extends PageController :
       AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.AskCoursePrint(Option(AppController.session.savedCourses)))
     else
       AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.AskQuizPrint)
-    Await.ready(actionPromise.future, Duration.Inf)
-    AppController.currentPage.pageController.nextIteration()
 
   private def addQuiz[T](actionParameter: Option[Quiz]): Unit =
     quizToAdd = actionParameter

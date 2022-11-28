@@ -30,7 +30,6 @@ class TerminalAddQuizMenu extends TerminalView:
     case DefaultUpdate =>
       println("Menu aggiunta quiz:\n1) Menu principale")
       println("Aggiunta quiz:")
-      handleInput()
     case AskCoursePrint(param) =>
       println("Seleziona il corso al quale aggiungere la domanda")
       val courseList = param.get.asInstanceOf[List[SavedCourse]]

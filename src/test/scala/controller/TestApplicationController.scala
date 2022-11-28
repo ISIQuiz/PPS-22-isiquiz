@@ -22,8 +22,6 @@ class TestApplicationController extends AnyFunSuite with BeforeAndAfterAll with 
     super.beforeEach()
   }
 
-  ViewFactory.currentGUIType_(Terminal)
-
   test("Application should start in main menu page") {
     assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, TerminalMainMenu]])
   }

@@ -20,10 +20,8 @@ class StatisticsMenuController extends PageController :
 
   import StatisticsMenuController.*
 
-  override def matchAction[T](action: Action[T]): Unit = action match
+  override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)
 
   override def nextIteration(): Unit =
     AppController.currentPage.pageView.updateUI(TerminalStatisticsMenu.DefaultUpdate)
-    Await.ready(actionPromise.future, Duration.Inf)
-    AppController.currentPage.pageController.nextIteration()
