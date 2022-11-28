@@ -30,7 +30,6 @@ object AddCourseMenuView:
       case DefaultUpdate =>
         println("Menu aggiunta corsi:\n1) Menu principale")
         println("Aggiunta corso:")
-        handleInput()
       case CoursePrint(course) =>
         println("Corso Aggiunto!")
         import model.SavedCourse
