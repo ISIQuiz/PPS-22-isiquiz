@@ -14,7 +14,7 @@ import scalafx.stage.Stage
 import utils.{TerminalInput, TerminalInputImpl}
 import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalMainMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
 import view.graphicUI.GraphicMainMenu.*
-import view.graphicUI.{GraphicDefaultMenu, GraphicMainMenu, GraphicStandardGameMenu}
+import view.graphicUI.{GraphicDefaultMenu, GraphicMainMenu, GraphicSelectMenu, GraphicStandardGameMenu}
 import view.updates.ViewUpdate
 
 import scala.io.StdIn.readLine
@@ -53,13 +53,13 @@ object View:
 
     def create[T](page: Action[T]): PageView = page match
       case MainMenuAction => if _currentGUIType == Terminal then {new GraphicDefaultMenu(_basePanel); new TerminalMainMenu()} else new GraphicMainMenu(_basePanel)
-      case SelectMenuAction => if _currentGUIType == Terminal then new TerminalSelectMenu() else new GraphicDefaultMenu(_basePanel)
+      case SelectMenuAction => if _currentGUIType == Terminal then new TerminalSelectMenu() else new GraphicSelectMenu(_basePanel)
       case StatisticsMenuAction => if _currentGUIType == Terminal then new TerminalStatisticsMenu() else new GraphicDefaultMenu(_basePanel)
       case SettingsMenuAction => if _currentGUIType == Terminal then new TerminalSettingsMenu() else new GraphicDefaultMenu(_basePanel)
       case AddCourseMenuAction => if _currentGUIType == Terminal then new TerminalAddCourseMenu() else new GraphicDefaultMenu(_basePanel)
       case AddQuizMenuAction => if _currentGUIType == Terminal then new TerminalAddQuizMenu() else new GraphicDefaultMenu(_basePanel)
       case CustomMenuAction(_) => if _currentGUIType == Terminal then new TerminalCustomMenu() else new GraphicDefaultMenu(_basePanel)
-      case StandardGameAction(_) => if _currentGUIType == Terminal then new TerminalStandardGameMenu() else new GraphicDefaultMenu(_basePanel)
+      case StandardGameAction(_) => if _currentGUIType == Terminal then new TerminalStandardGameMenu() else new GraphicStandardGameMenu(_basePanel)
 
   /** PageView should include all behaviours common between different pages views */
   trait PageView:
