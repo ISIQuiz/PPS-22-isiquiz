@@ -3,6 +3,7 @@ package view
 import controller.AppController
 import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
+import javafx.application.Platform
 import javafx.event.Event
 import javafx.fxml.FXMLLoader
 import javafx.scene.layout.Pane
@@ -20,12 +21,14 @@ import view.updates.ViewUpdate
 import scala.io.StdIn.readLine
 import scala.collection.mutable.Map
 import concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Await
+import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success}
 import scalafx.Includes.jfxScene2sfx
 import scalafx.scene.SceneIncludes.jfxScene2sfx
 import scalafx.stage.Stage.sfxStage2jfx
 import view.View.ViewFactory.GUIType.*
+
+import scala.collection.mutable
 
 object View:
 
@@ -39,7 +42,8 @@ object View:
     onCloseRequest = _ => System.exit(0)
   }
 
-  def sendEvent[T](action: Action[T]): Unit = AppController.handle(action)
+//  def sendEvent[T](action: Action[T]): Unit = AppController.handle(action)
+  def sendEvent[T](action: Action[T]): Unit = AppController.currentPage.pageController.actionsBuffer.addOne(action)
 
   object ViewFactory:
 
@@ -50,9 +54,10 @@ object View:
     private var _currentGUIType: GUIType = GUIType.Terminal
     def currentGUIType: GUIType = _currentGUIType
     def currentGUIType_(guiType: GUIType): Unit = _currentGUIType = guiType
+    if _currentGUIType == Terminal then new GraphicDefaultMenu(_basePanel)
 
     def create[T](page: Action[T]): PageView = page match
-      case MainMenuAction => if _currentGUIType == Terminal then {new GraphicDefaultMenu(_basePanel); new TerminalMainMenu()} else new GraphicMainMenu(_basePanel)
+      case MainMenuAction => if _currentGUIType == Terminal then new TerminalMainMenu() else new GraphicMainMenu(_basePanel)
       case SelectMenuAction => if _currentGUIType == Terminal then new TerminalSelectMenu() else new GraphicDefaultMenu(_basePanel)
       case StatisticsMenuAction => if _currentGUIType == Terminal then new TerminalStatisticsMenu() else new GraphicDefaultMenu(_basePanel)
       case SettingsMenuAction => if _currentGUIType == Terminal then new TerminalSettingsMenu() else new GraphicDefaultMenu(_basePanel)
@@ -71,13 +76,30 @@ object View:
     /**
      * Map between input and actions of the controllers
      */
-    val actionsMap: Map[String, Action[Any]]
-    def inputReader() = readLine
-    val terminalInput: TerminalInput = TerminalInputImpl()
-    def handleInput(): Unit =
-      terminalInput.readInput().onComplete( _ match
-        case Success(value) =>
-          terminalInput.cancellable._2.apply()
-            sendEvent(actionsMap(value))
-        case Failure(exception) => throw exception
-      )
+    val actionsMap: mutable.Map[String, Action[Any]]
+    def inputReader(): String = readLine
+    var terminalInput: TerminalInput = TerminalInputImpl()
+//    def handleInput(): Unit =
+//      terminalInput.readInput().onComplete( _ match
+//        case Success(value) =>
+//          terminalInput.cancellable._2.apply()
+//          println(Thread.currentThread().getName)
+//          println("############################## " + value)
+//          sendEvent(actionsMap(value));
+//          terminalInput = TerminalInputImpl()
+//          handleInput()
+//        case Failure(exception) =>
+//          terminalInput = TerminalInputImpl()
+//          throw exception;
+//      )
+//    handleInput()
+      def handleInput(): Unit =
+        val input: Future[String] = Future(readLine())
+        input.onComplete(_ match
+          case Success(result) =>
+            sendEvent(actionsMap(result))
+            handleInput()
+          case Failure(_) =>
+            handleInput()
+        )
+      handleInput()
