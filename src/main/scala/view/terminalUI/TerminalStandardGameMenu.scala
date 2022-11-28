@@ -5,7 +5,6 @@ import controller.StandardGameController.*
 import controller.actions.{Action, ParameterlessAction}
 import model.GameStage
 import view.View.TerminalView
-import view.terminalUI.TerminalStandardGameMenu.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
 import scala.collection.mutable.Map
@@ -23,6 +22,7 @@ class TerminalStandardGameMenu extends TerminalView:
     "0" -> Back
   )
 
+  import TerminalStandardGameMenu.*
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case DefaultUpdate =>
       println("Standard quiz:")
