@@ -18,6 +18,7 @@ object TerminalAddQuizMenu:
   case class AskCoursePrint[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
   case class QuizPrint[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
   case object AskQuizPrint extends ParameterlessViewUpdate
+  case object QuizAdded extends ParameterlessViewUpdate
 
 /** Add quiz terminal interface  */
 class TerminalAddQuizMenu extends TerminalView:
@@ -30,7 +31,6 @@ class TerminalAddQuizMenu extends TerminalView:
     case DefaultUpdate =>
       println("Menu aggiunta quiz:\n1) Menu principale")
       println("Aggiunta quiz:")
-      handleInput()
     case AskCoursePrint(param) =>
       println("Seleziona il corso al quale aggiungere la domanda")
       val courseList = param.get.asInstanceOf[List[SavedCourse]]
@@ -40,7 +40,6 @@ class TerminalAddQuizMenu extends TerminalView:
       sendEvent(AddCourseAction(courseList.lift(courseIndex)))
     case QuizPrint(quiz) =>
       import model.Quiz.*
-      println("Quiz Aggiunto!")
       println(printQuizFull(quiz.get.asInstanceOf[Quiz]))
     case AskQuizPrint =>
       println("Inserisci domanda:")
@@ -63,3 +62,6 @@ class TerminalAddQuizMenu extends TerminalView:
       import controller.AddQuizMenuController.AddQuizAction
       import model.Quiz.Quiz
       sendEvent(AddQuizAction(Option(Quiz(question, answerList, score, imagePath))))
+    case QuizAdded =>
+      println("Quiz Aggiunto!")
+      sendEvent(Back)
