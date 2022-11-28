@@ -17,7 +17,10 @@ object AddQuizMenuView:
   case object DefaultUpdate extends ParameterlessViewUpdate
   case class AskCoursePrint[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
   case class QuizPrint[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
+
   case object AskQuizPrint extends ParameterlessViewUpdate
+
+  case object QuizAdded extends ParameterlessViewUpdate
 
 
   /** AddQuizMenuView define aspects of a general AddQuizMenuView */
@@ -43,7 +46,6 @@ object AddQuizMenuView:
         sendEvent(AddCourseAction(courseList.lift(courseIndex)))
       case QuizPrint(quiz) =>
         import model.Quiz.*
-        println("Quiz Aggiunto!")
         println(printQuizFull(quiz.get.asInstanceOf[Quiz]))
       case AskQuizPrint =>
         println("Inserisci domanda:")
@@ -66,3 +68,6 @@ object AddQuizMenuView:
         import model.Quiz.Quiz
         import controller.AddQuizMenuController.AddQuizAction
         sendEvent(AddQuizAction(Option(Quiz(question, answerList, score, imagePath))))
+      case QuizAdded =>
+        println("Quiz Aggiunto!")
+        sendEvent(Back)
