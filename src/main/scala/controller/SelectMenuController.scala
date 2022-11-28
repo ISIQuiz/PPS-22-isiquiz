@@ -10,6 +10,7 @@ import model.{GameStage, QuizInGame, Session}
 import model.GameStage.*
 import view.terminalUI.TerminalSelectMenu
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
@@ -25,6 +26,8 @@ object SelectMenuController:
 class SelectMenuController extends PageController:
 
   import SelectMenuController.*
+
+  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
 
   var gameStage = GameStage()
 

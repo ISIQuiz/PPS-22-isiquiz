@@ -7,6 +7,7 @@ import model.SavedCourse
 import view.terminalUI.{TerminalAddCourseMenu, TerminalStandardGameMenu}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
@@ -20,6 +21,8 @@ object AddCourseMenuController:
 class AddCourseMenuController extends PageController:
 
   import AddCourseMenuController.*
+
+  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(SettingsMenuAction)

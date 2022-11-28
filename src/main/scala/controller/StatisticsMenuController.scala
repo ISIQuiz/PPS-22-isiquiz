@@ -7,6 +7,7 @@ import view.View
 import view.terminalUI.TerminalStatisticsMenu
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
@@ -19,6 +20,8 @@ object StatisticsMenuController:
 class StatisticsMenuController extends PageController :
 
   import StatisticsMenuController.*
+
+  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)

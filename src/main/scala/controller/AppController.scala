@@ -53,7 +53,6 @@ object AppController extends Controller:
     case action: Action[T] => currentPage.pageController.handle(action)
     case null => throw new IllegalArgumentException
 
-
   def startApp(): Unit =
     loadCoursesFromFile()
     val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()

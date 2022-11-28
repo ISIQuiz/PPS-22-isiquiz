@@ -8,6 +8,7 @@ import model.Quiz.Quiz
 import view.terminalUI.TerminalAddQuizMenu
 import view.updates.ViewUpdate
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
@@ -23,6 +24,8 @@ object AddQuizMenuController:
 class AddQuizMenuController extends PageController :
 
   import AddQuizMenuController.*
+
+  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
 
   var courseSelected:Option[SavedCourse] = Option.empty
   var quizToAdd:Option[Quiz] = Option.empty

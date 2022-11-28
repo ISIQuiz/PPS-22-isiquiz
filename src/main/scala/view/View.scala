@@ -22,7 +22,7 @@ import view.updates.ViewUpdate
 import scala.io.StdIn.readLine
 import scala.collection.mutable.Map
 import concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Await
+import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success}
 import scalafx.Includes.jfxScene2sfx
 import scalafx.scene.SceneIncludes.jfxScene2sfx
@@ -43,7 +43,8 @@ object View:
     onCloseRequest = _ => System.exit(0)
   }
 
-  def sendEvent[T](action: Action[T]): Unit = AppController.handle(action)
+//  def sendEvent[T](action: Action[T]): Unit = AppController.handle(action)
+  def sendEvent[T](action: Action[T]): Unit = AppController.currentPage.pageController.actionsBuffer.addOne(action)
 
   object ViewFactory:
 
@@ -79,16 +80,27 @@ object View:
     val actionsMap: mutable.Map[String, Action[Any]]
     def inputReader(): String = readLine
     var terminalInput: TerminalInput = TerminalInputImpl()
-    def handleInput(): Unit =
-      terminalInput.readInput().onComplete( _ match
-        case Success(value) =>
-          terminalInput.cancellable._2.apply()
-          println("############################## " + value)
-          sendEvent(actionsMap(value));
-          terminalInput = TerminalInputImpl()
-          handleInput()
-        case Failure(exception) =>
-          terminalInput = TerminalInputImpl()
-          throw exception;
-      )
-    handleInput()
+//    def handleInput(): Unit =
+//      terminalInput.readInput().onComplete( _ match
+//        case Success(value) =>
+//          terminalInput.cancellable._2.apply()
+//          println(Thread.currentThread().getName)
+//          println("############################## " + value)
+//          sendEvent(actionsMap(value));
+//          terminalInput = TerminalInputImpl()
+//          handleInput()
+//        case Failure(exception) =>
+//          terminalInput = TerminalInputImpl()
+//          throw exception;
+//      )
+//    handleInput()
+      def handleInput(): Unit =
+        val input: Future[String] = Future(readLine())
+        input.onComplete(_ match
+          case Success(result) =>
+            sendEvent(actionsMap(result))
+            handleInput()
+          case Failure(_) =>
+            handleInput()
+        )
+      handleInput()

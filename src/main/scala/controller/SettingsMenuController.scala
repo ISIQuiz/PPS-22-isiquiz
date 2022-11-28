@@ -7,6 +7,7 @@ import view.View
 import view.terminalUI.TerminalSettingsMenu
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
@@ -21,6 +22,8 @@ object SettingsMenuController:
 class SettingsMenuController extends PageController :
 
   import SettingsMenuController.*
+
+  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)

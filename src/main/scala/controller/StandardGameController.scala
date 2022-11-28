@@ -31,10 +31,12 @@ object StandardGameController:
 /** Defines the logic of the select page */
 class StandardGameController(val game: GameStage) extends PageController, GameController:
 
+  import StandardGameController.*
+
+  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
+
   val gameStage: GameStage = game
   val timer: Timer = TimerImpl(gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime)
-
-  import StandardGameController.*
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)

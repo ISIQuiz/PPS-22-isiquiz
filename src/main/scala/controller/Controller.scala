@@ -2,7 +2,9 @@ package controller
 
 import controller.actions.Action
 import view.updates.ViewUpdate
+
 import concurrent.ExecutionContext.Implicits.global
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.Promise
 import scala.util.Try
 
@@ -15,6 +17,8 @@ trait Controller:
 
 /** PageController should include all behaviours common between different pages controllers */
 trait PageController extends Controller:
+
+  var actionsBuffer: ListBuffer[Action[Any]]
 
   /** Defines the logic of an iteration (step) in the corresponding page controller */
   def nextIteration(): Unit
