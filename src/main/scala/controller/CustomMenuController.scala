@@ -6,8 +6,10 @@ import controller.{AppController, PageController}
 import model.GameStage
 import model.settings.GameSettings
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-import view.{CustomMenuView, View}
+import view.View
+import view.terminalUI.TerminalCustomMenu
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
@@ -22,13 +24,13 @@ class CustomMenuController(var gameStage: GameStage) extends PageController :
 
   import CustomMenuController.*
 
-  override def matchAction[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(MainMenu)
+  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
+
+  override def handle[T](action: Action[T]): Unit = action match
+    case Back => AppController.handle(MainMenuAction)
     case NewGameSettings(actionParameter) =>
       gameStage.gameSettings = actionParameter.get.asInstanceOf[GameSettings]
-      AppController.handle(AppController.StandardGame(Option(gameStage)))
+      AppController.handle(AppController.StandardGameAction(Option(gameStage)))
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(CustomMenuView.DefaultUpdate)
-    Await.ready(actionPromise.future, Duration.Inf)
-    AppController.currentPage.pageController.nextIteration()
+    AppController.currentPage.pageView.updateUI(TerminalCustomMenu.DefaultUpdate)

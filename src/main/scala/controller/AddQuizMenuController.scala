@@ -5,10 +5,12 @@ import controller.{AppController, PageController}
 import controller.AppController.*
 import model.{Course, SavedCourse}
 import model.Quiz.Quiz
-import view.AddQuizMenuView
+import view.terminalUI.TerminalAddQuizMenu
 import view.updates.ViewUpdate
 
-import scala.concurrent.Await
+
+import scala.collection.mutable.ListBuffer
+import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
 /** Companion object of add quiz menu controller */
@@ -24,27 +26,32 @@ class AddQuizMenuController extends PageController :
 
   import AddQuizMenuController.*
 
+  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
+
   var courseSelected:Option[SavedCourse] = Option.empty
   var quizToAdd:Option[Quiz] = Option.empty
 
-  override def matchAction[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(SettingsMenu)
+  override def handle[T](action: Action[T]): Unit = action match
+    case Back => AppController.handle(SettingsMenuAction)
     case AddCourseAction(actionParameter) => courseSelected = actionParameter
     case AddQuizAction(actionParameter) => addQuiz(actionParameter)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(AddQuizMenuView.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.DefaultUpdate)
+    actionPromise = Promise[Unit]
     if courseSelected.isEmpty then
-      AppController.currentPage.pageView.updateUI(AddQuizMenuView.AskCoursePrint(Option(AppController.session.savedCourses)))
+      AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.AskCoursePrint(Option(AppController.session.savedCourses)))
     else
-      AppController.currentPage.pageView.updateUI(AddQuizMenuView.AskQuizPrint)
-    Await.ready(actionPromise.future, Duration.Inf)
-    AppController.currentPage.pageController.nextIteration()
+      AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.AskQuizPrint)
 
   private def addQuiz[T](actionParameter: Option[Quiz]): Unit =
     quizToAdd = actionParameter
     val newSavedCourse = SavedCourse.changeQuizList(courseSelected.get, courseSelected.get.quizList.::(quizToAdd.get))
     val newListCourses = AppController.session.savedCourses.filterNot(course => course == courseSelected).appended(newSavedCourse)
     AppController.changeSavedCourses(newListCourses)
-    AppController.currentPage.pageView.updateUI(AddQuizMenuView.QuizPrint(quizToAdd))
-    AppController.handle(SettingsMenu)
+    AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.QuizPrint(quizToAdd))
+    actionPromise = Promise[Unit]
+    AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.QuizAdded)
+    Await.ready(actionPromise.future, Duration.Inf)
+    actionPromise = Promise[Unit] //EXTRA to fix the nesting matchAction Problem since complete is after that (after this there is the complete of AskQuiz
+

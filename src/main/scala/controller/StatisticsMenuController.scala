@@ -3,9 +3,11 @@ package controller
 import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
-import view.{StatisticsMenuView, View}
+import view.View
+import view.terminalUI.TerminalStatisticsMenu
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
@@ -19,10 +21,10 @@ class StatisticsMenuController extends PageController :
 
   import StatisticsMenuController.*
 
-  override def matchAction[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(MainMenu)
+  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
+
+  override def handle[T](action: Action[T]): Unit = action match
+    case Back => AppController.handle(MainMenuAction)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(StatisticsMenuView.DefaultUpdate)
-    Await.ready(actionPromise.future, Duration.Inf)
-    AppController.currentPage.pageController.nextIteration()
+    AppController.currentPage.pageView.updateUI(TerminalStatisticsMenu.DefaultUpdate)

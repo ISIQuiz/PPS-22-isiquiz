@@ -7,10 +7,14 @@ import controller.AppController.*
 import controller.{MainMenuController, SelectMenuController, SettingsMenuController, StatisticsMenuController}
 import model.Session
 import utils.DefaultCourseList
-import view.MainMenuView.*
-import view.SelectMenuView.*
-import view.StatisticsMenuView.*
-import view.SettingsMenuView.*
+import view.View.ViewFactory
+import view.View.ViewFactory.GUIType.ScalaFX
+import view.terminalUI.{TerminalMainMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStatisticsMenu}
+import view.terminalUI.TerminalMainMenu.*
+import view.terminalUI.TerminalSelectMenu.*
+import view.terminalUI.TerminalStatisticsMenu.*
+import view.terminalUI.TerminalSettingsMenu.*
+import view.View.ViewFactory.GUIType.*
 
 class TestApplicationController extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
 
@@ -19,27 +23,27 @@ class TestApplicationController extends AnyFunSuite with BeforeAndAfterAll with 
   }
 
   test("Application should start in main menu page") {
-    assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, MainMenuView]])
+    assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, TerminalMainMenu]])
   }
 
   test("Application should go to main menu page when action is performed") {
-    AppController.handle(AppController.MainMenu)
-    assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, MainMenuView]])
+    AppController.handle(MainMenuAction)
+    assert(AppController.currentPage.isInstanceOf[Page[MainMenuController, TerminalMainMenu]])
   }
 
   test("Going from main menu to select page when action is performed") {
-    AppController.handle(AppController.SelectMenu)
-    assert(AppController.currentPage.isInstanceOf[Page[SelectMenuController, SelectMenuView]])
+    AppController.handle(SelectMenuAction)
+    assert(AppController.currentPage.isInstanceOf[Page[SelectMenuController, TerminalSelectMenu]])
   }
 
   test("Going from main menu to statistics page when action is performed") {
-    AppController.handle(AppController.StatisticsMenu)
-    assert(AppController.currentPage.isInstanceOf[Page[StatisticsMenuController, StatisticsMenuView]])
+    AppController.handle(StatisticsMenuAction)
+    assert(AppController.currentPage.isInstanceOf[Page[StatisticsMenuController, TerminalStatisticsMenu]])
   }
 
   test("Going from main menu to settings page when action is performed") {
-    AppController.handle(AppController.SettingsMenu)
-    assert(AppController.currentPage.isInstanceOf[Page[SettingsMenuController, SettingsMenuView]])
+    AppController.handle(SettingsMenuAction)
+    assert(AppController.currentPage.isInstanceOf[Page[SettingsMenuController, TerminalSettingsMenu]])
   }
 
   test("Application should start with default Session value") {

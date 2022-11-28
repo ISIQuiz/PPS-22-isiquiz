@@ -27,10 +27,10 @@ case class TerminalInputImpl() extends TerminalInput:
     }
     cancellable._1
 
-//  cancellable._1.onComplete( _ match
-//    case Success(value) => value
-//    case Failure(exception) => throw exception
-//  )
+//    cancellable._1.onComplete( _ match
+//      case Success(input) => input
+//      case Failure(exception) => throw exception
+//    )
 
   override def stopInput(): Unit =
     cancellable._2.apply()

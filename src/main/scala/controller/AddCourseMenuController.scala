@@ -4,9 +4,10 @@ import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
 import model.SavedCourse
-import view.{AddCourseMenuView, StandardGameView}
+import view.terminalUI.{TerminalAddCourseMenu, TerminalStandardGameMenu}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
@@ -21,18 +22,18 @@ class AddCourseMenuController extends PageController:
 
   import AddCourseMenuController.*
 
-  override def matchAction[T](action: Action[T]): Unit = action match
-    case Back => AppController.handle(SettingsMenu)
+  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
+
+  override def handle[T](action: Action[T]): Unit = action match
+    case Back => AppController.handle(SettingsMenuAction)
     case AddCourseAction(actionParameter) => addCourse(actionParameter)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(AddCourseMenuView.DefaultUpdate)
-    AppController.currentPage.pageView.updateUI(AddCourseMenuView.AskCoursePrint)
-    Await.ready(actionPromise.future, Duration.Inf)
-    AppController.currentPage.pageController.nextIteration()
+    AppController.currentPage.pageView.updateUI(TerminalAddCourseMenu.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(TerminalAddCourseMenu.AskCoursePrint)
 
   def addCourse(actionParameter:Option[SavedCourse]):Unit =
     val newListCourses = AppController.session.savedCourses.appended(actionParameter.get)
     AppController.changeSavedCourses(newListCourses)
-    AppController.currentPage.pageView.updateUI(AddCourseMenuView.CoursePrint(actionParameter))
-    AppController.handle(SettingsMenu)
+    AppController.currentPage.pageView.updateUI(TerminalAddCourseMenu.CoursePrint(actionParameter))
+    AppController.handle(SettingsMenuAction)

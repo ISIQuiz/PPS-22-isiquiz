@@ -8,23 +8,24 @@ import model.Answer.Answer
 import model.CourseIdentifier.CourseIdentifierImpl
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
-import view.MainMenuView.*
-import view.SelectMenuView.*
-import view.StandardGameView.*
+import view.terminalUI.TerminalMainMenu.*
+import view.terminalUI.TerminalSelectMenu.*
+import view.terminalUI.TerminalStandardGameMenu.*
 import view.updates.ParameterlessViewUpdate
 import model.Quiz.Quiz
 import model.SavedCourse.SavedCourseImpl
 import model.GameStage
+import view.terminalUI.TerminalStandardGameMenu
 
-object TestStandardGameView:
+object TestTerminalStandardGameMenu:
   private var _input: String = null
   def input: String = _input
   def input_(input: String): Unit = _input = input
 
-class TestStandardGameView extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
-  import TestStandardGameView.*
+class TestTerminalStandardGameMenu extends AnyFunSuite with BeforeAndAfterAll with BeforeAndAfterEach:
+  import TestTerminalStandardGameMenu.*
 
-  class StandardGameViewTest extends StandardGameViewImpl:
+  class TerminalStandardGameMenuTest extends TerminalStandardGameMenu:
     override def inputReader() = input
 
   val course = SavedCourseImpl(
@@ -49,12 +50,12 @@ class TestStandardGameView extends AnyFunSuite with BeforeAndAfterAll with Befor
     )
   )
 
-  var standardGameView: StandardGameView = new StandardGameViewTest
+  var terminalStandardGameMenu: TerminalStandardGameMenu = new TerminalStandardGameMenuTest
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    AppController.handle(AppController.StandardGame(Option(GameStage(List(course)))))
+    AppController.handle(AppController.StandardGameAction(Option(GameStage(List(course)))))
   }
 
-end TestStandardGameView
+end TestTerminalStandardGameMenu
 
