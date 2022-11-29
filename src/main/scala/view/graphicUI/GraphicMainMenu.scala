@@ -1,7 +1,6 @@
 package view.graphicUI
 
-import controller.MainMenuController.Select
-import controller.MainMenuController.Quit
+import controller.MainMenuController.{Quit, Select, Settings}
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import scalafx.application.JFXApp3.PrimaryStage
@@ -23,6 +22,10 @@ class GraphicMainMenu(basePanel: Pane) extends GraphicView:
   @FXML
   def selectClicked: Unit =
     sendEvent(Select)
+
+  @FXML
+  def settingsClicked: Unit =
+    sendEvent(Settings)
 
   @FXML
   def quitClicked: Unit =
