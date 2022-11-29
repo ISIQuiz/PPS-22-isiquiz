@@ -9,8 +9,8 @@ import view.terminalUI.TerminalMainMenu
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import view.MainMenuView
 import view.MainMenuView.DefaultUpdate
-import view.updates.DefaultUpdate
 
+import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future, Promise}
@@ -29,8 +29,6 @@ class MainMenuController extends PageController:
 
   import MainMenuController.*
 
-  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
-
   override def handle[T](action: Action[T]): Unit = action match
     case Select => AppController.handle(SelectMenuAction)
     case Statistics => AppController.handle(StatisticsMenuAction)
@@ -38,5 +36,4 @@ class MainMenuController extends PageController:
     case Quit => System.exit(0)
 
   override def nextIteration(): Unit =
-    if actionsBuffer.nonEmpty then handle(actionsBuffer.head)
     AppController.currentPage.pageView.updateUI(DefaultUpdate)

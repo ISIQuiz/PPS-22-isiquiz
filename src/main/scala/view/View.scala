@@ -17,7 +17,6 @@ import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCust
 import view.graphicUI.GraphicMainMenu.*
 import view.graphicUI.{GraphicDefaultMenu, GraphicMainMenu, GraphicStandardGameMenu}
 import view.updates.ViewUpdate
-
 import scala.io.StdIn.readLine
 import scala.collection.mutable.Map
 import concurrent.ExecutionContext.Implicits.global
@@ -32,8 +31,9 @@ import scala.collection.mutable
 
 object View:
 
-  private val _scene = Scene(1280, 720)
-  private val _basePanel: Pane = Pane()
+  private var _scene = Scene(1280, 720)
+  private var _basePanel: Pane = Pane()
+  def basePanel(): Pane = _basePanel
   _scene.root.value = _basePanel
   private var _stage: PrimaryStage = new JFXApp3.PrimaryStage {
     title.value = "ISIQuiz"
@@ -42,8 +42,7 @@ object View:
     onCloseRequest = _ => System.exit(0)
   }
 
-//  def sendEvent[T](action: Action[T]): Unit = AppController.handle(action)
-  def sendEvent[T](action: Action[T]): Unit = AppController.currentPage.pageController.actionsBuffer.addOne(action)
+  def sendEvent[T](action: Action[T]): Unit = AppController.handle(action)
 
   object ViewFactory:
 
@@ -51,20 +50,20 @@ object View:
       case Terminal
       case ScalaFX
 
-    private var _currentGUIType: GUIType = GUIType.Terminal
+    private var _currentGUIType: GUIType = GUIType.ScalaFX
     def currentGUIType: GUIType = _currentGUIType
     def currentGUIType_(guiType: GUIType): Unit = _currentGUIType = guiType
     if _currentGUIType == Terminal then new GraphicDefaultMenu(_basePanel)
 
     def create[T](page: Action[T]): PageView = page match
-      case MainMenuAction => if _currentGUIType == Terminal then new TerminalMainMenu() else new GraphicMainMenu(_basePanel)
-      case SelectMenuAction => if _currentGUIType == Terminal then new TerminalSelectMenu() else new GraphicDefaultMenu(_basePanel)
-      case StatisticsMenuAction => if _currentGUIType == Terminal then new TerminalStatisticsMenu() else new GraphicDefaultMenu(_basePanel)
-      case SettingsMenuAction => if _currentGUIType == Terminal then new TerminalSettingsMenu() else new GraphicDefaultMenu(_basePanel)
-      case AddCourseMenuAction => if _currentGUIType == Terminal then new TerminalAddCourseMenu() else new GraphicDefaultMenu(_basePanel)
-      case AddQuizMenuAction => if _currentGUIType == Terminal then new TerminalAddQuizMenu() else new GraphicDefaultMenu(_basePanel)
-      case CustomMenuAction(_) => if _currentGUIType == Terminal then new TerminalCustomMenu() else new GraphicDefaultMenu(_basePanel)
-      case StandardGameAction(_) => if _currentGUIType == Terminal then new TerminalStandardGameMenu() else new GraphicDefaultMenu(_basePanel)
+      case MainMenuAction => if _currentGUIType == Terminal then new TerminalMainMenu() else new GraphicMainMenu(basePanel())
+      case SelectMenuAction => if _currentGUIType == Terminal then new TerminalSelectMenu() else new GraphicDefaultMenu(basePanel())
+      case StatisticsMenuAction => if _currentGUIType == Terminal then new TerminalStatisticsMenu() else new GraphicDefaultMenu(basePanel())
+      case SettingsMenuAction => if _currentGUIType == Terminal then new TerminalSettingsMenu() else new GraphicDefaultMenu(basePanel())
+      case AddCourseMenuAction => if _currentGUIType == Terminal then new TerminalAddCourseMenu() else new GraphicDefaultMenu(basePanel())
+      case AddQuizMenuAction => if _currentGUIType == Terminal then new TerminalAddQuizMenu() else new GraphicDefaultMenu(basePanel())
+      case CustomMenuAction(_) => if _currentGUIType == Terminal then new TerminalCustomMenu() else new GraphicDefaultMenu(basePanel())
+      case StandardGameAction(_) => if _currentGUIType == Terminal then new TerminalStandardGameMenu() else new GraphicDefaultMenu(basePanel())
 
   /** PageView should include all behaviours common between different pages views */
   trait PageView:
@@ -97,7 +96,7 @@ object View:
         val input: Future[String] = Future(readLine())
         input.onComplete(_ match
           case Success(result) =>
-            sendEvent(actionsMap(result))
+            Platform.runLater(() => sendEvent(actionsMap(result)));
             handleInput()
           case Failure(_) =>
             handleInput()

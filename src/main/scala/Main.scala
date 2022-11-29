@@ -6,5 +6,4 @@ import view.View.ViewFactory.GUIType.*
 object Main extends JFXApp3:
 
   override def start(): Unit =
-    ViewFactory.currentGUIType_(Terminal)
     AppController.startApp()

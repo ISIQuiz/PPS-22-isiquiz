@@ -58,6 +58,7 @@ object AppController extends Controller:
     val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     scheduler.scheduleAtFixedRate(() => currentPage.pageController.nextIteration(), 0, 1000, TimeUnit.MILLISECONDS)
 
+  // TODO: Maybe move in utils file
   // Read courses list from a JSON file and deserialize it
   def loadCoursesFromFile(): Unit =
     val fileHandler = FileHandler()
