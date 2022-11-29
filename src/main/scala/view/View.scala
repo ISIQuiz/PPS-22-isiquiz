@@ -14,7 +14,7 @@ import scalafx.stage.Stage
 import utils.{TerminalInput, TerminalInputImpl}
 import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalMainMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
 import view.graphicUI.GraphicMainMenu.*
-import view.graphicUI.{GraphicDefaultMenu, GraphicMainMenu, GraphicSelectMenu, GraphicStandardGameMenu}
+import view.graphicUI.{GraphicDefaultMenu, GraphicMainMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu}
 import view.updates.ViewUpdate
 
 import scala.io.StdIn.readLine
@@ -26,6 +26,7 @@ import scalafx.Includes.jfxScene2sfx
 import scalafx.scene.SceneIncludes.jfxScene2sfx
 import scalafx.stage.Stage.sfxStage2jfx
 import view.View.ViewFactory.GUIType.*
+
 import scala.collection.mutable
 
 object View:
@@ -58,7 +59,7 @@ object View:
       case MainMenuAction => if _currentGUIType == Terminal then new TerminalMainMenu() else new GraphicMainMenu(basePanel())
       case SelectMenuAction => if _currentGUIType == Terminal then new TerminalSelectMenu() else new GraphicSelectMenu(basePanel())
       case StatisticsMenuAction => if _currentGUIType == Terminal then new TerminalStatisticsMenu() else new GraphicDefaultMenu(basePanel())
-      case SettingsMenuAction => if _currentGUIType == Terminal then new TerminalSettingsMenu() else new GraphicDefaultMenu(basePanel())
+      case SettingsMenuAction => if _currentGUIType == Terminal then new TerminalSettingsMenu() else new GraphicSettingsMenu(basePanel())
       case AddCourseMenuAction => if _currentGUIType == Terminal then new TerminalAddCourseMenu() else new GraphicDefaultMenu(basePanel())
       case AddQuizMenuAction => if _currentGUIType == Terminal then new TerminalAddQuizMenu() else new GraphicDefaultMenu(basePanel())
       case CustomMenuAction(_) => if _currentGUIType == Terminal then new TerminalCustomMenu() else new GraphicDefaultMenu(basePanel())
