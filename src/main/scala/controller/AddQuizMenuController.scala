@@ -38,7 +38,6 @@ class AddQuizMenuController extends PageController :
 
   override def nextIteration(): Unit =
     AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.DefaultUpdate)
-    actionPromise = Promise[Unit]
     if courseSelected.isEmpty then
       AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.AskCoursePrint(Option(AppController.session.savedCourses)))
     else
@@ -50,8 +49,5 @@ class AddQuizMenuController extends PageController :
     val newListCourses = AppController.session.savedCourses.filterNot(course => course == courseSelected).appended(newSavedCourse)
     AppController.changeSavedCourses(newListCourses)
     AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.QuizPrint(quizToAdd))
-    actionPromise = Promise[Unit]
     AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.QuizAdded)
-    Await.ready(actionPromise.future, Duration.Inf)
-    actionPromise = Promise[Unit] //EXTRA to fix the nesting matchAction Problem since complete is after that (after this there is the complete of AskQuiz
 

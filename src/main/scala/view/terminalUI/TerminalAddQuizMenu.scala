@@ -6,7 +6,7 @@ import controller.actions.Action
 import model.Answer.Answer
 import model.SavedCourse
 import view.View.*
-import view.terminalUI.TerminalAddQuizMenu.{AskCoursePrint, AskQuizPrint, DefaultUpdate, QuizPrint}
+import view.terminalUI.TerminalAddQuizMenu.{AskCoursePrint, AskQuizPrint, DefaultUpdate, QuizAdded, QuizPrint}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
 import scala.collection.mutable.Map
