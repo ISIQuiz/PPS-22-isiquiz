@@ -23,4 +23,3 @@ class TerminalSettingsMenu extends TerminalView:
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit =
     println("Menu impostazioni:\n1) Menu principale\n2) Aggiungi corso\n3) Aggiungi quiz")
-    handleInput()

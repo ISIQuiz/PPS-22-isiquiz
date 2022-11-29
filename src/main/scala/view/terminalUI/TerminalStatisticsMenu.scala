@@ -21,4 +21,3 @@ class TerminalStatisticsMenu extends TerminalView:
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit =
     println("Menu statistiche:\n1) Menu principale")
-    handleInput()

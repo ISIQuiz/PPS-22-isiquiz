@@ -9,11 +9,11 @@ import view.terminalUI.TerminalMainMenu
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import view.MainMenuView
 import view.MainMenuView.DefaultUpdate
-import view.updates.DefaultUpdate
 
+import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future, Promise}
-import concurrent.ExecutionContext.Implicits.global
 import scala.util.Try
 
 /** Companion object of main menu controller */
@@ -29,7 +29,7 @@ class MainMenuController extends PageController:
 
   import MainMenuController.*
 
-  override def matchAction[T](action: Action[T]): Unit = action match
+  override def handle[T](action: Action[T]): Unit = action match
     case Select => AppController.handle(SelectMenuAction)
     case Statistics => AppController.handle(StatisticsMenuAction)
     case Settings => AppController.handle(SettingsMenuAction)
@@ -37,6 +37,3 @@ class MainMenuController extends PageController:
 
   override def nextIteration(): Unit =
     AppController.currentPage.pageView.updateUI(DefaultUpdate)
-    Await.ready(actionPromise.future, Duration.Inf)
-    //logic
-    AppController.currentPage.pageController.nextIteration() // or change page

@@ -8,7 +8,9 @@ import model.Quiz.Quiz
 import view.terminalUI.TerminalAddQuizMenu
 import view.updates.ViewUpdate
 
-import scala.concurrent.Await
+
+import scala.collection.mutable.ListBuffer
+import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
 /** Companion object of add quiz menu controller */
@@ -24,10 +26,12 @@ class AddQuizMenuController extends PageController :
 
   import AddQuizMenuController.*
 
+  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
+
   var courseSelected:Option[SavedCourse] = Option.empty
   var quizToAdd:Option[Quiz] = Option.empty
 
-  override def matchAction[T](action: Action[T]): Unit = action match
+  override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(SettingsMenuAction)
     case AddCourseAction(actionParameter) => courseSelected = actionParameter
     case AddQuizAction(actionParameter) => addQuiz(actionParameter)
@@ -38,8 +42,6 @@ class AddQuizMenuController extends PageController :
       AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.AskCoursePrint(Option(AppController.session.savedCourses)))
     else
       AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.AskQuizPrint)
-    Await.ready(actionPromise.future, Duration.Inf)
-    AppController.currentPage.pageController.nextIteration()
 
   private def addQuiz[T](actionParameter: Option[Quiz]): Unit =
     quizToAdd = actionParameter
@@ -47,4 +49,5 @@ class AddQuizMenuController extends PageController :
     val newListCourses = AppController.session.savedCourses.filterNot(course => course == courseSelected).appended(newSavedCourse)
     AppController.changeSavedCourses(newListCourses)
     AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.QuizPrint(quizToAdd))
-    AppController.handle(SettingsMenuAction)
+    AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.QuizAdded)
+

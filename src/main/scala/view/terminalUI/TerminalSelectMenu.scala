@@ -32,7 +32,6 @@ class TerminalSelectMenu extends TerminalView:
       println("S) Inizia il gioco")
       println("C) Impostazioni personalizzate")
       println("Seleziona un corso:")
-      handleInput()
     case CourseUpdate(updateParameter) =>
       if update.updateParameter.isDefined then
         val savedCourses: List[(SavedCourse, Boolean)] = updateParameter.get.asInstanceOf[List[(SavedCourse, Boolean)]]
