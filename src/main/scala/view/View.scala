@@ -7,25 +7,26 @@ import javafx.event.Event
 import javafx.fxml.FXMLLoader
 import javafx.scene.layout.Pane
 import javafx.stage.StageStyle
-import scalafx.application.JFXApp3
+import scalafx.application.{JFXApp3, Platform}
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
 import scalafx.stage.Stage
 import utils.{TerminalInput, TerminalInputImpl}
 import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalMainMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
 import view.graphicUI.GraphicMainMenu.*
-import view.graphicUI.{GraphicDefaultMenu, GraphicMainMenu, GraphicStandardGameMenu}
+import view.graphicUI.{GraphicDefaultMenu, GraphicMainMenu, GraphicSelectMenu, GraphicStandardGameMenu}
 import view.updates.ViewUpdate
 
 import scala.io.StdIn.readLine
 import scala.collection.mutable.Map
 import concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Await
+import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success}
 import scalafx.Includes.jfxScene2sfx
 import scalafx.scene.SceneIncludes.jfxScene2sfx
 import scalafx.stage.Stage.sfxStage2jfx
 import view.View.ViewFactory.GUIType.*
+import scala.collection.mutable
 
 object View:
 
@@ -39,6 +40,8 @@ object View:
     onCloseRequest = _ => System.exit(0)
   }
 
+  def basePanel(): Pane = _basePanel
+
   def sendEvent[T](action: Action[T]): Unit = AppController.handle(action)
 
   object ViewFactory:
@@ -47,7 +50,7 @@ object View:
       case Terminal
       case ScalaFX
 
-    private var _currentGUIType: GUIType = GUIType.Terminal
+    private var _currentGUIType: GUIType = GUIType.ScalaFX
     def currentGUIType: GUIType = _currentGUIType
     def currentGUIType_(guiType: GUIType): Unit = _currentGUIType = guiType
 
@@ -73,14 +76,15 @@ object View:
      */
     val actionsMap: mutable.Map[String, Action[Any]]
     def inputReader(): String = readLine
-   //var terminalInput: TerminalInput = TerminalInputImpl()
-      def handleInput(): Unit =
-        val input: Future[String] = Future(readLine())
-        input.onComplete(_ match
-          case Success(result) =>
-            Platform.runLater(() => sendEvent(actionsMap(result)));
-            handleInput()
-          case Failure(_) =>
-            handleInput()
-        )
-      handleInput()
+    var terminalInput: TerminalInput = TerminalInputImpl()
+
+    def handleInput(): Unit =
+      val input: Future[String] = Future(readLine())
+      input.onComplete(_ match
+        case Success(result) =>
+          Platform.runLater(() => sendEvent(actionsMap(result)));
+          handleInput()
+        case Failure(_) =>
+          handleInput()
+      )
+    handleInput()
