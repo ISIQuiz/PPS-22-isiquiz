@@ -1,7 +1,7 @@
 package view.graphicUI
 
-import controller.AppController.SelectMenuAction
 import controller.MainMenuController.Select
+import controller.MainMenuController.Quit
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import scalafx.application.JFXApp3.PrimaryStage
@@ -23,6 +23,10 @@ class GraphicMainMenu(basePanel: Pane) extends GraphicView:
   @FXML
   def selectClicked: Unit =
     sendEvent(Select)
+
+  @FXML
+  def quitClicked: Unit =
+    sendEvent(Quit)
 
   PaneLoader.loadPane(basePanel, this, "main.fxml")
 
