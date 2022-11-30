@@ -14,7 +14,7 @@ import scalafx.stage.Stage
 import utils.{TerminalInput, TerminalInputImpl}
 import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalMainMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
 import view.graphicUI.GraphicMainMenu.*
-import view.graphicUI.{GraphicDefaultMenu, GraphicMainMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu}
+import view.graphicUI.{GraphicCustomMenu, GraphicDefaultMenu, GraphicMainMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu}
 import view.updates.ViewUpdate
 
 import scala.io.StdIn.readLine
@@ -56,13 +56,25 @@ object View:
         case ScalaFX => GraphicMainMenu(_stage)
       case SelectMenuAction => _currentGUIType match
         case Terminal => TerminalSelectMenu()
+        case ScalaFX => GraphicSelectMenu(_stage)
+      case StatisticsMenuAction => _currentGUIType match
+        case Terminal => TerminalStatisticsMenu()
         case ScalaFX => GraphicDefaultMenu(_stage)
-      case StatisticsMenuAction => if _currentGUIType == Terminal then new TerminalStatisticsMenu() else new GraphicDefaultMenu(_stage)
-      case SettingsMenuAction => if _currentGUIType == Terminal then new TerminalSettingsMenu() else new GraphicDefaultMenu(_stage)
-      case AddCourseMenuAction => if _currentGUIType == Terminal then new TerminalAddCourseMenu() else new GraphicDefaultMenu(_stage)
-      case AddQuizMenuAction => if _currentGUIType == Terminal then new TerminalAddQuizMenu() else new GraphicDefaultMenu(_stage)
-      case CustomMenuAction(_) => if _currentGUIType == Terminal then new TerminalCustomMenu() else new GraphicDefaultMenu(_stage)
-      case StandardGameAction(_) => if _currentGUIType == Terminal then new TerminalStandardGameMenu() else new GraphicDefaultMenu(_stage)
+      case SettingsMenuAction => _currentGUIType match
+        case Terminal => TerminalSettingsMenu()
+        case ScalaFX => GraphicSettingsMenu(_stage)
+      case AddCourseMenuAction => _currentGUIType match
+        case Terminal => TerminalAddCourseMenu()
+        case ScalaFX => GraphicDefaultMenu(_stage)
+      case AddQuizMenuAction => _currentGUIType match
+        case Terminal => TerminalAddQuizMenu()
+        case ScalaFX => GraphicDefaultMenu(_stage)
+      case CustomMenuAction(_) => _currentGUIType match
+        case Terminal => TerminalCustomMenu()
+        case ScalaFX => GraphicCustomMenu(_stage)
+      case StandardGameAction(_) => _currentGUIType match
+        case Terminal => TerminalStandardGameMenu()
+        case ScalaFX => GraphicStandardGameMenu(_stage)
 
   /** PageView should include all behaviours common between different pages views */
   trait PageView:
