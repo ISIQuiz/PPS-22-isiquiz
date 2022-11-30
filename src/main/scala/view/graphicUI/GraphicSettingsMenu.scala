@@ -1,25 +1,22 @@
 package view.graphicUI
 
-import controller.AppController.{CustomMenuAction, MainMenuAction, SelectMenuAction, StandardGameAction}
-import javafx.fxml.FXML
-import javafx.scene.control.Label
-import javafx.scene.layout.Pane
-import model.GameStage
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.scene.Scene
-import utils.PaneLoader
+import controller.SettingsMenuController.Back
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
+import utils.GUILoader
+import utils.GUILoader.loadGUI
+import javafx.fxml.FXML
+import javafx.stage.Stage
 
 object GraphicSettingsMenu
 
 /** Settings menu graphic interface  */
-class GraphicSettingsMenu(basePanel: Pane) extends GraphicView:
+class GraphicSettingsMenu(stage: Stage) extends GraphicView:
 
   @FXML
   def mainMenuClicked: Unit =
-    sendEvent(MainMenuAction)
+    sendEvent(Back)
 
-  PaneLoader.loadPane(basePanel, this, "settings_menu.fxml")
+  loadGUI(stage, this, "settings_menu.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = {}
