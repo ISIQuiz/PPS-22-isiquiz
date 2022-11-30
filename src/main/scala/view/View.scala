@@ -14,7 +14,7 @@ import scalafx.stage.Stage
 import utils.{TerminalInput, TerminalInputImpl}
 import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalMainMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
 import view.graphicUI.GraphicMainMenu.*
-import view.graphicUI.{GraphicDefaultMenu, GraphicMainMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu}
+import view.graphicUI.{GraphicCustomMenu, GraphicDefaultMenu, GraphicMainMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu}
 import view.updates.ViewUpdate
 
 import scala.io.StdIn.readLine
@@ -62,7 +62,7 @@ object View:
       case SettingsMenuAction => if _currentGUIType == Terminal then new TerminalSettingsMenu() else new GraphicSettingsMenu(basePanel())
       case AddCourseMenuAction => if _currentGUIType == Terminal then new TerminalAddCourseMenu() else new GraphicDefaultMenu(basePanel())
       case AddQuizMenuAction => if _currentGUIType == Terminal then new TerminalAddQuizMenu() else new GraphicDefaultMenu(basePanel())
-      case CustomMenuAction(_) => if _currentGUIType == Terminal then new TerminalCustomMenu() else new GraphicDefaultMenu(basePanel())
+      case CustomMenuAction(_) => if _currentGUIType == Terminal then new TerminalCustomMenu() else new GraphicCustomMenu(basePanel())
       case StandardGameAction(_) => if _currentGUIType == Terminal then new TerminalStandardGameMenu() else new GraphicStandardGameMenu(basePanel())
 
   /** PageView should include all behaviours common between different pages views */
