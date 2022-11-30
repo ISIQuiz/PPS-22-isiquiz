@@ -1,6 +1,6 @@
 package view.graphicUI
 
-import controller.MainMenuController.{Quit, Select, Settings}
+import controller.MainMenuController.{Quit, Select, Settings, Statistics}
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
 import utils.GUILoader
@@ -20,6 +20,10 @@ class GraphicMainMenu(stage: Stage) extends GraphicView:
   @FXML
   def selectClicked: Unit =
     sendEvent(Select)
+
+  @FXML
+  def statisticsClicked: Unit =
+    sendEvent(Statistics)
 
   @FXML
   def settingsClicked: Unit =
