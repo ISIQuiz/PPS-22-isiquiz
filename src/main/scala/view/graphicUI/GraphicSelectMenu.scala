@@ -1,33 +1,30 @@
 package view.graphicUI
 
-import controller.AppController.{CustomMenuAction, MainMenuAction, SelectMenuAction, StandardGameAction}
-import javafx.fxml.FXML
-import javafx.scene.control.Label
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.scene.Scene
-import javafx.scene.layout.Pane
-import utils.PaneLoader
+import controller.SelectMenuController.{Back, Custom, Start}
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
-import model.GameStage
+import utils.GUILoader
+import utils.GUILoader.loadGUI
+import javafx.fxml.FXML
+import javafx.stage.Stage
 
 object GraphicSelectMenu
 
 /** Select menu graphic interface  */
-class GraphicSelectMenu(basePanel: Pane) extends GraphicView:
+class GraphicSelectMenu(stage: Stage) extends GraphicView:
 
   @FXML
   def mainMenuClicked: Unit =
-    sendEvent(MainMenuAction)
+    sendEvent(Back)
 
   @FXML
   def standardGameMenuClicked: Unit =
-    sendEvent(StandardGameAction(Option(GameStage())))
+    sendEvent(Start)
 
   @FXML
   def customMenuClicked: Unit =
-    sendEvent(CustomMenuAction(Option(GameStage())))
+    sendEvent(Custom)
 
-  PaneLoader.loadPane(basePanel, this, "select_menu.fxml")
+  loadGUI(stage, this, "select_menu.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = {}

@@ -2,10 +2,12 @@ package controller
 
 import controller.Controller
 import controller.actions.{Action, ParameterlessAction}
+import javafx.stage.Stage
 import model.GameStage
 import model.{SavedCourse, Session}
 import utils.Configuration.SavedCoursesFilePath
 import utils.{CourseJsonParser, FileHandler}
+import view.View
 import view.View.{PageView, TerminalView, ViewFactory}
 import view.terminalUI.TerminalMainMenu.*
 import view.terminalUI.TerminalSelectMenu.*
