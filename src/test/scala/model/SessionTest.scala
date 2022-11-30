@@ -1,26 +1,28 @@
 package model
 
 import model.Answer.*
+import model.stats.PlayerStats
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import utils.DefaultCourseList
-import utils.DefaultCourseList.defaultCourseList
+import utils.DefaultDataList
+import utils.DefaultDataList.{defaultCourseList, defaultPlayerStats}
 
 
-class SessionTest extends AnyFunSuite with Matchers{
+class SessionTest extends AnyFunSuite with Matchers:
 
-  val session = Session(DefaultCourseList.defaultCourseList)
+  val session = Session(defaultCourseList, defaultPlayerStats)
 
   println(session.toString)
 
   test("New session test") {
-    session.savedCourses.size shouldEqual defaultCourseList.size
+    session.savedCourses shouldEqual defaultCourseList
+    session.playerStats shouldEqual defaultPlayerStats
   }
 
   test("Check if the course identifier of the first element of course list in Session changed") {
 
     val courseList = session.savedCourses
-    val course = courseList.apply(0)
+    val course = courseList.head
 
     // Change course identifier
     val courseIdChanged = CourseIdentifier("Course", "Degree", "University")
@@ -33,9 +35,16 @@ class SessionTest extends AnyFunSuite with Matchers{
     val sessionChanged = Session.changeSavedCourses(session, courseListChanged)
 
     // Check if course id has changed
-    sessionChanged.savedCourses.apply(0).courseId shouldEqual courseIdChanged
+    sessionChanged.savedCourses.head.courseId shouldEqual courseIdChanged
 
     //Check if second course still exist
     sessionChanged.savedCourses.apply(1).courseId.courseName shouldEqual session.savedCourses.apply(1).courseId.courseName
   }
-}
+
+  test("Check if player stats in Session changed") {
+    val sessionChanged = Session.changePlayerStats(session, PlayerStats(1,2,3, List()))
+    sessionChanged.playerStats.totalScore shouldEqual 1
+    sessionChanged.playerStats.totalAnsweredQuestions shouldEqual 2
+    sessionChanged.playerStats.totalCorrectAnswers shouldEqual 3
+  }
+
