@@ -7,12 +7,16 @@ import utils.GUILoader
 import utils.GUILoader.loadGUI
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label, TextField}
-import javafx.stage.Stage
+import javafx.stage.FileChooser.ExtensionFilter
+import javafx.stage.{DirectoryChooser, FileChooser, Stage}
+import utils.Configuration.{CurrentDirectoryPath, HomeDirectoryPath}
+
+import java.io.File
 
 object GraphicSettingsMenu
 
-/** Settings menu graphic interface  */
-class GraphicSettingsMenu(stage: Stage) extends GraphicView:
+/** Settings menu graphic interface */
+class GraphicSettingsMenu(stage: Stage) extends GraphicView :
 
   @FXML
   var backButton: Button = _
@@ -37,7 +41,15 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
     sendEvent(Back)
 
   @FXML
-  def importButtonClicked(): Unit = ???
+  def importButtonClicked(): Unit =
+    val extensionFilter: ExtensionFilter = ExtensionFilter("JSON file", "*.json")
+    val fileChooser: FileChooser = FileChooser()
+    fileChooser.getExtensionFilters.add(extensionFilter)
+    fileChooser.setTitle("Importa i corsi")
+    fileChooser.setInitialDirectory(File(CurrentDirectoryPath))
+    val selectedFile = fileChooser.showOpenDialog(stage)
+    println(selectedFile.getPath)
+
 
   @FXML
   def exportButtonClicked(): Unit = ???
