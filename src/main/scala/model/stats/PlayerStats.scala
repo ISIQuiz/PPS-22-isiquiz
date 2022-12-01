@@ -15,10 +15,11 @@ object PlayerStats:
 
   /**
    * Create a new [[PlayerStats]]
-   * @param totalScore total user score
+   *
+   * @param totalScore             total user score
    * @param totalAnsweredQuestions total number of answered questions
-   * @param totalCorrectAnswers total number of question answered correctly
-   * @param courseInStatsList the list of course in stats
+   * @param totalCorrectAnswers    total number of question answered correctly
+   * @param courseInStatsList      the list of course in stats
    * @return a [[PlayerStats]]
    */
   def apply(totalScore: Int = defaultPlayerStats.totalScore,
@@ -29,6 +30,7 @@ object PlayerStats:
 
   /**
    * Change total score in player stats
+   *
    * @param playerStats
    * @param totalScore
    * @return updated [[PlayerStats]]
@@ -36,7 +38,7 @@ object PlayerStats:
   def changeTotalScore(playerStats: PlayerStats, totalScore: Int): PlayerStats = playerStats match
     case PlayerStats(_, totalAnsweredQuestions, totalCorrectAnswers, courseInStatsList) =>
       PlayerStats(totalScore, totalAnsweredQuestions, totalCorrectAnswers, courseInStatsList)
-
+  
   /**
    * Change total answered questions
    * @param playerStats
@@ -57,8 +59,10 @@ object PlayerStats:
     case PlayerStats(totalScore, totalAnsweredQuestions, _, courseInStatsList) =>
       PlayerStats(totalScore, totalAnsweredQuestions, totalCorrectAnswers, courseInStatsList)
 
+
   /**
    * Change course in stats list
+   *
    * @param playerStats
    * @param courseInStatsList
    * @return updated [[PlayerStats]]
@@ -67,8 +71,36 @@ object PlayerStats:
     case PlayerStats(totalScore, totalAnsweredQuestions, totalCorrectAnswers, _) =>
       PlayerStats(totalScore, totalAnsweredQuestions, totalCorrectAnswers, courseInStatsList)
 
+
+
+  def calculateTotalCorrectAnswer(playerStats: PlayerStats): Int =
+    playerStats.courseInStatsList.map(
+      _.quizInStatsList.map(
+        _.totalRightAnswers
+      ).sum
+    ).sum
+
+  def calculateTotalAnsweredQuestions(playerStats: PlayerStats): Int =
+    playerStats.courseInStatsList.map(
+      _.quizInStatsList.map(
+        _.totalSeen
+      ).sum
+    ).sum
+
+  def calculateAnswerPrecision(playerStats: PlayerStats): Int =
+    calculateTotalCorrectAnswer(playerStats) * 100 / calculateTotalAnsweredQuestions(playerStats)
+
+  // TODO da rifare
+  def calculateAverageTimeAnswer(playerStats: PlayerStats): Double =
+    playerStats.courseInStatsList.map(
+      quizInStats => quizInStats.quizInStatsList.map(
+        quizInStats => quizInStats.averageTimeAnswer
+      ).sum / quizInStats.quizInStatsList.size
+    ).sum / playerStats.courseInStatsList.size
+
   /**
    * Init player stats with default values based on passed SavedCourse list
+   *
    * @param savedCourseList
    * @return a [[PlayerStats]]
    */
