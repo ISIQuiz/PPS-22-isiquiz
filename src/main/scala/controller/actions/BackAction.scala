@@ -1,3 +1,4 @@
 package controller.actions
 
-case object BackAction extends Action[Unit](Option.empty)
+trait BackAction:
+  case object Back extends ParameterlessAction
