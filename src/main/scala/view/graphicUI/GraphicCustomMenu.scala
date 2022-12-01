@@ -49,17 +49,6 @@ class GraphicCustomMenu(stage: Stage) extends GraphicView:
   loadGUI(stage, this, "custom_menu.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit =
-    val list: ListBuffer[String] = ListBuffer("1", "2")
+    maxQuizzesTextField.setText(AppController.currentPage.pageController.asInstanceOf[CustomMenuController].gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes.toString)
+    quizMaxTimeTextField.setText(AppController.currentPage.pageController.asInstanceOf[CustomMenuController].gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime.toString)
 
-    Platform.runLater(() => {
-      list.foreach(element =>
-        val checkbox: CheckBox = new CheckBox(element);
-        checkbox.addEventHandler(MouseEvent.MOUSE_CLICKED, event => {println(event)})
-      )
-
-
-
-
-      maxQuizzesTextField.setText(AppController.currentPage.pageController.asInstanceOf[CustomMenuController].gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes.toString)
-      quizMaxTimeTextField.setText(AppController.currentPage.pageController.asInstanceOf[CustomMenuController].gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime.toString)
-    })
