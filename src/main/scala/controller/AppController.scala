@@ -40,6 +40,7 @@ object AppController extends Controller:
   case object SettingsMenuAction extends ParameterlessAction
   case object AddCourseMenuAction extends ParameterlessAction
   case object AddQuizMenuAction extends ParameterlessAction
+  case object ReviewMenuAction extends ParameterlessAction
   case class CustomMenuAction[T](override val actionParameter: Option[T]) extends Action(actionParameter)
   case class StandardGameAction[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 

@@ -14,7 +14,7 @@ import scalafx.stage.Stage
 import utils.{TerminalInput, TerminalInputImpl}
 import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalMainMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
 import view.graphicUI.GraphicMainMenu.*
-import view.graphicUI.{GraphicCustomMenu, GraphicDefaultMenu, GraphicMainMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu}
+import view.graphicUI.{GraphicCustomMenu, GraphicDefaultMenu, GraphicMainMenu, GraphicReviewMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu, GraphicStatisticsMenu}
 import view.updates.ViewUpdate
 
 import scala.io.StdIn.readLine
@@ -59,7 +59,7 @@ object View:
         case ScalaFX => GraphicSelectMenu(_stage)
       case StatisticsMenuAction => _currentGUIType match
         case Terminal => TerminalStatisticsMenu()
-        case ScalaFX => GraphicDefaultMenu(_stage)
+        case ScalaFX => GraphicStatisticsMenu(_stage)
       case SettingsMenuAction => _currentGUIType match
         case Terminal => TerminalSettingsMenu()
         case ScalaFX => GraphicSettingsMenu(_stage)
@@ -69,6 +69,9 @@ object View:
       case AddQuizMenuAction => _currentGUIType match
         case Terminal => TerminalAddQuizMenu()
         case ScalaFX => GraphicDefaultMenu(_stage)
+      case ReviewMenuAction => _currentGUIType match
+        case Terminal => throw new IllegalArgumentException
+        case ScalaFX => GraphicReviewMenu(_stage)
       case CustomMenuAction(_) => _currentGUIType match
         case Terminal => TerminalCustomMenu()
         case ScalaFX => GraphicCustomMenu(_stage)
