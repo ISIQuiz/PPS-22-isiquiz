@@ -1,13 +1,12 @@
 package utils.parser
 
 import model.Answer.Answer
-import model.stats.PlayerStats.{CourseInStats, PlayerStats, QuizInStats}
 import model.Quiz.Quiz
 import model.{Course, CourseIdentifier, SavedCourse, Session}
 import play.api.libs.json.*
 import utils.parser.JsonLabels.*
 
-import scala.util.{Success, Try}
+import scala.util.Try
 
 /** Trait for the [[CourseJsonParser]] parser */
 trait CourseJsonParser extends JsonParser[List[SavedCourse]]

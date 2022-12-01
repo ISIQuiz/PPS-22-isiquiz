@@ -10,7 +10,7 @@ import play.api.libs.json.*
 import utils.parser.JsonLabels.*
 import utils.parser.JsonParser
 
-import scala.util.{Success, Try}
+import scala.util.Try
 
 /** Trait for the [[StatsJsonParser]] parser */
 trait StatsJsonParser extends JsonParser[PlayerStats]
