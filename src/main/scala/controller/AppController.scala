@@ -4,8 +4,6 @@ import controller.Controller
 import controller.actions.{Action, ParameterlessAction}
 import model.GameStage
 import model.{SavedCourse, Session}
-import utils.Configuration.SavedCoursesFilePath
-import utils.{CourseJsonParser, FileHandler}
 import view.View.{PageView, TerminalView, ViewFactory}
 import view.terminalUI.TerminalMainMenu.*
 import view.terminalUI.TerminalSelectMenu.*
@@ -18,7 +16,6 @@ import view.terminalUI.TerminalCustomMenu.*
 
 import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
 import scala.concurrent.duration.TimeUnit
-import scala.util.Success
 
 /** Controller for the general logic of the application */
 object AppController extends Controller:
@@ -54,25 +51,5 @@ object AppController extends Controller:
     case null => throw new IllegalArgumentException
 
   def startApp(): Unit =
-    loadCoursesFromFile()
     val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     scheduler.scheduleAtFixedRate(() => currentPage.pageController.nextIteration(), 0, 1000, TimeUnit.MILLISECONDS)
-
-  // TODO: Maybe move in utils file
-  // Read courses list from a JSON file and deserialize it
-  def loadCoursesFromFile(): Unit =
-    val fileHandler = FileHandler()
-    val courseJsonParser = CourseJsonParser()
-
-    // Read resource file
-    fileHandler.readResource(SavedCoursesFilePath) match
-      case Success(jsonString: String) =>
-        // Deserialize the JSON string
-        courseJsonParser.deserializeSavedCourses(jsonString) match
-          case Success(savedCourses: List[SavedCourse]) => changeSavedCourses(savedCourses)
-          case _ =>
-            //println("ERROR DESERIALIZE JSON")
-            //IllegalArgumentException()
-      case _ =>
-        //println("ERROR FIND FILE JSON")
-        //FileNotFoundException()
