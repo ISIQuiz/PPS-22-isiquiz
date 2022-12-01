@@ -1,33 +1,47 @@
 package view.graphicUI
 
-import controller.MainMenuController.Select
-import controller.MainMenuController.Quit
-import javafx.fxml.FXML
-import javafx.scene.control.Label
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.scene.Scene
-import javafx.scene.layout.Pane
-import utils.PaneLoader
-import view.MainMenuView
+import controller.MainMenuController.{Quit, Select, Settings, Statistics}
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
+import utils.GUILoader
+import utils.GUILoader.loadGUI
+import javafx.fxml.FXML
+import javafx.scene.control.Button
+import javafx.stage.Stage
 
 object GraphicMainMenu
 
 /** Main menu graphic interface  */
-class GraphicMainMenu(basePanel: Pane) extends GraphicView:
+class GraphicMainMenu(stage: Stage) extends GraphicView:
 
   @FXML
-  var label: Label = _
+  var selectButton: Button = _
 
   @FXML
-  def selectClicked: Unit =
+  var statisticsButton: Button = _
+
+  @FXML
+  var settingsButton: Button = _
+
+  @FXML
+  var quitButton: Button = _
+
+  @FXML
+  def selectButtonClicked(): Unit =
     sendEvent(Select)
 
   @FXML
-  def quitClicked: Unit =
+  def statisticsButtonClicked(): Unit =
+    sendEvent(Statistics)
+
+  @FXML
+  def settingsButtonClicked(): Unit =
+    sendEvent(Settings)
+
+  @FXML
+  def quitButtonClicked(): Unit =
     sendEvent(Quit)
 
-  PaneLoader.loadPane(basePanel, this, "main.fxml")
+  loadGUI(stage, this, "main.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = {}

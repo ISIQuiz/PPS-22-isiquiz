@@ -1,19 +1,21 @@
 package view.graphicUI
 
-import javafx.fxml.FXML
-import javafx.scene.control.Label
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.scene.Scene
-import javafx.scene.layout.Pane
-import utils.PaneLoader
 import view.View.GraphicView
 import view.updates.ViewUpdate
+import utils.GUILoader
+import utils.GUILoader.loadGUI
+import javafx.fxml.FXML
+import javafx.scene.control.Label
+import javafx.stage.Stage
 
 object GraphicDefaultMenu
 
 /** Default menu graphic interface  */
-class GraphicDefaultMenu(basePanel: Pane) extends GraphicView:
+class GraphicDefaultMenu(stage: Stage) extends GraphicView:
 
-  PaneLoader.loadPane(basePanel, this, "default.fxml")
+  @FXML
+  var notAvailableLabel: Label = _
+
+  loadGUI(stage, this, "default.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = {}

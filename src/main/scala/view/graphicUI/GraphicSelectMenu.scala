@@ -1,33 +1,49 @@
 package view.graphicUI
 
-import controller.AppController.{CustomMenuAction, MainMenuAction, SelectMenuAction, StandardGameAction}
-import javafx.fxml.FXML
-import javafx.scene.control.Label
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.scene.Scene
-import javafx.scene.layout.Pane
-import utils.PaneLoader
+import controller.SelectMenuController.{Back, Custom, Start}
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
-import model.GameStage
+import utils.GUILoader
+import utils.GUILoader.loadGUI
+import javafx.fxml.FXML
+import javafx.scene.control.{Button, ScrollPane}
+import javafx.stage.Stage
 
 object GraphicSelectMenu
 
 /** Select menu graphic interface  */
-class GraphicSelectMenu(basePanel: Pane) extends GraphicView:
+class GraphicSelectMenu(stage: Stage) extends GraphicView:
 
   @FXML
-  def mainMenuClicked: Unit =
-    sendEvent(MainMenuAction)
+  var backButton: Button = _
 
   @FXML
-  def standardGameMenuClicked: Unit =
-    sendEvent(StandardGameAction(Option(GameStage())))
+  var coursesScrollPane: ScrollPane = _
 
   @FXML
-  def customMenuClicked: Unit =
-    sendEvent(CustomMenuAction(Option(GameStage())))
+  var standardGameButton: Button = _
 
-  PaneLoader.loadPane(basePanel, this, "select_menu.fxml")
+  @FXML
+  var reviewGameButton: Button = _
+
+  @FXML
+  var customGameButton: Button = _
+
+  @FXML
+  def backButtonClicked(): Unit =
+    sendEvent(Back)
+
+  @FXML
+  def standardGameButtonClicked(): Unit =
+    sendEvent(Start)
+
+  @FXML
+  def reviewGameButtonClicked(): Unit = ???
+
+  @FXML
+  def customGameButtonClicked(): Unit =
+    sendEvent(Custom)
+
+  loadGUI(stage, this, "select_menu.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = {}

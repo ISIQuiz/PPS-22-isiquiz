@@ -1,7 +1,6 @@
 import controller.*
 import scalafx.application.JFXApp3
-import view.View.ViewFactory
-import view.View.ViewFactory.GUIType.*
+import scalafx.application.JFXApp3.PrimaryStage
 
 object Main extends JFXApp3:
 

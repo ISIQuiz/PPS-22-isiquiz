@@ -1,25 +1,75 @@
 package view.graphicUI
 
-import controller.AppController.{MainMenuAction, SelectMenuAction}
-import javafx.fxml.FXML
-import javafx.scene.control.Label
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.scene.Scene
-import javafx.scene.layout.Pane
-import utils.PaneLoader
+import controller.StandardGameController.Back
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
+import utils.GUILoader
+import utils.GUILoader.loadGUI
+import javafx.fxml.FXML
+import javafx.scene.control.{Button, Label, ProgressBar}
+import javafx.stage.Stage
 
 object GraphicStandardGameMenu
 
 /** Standard Game menu graphic interface  */
-class GraphicStandardGameMenu(basePanel: Pane) extends GraphicView:
+class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
 
   @FXML
-  def selectMenuClicked: Unit =
-    sendEvent(SelectMenuAction)
+  var backButton: Button = _
 
-  PaneLoader.loadPane(basePanel, this, "standard_game.fxml")
+  @FXML
+  var courseLabel: Label = _
+
+  @FXML
+  var quizNumberLabel: Label = _
+
+  @FXML
+  var timeRemainingLabel: Label = _
+
+  @FXML
+  var pointsLabel: Label = _
+
+  @FXML
+  var timeProgressBar: ProgressBar = _
+
+  @FXML
+  var quizLabel: Label = _
+
+  @FXML
+  var firstAnswerButton: Button = _
+
+  @FXML
+  var secondAnswerButton: Button = _
+
+  @FXML
+  var thirdAnswerButton: Button = _
+
+  @FXML
+  var fourthAnswerButton: Button = _
+
+  @FXML
+  var nextButton: Button = _
+
+  @FXML
+  def backButtonClicked(): Unit =
+    sendEvent(Back)
+
+  @FXML
+  def firstAnswerButtonClicked(): Unit = ???
+
+  @FXML
+  def secondAnswerButtonClicked(): Unit = ???
+
+  @FXML
+  def thirdAnswerButtonClicked(): Unit = ???
+
+  @FXML
+  def fourthAnswerButtonClicked(): Unit = ???
+
+  @FXML
+  def nextButtonClicked(): Unit = ???
+
+  loadGUI(stage, this, "standard_game.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = {}
 
