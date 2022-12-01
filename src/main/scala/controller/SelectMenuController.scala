@@ -3,12 +3,13 @@ package controller
 import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
-import view.View
+import view.{SelectMenuView, View}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import controller.{AppController, PageController}
 import model.{GameStage, QuizInGame, Session}
 import model.GameStage.*
-import view.terminalUI.TerminalSelectMenu
+import view.SelectMenuView.*
+
 import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.{Await, Promise}
@@ -38,11 +39,11 @@ class SelectMenuController extends PageController:
   def getSession: Session = AppController.session
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(TerminalSelectMenu.DefaultUpdate)
-    AppController.currentPage.pageView.updateUI(TerminalSelectMenu.CourseUpdate(Option(getSession.savedCourses.map(course => (course,gameStage.coursesInGame.contains(course))))))
+    AppController.currentPage.pageView.updateUI(DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(CourseUpdate(Option(getSession.savedCourses.map(course => (course,gameStage.coursesInGame.contains(course))))))
 
   private def modifySelectedCourses[T](courseIndex: Option[T]): Unit =
-    val selectedCourse = getSession.savedCourses(courseIndex.get.asInstanceOf[Int] - 1)
+    val selectedCourse = getSession.savedCourses(courseIndex.get.asInstanceOf[Int])
 
     if gameStage.coursesInGame.contains(selectedCourse) then
       gameStage.coursesInGame = gameStage.coursesInGame.diff(List(selectedCourse))
