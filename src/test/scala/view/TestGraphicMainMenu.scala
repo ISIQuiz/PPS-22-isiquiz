@@ -10,14 +10,11 @@ import javafx.stage.Stage
 import scalafx.scene.Scene
 import scalafx.Includes.jfxStage2sfx
 import scalafx.Includes.jfxButton2sfx
-
 import view.graphicUI.GraphicMainMenu
-
 
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith(Array(classOf[ApplicationExtension]))
 class TestGraphicMainMenu extends ViewTest with ButtonTest:
-
 
   private var graphicMainMenu: GraphicMainMenu = _
 
@@ -29,3 +26,16 @@ class TestGraphicMainMenu extends ViewTest with ButtonTest:
 
   @Test def testSelectButton(robot: FxRobot): Unit =
     testButton(graphicMainMenu.selectButton, "Gioca")(robot)
+
+  // TODO: Maybe remove
+  @Test def testSelectButtonClick(robot: FxRobot): Unit =
+    robot.clickOn(graphicMainMenu.selectButton)
+
+  @Test def testStatisticsButton(robot: FxRobot): Unit =
+    testButton(graphicMainMenu.statisticsButton, "Statistiche")(robot)
+
+  @Test def testSettingsButton(robot: FxRobot): Unit =
+    testButton(graphicMainMenu.settingsButton, "Impostazioni")(robot)
+
+  @Test def testQuitButton(robot: FxRobot): Unit =
+    testButton(graphicMainMenu.quitButton, "Esci")(robot)

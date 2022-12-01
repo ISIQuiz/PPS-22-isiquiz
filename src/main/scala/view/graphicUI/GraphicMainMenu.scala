@@ -18,19 +18,28 @@ class GraphicMainMenu(stage: Stage) extends GraphicView:
   var selectButton: Button = _
 
   @FXML
-  def selectClicked: Unit =
+  var statisticsButton: Button = _
+
+  @FXML
+  var settingsButton: Button = _
+
+  @FXML
+  var quitButton: Button = _
+
+  @FXML
+  def selectButtonClicked(): Unit =
     sendEvent(Select)
 
   @FXML
-  def statisticsClicked: Unit =
+  def statisticsButtonClicked(): Unit =
     sendEvent(Statistics)
 
   @FXML
-  def settingsClicked: Unit =
+  def settingsButtonClicked(): Unit =
     sendEvent(Settings)
 
   @FXML
-  def quitClicked: Unit =
+  def quitButtonClicked(): Unit =
     sendEvent(Quit)
 
   loadGUI(stage, this, "main.fxml")
