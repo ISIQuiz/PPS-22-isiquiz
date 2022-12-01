@@ -1,5 +1,6 @@
 package model.stats
 
+import model.{Course, SavedCourse}
 import model.stats.CourseInStats.CourseInStats
 import utils.DefaultDataList.defaultPlayerStats
 
@@ -65,3 +66,22 @@ object PlayerStats:
   def changeCourseInStatsList(playerStats: PlayerStats, courseInStatsList: List[CourseInStats]): PlayerStats = playerStats match
     case PlayerStats(totalScore, totalAnsweredQuestions, totalCorrectAnswers, _) =>
       PlayerStats(totalScore, totalAnsweredQuestions, totalCorrectAnswers, courseInStatsList)
+
+  /**
+   * Init player stats with default values based on passed SavedCourse list
+   * @param savedCourseList
+   * @return a [[PlayerStats]]
+   */
+  def defaultPlayerStatsFromSavedCourseList(savedCourseList: List[SavedCourse]): PlayerStats =
+    PlayerStats(0, 0, 0,
+      savedCourseList.map(
+        savedCourse => CourseInStats(
+          Course(
+            savedCourse.courseId,
+          ),
+          savedCourse.quizList.map(
+            quiz => QuizInStats()
+          )
+        )
+      ).toList
+    )
