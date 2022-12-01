@@ -5,6 +5,7 @@ import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
 import view.View
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate}
 import model.Answer.Answer
 import model.GameStage
 import model.{QuizInGame, SavedCourse}
@@ -21,6 +22,12 @@ object StandardGameController extends BackAction:
 
   case object TimeExpired extends ParameterlessAction
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
+  case object NextQuiz extends ParameterlessAction
+
+  def apply(game: GameStage): StandardGameController =
+    val standardGameController = new StandardGameController(game)
+    standardGameController.nextQuiz()
+    standardGameController
 
 /** Defines the logic of the select page */
 class StandardGameController(val game: GameStage) extends PageController, GameController:
@@ -32,31 +39,24 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)
-    case TimeExpired =>
-      println("Time expired")
-    //      inputReader.stopInput()
+    case TimeExpired => println("Time expired")
     case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
+    case NextQuiz => nextQuiz()
 
   override def nextIteration(): Unit =
-//    nextQuiz()
-    println("Next iteration")
-    AppController.currentPage.pageView.updateUI(TerminalStandardGameMenu.DefaultUpdate)
-//    AppController.currentPage.pageView.updateUI(TerminalStandardGameMenu.NewQuizUpdate(Option(gameStage)))
+    AppController.currentPage.pageView.updateUI(DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(NewQuizUpdate(Option(gameStage)))
 //    timer.startTimer()
 //    timer.stopTimer()
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
-    var checkAnswer : String = ""
-    timer.stopTimer()
-
     if actionParameter.isDefined then
-      if gameStage.quizInGame.answers(actionParameter.get.asInstanceOf[Int] - 1).isCorrect then
-        checkAnswer = "Risposta GIUSTA!"
+      val selectedAnswerIndex: Int = actionParameter.get.asInstanceOf[Int]
+      if gameStage.quizInGame.answers(selectedAnswerIndex).isCorrect then
+        println("Risposta GIUSTA!")
       else
-        checkAnswer = "Risposta SBAGLIATA!"
-
-      AppController.currentPage.pageView.updateUI(TerminalStandardGameMenu.AnswerFeedbackUpdate(Option(checkAnswer)))
-      nextIteration()
+        println("Risposta SBAGLIATA!")
+      AppController.currentPage.pageView.updateUI(AnswerFeedbackUpdate(Option((selectedAnswerIndex, gameStage.quizInGame.answers(selectedAnswerIndex).isCorrect))))
 
   override def nextQuiz(): QuizInGame =
     val selectedCourse = gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)

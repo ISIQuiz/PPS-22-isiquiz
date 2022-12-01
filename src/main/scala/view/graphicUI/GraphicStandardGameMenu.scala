@@ -1,7 +1,7 @@
 package view.graphicUI
 
 import controller.{AppController, StandardGameController}
-import controller.StandardGameController.Back
+import controller.StandardGameController.{Back, NextQuiz, SelectAnswer}
 import javafx.application.Platform
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
@@ -10,7 +10,9 @@ import utils.GUILoader.loadGUI
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label, ProgressBar}
 import javafx.stage.Stage
+import model.GameStage
 import model.settings.StandardGameSettings
+import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate}
 
 object GraphicStandardGameMenu
 
@@ -58,24 +60,61 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
     sendEvent(Back)
 
   @FXML
-  def firstAnswerButtonClicked(): Unit = ???
+  def firstAnswerButtonClicked(): Unit =
+    sendEvent(SelectAnswer(Option(0)))
+    disableAnswerButton(answerButtons)
 
   @FXML
-  def secondAnswerButtonClicked(): Unit = ???
+  def secondAnswerButtonClicked(): Unit =
+    sendEvent(SelectAnswer(Option(1)))
+    disableAnswerButton(answerButtons)
 
   @FXML
-  def thirdAnswerButtonClicked(): Unit = ???
+  def thirdAnswerButtonClicked(): Unit =
+    sendEvent(SelectAnswer(Option(2)))
+    disableAnswerButton(answerButtons)
 
   @FXML
-  def fourthAnswerButtonClicked(): Unit = ???
+  def fourthAnswerButtonClicked(): Unit =
+    sendEvent(SelectAnswer(Option(3)))
+    disableAnswerButton(answerButtons)
 
   @FXML
-  def nextButtonClicked(): Unit = ???
+  def nextButtonClicked(): Unit =
+    resetAnswerButton(answerButtons)
+    sendEvent(NextQuiz)
 
   loadGUI(stage, this, "standard_game.fxml")
 
-  override def updateUI[T](update: ViewUpdate[Any]): Unit =
-    println("Updating")
-    Platform.runLater(() => {
-      timeRemainingLabel.setText(AppController.currentPage.pageController.asInstanceOf[StandardGameController].gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime.toString)
-    })
+  val answerButtons: List[Button] = List(firstAnswerButton, secondAnswerButton, thirdAnswerButton, fourthAnswerButton)
+  override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
+    case DefaultUpdate => {}
+    case NewQuizUpdate(updateParameter) =>
+      Platform.runLater(() => {
+        val gameStage: GameStage = updateParameter.get.asInstanceOf[GameStage]
+        courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
+        quizLabel.setText(gameStage.quizInGame.quiz.question)
+        firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
+        secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
+        thirdAnswerButton.setText(gameStage.quizInGame.answers(2).text)
+        fourthAnswerButton.setText(gameStage.quizInGame.answers(3).text)
+      })
+    case AnswerFeedbackUpdate(updateParameter) =>
+      val feedback = updateParameter.get.asInstanceOf[(Int, Boolean)]
+      feedback._1 match
+        case 0 => if feedback._2 then firstAnswerButton.getStyleClass.add("correct-answer") else firstAnswerButton.getStyleClass.add("wrong-answer")
+        case 1 => if feedback._2 then secondAnswerButton.getStyleClass.add("correct-answer") else secondAnswerButton.getStyleClass.add("wrong-answer")
+        case 2 => if feedback._2 then thirdAnswerButton.getStyleClass.add("correct-answer") else thirdAnswerButton.getStyleClass.add("wrong-answer")
+        case 3 => if feedback._2 then fourthAnswerButton.getStyleClass.add("correct-answer") else fourthAnswerButton.getStyleClass.add("wrong-answer")
+
+  def resetAnswerButton(buttons: List[Button]): Unit =
+    buttons.foreach(button =>
+      button.getStyleClass.remove("correct-answer");
+      button.getStyleClass.remove("wrong-answer");
+      button.setDisable(false);
+    )
+
+  def disableAnswerButton(buttons: List[Button]): Unit =
+    buttons.foreach(button =>
+      button.setDisable(true);
+    )
