@@ -2,19 +2,17 @@ package controller
 
 import controller.{AppController, PageController}
 import controller.AppController.*
-import controller.actions.{Action, ParameterlessAction}
+import controller.actions.{Action, BackAction, ParameterlessAction}
 import view.View
 import view.terminalUI.TerminalSettingsMenu
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 /** Companion object of settings menu controller */
-object SettingsMenuController:
+object SettingsMenuController extends BackAction:
 
-  case object Back extends ParameterlessAction
   case object AddCourse extends ParameterlessAction
   case object AddQuiz extends ParameterlessAction
 

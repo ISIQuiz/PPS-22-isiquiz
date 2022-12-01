@@ -2,7 +2,7 @@ package controller
 
 import controller.{AppController, PageController}
 import controller.AppController.*
-import controller.actions.{Action, ParameterlessAction}
+import controller.actions.{Action, BackAction, ParameterlessAction}
 import model.SavedCourse
 import view.terminalUI.{TerminalAddCourseMenu, TerminalStandardGameMenu}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
@@ -12,9 +12,8 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 /** Companion object of add course menu controller */
-object AddCourseMenuController:
+object AddCourseMenuController extends BackAction:
 
-  case object Back extends ParameterlessAction
   case class AddCourseAction(override val actionParameter: Option[SavedCourse]) extends Action(actionParameter)
 
 /** Defines the logic of the add course page */

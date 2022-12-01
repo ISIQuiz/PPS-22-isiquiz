@@ -9,16 +9,14 @@ import controller.{AppController, PageController}
 import model.{GameStage, QuizInGame, Session}
 import model.GameStage.*
 import view.terminalUI.TerminalSelectMenu
-
 import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
 /** Companion object of select menu controller */
-object SelectMenuController:
+object SelectMenuController extends BackAction:
 
-  case object Back extends ParameterlessAction
   case object Start extends ParameterlessAction
   case object Custom extends ParameterlessAction
   case class Selection[T](override val actionParameter: Option[T]) extends Action(actionParameter)
