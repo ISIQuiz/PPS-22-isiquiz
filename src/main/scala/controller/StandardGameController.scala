@@ -38,9 +38,10 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
     case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
 
   override def nextIteration(): Unit =
-    nextQuiz()
+//    nextQuiz()
+    println("Next iteration")
     AppController.currentPage.pageView.updateUI(TerminalStandardGameMenu.DefaultUpdate)
-    AppController.currentPage.pageView.updateUI(TerminalStandardGameMenu.NewQuizUpdate(Option(gameStage)))
+//    AppController.currentPage.pageView.updateUI(TerminalStandardGameMenu.NewQuizUpdate(Option(gameStage)))
 //    timer.startTimer()
 //    timer.stopTimer()
 

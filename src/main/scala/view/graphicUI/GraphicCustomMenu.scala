@@ -1,13 +1,20 @@
 package view.graphicUI
 
-import controller.CustomMenuController.Back
+import controller.{AppController, CustomMenuController}
+import controller.CustomMenuController.{Back, Start}
+import javafx.application.Platform
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
 import utils.GUILoader
 import utils.GUILoader.loadGUI
 import javafx.fxml.FXML
-import javafx.scene.control.{Button, TextField}
+import javafx.scene.control
+import javafx.scene.control.{Button, CheckBox, TextField}
+import javafx.scene.input.MouseEvent
 import javafx.stage.Stage
+import model.settings.StandardGameSettings
+
+import scala.collection.mutable.ListBuffer
 
 object GraphicCustomMenu
 
@@ -21,9 +28,6 @@ class GraphicCustomMenu(stage: Stage) extends GraphicView:
   var maxQuizzesTextField: TextField = _
 
   @FXML
-  var maxTimeTextField: TextField = _
-
-  @FXML
   var quizMaxTimeTextField: TextField = _
 
   @FXML
@@ -34,8 +38,17 @@ class GraphicCustomMenu(stage: Stage) extends GraphicView:
     sendEvent(Back)
 
   @FXML
-  def startButtonClicked(): Unit = ???
+  def startButtonClicked(): Unit =
+    val customGameSettings = StandardGameSettings(
+      maxQuizzes = maxQuizzesTextField.getText.toInt,
+      quizMaxTime = quizMaxTimeTextField.getText.toInt
+    )
+    AppController.currentPage.pageController.asInstanceOf[CustomMenuController].gameStage.gameSettings = customGameSettings
+    sendEvent(Start)
 
   loadGUI(stage, this, "custom_menu.fxml")
 
-  override def updateUI[T](update: ViewUpdate[Any]): Unit = {}
+  override def updateUI[T](update: ViewUpdate[Any]): Unit =
+    maxQuizzesTextField.setText(AppController.currentPage.pageController.asInstanceOf[CustomMenuController].gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes.toString)
+    quizMaxTimeTextField.setText(AppController.currentPage.pageController.asInstanceOf[CustomMenuController].gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime.toString)
+

@@ -1,6 +1,8 @@
 package view.graphicUI
 
+import controller.{AppController, StandardGameController}
 import controller.StandardGameController.Back
+import javafx.application.Platform
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
 import utils.GUILoader
@@ -8,6 +10,7 @@ import utils.GUILoader.loadGUI
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label, ProgressBar}
 import javafx.stage.Stage
+import model.settings.StandardGameSettings
 
 object GraphicStandardGameMenu
 
@@ -71,5 +74,8 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
 
   loadGUI(stage, this, "standard_game.fxml")
 
-  override def updateUI[T](update: ViewUpdate[Any]): Unit = {}
-
+  override def updateUI[T](update: ViewUpdate[Any]): Unit =
+    println("Updating")
+    Platform.runLater(() => {
+      timeRemainingLabel.setText(AppController.currentPage.pageController.asInstanceOf[StandardGameController].gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime.toString)
+    })
