@@ -8,14 +8,6 @@ import model.{SavedCourse, Session}
 import view.View
 
 import view.View.{PageView, TerminalView, ViewFactory}
-import view.terminalUI.TerminalMainMenu.*
-import view.terminalUI.TerminalSelectMenu.*
-import view.terminalUI.TerminalStatisticsMenu.*
-import view.terminalUI.TerminalSettingsMenu.*
-import view.terminalUI.TerminalStandardGameMenu.*
-import view.terminalUI.TerminalAddCourseMenu.*
-import view.terminalUI.TerminalAddQuizMenu.*
-import view.terminalUI.TerminalCustomMenu.*
 
 import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
 import scala.concurrent.duration.TimeUnit
