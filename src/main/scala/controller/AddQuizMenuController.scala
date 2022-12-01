@@ -1,6 +1,6 @@
 package controller
 
-import controller.actions.{Action, ParameterlessAction}
+import controller.actions.{Action, BackAction, ParameterlessAction}
 import controller.{AppController, PageController}
 import controller.AppController.*
 import model.{Course, SavedCourse}
@@ -8,15 +8,12 @@ import model.Quiz.Quiz
 import view.terminalUI.TerminalAddQuizMenu
 import view.updates.ViewUpdate
 
-
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
 /** Companion object of add quiz menu controller */
-object AddQuizMenuController:
-
-  case object Back extends ParameterlessAction
+object AddQuizMenuController extends BackAction:
 
   case class AddCourseAction(override val actionParameter: Option[SavedCourse]) extends Action(actionParameter)
   case class AddQuizAction(override val actionParameter: Option[Quiz]) extends Action(actionParameter)

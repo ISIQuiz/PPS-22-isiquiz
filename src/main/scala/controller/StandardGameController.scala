@@ -12,21 +12,13 @@ import model.Quiz.Quiz
 import model.settings.StandardGameSettings
 import utils.{TerminalInput, TerminalInputImpl, Timer, TimerImpl}
 import view.terminalUI.TerminalStandardGameMenu
-
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
-trait GameController:
-  def nextQuiz(): QuizInGame
-  def chooseQuiz(course: SavedCourse): Quiz
-  def chooseAnswers(quiz: Quiz): List[Answer]
-  def endQuiz(): Unit
-
 /** Companion object of standard game controller */
-object StandardGameController:
+object StandardGameController extends BackAction:
 
-  case object Back extends ParameterlessAction
   case object TimeExpired extends ParameterlessAction
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
@@ -34,8 +26,6 @@ object StandardGameController:
 class StandardGameController(val game: GameStage) extends PageController, GameController:
 
   import StandardGameController.*
-
-  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
 
   val gameStage: GameStage = game
   val timer: Timer = TimerImpl(gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime)

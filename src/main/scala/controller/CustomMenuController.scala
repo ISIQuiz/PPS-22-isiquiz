@@ -14,9 +14,8 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 /** Companion object of custom settings menu controller */
-object CustomMenuController:
+object CustomMenuController extends BackAction:
 
-  case object Back extends ParameterlessAction
   case class NewGameSettings[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
 /** Defines the logic of the custom settings page */
