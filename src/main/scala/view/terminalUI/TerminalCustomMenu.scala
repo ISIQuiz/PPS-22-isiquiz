@@ -5,15 +5,12 @@ import controller.CustomMenuController.*
 import controller.actions.Action
 import model.settings.{GameSettings, StandardGameSettings}
 import view.View.*
-import view.terminalUI.TerminalCustomMenu.DefaultUpdate
-import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-
+import view.updates.{ViewUpdate}
+import view.CustomMenuView.*
 import scala.collection.mutable.Map
 import scala.io.StdIn.readLine
 
-object TerminalCustomMenu:
-
-  case object DefaultUpdate extends ParameterlessViewUpdate
+object TerminalCustomMenu
 
 /** Custom settings menu terminal interface */
 class TerminalCustomMenu extends TerminalView:
