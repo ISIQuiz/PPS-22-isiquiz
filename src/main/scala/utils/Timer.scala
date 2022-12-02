@@ -1,35 +1,30 @@
 package utils
 
-import CancellableFuture.*
-import controller.AppController
-import controller.StandardGameController.TimeExpired
-
-import java.util.concurrent.{CountDownLatch, TimeUnit}
-import scala.concurrent.{Future, Promise}
-import concurrent.ExecutionContext.Implicits.global
-
 trait Timer:
 
-  var cancellable: (Future[Unit], () => Boolean)
   def startTimer(): Unit
-  def stopTimer(): Unit
+  def getTime(): Double
+  def getCompletionPercentage(): Double
+  def isExpired(): Boolean
 
-case class TimerImpl(var time: Long) extends Timer:
+case class TimerImpl(var maxTime: Long) extends Timer:
 
-  var cancellable: (Future[Unit], () => Boolean) = _
+  var initialTime: Long = _
 
-  override def startTimer(): Unit =
-    cancellable = interruptableFuture[Unit] { () =>
-      val latch = new CountDownLatch(1)
-      latch.await(time, TimeUnit.SECONDS)
-      AppController.currentPage.pageController.handle(TimeExpired)
-    }
+  def currentTime(): Long = System.currentTimeMillis()
 
-    cancellable._1.onComplete( { case _ => println("timer completed") } )
+  override def startTimer(): Unit = initialTime = currentTime()
 
-  override def stopTimer(): Unit =
-    cancellable._2.apply()
+  override def getTime(): Double = (currentTime() - initialTime) / 1000
 
+  override def getCompletionPercentage(): Double = (currentTime() - initialTime) / maxTime match
+      case n if n < 100 && n >= 0 => n
+      case n if n >= 100 => 100
+      case _ => throw new IllegalArgumentException()
 
+  override def isExpired(): Boolean = currentTime() - initialTime match
+    case n if n >= maxTime => true
+    case n if n < maxTime => false
+    case _ => throw new IllegalArgumentException()
 
 
