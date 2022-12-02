@@ -6,19 +6,13 @@ import controller.actions.Action
 import model.Answer.Answer
 import model.SavedCourse
 import view.View.*
-import view.terminalUI.TerminalAddQuizMenu.{AskCoursePrint, AskQuizPrint, DefaultUpdate, QuizAdded, QuizPrint}
-import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+import view.updates.ViewUpdate
+import view.AddQuizMenuView.*
 
 import scala.collection.mutable.Map
 import scala.io.StdIn.readLine
 
-object TerminalAddQuizMenu:
-
-  case object DefaultUpdate extends ParameterlessViewUpdate
-  case class AskCoursePrint[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
-  case class QuizPrint[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
-  case object AskQuizPrint extends ParameterlessViewUpdate
-  case object QuizAdded extends ParameterlessViewUpdate
+object TerminalAddQuizMenu
 
 /** Add quiz terminal interface  */
 class TerminalAddQuizMenu extends TerminalView:
