@@ -42,7 +42,6 @@ class TerminalAddCourseMenu extends TerminalView:
         println("inserisci descrizione del corso:")
         descriptionIns = Some(readLine)
         
-      import model.Answer.Answer
       import model.CourseIdentifier.CourseIdentifierImpl
       import model.Quiz.Quiz
       val course = SavedCourseImpl(
