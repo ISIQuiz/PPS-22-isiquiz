@@ -1,8 +1,10 @@
 package model
 
+import model.stats.PlayerStats.PlayerStats
 import utils.Configuration.SavedCoursesFilePath
-import utils.DefaultCourseList.defaultCourseList
-import utils.{CourseJsonParser, DefaultCourseList, FileHandler}
+import utils.DefaultDataList.{defaultCourseList, defaultPlayerStats}
+import utils.parser.CourseJsonParser
+import utils.{DefaultDataList, FileHandler}
 
 import scala.util.{Failure, Success, Try}
 
@@ -17,6 +19,7 @@ trait Session:
    */
   def savedCourses: List[SavedCourse]
 
+  def playerStats: PlayerStats
 /**
  * Object for the game session model
  */
@@ -27,19 +30,28 @@ object Session:
    * @param savedCourses the list of saved course, if empty it uses a sample list
    * @return Session
    */
-  def apply(savedCourses: List[SavedCourse] = defaultCourseList): Session = SessionImpl(savedCourses)
+  def apply(savedCourses: List[SavedCourse] = defaultCourseList, playerStats: PlayerStats = defaultPlayerStats): Session = SessionImpl(savedCourses, playerStats)
 
   /**
    * Case class for session model
    * @param savedCourses list of saved course in session
    */
-  case class SessionImpl(savedCourses: List[SavedCourse]) extends Session
+  case class SessionImpl(savedCourses: List[SavedCourse], playerStats: PlayerStats) extends Session
 
   /**
    * Change the saved course list in session
    * @param savedCourses the new saved course list
-   * @return Session
+   * @return a [[Session]]
    */
   def changeSavedCourses(session: Session, savedCourses: List[SavedCourse]): Session = session match
-    case SessionImpl(_) => SessionImpl(savedCourses)
+    case SessionImpl(_, playerStats) => SessionImpl(savedCourses, playerStats)
+
+  /**
+   * Change player stats in session
+   * @param session
+   * @param playerStats the new player stats
+   * @return a [[Session]]
+   */
+  def changePlayerStats(session: Session, playerStats: PlayerStats): Session = session match
+    case SessionImpl(savedCourses, _) => SessionImpl(savedCourses, playerStats)
 

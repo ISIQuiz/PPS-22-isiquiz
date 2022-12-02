@@ -1,10 +1,14 @@
 package utils
 
 import model.Answer.Answer
+import model.stats.PlayerStats
 import model.Quiz.Quiz
-import model.{CourseIdentifier, SavedCourse}
+import model.stats.CourseInStats
+import model.stats.PlayerStats.defaultPlayerStatsFromSavedCourseList
+import model.stats.QuizInStats
+import model.{Course, CourseIdentifier, SavedCourse}
 
-object DefaultCourseList:
+object DefaultDataList:
 
   def defaultCourseList = List(
     // Corso: Paradigmi di Programmazione e Sviluppo
@@ -185,3 +189,33 @@ object DefaultCourseList:
       )
     )*/
   )
+
+  def defaultPlayerStats = defaultPlayerStatsFromSavedCourseList(defaultCourseList)
+
+
+  def defaultPlayerStatsTest =
+    PlayerStats(
+      totalScore = 11, totalAnsweredQuestions = 12, totalCorrectAnswers = 13,
+      courseInStatsList = List(
+        CourseInStats(
+          course = Course(
+            CourseIdentifier(
+              courseName = "Paradigmi di Programmazione e Sviluppo",
+              degreeName = "Laurea Magistrale in Ingegneria e Scienze Informatiche",
+              universityName = "Università di Bologna"
+            )
+          ),
+          quizInStatsList = List(QuizInStats(1, 2, 3), QuizInStats(4, 5, 6), QuizInStats(7, 8, 9), QuizInStats(10, 11, 12))
+        ),
+        CourseInStats(
+          course = Course(
+            CourseIdentifier(
+              courseName = "Sistemi Operativi",
+              degreeName = "Laurea in Ingegneria e Scienze Informatiche",
+              universityName = "Università di Bologna"
+            )
+          ),
+          quizInStatsList = List(QuizInStats(11, 22, 33), QuizInStats(44, 55, 66), QuizInStats(77, 88, 99), QuizInStats(1010, 1111, 1212))
+        )
+      )
+    )

@@ -18,8 +18,6 @@ trait Controller:
 /** PageController should include all behaviours common between different pages controllers */
 trait PageController extends Controller:
 
-  var actionsBuffer: ListBuffer[Action[Any]]
-
   /** Defines the logic of an iteration (step) in the corresponding page controller */
   def nextIteration(): Unit
 

@@ -2,6 +2,5 @@ package view
 
 import view.updates.{DefaultUpdate, ParameterlessViewUpdate, ViewUpdate}
 
-object SelectMenuView:
-  case object DefaultUpdate extends ParameterlessViewUpdate
+object SelectMenuView extends DefaultUpdate:
   case class CourseUpdate[T](override val updateParameter: Option[T]) extends ViewUpdate(updateParameter)
