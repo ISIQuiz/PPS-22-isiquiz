@@ -2,11 +2,11 @@ package view.terminalUI
 
 import controller.MainMenuController
 import controller.MainMenuController.*
-import controller.actions.{Action, ParameterlessAction}
+import controller.actions.{Action}
 import utils.{TerminalInput, TerminalInputImpl}
 import view.View.TerminalView
 import view.MainMenuView
-import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+import view.updates.{ViewUpdate}
 import scala.collection.mutable.Map
 
 object TerminalMainMenu

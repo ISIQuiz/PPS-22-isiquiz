@@ -5,7 +5,7 @@ import controller.{AppController, PageController}
 import controller.AppController.*
 import model.{Course, SavedCourse}
 import model.Quiz.Quiz
-import view.terminalUI.TerminalAddQuizMenu
+import view.AddQuizMenuView.*
 import view.updates.ViewUpdate
 
 import scala.collection.mutable.ListBuffer
@@ -23,8 +23,6 @@ class AddQuizMenuController extends PageController :
 
   import AddQuizMenuController.*
 
-  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
-
   var courseSelected:Option[SavedCourse] = Option.empty
   var quizToAdd:Option[Quiz] = Option.empty
 
@@ -34,17 +32,17 @@ class AddQuizMenuController extends PageController :
     case AddQuizAction(actionParameter) => addQuiz(actionParameter)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(DefaultUpdate)
     if courseSelected.isEmpty then
-      AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.AskCoursePrint(Option(AppController.session.savedCourses)))
+      AppController.currentPage.pageView.updateUI(AskCoursePrint(Option(AppController.session.savedCourses)))
     else
-      AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.AskQuizPrint)
+      AppController.currentPage.pageView.updateUI(AskQuizPrint)
 
   private def addQuiz[T](actionParameter: Option[Quiz]): Unit =
     quizToAdd = actionParameter
     val newSavedCourse = SavedCourse.changeQuizList(courseSelected.get, courseSelected.get.quizList.::(quizToAdd.get))
     val newListCourses = AppController.session.savedCourses.filterNot(course => course == courseSelected).appended(newSavedCourse)
     AppController.changeSavedCourses(newListCourses)
-    AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.QuizPrint(quizToAdd))
-    AppController.currentPage.pageView.updateUI(TerminalAddQuizMenu.QuizAdded)
+    AppController.currentPage.pageView.updateUI(QuizPrint(quizToAdd))
+    AppController.currentPage.pageView.updateUI(QuizAdded)
 
