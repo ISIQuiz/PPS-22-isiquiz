@@ -9,6 +9,9 @@ trait Timer:
 
 case class TimerImpl(var maxTime: Long) extends Timer:
 
+  // TODO: Improve (maybe with apply)
+  maxTime = maxTime * 1000
+
   var initialTime: Long = _
 
   def currentTime(): Long = System.currentTimeMillis()
@@ -26,5 +29,7 @@ case class TimerImpl(var maxTime: Long) extends Timer:
     case n if n >= maxTime => true
     case n if n < maxTime => false
     case _ => throw new IllegalArgumentException()
+
+  override def toString: String = s"Current timer: ${this.getTime()} / ${this.maxTime/1000}"
 
 

@@ -5,7 +5,7 @@ import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
 import view.View
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate}
+import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate, TimeExpiredUpdate}
 import model.Answer.Answer
 import model.GameStage
 import model.{QuizInGame, SavedCourse}
@@ -13,6 +13,7 @@ import model.Quiz.Quiz
 import model.settings.StandardGameSettings
 import utils.{TerminalInput, TerminalInputImpl, Timer, TimerImpl}
 import view.terminalUI.TerminalStandardGameMenu
+
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
@@ -27,6 +28,7 @@ object StandardGameController extends BackAction:
   def apply(game: GameStage): StandardGameController =
     val standardGameController = new StandardGameController(game)
     standardGameController.nextQuiz()
+    standardGameController.timer.startTimer()
     standardGameController
 
 /** Defines the logic of the select page */
@@ -39,13 +41,19 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)
-    case TimeExpired => println("Time expired")
+    case TimeExpired =>
+      // TODO: Remove this action since timer expired is not an action but a condition checked in every iteration
+      println("Time expired")
     case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
     case NextQuiz => nextQuiz()
 
   override def nextIteration(): Unit =
+    // TODO: Improve update sending to view page
     AppController.currentPage.pageView.updateUI(DefaultUpdate)
-    AppController.currentPage.pageView.updateUI(NewQuizUpdate(Option(gameStage)))
+    if timer.isExpired() then
+      AppController.currentPage.pageView.updateUI(TimeExpiredUpdate)
+    else
+      AppController.currentPage.pageView.updateUI(NewQuizUpdate(Option(gameStage)))
 //    timer.startTimer()
 //    timer.stopTimer()
 

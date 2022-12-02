@@ -12,7 +12,7 @@ import javafx.scene.control.{Button, Label, ProgressBar}
 import javafx.stage.Stage
 import model.GameStage
 import model.settings.StandardGameSettings
-import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate}
+import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate, TimeExpiredUpdate}
 
 object GraphicStandardGameMenu
 
@@ -62,22 +62,22 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
   @FXML
   def firstAnswerButtonClicked(): Unit =
     sendEvent(SelectAnswer(Option(0)))
-    disableAnswerButton(answerButtons)
+    disableButton(answerButtons)
 
   @FXML
   def secondAnswerButtonClicked(): Unit =
     sendEvent(SelectAnswer(Option(1)))
-    disableAnswerButton(answerButtons)
+    disableButton(answerButtons)
 
   @FXML
   def thirdAnswerButtonClicked(): Unit =
     sendEvent(SelectAnswer(Option(2)))
-    disableAnswerButton(answerButtons)
+    disableButton(answerButtons)
 
   @FXML
   def fourthAnswerButtonClicked(): Unit =
     sendEvent(SelectAnswer(Option(3)))
-    disableAnswerButton(answerButtons)
+    disableButton(answerButtons)
 
   @FXML
   def nextButtonClicked(): Unit =
@@ -106,6 +106,8 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
         case 1 => if feedback._2 then secondAnswerButton.getStyleClass.add("correct-answer") else secondAnswerButton.getStyleClass.add("wrong-answer")
         case 2 => if feedback._2 then thirdAnswerButton.getStyleClass.add("correct-answer") else thirdAnswerButton.getStyleClass.add("wrong-answer")
         case 3 => if feedback._2 then fourthAnswerButton.getStyleClass.add("correct-answer") else fourthAnswerButton.getStyleClass.add("wrong-answer")
+    case TimeExpiredUpdate =>
+      disableButton(answerButtons)
 
   def resetAnswerButton(buttons: List[Button]): Unit =
     buttons.foreach(button =>
@@ -114,7 +116,7 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
       button.setDisable(false);
     )
 
-  def disableAnswerButton(buttons: List[Button]): Unit =
+  def disableButton(buttons: List[Button]): Unit =
     buttons.foreach(button =>
       button.setDisable(true);
     )
