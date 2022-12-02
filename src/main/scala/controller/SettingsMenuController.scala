@@ -9,6 +9,7 @@ import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
+import view.SettingsMenuView.*
 
 /** Companion object of settings menu controller */
 object SettingsMenuController extends BackAction:
@@ -29,4 +30,4 @@ class SettingsMenuController extends PageController :
     case AddQuiz => AppController.handle(AddQuizMenuAction)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(TerminalSettingsMenu.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(DefaultUpdate)

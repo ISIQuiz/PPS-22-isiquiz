@@ -7,7 +7,10 @@ import utils.GUILoader
 import utils.GUILoader.loadGUI
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label, TextField}
-import javafx.stage.Stage
+import javafx.stage.{DirectoryChooser, Stage}
+import utils.Configuration.HomeDirectoryPath
+
+import java.io.File
 
 object GraphicSettingsMenu
 
@@ -40,7 +43,13 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
   def importButtonClicked(): Unit = ???
 
   @FXML
-  def exportButtonClicked(): Unit = ???
+  def exportButtonClicked(): Unit =
+    val directoryChooser: DirectoryChooser = DirectoryChooser()
+    directoryChooser.setTitle("Esporta i corsi")
+    directoryChooser.setInitialDirectory(File(HomeDirectoryPath))
+
+    val selectedDirectory = directoryChooser.showDialog(stage)
+    println(selectedDirectory.getPath + File.separator)
 
   @FXML
   def editButtonClicked(): Unit = ???
