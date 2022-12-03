@@ -40,6 +40,8 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
   @FXML
   var scoreIntegerField: IntegerField = _
 
+  val toggleGroup = ToggleGroup()
+
   @FXML
   var answersVBox: VBox = _
 
@@ -70,7 +72,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
         val answerCorrectCheckBox:CheckBox = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(3).asInstanceOf[CheckBox]
         answerList += Answer(answerTextField.getText, answerCorrectCheckBox.isSelected)
       )
-      val quiz = Quiz(questionTextField.getText, answerList.toList, scoreIntegerField.getValue, imagePathTextField.getText match
+      val quiz = Quiz(question=questionTextField.getText, answerList = answerList.toList, maxScore = scoreIntegerField.getValue, imagePath = imagePathTextField.getText match
         case "" => None
         case text => Some(text)
       )
@@ -85,11 +87,9 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
     case CourseUpdate(updateParameter) =>
       Platform.runLater { () =>
         coursesVBox.getChildren.clear()
-        val toggleGroup = ToggleGroup()
         updateParameter.get.foreach(savedCourse =>
           val radioButton = RadioButton(savedCourse.courseId.courseName);
           radioButton.setToggleGroup(toggleGroup);
-          radioButton.setSelected(true);
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
             sendEvent(AddCourseAction(Option(savedCourse)))
           );
