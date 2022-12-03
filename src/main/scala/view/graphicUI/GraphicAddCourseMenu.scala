@@ -45,8 +45,10 @@ class GraphicAddCourseMenu(stage: Stage) extends GraphicView:
           degreeName = degreeNameTextField.getText,
           universityName = universityNameTextField.getText
         ),
-        description = Option(descriptionCourseTextField.getText),
-        quizList = Nil
+        description = descriptionCourseTextField.getText match
+          case "" => None
+          case text => Some(text)
+        ,quizList = Nil
       )
       import controller.AddCourseMenuController.AddCourseAction
       sendEvent(AddCourseAction(Option(course)))
