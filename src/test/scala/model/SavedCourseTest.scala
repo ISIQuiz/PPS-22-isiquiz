@@ -5,15 +5,17 @@ import model.Quiz.*
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
+import java.util.UUID
+
 class SavedCourseTest extends AnyFunSuite with Matchers:
 
   val ansList: List[Answer] = List()
 
-  val q1 = Quiz("quiz1",ansList, 12, Some("image1.png"))
-  val q2 = Quiz("quiz2",ansList, 13, Some("image2.png"))
-  val q3 = Quiz("quiz3",ansList, 8, Some("image3.png"))
-  val q4 = Quiz("quiz4",ansList, 20, Some("image4.png"))
-
+  val q1 = Quiz(question = "quiz1", answerList = ansList, maxScore = 12, imagePath = Some("image1.png"))
+  val q2 = Quiz(question = "quiz2", answerList = ansList, maxScore = 13, imagePath = Some("image2.png"))
+  val q3 = Quiz(question = "quiz3", answerList = ansList, maxScore = 8, imagePath = Some("image3.png"))
+  val q4 = Quiz(question = "quiz4", answerList = ansList, maxScore = 20, imagePath = Some("image4.png"))
+  
   /* Simple list of SavedQuiz */
   val quizList = List(q1, q2, q3, q4)
 

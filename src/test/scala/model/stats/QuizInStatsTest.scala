@@ -3,9 +3,11 @@ package model.stats
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
+import java.util.UUID
+
 class QuizInStatsTest extends AnyFunSuite with Matchers :
 
-  val quizInStats = QuizInStats()
+  val quizInStats = QuizInStats(UUID.randomUUID())
 
   test("Test default QuizInStats") {
     quizInStats.totalSeen shouldEqual 0

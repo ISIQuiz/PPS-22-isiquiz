@@ -2,6 +2,8 @@ package model
 
 import org.scalatest.funsuite.AnyFunSuite
 import model.Answer.*
+
+import java.util.UUID
 class QuizTest extends AnyFunSuite :
 
   val a1 = Answer("answer", true)
@@ -59,7 +61,7 @@ class QuizTest extends AnyFunSuite :
     import Quiz.*
     val answerList: List[Answer] = List(a1, a2, a3)
 
-    val quiz: Quiz = Quiz("question", answerList, 10)
+    val quiz: Quiz = Quiz(question = "question", answerList = answerList, maxScore = 10)
     assert(getCorrectAnswers(quiz) == List(a1))
 
     println(quiz)

@@ -5,7 +5,6 @@ import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
 import utils.{Timer, TimerImpl}
 import view.View
-import view.terminalUI.TerminalMainMenu
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import view.MainMenuView
 import view.MainMenuView.DefaultUpdate

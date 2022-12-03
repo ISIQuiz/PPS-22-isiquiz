@@ -9,6 +9,7 @@ import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
+import view.StatisticsMenuView.*
 
 /** Companion object of statistics menu controller */
 object StatisticsMenuController extends BackAction
@@ -18,10 +19,8 @@ class StatisticsMenuController extends PageController :
 
   import StatisticsMenuController.*
 
-  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
-
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(TerminalStatisticsMenu.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(DefaultUpdate)
