@@ -31,6 +31,7 @@ object JsonLabels:
   val DescriptionLabel: String = "description"
 
   // Quiz
+  val QuizIdLabel: String = "quizId"
   val QuizListLabel: String = "quizList"
   val QuestionLabel: String = "question"
   val MaxScoreLabel: String = "maxScore"
