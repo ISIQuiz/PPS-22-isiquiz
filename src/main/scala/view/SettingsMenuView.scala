@@ -2,4 +2,4 @@ package view
 
 import view.updates.DefaultUpdate
 
-object MainMenuView extends DefaultUpdate
+object SettingsMenuView extends DefaultUpdate

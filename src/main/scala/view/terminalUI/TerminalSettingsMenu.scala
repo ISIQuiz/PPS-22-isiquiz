@@ -4,13 +4,11 @@ import controller.SettingsMenuController
 import controller.SettingsMenuController.*
 import controller.actions.Action
 import view.View.TerminalView
-import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-
+import view.updates.{ViewUpdate}
+import view.SettingsMenuView.*
 import scala.collection.mutable.Map
 
-object TerminalSettingsMenu:
-
-  case object DefaultUpdate extends ParameterlessViewUpdate
+object TerminalSettingsMenu
 
 /** Settings menu terminal interface  */
 class TerminalSettingsMenu extends TerminalView:

@@ -4,13 +4,14 @@ import model.Answer.Answer
 import model.stats.PlayerStats
 import model.Quiz.Quiz
 import model.stats.CourseInStats
-import model.stats.PlayerStats.defaultPlayerStatsFromSavedCourseList
 import model.stats.QuizInStats
 import model.{Course, CourseIdentifier, SavedCourse}
 
+import java.util.UUID
+
 object DefaultDataList:
 
-  def defaultCourseList = List(
+  val defaultCourseList = List(
     // Corso: Paradigmi di Programmazione e Sviluppo
     SavedCourse(
       courseId = CourseIdentifier(
@@ -190,10 +191,22 @@ object DefaultDataList:
     )*/
   )
 
-  def defaultPlayerStats = defaultPlayerStatsFromSavedCourseList(defaultCourseList)
+  val defaultPlayerStats =
+    PlayerStats(12, 0, 0,
+      defaultCourseList.map(
+        savedCourse => CourseInStats(
+          Course(
+            savedCourse.courseId,
+          ),
+          savedCourse.quizList.map(
+            quiz => QuizInStats(quiz.quizId, 3, 2, 1)
+          )
+        )
+      ).toList
+    )
 
 
-  def defaultPlayerStatsTest =
+ /* def defaultPlayerStatsTest =
     PlayerStats(
       totalScore = 11, totalAnsweredQuestions = 12, totalCorrectAnswers = 13,
       courseInStatsList = List(
@@ -218,4 +231,4 @@ object DefaultDataList:
           quizInStatsList = List(QuizInStats(3, 2, 2), QuizInStats(3, 2, 2), QuizInStats(3, 2, 2), QuizInStats(3, 2, 2))
         )
       )
-    )
+    )*/

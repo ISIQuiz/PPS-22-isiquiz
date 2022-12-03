@@ -19,8 +19,6 @@ class StatisticsMenuController extends PageController :
 
   import StatisticsMenuController.*
 
-  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
-
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)
 

@@ -10,6 +10,7 @@ import play.api.libs.json.*
 import utils.parser.JsonLabels.*
 import utils.parser.JsonParser
 
+import java.util.UUID
 import scala.util.Try
 
 /** Trait for the [[StatsJsonParser]] parser */
@@ -50,6 +51,7 @@ object StatsJsonParser:
         case quizInStats: QuizInStats => // QuizInStats
           JsObject(
             Seq(
+              QuizIdLabel -> JsString(quizInStats.quizId.toString),
               TotalSeenLabel -> JsNumber(quizInStats.totalSeen),
               TotalRightAnswersLabel -> JsNumber(quizInStats.totalRightAnswers),
               AverageTimeAnswerLabel -> JsNumber(quizInStats.averageTimeAnswer)
@@ -93,6 +95,7 @@ object StatsJsonParser:
           jsonArray.value.map(
             quizInStats =>
               QuizInStats(
+                quizId = UUID.fromString((quizInStats \ QuizIdLabel).as[String]),
                 totalSeen = (quizInStats \ TotalSeenLabel).as[Int],
                 totalRightAnswers = (quizInStats \ TotalRightAnswersLabel).as[Int],
                 averageTimeAnswer = (quizInStats \ AverageTimeAnswerLabel).as[Double]
