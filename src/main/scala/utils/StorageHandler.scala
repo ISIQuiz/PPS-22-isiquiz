@@ -1,9 +1,10 @@
 package utils
 
 import model.stats.{CourseInStats, QuizInStats}
-import model.stats.PlayerStats.{PlayerStats, defaultPlayerStatsFromSavedCourseList}
+import model.stats.PlayerStats.PlayerStats
 import model.{Course, SavedCourse, Session}
 import utils.Configuration.{CurrentDirectoryPath, PlayerDataFileName, SavedCoursesFilePath}
+import utils.DefaultDataList.defaultPlayerStats
 import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
 
 import java.io.FileNotFoundException
@@ -50,8 +51,7 @@ object StorageHandler:
               case Success(playerStats: PlayerStats) =>
                 Success(Session.changePlayerStats(newSession, playerStats))
               case Failure(f) => // Failed to parse player stats, reset to default player stats based on saved course list and store to file
-                val playerStats = defaultPlayerStatsFromSavedCourseList(newSession.savedCourses)
-                storeSessionToFile(Session.changePlayerStats(newSession, playerStats))
+                storeSessionToFile(Session.changePlayerStats(newSession, defaultPlayerStats))
                 Failure(f)
 
           case Failure(f) => // Failed to parse savedCourse from file, store passed session to file
