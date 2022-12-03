@@ -3,7 +3,8 @@ package utils
 import model.stats.{CourseInStats, QuizInStats}
 import model.stats.PlayerStats.PlayerStats
 import model.{Course, SavedCourse, Session}
-import utils.Configuration.{CurrentDirectoryPath, PlayerDataFileName, SavedCoursesFilePath}
+import play.api.libs.json.JsObject
+import utils.Configuration.*
 import utils.DefaultDataList.defaultPlayerStats
 import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
 
@@ -11,34 +12,72 @@ import java.io.FileNotFoundException
 import scala.util.{Failure, Success, Try}
 
 object StorageHandler:
-  
-  /**
-   * Store [[Session]] in a JSON file
-   * @param session
-   */
-  def storeSessionToFile(session: Session): Unit =
-    val fileHandler = FileHandler()
-    val courseJsonParser = CourseJsonParser()
-    val statsJsonParser = StatsJsonParser()
 
-    fileHandler.writeFile(CurrentDirectoryPath + PlayerDataFileName,
-      JsonParser.toString(
-        JsonParser.merge(statsJsonParser.serialize(session.playerStats), courseJsonParser.serialize(session.savedCourses))
-      )
+  private def storeObjectToPath(jsonObject: JsObject, path: String): Try[Unit] =
+    FileHandler.writeFile(path, JsonParser.toString(jsonObject))
+
+
+  private def storeDataToDirectory[A](session: Session, jsonParser: JsonParser[A], filePath: String): Try[Unit] =
+    FileHandler.createDirectory(PlayerDataDirectoryPath)
+    storeObjectToPath(
+      jsonParser match
+        case courseJsonParser: CourseJsonParser => courseJsonParser.serialize(session.savedCourses)
+        case statsJsonParser: StatsJsonParser => statsJsonParser.serialize(session.playerStats)
+      ,
+      filePath
     )
 
   /**
+   * Export personal session to personal folder
+   *
+   * @param session
+   * @return a Try
+   */
+  def exportSessionToDirectory(session: Session): Try[Unit] =
+    storeDataToDirectory(session, CourseJsonParser(), PlayerCoursesFilePath)
+    storeDataToDirectory(session, StatsJsonParser(), PlayerStatsFilePath)
+
+  /**
+   * Export saved courses to choosen directory
+   *
+   * @param session
+   * @return a Try
+   */
+  def exportSavedCoursesToPersonalDirectory(session: Session, filePath: String): Try[Unit] =
+    storeDataToDirectory(session, CourseJsonParser(), filePath + FileSeparator + PlayerCoursesFileName)
+
+
+/*
+  /**
+   * Store [[Session]] in a JSON file
+   *
+   * @param session
+   */
+  def storeSessionToDirectory(session: Session): Unit =
+
+    val courseJsonParser = CourseJsonParser()
+    val statsJsonParser = StatsJsonParser()
+
+    FileHandler.createDirectory(PlayerDataDirectoryPath)
+
+    storeObjectToPath(
+      JsonParser.merge(statsJsonParser.serialize(session.playerStats), courseJsonParser.serialize(session.savedCourses)),
+      SessionFilePath
+    )
+
+
+  /**
    * Load [[Session]] from JSON file. If no file found it generates the default one
+   *
    * @param session
    * @return a Try[Session]
    */
   def loadSessionFromFile(session: Session): Try[Session] =
-    val fileHandler = FileHandler()
     val courseJsonParser = CourseJsonParser()
     val statsJsonParser = StatsJsonParser()
 
     // Load player data file
-    fileHandler.readFile(CurrentDirectoryPath + PlayerDataFileName) match
+    FileHandler.readFile(SessionFilePath) match
       case Success(jsonString: String) => // Read file success
 
         // Deserialize the JSON string in a SavedCourse list
@@ -51,13 +90,15 @@ object StorageHandler:
               case Success(playerStats: PlayerStats) =>
                 Success(Session.changePlayerStats(newSession, playerStats))
               case Failure(f) => // Failed to parse player stats, reset to default player stats based on saved course list and store to file
-                storeSessionToFile(Session.changePlayerStats(newSession, defaultPlayerStats))
+                val playerStats = defaultPlayerStatsFromSavedCourseList(newSession.savedCourses)
+                storeSessionToDirectory(Session.changePlayerStats(newSession, playerStats))
                 Failure(f)
 
           case Failure(f) => // Failed to parse savedCourse from file, store passed session to file
-            storeSessionToFile(session)
+            storeSessionToDirectory(session)
             Failure(f)
 
       case Failure(f: FileNotFoundException) => // Failed to read from file, write a new one with session passed
-        storeSessionToFile(session)
+        storeSessionToDirectory(session)
         Failure(f)
+        */
