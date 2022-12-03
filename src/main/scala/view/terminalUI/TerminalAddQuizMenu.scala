@@ -9,6 +9,7 @@ import view.View.*
 import view.updates.ViewUpdate
 import view.AddQuizMenuView.*
 
+import java.util.UUID
 import scala.collection.mutable.Map
 import scala.io.StdIn.readLine
 
@@ -55,7 +56,7 @@ class TerminalAddQuizMenu extends TerminalView:
         imagePath = Some(readLine)
       import controller.AddQuizMenuController.AddQuizAction
       import model.Quiz.Quiz
-      sendEvent(AddQuizAction(Option(Quiz(question, answerList, score, imagePath))))
+      sendEvent(AddQuizAction(Option(Quiz(question = question, answerList = answerList, maxScore = score, imagePath = imagePath))))
     case QuizAdded =>
       println("Quiz Aggiunto!")
       sendEvent(Back)

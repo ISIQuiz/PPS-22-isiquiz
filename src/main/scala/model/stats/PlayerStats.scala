@@ -73,15 +73,4 @@ object PlayerStats:
    * @return a [[PlayerStats]]
    */
   def defaultPlayerStatsFromSavedCourseList(savedCourseList: List[SavedCourse]): PlayerStats =
-    PlayerStats(0, 0, 0,
-      savedCourseList.map(
-        savedCourse => CourseInStats(
-          Course(
-            savedCourse.courseId,
-          ),
-          savedCourse.quizList.map(
-            quiz => QuizInStats()
-          )
-        )
-      ).toList
-    )
+    PlayerStats(0, 0, 0, List())
