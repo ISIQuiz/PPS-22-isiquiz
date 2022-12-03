@@ -42,9 +42,11 @@ class SessionTest extends AnyFunSuite with Matchers:
   }
 
   test("Check if player stats in Session changed") {
-    val sessionChanged = Session.changePlayerStats(session, PlayerStats(1,2,3, List()))
+    val sessionChanged = Session.changePlayerStats(session, PlayerStats(1,2,3,4,5.5, List()))
     sessionChanged.playerStats.totalScore shouldEqual 1
     sessionChanged.playerStats.totalAnsweredQuestions shouldEqual 2
     sessionChanged.playerStats.totalCorrectAnswers shouldEqual 3
+    sessionChanged.playerStats.totalAnswerPrecision shouldEqual 4
+    sessionChanged.playerStats.totalAverageTimeAnswer shouldEqual 5.5
   }
 

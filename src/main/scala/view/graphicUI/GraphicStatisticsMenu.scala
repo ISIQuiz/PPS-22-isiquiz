@@ -5,7 +5,7 @@ import controller.StatisticsMenuController.Back
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.stage.Stage
-import javafx.scene.control.Label
+import javafx.scene.control.{Button, Label}
 import model.stats.PlayerStats
 import utils.GUILoader
 import utils.GUILoader.loadGUI
@@ -19,6 +19,9 @@ object GraphicStatisticsMenu
 class GraphicStatisticsMenu(stage: Stage) extends GraphicView :
 
   @FXML
+  var backButton: Button = _
+  
+  @FXML
   var totalScoreLabel: Label = _
 
   @FXML
@@ -28,10 +31,10 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView :
   var totalCorrectAnswersLabel: Label = _
 
   @FXML
-  var answerPrecisionLabel: Label = _
+  var totalAnswerPrecisionLabel: Label = _
 
   @FXML
-  var averageTimeAnswerLabel: Label = _
+  var totalAverageTimeAnswerLabel: Label = _
 
 
   @FXML
@@ -44,10 +47,10 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView :
     case DefaultUpdate =>
       Platform.runLater { () =>
         totalScoreLabel.setText(AppController.session.playerStats.totalScore.toString)
-        totalAnsweredQuestionsLabel.setText(PlayerStats.calculateTotalAnsweredQuestions(AppController.session.playerStats).toString)
-        totalCorrectAnswersLabel.setText(PlayerStats.calculateTotalCorrectAnswer(AppController.session.playerStats).toString)
-        answerPrecisionLabel.setText(PlayerStats.calculateAnswerPrecision(AppController.session.playerStats).toString + " %")
-        averageTimeAnswerLabel.setText(PlayerStats.calculateAverageTimeAnswer(AppController.session.playerStats).toString)
+        totalAnsweredQuestionsLabel.setText(AppController.session.playerStats.totalAnsweredQuestions.toString)
+        totalCorrectAnswersLabel.setText(AppController.session.playerStats.totalCorrectAnswers.toString)
+        totalAnswerPrecisionLabel.setText(AppController.session.playerStats.totalAnswerPrecision.toString + " %")
+        totalAverageTimeAnswerLabel.setText(AppController.session.playerStats.totalAverageTimeAnswer.toString)
       }
 
 

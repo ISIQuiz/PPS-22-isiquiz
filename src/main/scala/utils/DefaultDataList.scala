@@ -192,17 +192,17 @@ object DefaultDataList:
   )
 
   val defaultPlayerStats =
-    PlayerStats(12, 0, 0,
+    PlayerStats(0 ,0, 0, 0, 0.0,
       defaultCourseList.map(
         savedCourse => CourseInStats(
           Course(
             savedCourse.courseId,
           ),
           savedCourse.quizList.map(
-            quiz => QuizInStats(quiz.quizId, 3, 2, 1)
+            quiz => QuizInStats(quiz.quizId, 0, 0, 0)
           )
         )
-      ).toList
+      )
     )
 
 

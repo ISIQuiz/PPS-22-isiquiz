@@ -24,7 +24,7 @@ object StatsJsonParser:
   def apply(): StatsJsonParser = new StatsJsonParserImpl()
 
   // Implementation of StatsJsonParser trait
-  private class StatsJsonParserImpl extends StatsJsonParser :
+  private class StatsJsonParserImpl extends StatsJsonParser:
 
     override def serialize(playerStats: PlayerStats): JsObject =
       serializeObjectOfPlayerStats(playerStats)
@@ -38,6 +38,8 @@ object StatsJsonParser:
               TotalScoreLabel -> JsNumber(playerStats.totalScore),
               TotalAnsweredQuestionsLabel -> JsNumber(playerStats.totalAnsweredQuestions),
               TotalCorrectAnswersLabel -> JsNumber(playerStats.totalCorrectAnswers),
+              TotalAnswerPrecisionLabel -> JsNumber(playerStats.totalAnswerPrecision),
+              TotalAverageTimeAnswerLabel -> JsNumber(playerStats.totalAverageTimeAnswer),
               SavedCourseListLabel -> JsArray(playerStats.courseInStatsList.map(serializeObjectOfPlayerStats))
             )
           )
@@ -79,6 +81,8 @@ object StatsJsonParser:
             totalScore = (jsonObject \ TotalScoreLabel).as[Int],
             totalAnsweredQuestions = (jsonObject \ TotalAnsweredQuestionsLabel).as[Int],
             totalCorrectAnswers = (jsonObject \ TotalCorrectAnswersLabel).as[Int],
+            totalAnswerPrecision = (jsonObject \ TotalAnswerPrecisionLabel).as[Int],
+            totalAverageTimeAnswer = (jsonObject \ TotalAverageTimeAnswerLabel).as[Double],
             courseInStatsList = deserializeObjectOfPlayerStats((jsonObject \ SavedCourseListLabel).as[JsArray], SavedCourseListLabel).asInstanceOf[List[CourseInStats]]
           )
         case (jsonArray: JsArray, SavedCourseListLabel) =>

@@ -4,9 +4,9 @@ import controller.Controller
 import controller.actions.{Action, ParameterlessAction}
 import javafx.stage.Stage
 import model.GameStage
+import model.stats.PlayerStats.{PlayerStats, updatePlayerStats}
 import model.{SavedCourse, Session}
 import view.View
-
 import view.View.{PageView, TerminalView, ViewFactory}
 
 import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
@@ -23,6 +23,8 @@ object AppController extends Controller:
   private var _session: Session = Session()
   def session: Session = _session
   def changeSavedCourses(savedCourses: List[SavedCourse]): Unit = _session = Session.changeSavedCourses(session, savedCourses)
+  def changePlayerStats(playerStats: PlayerStats): Unit = _session = Session.changePlayerStats(session, playerStats)
+
 
   case object MainMenuAction extends ParameterlessAction
   case object SelectMenuAction extends ParameterlessAction
