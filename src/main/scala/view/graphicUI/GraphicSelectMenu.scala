@@ -76,6 +76,7 @@ class GraphicSelectMenu(stage: Stage) extends GraphicView:
               sendEvent(Selection(Option(coursesVBox.getChildren.indexOf(checkbox))))
             );
             checkbox.setSelected(courseToPrint.isSelected);
+            checkbox.getStyleClass.add("label-dark");
             coursesVBox.getChildren.add(checkbox)
           )
 
