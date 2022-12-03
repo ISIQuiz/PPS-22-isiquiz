@@ -1,6 +1,7 @@
 package view
 
-import view.updates.{DefaultUpdate, ViewUpdate, ParameterlessViewUpdate}
+import model.SavedCourse
+import view.updates.{DefaultUpdate, ParameterlessViewUpdate, ViewUpdate}
 
 object AddQuizMenuView extends DefaultUpdate:
 
@@ -11,3 +12,5 @@ object AddQuizMenuView extends DefaultUpdate:
   case object AskQuizPrint extends ParameterlessViewUpdate
   
   case object QuizAdded extends ParameterlessViewUpdate
+
+  case class CourseUpdate[T](override val updateParameter: Option[List[SavedCourse]]) extends ViewUpdate(updateParameter)

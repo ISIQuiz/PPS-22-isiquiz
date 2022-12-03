@@ -5,6 +5,7 @@ import controller.{AppController, PageController}
 import controller.AppController.*
 import model.{Course, SavedCourse}
 import model.Quiz.Quiz
+import model.GameStage.*
 import view.AddQuizMenuView.*
 import view.updates.ViewUpdate
 
@@ -34,6 +35,7 @@ class AddQuizMenuController extends PageController :
   override def nextIteration(): Unit =
     AppController.currentPage.pageView.updateUI(DefaultUpdate)
     if courseSelected.isEmpty then
+      AppController.currentPage.pageView.updateUI(CourseUpdate(Option(AppController.session.savedCourses)))
       AppController.currentPage.pageView.updateUI(AskCoursePrint(Option(AppController.session.savedCourses)))
     else
       AppController.currentPage.pageView.updateUI(AskQuizPrint)
@@ -41,7 +43,7 @@ class AddQuizMenuController extends PageController :
   private def addQuiz[T](actionParameter: Option[Quiz]): Unit =
     quizToAdd = actionParameter
     val newSavedCourse = SavedCourse.changeQuizList(courseSelected.get, courseSelected.get.quizList.::(quizToAdd.get))
-    val newListCourses = AppController.session.savedCourses.filterNot(course => course == courseSelected).appended(newSavedCourse)
+    val newListCourses = AppController.session.savedCourses.filterNot(course => course == courseSelected.get).appended(newSavedCourse)
     AppController.changeSavedCourses(newListCourses)
     AppController.currentPage.pageView.updateUI(QuizPrint(quizToAdd))
     AppController.currentPage.pageView.updateUI(QuizAdded)
