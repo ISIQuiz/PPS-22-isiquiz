@@ -58,6 +58,10 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
     addAnswerGUI()
 
   @FXML
+  def removeAnswerButtonClicked(): Unit =
+    if answersVBox.getChildren.size()>1 then answersVBox.getChildren.remove(answersVBox.getChildren.size()-1)
+
+  @FXML
   def addQuizButtonClicked(): Unit =
     if checkInputs then
       val answerList:ListBuffer[Answer] = ListBuffer()
