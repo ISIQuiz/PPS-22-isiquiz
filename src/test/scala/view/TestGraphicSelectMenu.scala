@@ -23,13 +23,10 @@ class TestGraphicSelectMenu extends ViewTest with ButtonTest:
     graphicSelectMenu = new GraphicSelectMenu(stage)
 
   @Test def testBackButton(robot: FxRobot): Unit =
-    testButton(graphicSelectMenu.backButton, "back")(robot)
+    testButton(graphicSelectMenu.backButton, "Indietro")(robot)
 
   @Test def testStandardGameButton(robot: FxRobot): Unit =
-    testButton(graphicSelectMenu.standardGameButton, "Inizia")(robot)
-
-  @Test def testReviewGameButton(robot: FxRobot): Unit =
-    testButton(graphicSelectMenu.reviewGameButton, "Modalità ripasso")(robot)
+    testButton(graphicSelectMenu.standardGameButton, "Partita standard")(robot)
 
   @Test def testCustomGameButton(robot: FxRobot): Unit =
     testButton(graphicSelectMenu.customGameButton, "Partita personalizzata")(robot)
