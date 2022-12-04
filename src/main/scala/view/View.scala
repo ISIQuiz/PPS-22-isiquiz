@@ -5,6 +5,7 @@ import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
 import javafx.event.Event
 import javafx.fxml.FXMLLoader
+import javafx.scene.image.Image
 import javafx.scene.layout.Pane
 import javafx.stage.StageStyle
 import scalafx.application.{JFXApp3, Platform}
@@ -38,6 +39,7 @@ object View:
   _stage.resizable = false
   _stage.scene = _scene
   _stage.onCloseRequest = _ => System.exit(0)
+  _stage.getIcons.add(new Image(View.getClass.getResourceAsStream("/images/favicon_265_text.png")));
   _scene.root.value = _basePanel
 
   def sendEvent[T](action: Action[T]): Unit = AppController.handle(action)
