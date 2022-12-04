@@ -2,6 +2,7 @@ package view.graphicUI
 
 
 import controller.AddCourseMenuController.{AddCourseAction, Back}
+import view.AddCourseMenuView.{CourseAddedUpdate, CoursePrintUpdate}
 import javafx.fxml.FXML
 import javafx.scene.control.{Label, TextField}
 import javafx.stage.Stage
@@ -12,7 +13,6 @@ import view.updates.ViewUpdate
 import model.SavedCourse.SavedCourseImpl
 import model.CourseIdentifier.CourseIdentifierImpl
 import model.Quiz.Quiz
-import view.AddCourseMenuView.CoursePrint
 
 object GraphicAddCourseMenu
 
@@ -38,7 +38,7 @@ class GraphicAddCourseMenu(stage: Stage) extends GraphicView:
 
   @FXML
   def addCourseButtonClicked(): Unit =
-    if courseNameTextField.getText.nonEmpty then
+    if checkInputs then
       val course = SavedCourseImpl(
         courseId = CourseIdentifierImpl(
           courseName = courseNameTextField.getText,
@@ -52,17 +52,19 @@ class GraphicAddCourseMenu(stage: Stage) extends GraphicView:
       )
       import controller.AddCourseMenuController.AddCourseAction
       sendEvent(AddCourseAction(Option(course)))
-      println("1 "+course)
     else
       feedbackLabel.setText("Nome mancante")
 
   loadGUI(stage, this, "add_course_menu.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
-    case CoursePrint(course) =>
+    case CourseAddedUpdate =>
       feedbackLabel.setText("Corso Aggiunto!!!")
-      courseNameTextField.setText("")
-      degreeNameTextField.setText("")
-      universityNameTextField.setText("")
-      descriptionCourseTextField.setText("")
+      courseNameTextField.clear()
+      degreeNameTextField.clear()
+      universityNameTextField.clear()
+      descriptionCourseTextField.clear()
     case _ => {}
+
+  private def checkInputs: Boolean =
+    courseNameTextField.getText.nonEmpty
