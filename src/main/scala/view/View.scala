@@ -48,7 +48,7 @@ object View:
       case Terminal
       case ScalaFX
 
-    private val _currentGUIType: GUIType = GUIType.Terminal
+    private val _currentGUIType: GUIType = GUIType.ScalaFX
 
     def create[T](page: Action[T]): PageView = page match
       case MainMenuAction => _currentGUIType match

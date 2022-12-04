@@ -33,7 +33,6 @@ class TerminalEditCourseMenu extends TerminalView:
       println("Seleziona il corso da modificare")
       courseList.map(course => course.courseId.courseName).zipWithIndex.foreach { case (e, i) => println(i + "] " + e) }
       val courseIndex = readLine.toInt
-      import controller.AddQuizMenuController.AddCourseAction
       sendEvent(SelectCourseAction(courseList.lift(courseIndex)))
     case AskCourseEditUpdate =>
       println("Inserisci nome corso:")
