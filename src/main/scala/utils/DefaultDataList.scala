@@ -4,13 +4,14 @@ import model.Answer.Answer
 import model.stats.PlayerStats
 import model.Quiz.Quiz
 import model.stats.CourseInStats
-import model.stats.PlayerStats.defaultPlayerStatsFromSavedCourseList
 import model.stats.QuizInStats
 import model.{Course, CourseIdentifier, SavedCourse}
 
+import java.util.UUID
+
 object DefaultDataList:
 
-  def defaultCourseList = List(
+  val defaultCourseList = List(
     // Corso: Paradigmi di Programmazione e Sviluppo
     SavedCourse(
       courseId = CourseIdentifier(
@@ -190,10 +191,22 @@ object DefaultDataList:
     )*/
   )
 
-  def defaultPlayerStats = defaultPlayerStatsFromSavedCourseList(defaultCourseList)
+  val defaultPlayerStats =
+    PlayerStats(0 ,0, 0, 0, 0.0,
+      defaultCourseList.map(
+        savedCourse => CourseInStats(
+          Course(
+            savedCourse.courseId,
+          ),
+          savedCourse.quizList.map(
+            quiz => QuizInStats(quiz.quizId, 0, 0, 0)
+          )
+        )
+      )
+    )
 
 
-  def defaultPlayerStatsTest =
+ /* def defaultPlayerStatsTest =
     PlayerStats(
       totalScore = 11, totalAnsweredQuestions = 12, totalCorrectAnswers = 13,
       courseInStatsList = List(
@@ -205,7 +218,7 @@ object DefaultDataList:
               universityName = "Università di Bologna"
             )
           ),
-          quizInStatsList = List(QuizInStats(1, 2, 3), QuizInStats(4, 5, 6), QuizInStats(7, 8, 9), QuizInStats(10, 11, 12))
+          quizInStatsList = List(QuizInStats(3, 2, 1), QuizInStats(3, 2, 1), QuizInStats(3, 2, 1), QuizInStats(3, 2, 1))
         ),
         CourseInStats(
           course = Course(
@@ -215,7 +228,7 @@ object DefaultDataList:
               universityName = "Università di Bologna"
             )
           ),
-          quizInStatsList = List(QuizInStats(11, 22, 33), QuizInStats(44, 55, 66), QuizInStats(77, 88, 99), QuizInStats(1010, 1111, 1212))
+          quizInStatsList = List(QuizInStats(3, 2, 2), QuizInStats(3, 2, 2), QuizInStats(3, 2, 2), QuizInStats(3, 2, 2))
         )
       )
-    )
+    )*/

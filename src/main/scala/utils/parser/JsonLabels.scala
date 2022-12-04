@@ -11,7 +11,9 @@ object JsonLabels:
   val TotalScoreLabel: String = "totalScore"
   val TotalAnsweredQuestionsLabel: String = "totalAnsweredQuestions"
   val TotalCorrectAnswersLabel: String = "totalCorrectAnswers"
-  val CourseInStatsList: String = "courseInStatsList"
+  val TotalAnswerPrecisionLabel: String = "totalAnswerPrecision"
+  val TotalAverageTimeAnswerLabel: String = "totalAverageTimeAnswer"
+  val CourseInStatsListLabel: String = "courseInStatsList"
 
   // CourseInStats
   val CourseLabel: String = "course"
@@ -31,6 +33,7 @@ object JsonLabels:
   val DescriptionLabel: String = "description"
 
   // Quiz
+  val QuizIdLabel: String = "quizId"
   val QuizListLabel: String = "quizList"
   val QuestionLabel: String = "question"
   val MaxScoreLabel: String = "maxScore"

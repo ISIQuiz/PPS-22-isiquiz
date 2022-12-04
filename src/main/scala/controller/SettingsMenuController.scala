@@ -9,6 +9,7 @@ import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
+import view.SettingsMenuView.*
 
 /** Companion object of settings menu controller */
 object SettingsMenuController extends BackAction:
