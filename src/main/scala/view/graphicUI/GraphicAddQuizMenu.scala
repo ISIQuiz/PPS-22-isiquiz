@@ -90,6 +90,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
         updateParameter.get.foreach(savedCourse =>
           val radioButton = RadioButton(savedCourse.courseId.courseName);
           radioButton.setToggleGroup(toggleGroup);
+          radioButton.getStyleClass.add("label-dark");
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
             sendEvent(AddCourseAction(Option(savedCourse)))
           );
