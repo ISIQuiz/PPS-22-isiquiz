@@ -17,6 +17,8 @@ object TerminalAddQuizMenu
 /** Add quiz terminal interface  */
 class TerminalAddQuizMenu extends TerminalView:
 
+  var courseList:List[SavedCourse] = Nil
+
   override val actionsMap: Map[String, Action[Any]] = Map(
     "B" -> Back,
   )
@@ -25,17 +27,15 @@ class TerminalAddQuizMenu extends TerminalView:
     case DefaultUpdate =>
       println("Menu aggiunta quiz:\n1) Menu principale")
       println("Aggiunta quiz:")
-    case AskCoursePrint(param) =>
+    case CourseUpdate(updateParameter) =>
+      courseList = updateParameter.get
+    case AskCourseUpdate =>
       println("Seleziona il corso al quale aggiungere la domanda")
-      val courseList = param.get.asInstanceOf[List[SavedCourse]]
       courseList.map(course=>course.courseId.courseName).zipWithIndex.foreach{ case (e, i) => println(i+"] "+e) }
       val courseIndex = readLine.toInt
       import controller.AddQuizMenuController.AddCourseAction
       sendEvent(AddCourseAction(courseList.lift(courseIndex)))
-    case QuizPrint(quiz) =>
-      import model.Quiz.*
-      println(printQuizFull(quiz.get.asInstanceOf[Quiz]))
-    case AskQuizPrint =>
+    case AskQuizUpdate =>
       println("Inserisci domanda:")
       val question = readLine
       println("Inserisci score:")
@@ -56,6 +56,10 @@ class TerminalAddQuizMenu extends TerminalView:
       import controller.AddQuizMenuController.AddQuizAction
       import model.Quiz.Quiz
       sendEvent(AddQuizAction(Option(Quiz(question, answerList, score, imagePath))))
-    case QuizAdded =>
+    case QuizPrintUpdate(updateParameter) =>
+      import model.Quiz.*
+      println(printQuizFull(updateParameter.get))
+    case QuizAddedUpdate =>
       println("Quiz Aggiunto!")
       sendEvent(Back)
+    case _ => {}

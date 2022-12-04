@@ -96,7 +96,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
           coursesVBox.getChildren.addAll(radioButton)
         )
       }
-    case QuizAdded =>
+    case QuizAddedUpdate =>
       feedbackLabel.setText("Quiz Aggiunto!!!")
       questionTextField.clear()
       imagePathTextField.clear()
