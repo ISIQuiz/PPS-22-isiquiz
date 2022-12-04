@@ -2,11 +2,11 @@ package view.terminalUI
 
 import controller.AddCourseMenuController
 import controller.AddCourseMenuController.*
+import view.AddCourseMenuView.*
 import controller.actions.Action
 import model.SavedCourse
 import model.SavedCourse.SavedCourseImpl
 import view.View.*
-import view.AddCourseMenuView.*
 import view.updates.{ViewUpdate}
 
 import scala.collection.mutable.Map
@@ -25,11 +25,7 @@ class TerminalAddCourseMenu extends TerminalView:
     case DefaultUpdate =>
       println("Menu aggiunta corsi:\n1) Menu principale")
       println("Aggiunta corso:")
-    case CoursePrint(course) =>
-      println("Corso Aggiunto!")
-      import model.SavedCourse
-      println(course.get)
-    case AskCoursePrint =>
+    case AskCourseUpdate =>
       println("Inserisci nome corso:")
       val courseNameIns = readLine
       println("Inserisci nome corso di laurea:")
@@ -41,7 +37,6 @@ class TerminalAddCourseMenu extends TerminalView:
       if "s" == readLine.toLowerCase then
         println("inserisci descrizione del corso:")
         descriptionIns = Some(readLine)
-        
       import model.CourseIdentifier.CourseIdentifierImpl
       import model.Quiz.Quiz
       val course = SavedCourseImpl(
@@ -55,3 +50,9 @@ class TerminalAddCourseMenu extends TerminalView:
       )
       import controller.AddCourseMenuController.AddCourseAction
       sendEvent(AddCourseAction(Option(course)))
+    case CoursePrintUpdate(course) =>
+      import model.SavedCourse
+      println(course.get)
+    case CourseAddedUpdate =>
+      println("Corso Aggiunto!")
+    case _ => {}
