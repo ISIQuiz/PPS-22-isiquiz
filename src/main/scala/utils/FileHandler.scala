@@ -4,47 +4,51 @@ import java.nio.file.{Files, Paths}
 import scala.io.Source
 import scala.util.{Try, Using}
 
-/**
- * Manage reading and writing files
- */
-trait FileHandler:
+
+/** Object of [[FileHandler]] */
+object FileHandler:
 
   /**
    * Read file from path
+   *
    * @param filePath a string with file path
    * @return a Try[String] with the file content
    */
-  def readFile(filePath: String): Try[String]
+  def readFile(filePath: String): Try[String] =
+    Using(Source.fromFile(filePath))(_.mkString)
 
   /**
    * Read resource file from path
+   *
    * @param filePath a string with file path
    * @return a Try[String] with the file content
    */
-  def readResource(filePath: String): Try[String]
+  def readResource(filePath: String): Try[String] =
+    Using(Source.fromResource(filePath))(_.mkString)
 
   /**
    * Write the string in a file
-   * @param filePath a string with file path
+   *
+   * @param filePath    a string with file path
    * @param fileContent a string with file content
-   * @return an exception if it fails
+   * @return a Try
    */
-  def writeFile(filePath: String, fileContent: String): Try[Unit]
+  def writeFile(filePath: String, fileContent: String): Try[Unit] =
+    Try(Files.writeString(Paths.get(filePath), fileContent))
 
-/** Companion object for [[FileHandler]] trait */
-object FileHandler:
+  /**
+   * Creates a directory if not exists
+   *
+   * @param filePath a string with directory path
+   */
+  def createDirectory(filePath: String): Unit =
+    Files.createDirectories(Paths.get(filePath))
 
-  /** Creates an instance of [[FileHandler]] trait */
-  def apply(): FileHandler =  FileHandlerImpl()
-
-  // Implementation of FileHandler trait
-  private class FileHandlerImpl extends FileHandler:
-
-    override def readFile(filePath: String): Try[String] =
-      Using(Source.fromFile(filePath))(_.mkString)
-
-    override def readResource(filePath: String): Try[String] =
-      Using(Source.fromResource(filePath))(_.mkString)
-    
-    override def writeFile(filePath: String, fileContent: String): Try[Unit] =
-      Try(Files.writeString(Paths.get(filePath), fileContent))
+  /**
+   * Check if file/directory exists
+   *
+   * @param filePath
+   * @return a [[Boolean]]
+   */
+  def checkFileExists(filePath: String): Boolean =
+    Files.exists(Paths.get(filePath))

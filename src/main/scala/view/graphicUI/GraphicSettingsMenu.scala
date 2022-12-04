@@ -1,16 +1,16 @@
 package view.graphicUI
 
-import controller.SettingsMenuController.Back
+import controller.AppController
+import controller.SettingsMenuController.*
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
-import utils.GUILoader
+import utils.{GUILoader, StorageHandler}
 import utils.GUILoader.loadGUI
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label, TextField}
 import javafx.stage.FileChooser.ExtensionFilter
 import javafx.stage.{DirectoryChooser, FileChooser, Stage}
 import utils.Configuration.{CurrentDirectoryPath, HomeDirectoryPath}
-
 import java.io.File
 
 object GraphicSettingsMenu
@@ -35,6 +35,12 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView :
 
   @FXML
   var editButton: Button = _
+  
+  @FXML
+  var addCourseButton: Button = _
+  
+  @FXML
+  var addQuizButton: Button = _
 
   @FXML
   def backButtonClicked(): Unit =
@@ -52,10 +58,23 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView :
 
 
   @FXML
-  def exportButtonClicked(): Unit = ???
+  def exportButtonClicked(): Unit =
+    val directoryChooser: DirectoryChooser = DirectoryChooser()
+    directoryChooser.setTitle("Esporta i corsi")
+    directoryChooser.setInitialDirectory(File(HomeDirectoryPath))
+    val selectedDirectory = directoryChooser.showDialog(stage)
+    StorageHandler.exportSavedCoursesToPersonalDirectory(AppController.session, selectedDirectory.toString)
 
   @FXML
   def editButtonClicked(): Unit = ???
+
+  @FXML
+  def addCourseButtonClicked(): Unit =
+    sendEvent(AddCourse)
+
+  @FXML
+  def addQuizButtonClicked(): Unit =
+    sendEvent(AddQuiz)
 
   loadGUI(stage, this, "settings_menu.fxml")
 

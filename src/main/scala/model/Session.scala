@@ -1,7 +1,7 @@
 package model
 
 import model.stats.PlayerStats.PlayerStats
-import utils.Configuration.SavedCoursesFilePath
+import utils.Configuration.PlayerCoursesFilePath
 import utils.DefaultDataList.{defaultCourseList, defaultPlayerStats}
 import utils.parser.CourseJsonParser
 import utils.{DefaultDataList, FileHandler}

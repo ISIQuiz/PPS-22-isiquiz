@@ -4,7 +4,7 @@ import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
 import view.View
-import view.terminalUI.TerminalSettingsMenu
+import view.SettingsMenuView.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
@@ -21,8 +21,6 @@ object SettingsMenuController extends BackAction:
 class SettingsMenuController extends PageController :
 
   import SettingsMenuController.*
-
-  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)

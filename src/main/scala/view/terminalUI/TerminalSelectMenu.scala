@@ -5,9 +5,11 @@ import controller.SelectMenuController.*
 import controller.actions.{Action, ParameterlessAction}
 import model.{SavedCourse, Session}
 import view.View.TerminalView
-import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+import view.updates.{ViewUpdate}
 import view.SelectMenuView.*
 import scala.collection.mutable.{ListBuffer, Map}
+
+object TerminalSelectMenu
 
 /** Select menu terminal interface */
 class TerminalSelectMenu extends TerminalView:
