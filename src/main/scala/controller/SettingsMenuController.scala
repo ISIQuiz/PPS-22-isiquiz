@@ -16,6 +16,7 @@ object SettingsMenuController extends BackAction:
 
   case object AddCourse extends ParameterlessAction
   case object AddQuiz extends ParameterlessAction
+  case object EditCourse extends ParameterlessAction
 
 /** Defines the logic of the settings page */
 class SettingsMenuController extends PageController :
@@ -26,6 +27,7 @@ class SettingsMenuController extends PageController :
     case Back => AppController.handle(MainMenuAction)
     case AddCourse => AppController.handle(AddCourseMenuAction)
     case AddQuiz => AppController.handle(AddQuizMenuAction)
+    case EditCourse => AppController.handle(EditCourseMenuAction)
 
   override def nextIteration(): Unit =
     AppController.currentPage.pageView.updateUI(DefaultUpdate)

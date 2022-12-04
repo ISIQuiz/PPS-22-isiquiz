@@ -12,7 +12,7 @@ import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
 import scalafx.stage.Stage
 import utils.{TerminalInput, TerminalInputImpl}
-import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalMainMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
+import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalEditCourseMenu, TerminalMainMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
 import view.graphicUI.GraphicMainMenu.*
 import view.graphicUI.{GraphicAddCourseMenu, GraphicAddQuizMenu, GraphicCustomMenu, GraphicDefaultMenu, GraphicMainMenu, GraphicReviewMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu, GraphicStatisticsMenu}
 import view.updates.ViewUpdate
@@ -48,7 +48,7 @@ object View:
       case Terminal
       case ScalaFX
 
-    private val _currentGUIType: GUIType = GUIType.ScalaFX
+    private val _currentGUIType: GUIType = GUIType.Terminal
 
     def create[T](page: Action[T]): PageView = page match
       case MainMenuAction => _currentGUIType match
@@ -69,6 +69,9 @@ object View:
       case AddQuizMenuAction => _currentGUIType match
         case Terminal => TerminalAddQuizMenu()
         case ScalaFX => GraphicAddQuizMenu(_stage)
+      case EditCourseMenuAction => _currentGUIType match
+        case Terminal => TerminalEditCourseMenu()
+        case ScalaFX => GraphicDefaultMenu(_stage)
       case ReviewMenuAction => _currentGUIType match
         case Terminal => throw new IllegalArgumentException
         case ScalaFX => GraphicReviewMenu(_stage)
