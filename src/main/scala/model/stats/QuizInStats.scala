@@ -1,10 +1,12 @@
 package model.stats
 
+import java.util.UUID
+
 /** Object for quiz in player stats model */
 object QuizInStats:
 
   // Case class of quiz in stats
-  case class QuizInStats(totalSeen: Int, totalRightAnswers: Int, averageTimeAnswer: Double)
+  case class QuizInStats(quizId: UUID, totalSeen: Int, totalRightAnswers: Int, averageTimeAnswer: Double)
 
   /**
    * Create a new [[QuizInStats]]
@@ -13,9 +15,10 @@ object QuizInStats:
    * @param averageTimeAnswer average time taken by user to answer
    * @return a [[QuizInStats]]
    */
-  def apply(totalSeen: Int = 0,
+  def apply(quizId: UUID,
+            totalSeen: Int = 0,
             totalRightAnswers: Int = 0,
-            averageTimeAnswer: Double = 0) = QuizInStats(totalSeen, totalRightAnswers, averageTimeAnswer)
+            averageTimeAnswer: Double = 0) = QuizInStats(quizId, totalSeen, totalRightAnswers, averageTimeAnswer)
 
   /**
    * Change total seen in quiz in stats
@@ -24,7 +27,7 @@ object QuizInStats:
    * @return updated [[QuizInStats]]
    */
   def changeTotalSeen(quizInStats: QuizInStats, totalSeen: Int): QuizInStats = quizInStats match
-    case QuizInStats(_, totalRightAnswers, averageTimeAnswer) => QuizInStats(totalSeen, totalRightAnswers, averageTimeAnswer)
+    case QuizInStats(quizId, _, totalRightAnswers, averageTimeAnswer) => QuizInStats(quizId, totalSeen, totalRightAnswers, averageTimeAnswer)
 
   /**
    * Change total right answers in quiz in stats
@@ -33,7 +36,7 @@ object QuizInStats:
    * @return updated [[QuizInStats]]
    */
   def changeTotalRightAnswers(quizInStats: QuizInStats, totalRightAnswers: Int): QuizInStats = quizInStats match
-    case QuizInStats(totalSeen, _, averageTimeAnswer) => QuizInStats(totalSeen, totalRightAnswers, averageTimeAnswer)
+    case QuizInStats(quizId, totalSeen, _, averageTimeAnswer) => QuizInStats(quizId, totalSeen, totalRightAnswers, averageTimeAnswer)
 
   /**
    * Change average time answer in quiz in stats
@@ -42,4 +45,4 @@ object QuizInStats:
    * @return updated [[QuizInStats]]
    */
   def changeAverageTimeAnswer(quizInStats: QuizInStats, averageTimeAnswer: Double): QuizInStats = quizInStats match
-    case QuizInStats(totalSeen, totalRightAnswers, _) => QuizInStats(totalSeen, totalRightAnswers, averageTimeAnswer)
+    case QuizInStats(quizId, totalSeen, totalRightAnswers, _) => QuizInStats(quizId, totalSeen, totalRightAnswers, averageTimeAnswer)

@@ -6,13 +6,35 @@ import java.io.File
 object Configuration:
 
   /** Saved courses JSON file path */
-  val SavedCoursesFilePath: String = "sample_saved_courses.json"
+  val PlayerCoursesFileResource: String = "sample_saved_courses.json"
+  
+  /** File separator */
+  val FileSeparator: String = File.separator 
   
   /** File name of the player data */
-  val PlayerDataFileName: String = "player_data.json"
-  
+  val PlayerSessionFileName: String = "player_session.json"
+
+  /** File name of the player courses */
+  val PlayerCoursesFileName: String = "player_courses.json"
+
+  /** File name of the player stats */
+  val PlayerStatsFileName: String = "player_stats.json"
+
+  /** Directory name containing player data */
+  val PlayerDataDirectoryName: String = "ISIQuizData"
+
   /** Home directory path */
-  val HomeDirectoryPath: String = System.getProperty("user.home") + File.separator
+  val HomeDirectoryPath: String = System.getProperty("user.home")
 
   /** Current directory path */
-  val CurrentDirectoryPath: String = System.getProperty("user.dir") + File.separator
+  val CurrentDirectoryPath: String = System.getProperty("user.dir")
+
+
+  val SessionFilePath: String = CurrentDirectoryPath + FileSeparator + PlayerDataDirectoryName + FileSeparator + PlayerSessionFileName
+
+  val PlayerStatsFilePath: String = CurrentDirectoryPath + FileSeparator + PlayerDataDirectoryName + FileSeparator + PlayerStatsFileName
+
+  val PlayerCoursesFilePath: String = CurrentDirectoryPath + FileSeparator + PlayerDataDirectoryName + FileSeparator + PlayerCoursesFileName
+
+  val PlayerDataDirectoryPath: String = CurrentDirectoryPath + FileSeparator + PlayerDataDirectoryName
+

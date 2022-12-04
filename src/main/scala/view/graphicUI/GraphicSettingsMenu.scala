@@ -1,13 +1,17 @@
 package view.graphicUI
 
+import controller.AppController
 import controller.SettingsMenuController.*
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
-import utils.GUILoader
+import utils.{GUILoader, StorageHandler}
 import utils.GUILoader.loadGUI
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label, TextField}
-import javafx.stage.Stage
+import javafx.stage.{DirectoryChooser, Stage}
+import utils.Configuration.HomeDirectoryPath
+
+import java.io.File
 
 object GraphicSettingsMenu
 
@@ -46,7 +50,12 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
   def importButtonClicked(): Unit = ???
 
   @FXML
-  def exportButtonClicked(): Unit = ???
+  def exportButtonClicked(): Unit =
+    val directoryChooser: DirectoryChooser = DirectoryChooser()
+    directoryChooser.setTitle("Esporta i corsi")
+    directoryChooser.setInitialDirectory(File(HomeDirectoryPath))
+    val selectedDirectory = directoryChooser.showDialog(stage)
+    StorageHandler.exportSavedCoursesToPersonalDirectory(AppController.session, selectedDirectory.toString)
 
   @FXML
   def editButtonClicked(): Unit = ???
