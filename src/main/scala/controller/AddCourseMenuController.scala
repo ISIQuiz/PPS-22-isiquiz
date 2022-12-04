@@ -27,9 +27,10 @@ class AddCourseMenuController extends PageController:
 
   override def nextIteration(): Unit =
     AppController.currentPage.pageView.updateUI(DefaultUpdate)
-    AppController.currentPage.pageView.updateUI(AskCoursePrint)
+    AppController.currentPage.pageView.updateUI(AskCourseUpdate)
 
   def addCourse(actionParameter:Option[SavedCourse]):Unit =
     val newListCourses = AppController.session.savedCourses.appended(actionParameter.get)
     AppController.changeSavedCourses(newListCourses)
-    AppController.currentPage.pageView.updateUI(CoursePrint(actionParameter))
+    AppController.currentPage.pageView.updateUI(CoursePrintUpdate(actionParameter))
+    AppController.currentPage.pageView.updateUI(CourseAddedUpdate)
