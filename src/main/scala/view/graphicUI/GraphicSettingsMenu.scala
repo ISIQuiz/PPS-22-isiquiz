@@ -32,15 +32,15 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
 
   @FXML
   var exportButton: Button = _
-
-  @FXML
-  var editButton: Button = _
   
   @FXML
   var addCourseButton: Button = _
   
   @FXML
   var addQuizButton: Button = _
+  
+  @FXML
+  var editCourseButton: Button = _
 
   @FXML
   def backButtonClicked(): Unit =
@@ -58,15 +58,17 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
     StorageHandler.exportSavedCoursesToPersonalDirectory(AppController.session, selectedDirectory.toString)
 
   @FXML
-  def editButtonClicked(): Unit = ???
-
-  @FXML
   def addCourseButtonClicked(): Unit =
     sendEvent(AddCourse)
 
   @FXML
   def addQuizButtonClicked(): Unit =
     sendEvent(AddQuiz)
+
+
+  @FXML
+  def editCourseButtonClicked(): Unit =
+    sendEvent(EditCourse)
 
   loadGUI(stage, this, "settings_menu.fxml")
 
