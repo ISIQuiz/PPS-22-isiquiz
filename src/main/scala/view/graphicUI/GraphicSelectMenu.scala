@@ -46,37 +46,48 @@ class GraphicSelectMenu(stage: Stage) extends GraphicView:
 
   @FXML
   def standardGameButtonClicked(): Unit =
-    sendEvent(Start)
+    if isCourseSelected then sendEvent(Start)
 
   @FXML
   def reviewGameButtonClicked(): Unit = ???
 
   @FXML
   def customGameButtonClicked(): Unit =
-    sendEvent(Custom)
+    if isCourseSelected then sendEvent(Custom)
 
+  var checkBoxList: ListBuffer[CheckBox] = ListBuffer()
   loadGUI(stage, this, "select_menu.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
-    case DefaultUpdate => { }
+    case DefaultUpdate =>
+      standardGameButton.setDisable(!isCourseSelected)
+      customGameButton.setDisable(!isCourseSelected)
     case CourseUpdate(updateParameter) =>
       if update.updateParameter.isDefined then
         val savedCourses: List[(SavedCourse, Boolean)] = updateParameter.get.asInstanceOf[List[(SavedCourse, Boolean)]]
         case class CourseToPrint(savedCourse: SavedCourse, isSelected: Boolean)
         var coursesToPrint: ListBuffer[CourseToPrint] = ListBuffer()
 
+        standardGameButton.setDisable(!isCourseSelected)
+        customGameButton.setDisable(!isCourseSelected)
+
         savedCourses.foreach(course =>
           coursesToPrint += CourseToPrint(course._1, course._2)
         )
         Platform.runLater { () =>
           coursesVBox.getChildren.clear()
+          checkBoxList.clear()
           coursesToPrint.foreach(courseToPrint =>
             val checkbox: CheckBox = new CheckBox(s"${courseToPrint.savedCourse.courseId.courseName} (${courseToPrint.savedCourse.quizList.size} quiz)");
             checkbox.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
               sendEvent(Selection(Option(coursesVBox.getChildren.indexOf(checkbox))))
             );
             checkbox.setSelected(courseToPrint.isSelected);
+            checkBoxList += checkbox;
             coursesVBox.getChildren.add(checkbox)
           )
-
         }
+
+  /* function to check if at least one course is selected before starting a game */
+  private def isCourseSelected: Boolean =
+    checkBoxList.exists(checkBox => checkBox.isSelected)
