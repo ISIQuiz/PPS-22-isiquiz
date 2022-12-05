@@ -52,4 +52,4 @@ object AppController extends Controller:
 
   def startApp(): Unit =
     val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
-    scheduler.scheduleAtFixedRate(() => currentPage.pageController.nextIteration(), 0, 100, TimeUnit.MILLISECONDS)
+    scheduler.scheduleAtFixedRate(() => currentPage.pageController.nextIteration(), 0, 1000/10, TimeUnit.MILLISECONDS)

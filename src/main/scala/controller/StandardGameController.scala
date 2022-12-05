@@ -55,17 +55,11 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
     else
       AppController.currentPage.pageView.updateUI(NewQuizUpdate(Option(gameStage)))
       if !timer.isStopped then AppController.currentPage.pageView.updateUI(TimerUpdate(Option(timer)))
-//    timer.startTimer()
-//    timer.stopTimer()
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
     timer.stopTimer()
     if actionParameter.isDefined then
       val selectedAnswerIndex: Int = actionParameter.get.asInstanceOf[Int]
-      if gameStage.quizInGame.answers(selectedAnswerIndex).isCorrect then
-        println("Risposta GIUSTA!")
-      else
-        println("Risposta SBAGLIATA!")
       AppController.currentPage.pageView.updateUI(AnswerFeedbackUpdate(Option((selectedAnswerIndex, gameStage.quizInGame.answers(selectedAnswerIndex).isCorrect))))
 
   override def nextQuiz(): QuizInGame =
