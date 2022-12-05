@@ -5,14 +5,14 @@ import controller.StandardGameController.{Back, NextQuiz, SelectAnswer}
 import javafx.application.Platform
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
-import utils.GUILoader
+import utils.{GUILoader, Timer}
 import utils.GUILoader.loadGUI
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label, ProgressBar}
 import javafx.stage.Stage
 import model.GameStage
 import model.settings.StandardGameSettings
-import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate, TimeExpiredUpdate}
+import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate, TimeExpiredUpdate, TimerUpdate}
 
 object GraphicStandardGameMenu
 
@@ -106,6 +106,13 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
         case 1 => if feedback._2 then secondAnswerButton.getStyleClass.add("correct-answer") else secondAnswerButton.getStyleClass.add("wrong-answer")
         case 2 => if feedback._2 then thirdAnswerButton.getStyleClass.add("correct-answer") else thirdAnswerButton.getStyleClass.add("wrong-answer")
         case 3 => if feedback._2 then fourthAnswerButton.getStyleClass.add("correct-answer") else fourthAnswerButton.getStyleClass.add("wrong-answer")
+    case TimerUpdate(updateParameter) =>
+      val timer: Timer = updateParameter.get.asInstanceOf[Timer]
+      Platform.runLater(() => {
+        timeRemainingLabel.setText(s"${timer.getTime().toInt}")
+        timeProgressBar.setProgress(timer.getCompletionPercentage()/100)
+        println(s"${timer.getCompletionPercentage()}")
+      })
     case TimeExpiredUpdate =>
       disableButton(answerButtons)
 

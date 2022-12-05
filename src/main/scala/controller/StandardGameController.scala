@@ -5,7 +5,7 @@ import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
 import view.View
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate, TimeExpiredUpdate}
+import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate, TimeExpiredUpdate, TimerUpdate}
 import model.Answer.Answer
 import model.GameStage
 import model.{QuizInGame, SavedCourse}
@@ -50,6 +50,7 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
   override def nextIteration(): Unit =
     // TODO: Improve update sending to view page
     AppController.currentPage.pageView.updateUI(DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(TimerUpdate(Option(timer)))
     if timer.isExpired() then
       AppController.currentPage.pageView.updateUI(TimeExpiredUpdate)
     else
