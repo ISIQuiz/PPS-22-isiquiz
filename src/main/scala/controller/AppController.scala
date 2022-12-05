@@ -43,7 +43,7 @@ object AppController extends Controller:
     case SelectMenuAction => currentPage_(new SelectMenuController, ViewFactory.create(SelectMenuAction))
     case StatisticsMenuAction => currentPage_(new StatisticsMenuController, ViewFactory.create(StatisticsMenuAction))
     case SettingsMenuAction => currentPage_(new SettingsMenuController, ViewFactory.create(SettingsMenuAction))
-    case StandardGameAction(actionParameter) => currentPage_(new StandardGameController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(StandardGameAction(Option.empty)))
+    case StandardGameAction(actionParameter) => currentPage_(StandardGameController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(StandardGameAction(Option.empty)))
     case AddCourseMenuAction => currentPage_(new AddCourseMenuController, ViewFactory.create(AddCourseMenuAction))
     case AddQuizMenuAction => currentPage_(new AddQuizMenuController, ViewFactory.create(AddQuizMenuAction))
     case EditCourseMenuAction => currentPage_(new EditCourseMenuController, ViewFactory.create(EditCourseMenuAction))
@@ -54,4 +54,4 @@ object AppController extends Controller:
 
   def startApp(): Unit =
     val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
-    scheduler.scheduleAtFixedRate(() => currentPage.pageController.nextIteration(), 0, 1000, TimeUnit.MILLISECONDS)
+    scheduler.scheduleAtFixedRate(() => currentPage.pageController.nextIteration(), 0, 1000/10, TimeUnit.MILLISECONDS)

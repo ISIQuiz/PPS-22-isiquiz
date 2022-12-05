@@ -1,35 +1,55 @@
 package utils
 
-import CancellableFuture.*
-import controller.AppController
-import controller.StandardGameController.TimeExpired
-
-import java.util.concurrent.{CountDownLatch, TimeUnit}
-import scala.concurrent.{Future, Promise}
-import concurrent.ExecutionContext.Implicits.global
-
 trait Timer:
 
-  var cancellable: (Future[Unit], () => Boolean)
+  val maxTime: Long
+
   def startTimer(): Unit
   def stopTimer(): Unit
+  def getTime: Double
+  def getRemainingTime: Double
+  def getCompletionPercentage: Double
+  def isExpired: Boolean
+  def isStopped: Boolean
 
-case class TimerImpl(var time: Long) extends Timer:
+object Timer:
 
-  var cancellable: (Future[Unit], () => Boolean) = _
+  def apply(maxTime: Long): Timer = new TimerImpl(maxTime * 1000)
 
-  override def startTimer(): Unit =
-    cancellable = interruptableFuture[Unit] { () =>
-      val latch = new CountDownLatch(1)
-      latch.await(time, TimeUnit.SECONDS)
-      AppController.currentPage.pageController.handle(TimeExpired)
-    }
+  class TimerImpl(val maxTime: Long) extends Timer:
 
-    cancellable._1.onComplete( { case _ => println("timer completed") } )
+    var initialTime: Long = _
 
-  override def stopTimer(): Unit =
-    cancellable._2.apply()
+    var stopTime: Long = _
 
+    def currentTime(): Long = System.currentTimeMillis()
 
+    override def startTimer(): Unit =
+      stopTime = 0
+      initialTime = currentTime()
+
+    override def stopTimer(): Unit = stopTime = currentTime()
+
+    override def getTime: Double = millisToSeconds(currentTime() - initialTime)
+
+    override def getRemainingTime: Double = millisToSeconds(maxTime) - getTime
+
+    override def getCompletionPercentage: Double =
+      val percentage: Double = (currentTime() - initialTime) / maxTime.toDouble
+      percentage match
+        case n if n < 100 && n >= 0 => n
+        case n if n >= 100 => 100
+        case _ => throw new IllegalArgumentException()
+
+    override def isExpired: Boolean = currentTime() - initialTime match
+      case n if n >= maxTime => true
+      case n if n < maxTime => false
+      case _ => throw new IllegalArgumentException()
+
+    override def isStopped: Boolean = stopTime != 0
+
+    override def toString: String = s"Current timer: ${this.getTime} / ${this.maxTime/1000}"
+
+    def millisToSeconds(time: Double) = time / 1000
 
 
