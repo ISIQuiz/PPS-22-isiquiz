@@ -45,3 +45,4 @@ class EditCourseMenuController extends PageController:
     AppController.changeSavedCourses(newListCourses)
     AppController.currentPage.pageView.updateUI(CoursePrintUpdate(Option(editedSavedCourse)))
     AppController.currentPage.pageView.updateUI(CourseEditedUpdate)
+    courseSelected = None
