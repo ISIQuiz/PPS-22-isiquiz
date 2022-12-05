@@ -47,4 +47,5 @@ class AddQuizMenuController extends PageController :
     AppController.changeSavedCourses(newListCourses)
     AppController.currentPage.pageView.updateUI(QuizPrintUpdate(quizToAdd))
     AppController.currentPage.pageView.updateUI(QuizAddedUpdate)
+    courseSelected = None
 

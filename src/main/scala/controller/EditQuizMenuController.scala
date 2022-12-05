@@ -32,7 +32,9 @@ class EditQuizMenuController extends PageController:
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(SettingsMenuAction)
-    case SelectCourseAction(actionParameter) => courseSelected = actionParameter
+    case SelectCourseAction(actionParameter) =>
+      courseSelected = actionParameter
+      quizSelected = None
     case SelectQuizAction(actionParameter) => quizSelected = actionParameter
     case EditQuizAction(actionParameter) => editQuiz(actionParameter)
 
@@ -55,3 +57,5 @@ class EditQuizMenuController extends PageController:
     AppController.changeSavedCourses(newListCourses)
     AppController.currentPage.pageView.updateUI(QuizPrintUpdate(quizEdited))
     AppController.currentPage.pageView.updateUI(QuizEditedUpdate)
+    courseSelected = None
+    quizSelected = None

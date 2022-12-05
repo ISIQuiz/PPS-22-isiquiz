@@ -108,7 +108,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
 
 
   private def checkInputs: Boolean =
-    questionTextField.getText.nonEmpty
+    questionTextField.getText.nonEmpty && toggleGroup.getToggles.removeIf(_.isSelected)
 
 
   private def addAnswerGUI(): Unit =

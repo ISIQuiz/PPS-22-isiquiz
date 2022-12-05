@@ -92,4 +92,4 @@ class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
     case _ => {}
 
   private def checkInputs: Boolean =
-    courseNameTextField.getText.nonEmpty
+    courseNameTextField.getText.nonEmpty && toggleGroup.getToggles.removeIf(_.isSelected)
