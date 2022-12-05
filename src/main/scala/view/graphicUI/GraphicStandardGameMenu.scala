@@ -109,9 +109,8 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
     case TimerUpdate(updateParameter) =>
       val timer: Timer = updateParameter.get.asInstanceOf[Timer]
       Platform.runLater(() => {
-        timeRemainingLabel.setText(s"${timer.getTime().toInt}")
-        timeProgressBar.setProgress(timer.getCompletionPercentage()/100)
-        println(s"${timer.getCompletionPercentage()}")
+        timeRemainingLabel.setText(s"${timer.getRemainingTime.toInt}")
+        timeProgressBar.setProgress(timer.getCompletionPercentage)
       })
     case TimeExpiredUpdate =>
       disableButton(answerButtons)
