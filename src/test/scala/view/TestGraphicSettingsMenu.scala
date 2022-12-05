@@ -32,4 +32,4 @@ class TestGraphicSettingsMenu extends ViewTest with ButtonTest:
     testButton(graphicSettingsMenu.exportButton, "Esporta domande")(robot)
 
   @Test def testEditButton(robot: FxRobot): Unit =
-    testButton(graphicSettingsMenu.editButton, "Modifica domande")(robot)
+    testButton(graphicSettingsMenu.editCourseButton, "Modifica corso")(robot)
