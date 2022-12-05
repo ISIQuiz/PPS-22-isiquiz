@@ -23,7 +23,7 @@ class TestGraphicStatisticsMenu extends ViewTest with ButtonTest with LabelTest:
     graphicStatisticsMenu = new GraphicStatisticsMenu(stage)
 
   @Test def testBackButton(robot: FxRobot): Unit =
-    testButton(graphicStatisticsMenu.backButton, "back")(robot)
+    testButton(graphicStatisticsMenu.backButton, "Indietro")(robot)
 
   @Test def testTotalScoreLabel(robot: FxRobot): Unit =
     testLabel(graphicStatisticsMenu.totalScoreLabel)(robot)

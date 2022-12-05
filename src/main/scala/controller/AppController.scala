@@ -33,6 +33,7 @@ object AppController extends Controller:
   case object AddCourseMenuAction extends ParameterlessAction
   case object AddQuizMenuAction extends ParameterlessAction
   case object EditCourseMenuAction extends ParameterlessAction
+  case object EditQuizMenuAction extends ParameterlessAction
   case object ReviewMenuAction extends ParameterlessAction
   case class CustomMenuAction[T](override val actionParameter: Option[T]) extends Action(actionParameter)
   case class StandardGameAction[T](override val actionParameter: Option[T]) extends Action(actionParameter)
@@ -46,6 +47,7 @@ object AppController extends Controller:
     case AddCourseMenuAction => currentPage_(new AddCourseMenuController, ViewFactory.create(AddCourseMenuAction))
     case AddQuizMenuAction => currentPage_(new AddQuizMenuController, ViewFactory.create(AddQuizMenuAction))
     case EditCourseMenuAction => currentPage_(new EditCourseMenuController, ViewFactory.create(EditCourseMenuAction))
+    case EditQuizMenuAction => currentPage_(new EditQuizMenuController, ViewFactory.create(EditQuizMenuAction))
     case CustomMenuAction(actionParameter) => currentPage_(new CustomMenuController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(CustomMenuAction(Option.empty)))
     case action: Action[T] => currentPage.pageController.handle(action)
     case null => throw new IllegalArgumentException
