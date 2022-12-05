@@ -5,7 +5,9 @@ import model.{Course, CourseIdentifier}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
-class CourseInStatsTest extends AnyFunSuite with Matchers :
+import java.util.UUID
+
+class CourseInStatsTest extends AnyFunSuite with Matchers:
 
   val courseInStats =
     CourseInStats(
@@ -25,8 +27,8 @@ class CourseInStatsTest extends AnyFunSuite with Matchers :
 
   test("Test change quiz in stats list") {
     val quizInStatsList = List(
-      QuizInStats(1,2,3),
-      QuizInStats(4,5,6)
+      QuizInStats(UUID.randomUUID(), 1, 2, 3),
+      QuizInStats(UUID.randomUUID(), 4, 5, 6)
     )
 
     val courseInStatsChanged = CourseInStats.changeQuizInStatsList(courseInStats, quizInStatsList)

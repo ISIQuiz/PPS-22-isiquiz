@@ -7,7 +7,7 @@ import model.GameStage
 import model.settings.GameSettings
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import view.View
-import view.terminalUI.TerminalCustomMenu
+import view.CustomMenuView.*
 
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
@@ -31,4 +31,4 @@ class CustomMenuController(var gameStage: GameStage) extends PageController :
       AppController.handle(AppController.StandardGameAction(Option(gameStage)))
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(TerminalCustomMenu.DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(DefaultUpdate)

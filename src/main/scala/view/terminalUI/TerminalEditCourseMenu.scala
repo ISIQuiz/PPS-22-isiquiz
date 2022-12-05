@@ -1,31 +1,40 @@
 package view.terminalUI
 
-import controller.AddCourseMenuController
-import controller.AddCourseMenuController.*
-import view.AddCourseMenuView.*
+import controller.EditCourseMenuController
+import controller.EditCourseMenuController.*
 import controller.actions.Action
 import model.SavedCourse
 import model.SavedCourse.SavedCourseImpl
+import view.EditCourseMenuView.*
 import view.View.*
-import view.updates.{ViewUpdate}
+import view.updates.ViewUpdate
 
 import scala.collection.mutable.Map
 import scala.io.StdIn.readLine
 
-object TerminalAddCourseMenu
+object TerminalEditCourseMenu
 
-/** Add course menu terminal interface */
-class TerminalAddCourseMenu extends TerminalView:
+/** Edit course menu terminal interface */
+class TerminalEditCourseMenu extends TerminalView:
 
+  var courseList: List[SavedCourse] = Nil
+  
   override val actionsMap: Map[String, Action[Any]] = Map(
     "1" -> Back
   )
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case DefaultUpdate =>
-      println("Menu aggiunta corsi:\n1) Menu principale")
-      println("Aggiunta corso:")
+      println("Menu modifica corso:\n1) Menu principale")
+      println("Modifica Corso")
+    case CourseUpdate(updateParameter) =>
+      courseList = updateParameter.get
     case AskCourseUpdate =>
+      println("Seleziona il corso da modificare")
+      courseList.map(course => course.courseId.courseName).zipWithIndex.foreach { case (e, i) => println(i + "] " + e) }
+      val courseIndex = readLine.toInt
+      sendEvent(SelectCourseAction(courseList.lift(courseIndex)))
+    case AskCourseEditUpdate =>
       println("Inserisci nome corso:")
       val courseNameIns = readLine
       println("Inserisci nome corso di laurea:")
@@ -48,11 +57,11 @@ class TerminalAddCourseMenu extends TerminalView:
         description = descriptionIns,
         quizList = Nil
       )
-      import controller.AddCourseMenuController.AddCourseAction
-      sendEvent(AddCourseAction(Option(course)))
+      import controller.EditCourseMenuController.EditCourseAction
+      sendEvent(EditCourseAction(Option(course)))
     case CoursePrintUpdate(course) =>
       import model.SavedCourse
       println(course.get)
-    case CourseAddedUpdate =>
-      println("Corso Aggiunto!")
+    case CourseEditedUpdate =>
+      println("Corso Modificato!")
     case _ => {}

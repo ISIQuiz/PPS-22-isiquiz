@@ -3,20 +3,23 @@ package model
 import model.Answer.*
 import model.Quiz.*
 
+import java.util.UUID
+
 /**
  * Module quiz contains all the definitions of a single question and answers
  * and the functions to operate with it
  */
 object Quiz:
-  
+
   /**
    *  A quiz with quesiton and answers
+   * @param quizId
    * @param question
    * @param answerList
    * @param maxScore
    * @param imagePath
    */
-  case class Quiz(question: String, answerList: List[Answer], maxScore:Int, imagePath:Option[String]=None) {
+  case class Quiz(quizId: UUID = UUID.randomUUID(), question: String, answerList: List[Answer], maxScore:Int, imagePath:Option[String]=None) {
     // Overriding toString method to print directly requires parenthesis
     override def toString(): String = printQuiz(this)
   }
@@ -34,7 +37,7 @@ object Quiz:
    * @param maxScore  a new quiz max score
    * @return Quiz
    */
-  def changeMaxScore(quiz: Quiz, maxScore: Int): Quiz = Quiz(quiz.question, quiz.answerList, maxScore, quiz.imagePath)
+  def changeMaxScore(quiz: Quiz, maxScore: Int): Quiz = Quiz(quiz.quizId, quiz.question, quiz.answerList, maxScore, quiz.imagePath)
 
   /**
    * Change image path of a quiz
@@ -43,7 +46,7 @@ object Quiz:
    * @param imagePath a new quiz image path (optional)
    * @returna Quiz
    */
-  def changeImagePath(quiz: Quiz, imagePath: Option[String]): Quiz = Quiz(quiz.question, quiz.answerList, quiz.maxScore, imagePath)
+  def changeImagePath(quiz: Quiz, imagePath: Option[String]): Quiz = Quiz(quiz.quizId, quiz.question, quiz.answerList, quiz.maxScore, imagePath)
 
   /**
    *  Gets the question of a quiz
@@ -51,7 +54,7 @@ object Quiz:
    * @return
    */
   def getQuestion(quiz:Quiz):String = quiz match
-    case Quiz(q,_,_,_) => q
+    case Quiz(_,q,_,_,_) => q
 
   /**
    * Change question of a quiz
@@ -60,7 +63,7 @@ object Quiz:
    * @param text a new quiz text question
    * @return Quiz
    */
-  def changeText(quiz: Quiz, text: String): Quiz = Quiz(text, quiz.answerList, quiz.maxScore, quiz.imagePath)
+  def changeText(quiz: Quiz, text: String): Quiz = Quiz(quiz.quizId, text, quiz.answerList, quiz.maxScore, quiz.imagePath)
 
   /**
    * Change the list of answers
@@ -69,4 +72,4 @@ object Quiz:
    * @param answerList a new answer list
    * @return Quiz
    */
-  def changeAnswerList(quiz: Quiz, answerList: List[Answer]): Quiz = Quiz(quiz.question, answerList, quiz.maxScore, quiz.imagePath)
+  def changeAnswerList(quiz: Quiz, answerList: List[Answer]): Quiz = Quiz(quiz.quizId, quiz.question, answerList, quiz.maxScore, quiz.imagePath)

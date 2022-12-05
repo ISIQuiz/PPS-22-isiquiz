@@ -4,7 +4,7 @@ import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
 import model.SavedCourse
-import view.terminalUI.{TerminalAddCourseMenu, TerminalStandardGameMenu}
+import view.AddCourseMenuView.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
 import scala.collection.mutable.ListBuffer
@@ -21,18 +21,16 @@ class AddCourseMenuController extends PageController:
 
   import AddCourseMenuController.*
 
-  var actionsBuffer: ListBuffer[Action[Any]] = ListBuffer()
-
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(SettingsMenuAction)
     case AddCourseAction(actionParameter) => addCourse(actionParameter)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(TerminalAddCourseMenu.DefaultUpdate)
-    AppController.currentPage.pageView.updateUI(TerminalAddCourseMenu.AskCoursePrint)
+    AppController.currentPage.pageView.updateUI(DefaultUpdate)
+    AppController.currentPage.pageView.updateUI(AskCourseUpdate)
 
   def addCourse(actionParameter:Option[SavedCourse]):Unit =
     val newListCourses = AppController.session.savedCourses.appended(actionParameter.get)
     AppController.changeSavedCourses(newListCourses)
-    AppController.currentPage.pageView.updateUI(TerminalAddCourseMenu.CoursePrint(actionParameter))
-    AppController.handle(SettingsMenuAction)
+    AppController.currentPage.pageView.updateUI(CoursePrintUpdate(actionParameter))
+    AppController.currentPage.pageView.updateUI(CourseAddedUpdate)
