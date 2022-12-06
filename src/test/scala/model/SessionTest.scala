@@ -2,21 +2,22 @@ package model
 
 import model.Answer.*
 import model.stats.PlayerStats
+import model.stats.PlayerStats.initStats
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import utils.DefaultDataList
-import utils.DefaultDataList.{defaultCourseList, defaultPlayerStats}
+import utils.DefaultDataList.defaultCourseList
 
 
 class SessionTest extends AnyFunSuite with Matchers:
 
-  val session = Session(defaultCourseList, defaultPlayerStats)
+  val session = Session(defaultCourseList, initStats)
 
   println(session.toString)
 
   test("New session test") {
     session.savedCourses shouldEqual defaultCourseList
-    session.playerStats shouldEqual defaultPlayerStats
+    session.playerStats shouldEqual initStats
   }
 
   test("Check if the course identifier of the first element of course list in Session changed") {

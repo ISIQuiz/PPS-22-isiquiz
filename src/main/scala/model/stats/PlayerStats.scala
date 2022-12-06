@@ -2,7 +2,6 @@ package model.stats
 
 import model.{Course, SavedCourse, Session, stats}
 import model.stats.CourseInStats.CourseInStats
-import utils.DefaultDataList.defaultPlayerStats
 
 import scala.util.Try
 
@@ -28,12 +27,12 @@ object PlayerStats:
    * @param courseInStatsList      the list of course in stats
    * @return a [[PlayerStats]]
    */
-  def apply(totalScore: Int = defaultPlayerStats.totalScore,
-            totalAnsweredQuestions: Int = defaultPlayerStats.totalAnsweredQuestions,
-            totalCorrectAnswers: Int = defaultPlayerStats.totalCorrectAnswers,
-            totalAnswerPrecision: Int = defaultPlayerStats.totalAnswerPrecision,
-            totalAverageTimeAnswer: Double = defaultPlayerStats.totalAverageTimeAnswer,
-            courseInStatsList: List[CourseInStats] = defaultPlayerStats.courseInStatsList) =
+  def apply(totalScore: Int = initStats.totalScore,
+            totalAnsweredQuestions: Int = initStats.totalAnsweredQuestions,
+            totalCorrectAnswers: Int = initStats.totalCorrectAnswers,
+            totalAnswerPrecision: Int = initStats.totalAnswerPrecision,
+            totalAverageTimeAnswer: Double = initStats.totalAverageTimeAnswer,
+            courseInStatsList: List[CourseInStats] = initStats.courseInStatsList) =
     PlayerStats(totalScore,
       totalAnsweredQuestions,
       totalCorrectAnswers,
@@ -117,15 +116,15 @@ object PlayerStats:
    * @return updated [[Session]]
    */
   def updatePlayerStats(playerStats: PlayerStats): PlayerStats = playerStats match
-      case PlayerStats(totalScore, _, _, _, _, courseInStatsList) =>
-        PlayerStats(
-          totalScore,
-          calculateTotalCorrectAnswer(playerStats),
-          calculateTotalAnsweredQuestions(playerStats),
-          calculateTotalAnswerPrecision(playerStats),
-          calculateTotalAverageTimeAnswer(playerStats),
-          courseInStatsList
-        )
+    case PlayerStats(totalScore, _, _, _, _, courseInStatsList) =>
+      PlayerStats(
+        totalScore,
+        calculateTotalCorrectAnswer(playerStats),
+        calculateTotalAnsweredQuestions(playerStats),
+        calculateTotalAnswerPrecision(playerStats),
+        calculateTotalAverageTimeAnswer(playerStats),
+        courseInStatsList
+      )
 
 
   /**
@@ -176,12 +175,14 @@ object PlayerStats:
       ).sum / courseInStats.quizInStatsList.size
     ).sum / playerStats.courseInStatsList.size
 
-/*  /**
-   * Init player stats with default values based on passed SavedCourse list
+  /**
+   * Init player stats with default values
    *
-   * @param savedCourseList
    * @return a [[PlayerStats]]
    */
-  def defaultPlayerStatsFromSavedCourseList: PlayerStats =
+  def initStats: PlayerStats =
     PlayerStats(0, 0, 0, 0, 0, List())
-*/
+
+// TODO def removeUnusedQuizInStats(session: Session): PlayerStats
+
+// TODO def updateQuizInStats(session, course, quiz): PlayerStats

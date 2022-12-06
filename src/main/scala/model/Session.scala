@@ -1,8 +1,8 @@
 package model
 
-import model.stats.PlayerStats.PlayerStats
+import model.stats.PlayerStats.{PlayerStats, initStats}
 import utils.Configuration.PlayerCoursesFilePath
-import utils.DefaultDataList.{defaultCourseList, defaultPlayerStats}
+import utils.DefaultDataList.defaultCourseList
 import utils.parser.CourseJsonParser
 import utils.{DefaultDataList, FileHandler}
 
@@ -30,7 +30,7 @@ object Session:
    * @param savedCourses the list of saved course, if empty it uses a sample list
    * @return Session
    */
-  def apply(savedCourses: List[SavedCourse] = defaultCourseList, playerStats: PlayerStats = defaultPlayerStats): Session = SessionImpl(savedCourses, playerStats)
+  def apply(savedCourses: List[SavedCourse] = defaultCourseList, playerStats: PlayerStats = initStats): Session = SessionImpl(savedCourses, playerStats)
 
   /**
    * Case class for session model

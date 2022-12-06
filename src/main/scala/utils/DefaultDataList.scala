@@ -5,12 +5,12 @@ import model.stats.PlayerStats
 import model.Quiz.Quiz
 import model.stats.CourseInStats
 import model.stats.QuizInStats
-import model.{Course, CourseIdentifier, SavedCourse}
-
+import model.{Course, CourseIdentifier, SavedCourse, Session}
 import java.util.UUID
 
 object DefaultDataList:
 
+  // Sample default list of course
   val defaultCourseList = List(
     // Corso: Paradigmi di Programmazione e Sviluppo
     SavedCourse(
@@ -23,6 +23,7 @@ object DefaultDataList:
       quizList = List(
         // Domanda Somma
         Quiz(
+          quizId = UUID.fromString("00000000-0000-0000-0000-000000000001"),
           question = "Domanda somma: 2+2 = ?",
           maxScore = 5,
           imagePath = Option.empty,
@@ -35,6 +36,7 @@ object DefaultDataList:
         ),
         // Domanda sottrazione
         Quiz(
+          quizId = UUID.fromString("00000000-0000-0000-0000-000000000002"),
           question = "Domanda sottrazione: 2-2 = ?",
           maxScore = 6,
           imagePath = Option.empty,
@@ -47,6 +49,7 @@ object DefaultDataList:
         ),
         // Domanda moltiplicazione
         Quiz(
+          quizId = UUID.fromString("00000000-0000-0000-0000-000000000003"),
           question = "Domanda moltiplicazione: 2x2 = ?",
           maxScore = 14,
           imagePath = Option.empty,
@@ -59,6 +62,7 @@ object DefaultDataList:
         ),
         // Domanda divisione
         Quiz(
+          quizId = UUID.fromString("00000000-0000-0000-0000-000000000004"),
           question = "Domanda divisione: 2:2 = ?",
           maxScore = 12,
           imagePath = Option.empty,
@@ -82,6 +86,7 @@ object DefaultDataList:
       quizList = List(
         // Domanda Somma
         Quiz(
+          quizId = UUID.fromString("00000000-0000-0000-0000-000000000005"),
           question = "Domanda somma: 3+3 = ?",
           maxScore = 7,
           imagePath = Option.empty,
@@ -94,6 +99,7 @@ object DefaultDataList:
         ),
         // Domanda sottrazione
         Quiz(
+          quizId = UUID.fromString("00000000-0000-0000-0000-000000000006"),
           question = "Domanda sottrazione: 3-3 = ?",
           maxScore = 4,
           imagePath = Option.empty,
@@ -106,6 +112,7 @@ object DefaultDataList:
         ),
         // Domanda moltiplicazione
         Quiz(
+          quizId = UUID.fromString("00000000-0000-0000-0000-000000000007"),
           question = "Domanda moltiplicazione: 3x3 = ?",
           maxScore = 12,
           imagePath = Option.empty,
@@ -118,6 +125,7 @@ object DefaultDataList:
         ),
         // Domanda divisione
         Quiz(
+          quizId = UUID.fromString("00000000-0000-0000-0000-000000000008"),
           question = "Domanda divisione: 3:3 = ?",
           maxScore = 13,
           imagePath = Option.empty,
@@ -190,21 +198,6 @@ object DefaultDataList:
       )
     )*/
   )
-
-  val defaultPlayerStats =
-    PlayerStats(0 ,0, 0, 0, 0.0,
-      defaultCourseList.map(
-        savedCourse => CourseInStats(
-          Course(
-            savedCourse.courseId,
-          ),
-          savedCourse.quizList.map(
-            quiz => QuizInStats(quiz.quizId, 0, 0, 0)
-          )
-        )
-      )
-    )
-
 
  /* def defaultPlayerStatsTest =
     PlayerStats(
