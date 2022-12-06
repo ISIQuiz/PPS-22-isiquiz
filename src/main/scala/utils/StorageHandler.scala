@@ -8,7 +8,6 @@ import model.stats.PlayerStats.{PlayerStats, initStats}
 import model.{Course, SavedCourse, Session}
 import play.api.libs.json.JsObject
 import utils.Configuration.*
-import utils.DefaultDataList.defaultPlayerStats
 import utils.StorageHandler.loadDataFromFile
 import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
 
