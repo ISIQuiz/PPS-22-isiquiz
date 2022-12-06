@@ -5,8 +5,8 @@ import model.stats.PlayerStats
 import model.stats.PlayerStats.initStats
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import utils.DefaultDataList
-import utils.DefaultDataList.defaultCourseList
+import utils.storage.DefaultDataList.defaultCourseList
+import utils.storage.DefaultDataList
 
 
 class SessionTest extends AnyFunSuite with Matchers:

@@ -1,44 +1,50 @@
-package utils
-
+package utils.storage
 
 import controller.AppController
 import model.Answer.Answer
 import model.Quiz.Quiz
 import model.{CourseIdentifier, SavedCourse, Session}
 import org.scalatest.funsuite.AnyFunSuite
-import utils.Configuration.{HomeDirectoryPath, PlayerCoursesFilePath}
+import utils.storage.Configuration.{HomeDirectoryPath, PlayerCoursesFilePath}
+import utils.storage.DataStorageHandler
 
 import java.io.FileNotFoundException
 import java.util.UUID
 import scala.util.{Failure, Success}
 
-class StorageHandlerTest extends AnyFunSuite:
+class DataStorageHandlerTest extends AnyFunSuite:
 
   val session: Session = Session()
 
   // Export
   test("Test if can export session file in player directory") {
-    StorageHandler.exportSessionToPersonalDirectory(session) match
+    ExportHandler.exportDataToPersonalDirectory(session) match
       case Success(s) => succeed
       case Failure(f) => fail()
   }
 
   test("Test if can export saved courses in chosen path") {
-    StorageHandler.exportSavedCoursesToPath(session, HomeDirectoryPath) match
+    ExportHandler.exportDataToPersonalDirectory(session.savedCourses) match
+      case Success(s) => succeed
+      case Failure(f) => fail()
+  }
+
+  test("Test if can export player stats in player directory") {
+    ExportHandler.exportDataToPersonalDirectory(session.playerStats) match
       case Success(s) => succeed
       case Failure(f) => fail()
   }
 
   // Import
   test("Test if can import session file from player directory") {
-    StorageHandler.importSessionFromPersonalDirectory(session) match
+    ImportHandler.importSessionFromPersonalDirectory(session) match
       case Success(s) => succeed
       case Failure(f) => fail()
   }
 
   test("Test if can import saved courses from chosen path") {
     println(PlayerCoursesFilePath)
-    StorageHandler.importSavedCourseListFromFile(session, HomeDirectoryPath) match
+    ImportHandler.importSavedCourseListFromFile(session, HomeDirectoryPath) match
       case Success(scl) => succeed
       case Failure(f) => Failure(f)
   }
@@ -82,7 +88,7 @@ class StorageHandlerTest extends AnyFunSuite:
     )
 
     // Merge of saved course lists
-    val sclJoined = StorageHandler.mergeSavedCourseLists(scl1, scl2)
+    val sclJoined = DataStorageHandler.mergeSavedCourseLists(scl1, scl2)
 
     // Check
     assert(sclSolutionWanted.equals(sclJoined))

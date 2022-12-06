@@ -3,7 +3,7 @@ package utils.parser
 import model.SavedCourse
 import model.stats.PlayerStats
 import org.scalatest.funsuite.AnyFunSuite
-import utils.DefaultDataList.defaultCourseList
+import utils.storage.DefaultDataList.defaultCourseList
 import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
 
 import scala.util.{Failure, Success}
