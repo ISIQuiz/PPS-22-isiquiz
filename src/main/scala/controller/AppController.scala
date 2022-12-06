@@ -6,11 +6,13 @@ import javafx.stage.Stage
 import model.GameStage
 import model.stats.PlayerStats.{PlayerStats, updatePlayerStats}
 import model.{SavedCourse, Session}
+import utils.StorageHandler.importSessionFromPersonalDirectory
 import view.View
 import view.View.{PageView, TerminalView, ViewFactory}
 
 import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
 import scala.concurrent.duration.TimeUnit
+import scala.util.{Failure, Success}
 
 /** Controller for the general logic of the application */
 object AppController extends Controller:
@@ -49,5 +51,9 @@ object AppController extends Controller:
     case null => throw new IllegalArgumentException
 
   def startApp(): Unit =
+    importSessionFromPersonalDirectory(session) match
+      case Success(s) => _session = s
+      case Failure(f) => Failure(f)
+
     val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     scheduler.scheduleAtFixedRate(() => currentPage.pageController.nextIteration(), 0, 1000, TimeUnit.MILLISECONDS)
