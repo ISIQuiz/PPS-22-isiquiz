@@ -38,15 +38,18 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
 
   @FXML
   var exportButton: Button = _
-
-  @FXML
-  var editButton: Button = _
-
+  
   @FXML
   var addCourseButton: Button = _
 
   @FXML
   var addQuizButton: Button = _
+
+  @FXML
+  var editCourseButton: Button = _
+
+  @FXML
+  var editQuizButton: Button = _
 
   @FXML
   def backButtonClicked(): Unit =
@@ -109,15 +112,20 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
 
 
   @FXML
-  def editButtonClicked(): Unit = ???
-
-  @FXML
   def addCourseButtonClicked(): Unit =
     sendEvent(AddCourse)
 
   @FXML
   def addQuizButtonClicked(): Unit =
     sendEvent(AddQuiz)
+
+  @FXML
+  def editCourseButtonClicked(): Unit =
+    sendEvent(EditCourse)
+
+  @FXML
+  def editQuizButtonClicked(): Unit =
+    sendEvent(EditQuiz)
 
   loadGUI(stage, this, "settings_menu.fxml")
 

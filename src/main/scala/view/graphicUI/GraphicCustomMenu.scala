@@ -13,7 +13,6 @@ import javafx.scene.control.{Button, CheckBox, TextField}
 import javafx.scene.input.MouseEvent
 import javafx.stage.Stage
 import model.settings.StandardGameSettings
-
 import scala.collection.mutable.ListBuffer
 
 object GraphicCustomMenu
