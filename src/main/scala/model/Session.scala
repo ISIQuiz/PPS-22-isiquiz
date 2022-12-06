@@ -1,10 +1,10 @@
 package model
 
 import model.stats.PlayerStats.{PlayerStats, initStats}
-import utils.Configuration.PlayerCoursesFilePath
-import utils.DefaultDataList.defaultCourseList
+import utils.storage.Configuration.PlayerCoursesFilePath
+import utils.storage.DefaultDataList.defaultCourseList
 import utils.parser.CourseJsonParser
-import utils.{DefaultDataList, FileHandler}
+import utils.storage.{DefaultDataList, FileHandler}
 
 import scala.util.{Failure, Success, Try}
 
@@ -54,4 +54,3 @@ object Session:
    */
   def changePlayerStats(session: Session, playerStats: PlayerStats): Session = session match
     case SessionImpl(savedCourses, _) => SessionImpl(savedCourses, playerStats)
-

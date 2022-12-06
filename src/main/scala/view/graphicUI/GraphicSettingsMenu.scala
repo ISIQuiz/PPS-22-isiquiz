@@ -4,15 +4,15 @@ import controller.AppController
 import controller.SettingsMenuController.*
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
-import utils.{GUILoader, StorageHandler}
+import utils.GUILoader
 import utils.GUILoader.loadGUI
 import javafx.fxml.FXML
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.{Alert, Button, Label, TextField}
 import javafx.stage.FileChooser.ExtensionFilter
 import javafx.stage.{DirectoryChooser, FileChooser, Stage}
-import utils.Configuration.{CurrentDirectoryPath, HomeDirectoryPath, PlayerCoursesFileName}
-import utils.StorageHandler.importSavedCourseListFromFile
+import utils.storage.Configuration.{CurrentDirectoryPath, HomeDirectoryPath, PlayerCoursesFileName}
+import utils.storage.{ExportHandler, ImportHandler}
 
 import java.io.File
 import scala.util.{Failure, Success}
@@ -38,7 +38,7 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
 
   @FXML
   var exportButton: Button = _
-  
+
   @FXML
   var addCourseButton: Button = _
 
@@ -71,7 +71,7 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
     fileChooser.setInitialDirectory(File(CurrentDirectoryPath))
     val selectedFile = fileChooser.showOpenDialog(stage)
     if (selectedFile != null)
-      importSavedCourseListFromFile(AppController.session, selectedFile.getPath) match
+      ImportHandler.importSavedCourseListFromFile(AppController.session, selectedFile.getPath) match
         case Success(savedCourseList) =>
           AppController.changeSavedCourses(savedCourseList)
           showDialogAlert(
@@ -95,7 +95,7 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
     directoryChooser.setInitialDirectory(File(HomeDirectoryPath))
     val selectedDirectory = directoryChooser.showDialog(stage)
     if (selectedDirectory != null)
-      StorageHandler.exportSavedCoursesToPath(AppController.session, selectedDirectory.toString) match
+      ExportHandler.exportSavedCoursesToPath(AppController.session.savedCourses, selectedDirectory.toString) match
         case Success(path) =>
           showDialogAlert(
             AlertType.INFORMATION,

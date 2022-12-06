@@ -183,6 +183,20 @@ object PlayerStats:
   def initStats: PlayerStats =
     PlayerStats(0, 0, 0, 0, 0, List())
 
+
+ /* /** TODO
+   * Reset all the personal stats to 0
+   *
+   * @param session
+   * @return an updated Try[Session]
+   */
+  def resetPersonalStatsFile(session: Session): Try[Session] =
+    Try {
+      val newSession = Session.changePlayerStats(session, initStats)
+      //storeDataToPath(newSession, StatsJsonParser(), PlayerStatsFilePath)
+      newSession
+    }
+*/
 // TODO def removeUnusedQuizInStats(session: Session): PlayerStats
 
 // TODO def updateQuizInStats(session, course, quiz): PlayerStats

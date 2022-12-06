@@ -6,7 +6,7 @@ import javafx.stage.Stage
 import model.GameStage
 import model.stats.PlayerStats.{PlayerStats, updatePlayerStats}
 import model.{SavedCourse, Session}
-import utils.StorageHandler.importSessionFromPersonalDirectory
+import utils.storage.ImportHandler.importSessionFromPersonalDirectory
 import view.View
 import view.View.{PageView, TerminalView, ViewFactory}
 
@@ -55,6 +55,7 @@ object AppController extends Controller:
     case null => throw new IllegalArgumentException
 
   def startApp(): Unit =
+
     importSessionFromPersonalDirectory(session) match
       case Success(s) => _session = s
       case Failure(f) => Failure(f)
