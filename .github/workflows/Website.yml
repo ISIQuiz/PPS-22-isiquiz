@@ -40,6 +40,7 @@ jobs:
         run: sbt doc
       - name: Print Branch
         run: |
+          git status
           git branch
           tree
       - name: Upload Artifacts
@@ -63,11 +64,11 @@ jobs:
         run: |
           git branch
           tree
-      - name: Change Branch and delete
+      - name: Change Branch to ghìpages and delete everything
         run: |
           git checkout gh-pages
           tree
-          #git rm -rf .
+          git rm -rf .
           #git checkout -f main README.md
       - name: Download Artifacts
         uses: actions/download-artifact@v2
@@ -75,9 +76,10 @@ jobs:
           name: Artifacts
       - name: Deploy Website
         run: |
+          git status
           git branch
           tree
           git add .
-          git commit -m 'Updated gh-pages'
+          git commit -m 'Updated gh-pages' || true
           git push
           
