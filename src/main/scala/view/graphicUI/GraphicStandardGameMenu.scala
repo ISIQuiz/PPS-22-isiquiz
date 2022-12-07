@@ -16,7 +16,7 @@ import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUp
 
 object GraphicStandardGameMenu
 
-/** Standard Game menu graphic interface  */
+/** Standard Game menu graphic interface */
 class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
 
   @FXML
@@ -55,6 +55,8 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
   @FXML
   var nextButton: Button = _
 
+  var maxScore: Int = 0
+
   @FXML
   def backButtonClicked(): Unit =
     sendEvent(Back)
@@ -87,14 +89,16 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
   loadGUI(stage, this, "standard_game.fxml")
 
   val answerButtons: List[Button] = List(firstAnswerButton, secondAnswerButton, thirdAnswerButton, fourthAnswerButton)
+
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case DefaultUpdate => {}
     case NewQuizUpdate(updateParameter) =>
       Platform.runLater(() => {
         val gameStage: GameStage = updateParameter.get.asInstanceOf[GameStage]
+        maxScore = gameStage.quizInGame.quiz.maxScore
         courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
         quizNumberLabel.setText(s"x/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}")
-        pointsLabel.setText(gameStage.quizInGame.quiz.maxScore.toString + " punti")
+        pointsLabel.setText(maxScore.toString + " punti")
         quizLabel.setText(gameStage.quizInGame.quiz.question)
         firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
         secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
@@ -113,9 +117,23 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
       Platform.runLater(() => {
         timeRemainingLabel.setText(s"${timer.getRemainingTime.toInt}")
         timeProgressBar.setProgress(timer.getCompletionPercentage)
+        val newPoints =
+          updatePoints(
+            timer.getRemainingTime.toInt,
+            timer.maxTime,
+            maxScore
+          )
+        pointsLabel.setText(newPoints + " punti")
       })
+
     case TimeExpiredUpdate =>
       disableButton(answerButtons)
+
+  def updatePoints(timeRemaining: Int, maxTime: Long, maxScore: Int): Int = {
+    val coeff: Double = maxScore.toDouble / (maxTime / 1000).toDouble
+    (coeff * timeRemaining).toInt
+  }
+
 
   def resetAnswerButton(buttons: List[Button]): Unit =
     buttons.foreach(button =>
