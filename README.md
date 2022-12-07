@@ -8,6 +8,8 @@ L'applicazione ha lo scopo di gamificare la revisione pre-esame degli argomenti 
 
 Per far partire l'applicazione aprire *ISIQuiz.jar*
 
+Una volta aperta l'applicazione, viene visualizzato un menu iniziale:
+
 __Gioca__
 Seleziona almeno un corso per poter iniziare una partita con quiz riguardanti quei corsi.
 Successivamente scegli la modalità di gioco:
@@ -23,6 +25,7 @@ Visualizza le statistiche relative ai tuoi ripassi:
 - tempo medio di risposta
 
 __Impostazioni__
+Per poter apportare modifiche nelle impostazioni generali:
 - Importa quiz: importa un file JSON dal file system contenente nuovi quiz
 - Esporta quiz: esporta il file JSON contenente i corsi con i relativi quiz
 - Modifica quiz
