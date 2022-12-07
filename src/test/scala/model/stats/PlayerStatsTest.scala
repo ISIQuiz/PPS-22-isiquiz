@@ -2,16 +2,16 @@ package model.stats
 
 import model.{Course, CourseIdentifier}
 import model.stats.CourseInStats.CourseInStats
+import model.stats.PlayerStats.initStats
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-import utils.DefaultDataList.defaultPlayerStats
 
 class PlayerStatsTest extends AnyFunSuite with Matchers :
 
   val playerStats = PlayerStats()
 
   test("Test default PlayerStats") {
-    playerStats shouldEqual defaultPlayerStats
+    playerStats shouldEqual initStats
   }
 
   test("Test change total score") {

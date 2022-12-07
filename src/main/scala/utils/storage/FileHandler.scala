@@ -1,4 +1,4 @@
-package utils
+package utils.storage
 
 import java.nio.file.{Files, Paths}
 import scala.io.Source
@@ -31,10 +31,13 @@ object FileHandler:
    *
    * @param filePath    a string with file path
    * @param fileContent a string with file content
-   * @return a Try
+   * @return a Try[String] with the file path
    */
-  def writeFile(filePath: String, fileContent: String): Try[Unit] =
-    Try(Files.writeString(Paths.get(filePath), fileContent))
+  def writeFile(filePath: String, fileContent: String): Try[String] =
+    Try {
+      Files.writeString(Paths.get(filePath), fileContent)
+      filePath
+    }
 
   /**
    * Creates a directory if not exists

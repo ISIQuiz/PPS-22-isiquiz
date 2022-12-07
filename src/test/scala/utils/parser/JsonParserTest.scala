@@ -1,9 +1,9 @@
 package utils.parser
 
 import model.SavedCourse
-import model.stats.PlayerStats.PlayerStats
+import model.stats.PlayerStats
 import org.scalatest.funsuite.AnyFunSuite
-import utils.DefaultDataList.{defaultCourseList, defaultPlayerStats}
+import utils.storage.DefaultDataList.defaultCourseList
 import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
 
 import scala.util.{Failure, Success}
@@ -13,7 +13,7 @@ class JsonParserTest extends AnyFunSuite:
   val courseJsonParser: CourseJsonParser = CourseJsonParser()
   val statsJsonParser: StatsJsonParser = StatsJsonParser()
   val savedCourseList: List[SavedCourse] = defaultCourseList
-  val playerStats: PlayerStats = defaultPlayerStats
+  val playerStats = PlayerStats()
 
   test("Test serializing and deserializing JSON string of saved courses") {
     courseJsonParser.deserialize(JsonParser.toString(courseJsonParser.serialize(savedCourseList))) match
