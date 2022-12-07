@@ -20,5 +20,36 @@ jobs:
         with:
           name: Artifacts
           path: |
-            README.MD
-            
+            README.md
+  DeployWebsite:      
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone git repo
+        uses: actions/checkout@v3
+      - name: Setup git repo 
+        run: |
+          git config user.name "${{ secrets.NAME }}"
+          git config user.email "${{ secrets.EMAIL }}"
+          git fetch --all
+      - name: Print Branch
+        run: |
+          git branch
+          tree
+      - name: Change Branch and delete
+        run: |
+          git checkout gh-pages
+          tree
+          git rm -rf .
+          #git checkout -f main README.md
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: Artifacts
+      - name: Deploy Website
+        run: |
+          git branch
+          tree
+          git add .
+          git commit -m 'Updated gh-pages'
+          git push
+          
