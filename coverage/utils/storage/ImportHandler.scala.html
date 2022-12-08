@@ -1,0 +1,709 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          utils/storage/ImportHandler.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package utils.storage
+</span>2 <span style=''>
+</span>3 <span style=''>import model.Answer.Answer
+</span>4 <span style=''>import model.Quiz.Quiz
+</span>5 <span style=''>import model.{SavedCourse, Session}
+</span>6 <span style=''>import model.stats.PlayerStats.{PlayerStats, initStats}
+</span>7 <span style=''>import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
+</span>8 <span style=''>import utils.storage.Configuration.{PlayerCoursesFilePath, PlayerStatsFilePath}
+</span>9 <span style=''>import utils.storage.ExportHandler.exportSessionToPersonalDirectory
+</span>10 <span style=''>import scala.util.{Failure, Success, Try}
+</span>11 <span style=''>
+</span>12 <span style=''>object ImportHandler extends DataStorageHandler:
+</span>13 <span style=''>
+</span>14 <span style=''>  /**
+</span>15 <span style=''>   * Import the [[Session]] from personal directory.
+</span>16 <span style=''>   * Path and name are predetermined in [[Configuration]]
+</span>17 <span style=''>   *
+</span>18 <span style=''>   * @param session
+</span>19 <span style=''>   * @return an updated Try[Session]
+</span>20 <span style=''>   */
+</span>21 <span style=''>  </span><span style='background: #AEF1AE'>def importSessionFromPersonalDirectory</span><span style=''>(session: Session): Try[Session] =
+</span>22 <span style=''>  // Load player courses and deserialize the JSON string in a SavedCourse list
+</span>23 <span style=''>    </span><span style='background: #AEF1AE'>loadDataFromFile(CourseJsonParser(), PlayerCoursesFilePath)</span><span style=''> match
+</span>24 <span style=''>      </span><span style='background: #AEF1AE'>case Success(savedCourseList: List[SavedCourse])</span><span style=''> =&gt; // Parse SavedCourse list success
+</span>25 <span style=''>        val newSessionCourses = </span><span style='background: #AEF1AE'>Session.changeSavedCourses(session, savedCourseList)</span><span style=''> // update Session saved course list
+</span>26 <span style=''>        </span><span style='background: #AEF1AE'>importPlayerStatsFromPersonalDirectory(newSessionCourses)</span><span style=''>
+</span>27 <span style=''>      </span><span style='background: #F0ADAD'>case Failure(f)</span><span style=''> =&gt; // Failed to parse savedCourse from file, store passed session to file
+</span>28 <span style=''>        </span><span style='background: #F0ADAD'>println(&quot;courses and maybe stats do not exists, created default session&quot;)</span><span style=''>
+</span>29 <span style=''>        </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(session)</span><span style=''>
+</span>30 <span style=''>        Failure(f)
+</span>31 <span style=''>
+</span>32 <span style=''>
+</span>33 <span style=''>  /**
+</span>34 <span style=''>   * Import [[PlayerStats]] from personal directory.
+</span>35 <span style=''>   * Path and name are predetermined in [[Configuration]]
+</span>36 <span style=''>   *
+</span>37 <span style=''>   * @param session
+</span>38 <span style=''>   * @return an updated Try[Session]
+</span>39 <span style=''>   */
+</span>40 <span style=''>  </span><span style='background: #AEF1AE'>private def importPlayerStatsFromPersonalDirectory</span><span style=''>(session: Session): Try[Session] =
+</span>41 <span style=''>  // Load player stats and deserialize the JSON string in PlayerStats
+</span>42 <span style=''>    </span><span style='background: #AEF1AE'>loadDataFromFile(StatsJsonParser(), PlayerStatsFilePath)</span><span style=''> match
+</span>43 <span style=''>      </span><span style='background: #AEF1AE'>case Success(playerStats: PlayerStats)</span><span style=''> =&gt; // Success import courses and stats from file
+</span>44 <span style=''>        </span><span style='background: #AEF1AE'>println(&quot;courses and stats imported from player data&quot;)</span><span style=''>
+</span>45 <span style=''>        Success(</span><span style='background: #AEF1AE'>Session.changePlayerStats(session, playerStats)</span><span style=''>)
+</span>46 <span style=''>      </span><span style='background: #F0ADAD'>case Failure(f)</span><span style=''> =&gt; // Failed to parse player stats, reset player stats to 0
+</span>47 <span style=''>        </span><span style='background: #F0ADAD'>println(&quot;stats do not exist, created file with init stats to 0&quot;)</span><span style=''>
+</span>48 <span style=''>        </span><span style='background: #F0ADAD'>storeDataToPath(initStats, PlayerStatsFilePath)</span><span style=''>
+</span>49 <span style=''>        Failure(f)
+</span>50 <span style=''>
+</span>51 <span style=''>  /**
+</span>52 <span style=''>   * Import the list of [[SavedCourse]] from chosen file,
+</span>53 <span style=''>   * and merges it with the saved course list of the passed session.
+</span>54 <span style=''>   * Name of the file is predetermined in [[Configuration]]
+</span>55 <span style=''>   *
+</span>56 <span style=''>   * @param session
+</span>57 <span style=''>   * @param filePath
+</span>58 <span style=''>   * @return a Try of List[SavedCourse]
+</span>59 <span style=''>   */
+</span>60 <span style=''>  </span><span style='background: #AEF1AE'>def importSavedCourseListFromFile</span><span style=''>(session: Session, filePath: String): Try[List[SavedCourse]] =
+</span>61 <span style=''>    </span><span style='background: #AEF1AE'>for
+</span>62 <span style=''></span><span style='background: #AEF1AE'>      savedCourseList &lt;- loadDataFromFile(CourseJsonParser(), filePath)
+</span>63 <span style=''></span><span style='background: #AEF1AE'>    yield
+</span>64 <span style=''></span><span style='background: #AEF1AE'>      </span><span style='background: #F0ADAD'>DataStorageHandler.mergeSavedCourseLists(session.savedCourses, savedCourseList)</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          1110
+        </td>
+        <td>
+          661
+          -
+          699
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          importSessionFromPersonalDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def importSessionFromPersonalDirectory
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          1102
+        </td>
+        <td>
+          834
+          -
+          852
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CourseJsonParser()
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          1103
+        </td>
+        <td>
+          817
+          -
+          876
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          loadDataFromFile
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          loadDataFromFile(CourseJsonParser(), PlayerCoursesFilePath)
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          1106
+        </td>
+        <td>
+          889
+          -
+          937
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case Success(savedCourseList: List[SavedCourse])
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          1104
+        </td>
+        <td>
+          1007
+          -
+          1059
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          changeSavedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Session.changeSavedCourses(session, savedCourseList)
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          1105
+        </td>
+        <td>
+          1104
+          -
+          1161
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          importPlayerStatsFromPersonalDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          importPlayerStatsFromPersonalDirectory(newSessionCourses)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          1109
+        </td>
+        <td>
+          1168
+          -
+          1183
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Failure(f)
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          1107
+        </td>
+        <td>
+          1266
+          -
+          1339
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;courses and maybe stats do not exists, created default session&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          1108
+        </td>
+        <td>
+          1348
+          -
+          1400
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          exportDataToPersonalDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ExportHandler.exportDataToPersonalDirectory(session)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          1120
+        </td>
+        <td>
+          1609
+          -
+          1659
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          importPlayerStatsFromPersonalDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          private def importPlayerStatsFromPersonalDirectory
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1111
+        </td>
+        <td>
+          1785
+          -
+          1802
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StatsJsonParser()
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1112
+        </td>
+        <td>
+          1768
+          -
+          1824
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          loadDataFromFile
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          loadDataFromFile(StatsJsonParser(), PlayerStatsFilePath)
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          1115
+        </td>
+        <td>
+          1837
+          -
+          1875
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case Success(playerStats: PlayerStats)
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          1113
+        </td>
+        <td>
+          1933
+          -
+          1987
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          println(&quot;courses and stats imported from player data&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          1114
+        </td>
+        <td>
+          2004
+          -
+          2051
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          changePlayerStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Session.changePlayerStats(session, playerStats)
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          1119
+        </td>
+        <td>
+          2059
+          -
+          2074
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Failure(f)
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          1116
+        </td>
+        <td>
+          2143
+          -
+          2207
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;stats do not exist, created file with init stats to 0&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1118
+        </td>
+        <td>
+          2216
+          -
+          2263
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          storeDataToPath
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          storeDataToPath(initStats, PlayerStatsFilePath)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1117
+        </td>
+        <td>
+          2232
+          -
+          2241
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          initStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          initStats
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          1126
+        </td>
+        <td>
+          2571
+          -
+          2604
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          importSavedCourseListFromFile
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def importSavedCourseListFromFile
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          1125
+        </td>
+        <td>
+          2671
+          -
+          2842
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          for
+      savedCourseList &lt;- loadDataFromFile(CourseJsonParser(), filePath)
+    yield
+      DataStorageHandler.mergeSavedCourseLists(session.savedCourses, savedCourseList)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1122
+        </td>
+        <td>
+          2700
+          -
+          2746
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          loadDataFromFile
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          loadDataFromFile(CourseJsonParser(), filePath)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1121
+        </td>
+        <td>
+          2717
+          -
+          2735
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CourseJsonParser()
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1124
+        </td>
+        <td>
+          2763
+          -
+          2842
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          mergeSavedCourseLists
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          DataStorageHandler.mergeSavedCourseLists(session.savedCourses, savedCourseList)
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1123
+        </td>
+        <td>
+          2804
+          -
+          2824
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          savedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          session.savedCourses
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

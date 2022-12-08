@@ -1,0 +1,390 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          utils/storage/FileHandler.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package utils.storage
+</span>2 <span style=''>
+</span>3 <span style=''>import java.nio.file.{Files, Paths}
+</span>4 <span style=''>import scala.io.Source
+</span>5 <span style=''>import scala.util.{Try, Using}
+</span>6 <span style=''>
+</span>7 <span style=''>
+</span>8 <span style=''>/** Object of [[FileHandler]] */
+</span>9 <span style=''>object FileHandler:
+</span>10 <span style=''>
+</span>11 <span style=''>  /**
+</span>12 <span style=''>   * Read file from path
+</span>13 <span style=''>   *
+</span>14 <span style=''>   * @param filePath a string with file path
+</span>15 <span style=''>   * @return a Try[String] with the file content
+</span>16 <span style=''>   */
+</span>17 <span style=''>  </span><span style='background: #AEF1AE'>def readFile</span><span style=''>(filePath: String): Try[String] =
+</span>18 <span style=''>    </span><span style='background: #AEF1AE'>Using(Source.fromFile(filePath))(_.mkString)</span><span style=''>
+</span>19 <span style=''>
+</span>20 <span style=''>  /**
+</span>21 <span style=''>   * Read resource file from path
+</span>22 <span style=''>   *
+</span>23 <span style=''>   * @param filePath a string with file path
+</span>24 <span style=''>   * @return a Try[String] with the file content
+</span>25 <span style=''>   */
+</span>26 <span style=''>  </span><span style='background: #AEF1AE'>def readResource</span><span style=''>(filePath: String): Try[String] =
+</span>27 <span style=''>    </span><span style='background: #AEF1AE'>Using(Source.fromResource(filePath))(_.mkString)</span><span style=''>
+</span>28 <span style=''>
+</span>29 <span style=''>  /**
+</span>30 <span style=''>   * Write the string in a file
+</span>31 <span style=''>   *
+</span>32 <span style=''>   * @param filePath    a string with file path
+</span>33 <span style=''>   * @param fileContent a string with file content
+</span>34 <span style=''>   * @return a Try[String] with the file path
+</span>35 <span style=''>   */
+</span>36 <span style=''>  </span><span style='background: #AEF1AE'>def writeFile</span><span style=''>(filePath: String, fileContent: String): Try[String] =
+</span>37 <span style=''>    </span><span style='background: #AEF1AE'>Try {
+</span>38 <span style=''></span><span style='background: #AEF1AE'>      Files.writeString(Paths.get(filePath), fileContent)
+</span>39 <span style=''></span><span style='background: #AEF1AE'>      filePath
+</span>40 <span style=''></span><span style='background: #AEF1AE'>    }</span><span style=''>
+</span>41 <span style=''>
+</span>42 <span style=''>  /**
+</span>43 <span style=''>   * Creates a directory if not exists
+</span>44 <span style=''>   *
+</span>45 <span style=''>   * @param filePath a string with directory path
+</span>46 <span style=''>   */
+</span>47 <span style=''>  </span><span style='background: #AEF1AE'>def createDirectory</span><span style=''>(filePath: String): Unit =
+</span>48 <span style=''>    </span><span style='background: #AEF1AE'>Files.createDirectories(Paths.get(filePath))</span><span style=''>
+</span>49 <span style=''>
+</span>50 <span style=''>  /**
+</span>51 <span style=''>   * Check if file/directory exists
+</span>52 <span style=''>   *
+</span>53 <span style=''>   * @param filePath
+</span>54 <span style=''>   * @return a [[Boolean]]
+</span>55 <span style=''>   */
+</span>56 <span style=''>  </span><span style='background: #AEF1AE'>def checkFileExists</span><span style=''>(filePath: String): Boolean =
+</span>57 <span style=''>    </span><span style='background: #AEF1AE'>Files.exists(Paths.get(filePath))</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          1091
+        </td>
+        <td>
+          307
+          -
+          319
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          readFile
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def readFile
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          1090
+        </td>
+        <td>
+          357
+          -
+          401
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Using(Source.fromFile(filePath))(_.mkString)
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          1093
+        </td>
+        <td>
+          550
+          -
+          566
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          readResource
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def readResource
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          1092
+        </td>
+        <td>
+          604
+          -
+          652
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Using(Source.fromResource(filePath))(_.mkString)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          1095
+        </td>
+        <td>
+          850
+          -
+          863
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          writeFile
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def writeFile
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          1094
+        </td>
+        <td>
+          922
+          -
+          1006
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try {
+      Files.writeString(Paths.get(filePath), fileContent)
+      filePath
+    }
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          1098
+        </td>
+        <td>
+          1116
+          -
+          1135
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          createDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def createDirectory
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1097
+        </td>
+        <td>
+          1166
+          -
+          1210
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          createDirectories
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Files.createDirectories(Paths.get(filePath))
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1096
+        </td>
+        <td>
+          1190
+          -
+          1209
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Paths.get(filePath)
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1101
+        </td>
+        <td>
+          1315
+          -
+          1334
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          checkFileExists
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def checkFileExists
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          1100
+        </td>
+        <td>
+          1368
+          -
+          1401
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          exists
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Files.exists(Paths.get(filePath))
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          1099
+        </td>
+        <td>
+          1381
+          -
+          1400
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Paths.get(filePath)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

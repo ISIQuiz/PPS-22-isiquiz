@@ -1,0 +1,2525 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          view/graphicUI/GraphicAddQuizMenu.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package view.graphicUI
+</span>2 <span style=''>
+</span>3 <span style=''>import com.sun.javafx.scene.control.IntegerField
+</span>4 <span style=''>import controller.AddQuizMenuController.{AddCourseAction, Back}
+</span>5 <span style=''>import javafx.application.Platform
+</span>6 <span style=''>import javafx.fxml.FXML
+</span>7 <span style=''>import javafx.scene.control.*
+</span>8 <span style=''>import javafx.scene.input.MouseEvent
+</span>9 <span style=''>import javafx.scene.layout.VBox
+</span>10 <span style=''>import javafx.scene.layout.HBox
+</span>11 <span style=''>import javafx.stage.Stage
+</span>12 <span style=''>import model.Answer.Answer
+</span>13 <span style=''>import model.CourseIdentifier.CourseIdentifierImpl
+</span>14 <span style=''>import model.Quiz.Quiz
+</span>15 <span style=''>import model.SavedCourse.SavedCourseImpl
+</span>16 <span style=''>import scalafx.geometry.Insets
+</span>17 <span style=''>import utils.GUILoader
+</span>18 <span style=''>import utils.GUILoader.loadGUI
+</span>19 <span style=''>import view.AddQuizMenuView.*
+</span>20 <span style=''>import view.View.{GraphicView, sendEvent}
+</span>21 <span style=''>import view.updates.ViewUpdate
+</span>22 <span style=''>
+</span>23 <span style=''>import scala.collection.mutable.ListBuffer
+</span>24 <span style=''>
+</span>25 <span style=''>object GraphicAddQuizMenu
+</span>26 <span style=''>
+</span>27 <span style=''>/** Default menu graphic interface  */
+</span>28 <span style=''>class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
+</span>29 <span style=''>
+</span>30 <span style=''>
+</span>31 <span style=''>  @FXML
+</span>32 <span style=''>  var coursesScrollPane: ScrollPane = _
+</span>33 <span style=''>
+</span>34 <span style=''>  @FXML
+</span>35 <span style=''>  var coursesVBox: VBox = _
+</span>36 <span style=''>
+</span>37 <span style=''>  @FXML
+</span>38 <span style=''>  var questionTextField: TextField = _
+</span>39 <span style=''>
+</span>40 <span style=''>  @FXML
+</span>41 <span style=''>  var scoreIntegerField: IntegerField = _
+</span>42 <span style=''>
+</span>43 <span style=''>  val toggleGroup = </span><span style='background: #F0ADAD'>ToggleGroup()</span><span style=''>
+</span>44 <span style=''>
+</span>45 <span style=''>  @FXML
+</span>46 <span style=''>  var answersVBox: VBox = _
+</span>47 <span style=''>
+</span>48 <span style=''>  @FXML
+</span>49 <span style=''>  var imagePathTextField: TextField = _
+</span>50 <span style=''>
+</span>51 <span style=''>  @FXML
+</span>52 <span style=''>  var feedbackLabel: Label = _
+</span>53 <span style=''>
+</span>54 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>55 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
+</span>56 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
+</span>57 <span style=''>
+</span>58 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>59 <span style=''></span><span style='background: #F0ADAD'>  def addAnswerButtonClicked</span><span style=''>(): Unit =
+</span>60 <span style=''>    </span><span style='background: #F0ADAD'>addAnswerGUI()</span><span style=''>
+</span>61 <span style=''>
+</span>62 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>63 <span style=''></span><span style='background: #F0ADAD'>  def removeAnswerButtonClicked</span><span style=''>(): Unit =
+</span>64 <span style=''>    if </span><span style='background: #F0ADAD'>answersVBox.getChildren.size()</span><span style=''>&gt;1 then </span><span style='background: #F0ADAD'>answersVBox.getChildren.remove(answersVBox.getChildren.size()-1)</span><span style=''>
+</span>65 <span style=''>
+</span>66 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>67 <span style=''></span><span style='background: #F0ADAD'>  def addQuizButtonClicked</span><span style=''>(): Unit =
+</span>68 <span style=''>    if </span><span style='background: #F0ADAD'>checkInputs</span><span style=''> then
+</span>69 <span style=''>      </span><span style='background: #F0ADAD'>val answerList:ListBuffer[Answer] = ListBuffer()
+</span>70 <span style=''></span><span style='background: #F0ADAD'>      answersVBox.getChildren.forEach( hBox =&gt;
+</span>71 <span style=''></span><span style='background: #F0ADAD'>        val answerTextField = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(1).asInstanceOf[TextField]
+</span>72 <span style=''></span><span style='background: #F0ADAD'>        val answerCorrectCheckBox:CheckBox = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(3).asInstanceOf[CheckBox]
+</span>73 <span style=''></span><span style='background: #F0ADAD'>        answerList += Answer(answerTextField.getText, answerCorrectCheckBox.isSelected)
+</span>74 <span style=''></span><span style='background: #F0ADAD'>      )
+</span>75 <span style=''></span><span style='background: #F0ADAD'>      val quiz = Quiz(question=questionTextField.getText, answerList = answerList.toList, maxScore = scoreIntegerField.getValue, imagePath = imagePathTextField.getText match
+</span>76 <span style=''></span><span style='background: #F0ADAD'>        case &quot;&quot; =&gt; None
+</span>77 <span style=''></span><span style='background: #F0ADAD'>        case text =&gt; Some(text)
+</span>78 <span style=''></span><span style='background: #F0ADAD'>      )
+</span>79 <span style=''></span><span style='background: #F0ADAD'>      import controller.AddQuizMenuController.AddQuizAction
+</span>80 <span style=''></span><span style='background: #F0ADAD'>      sendEvent(AddQuizAction(Option(quiz)))</span><span style=''>
+</span>81 <span style=''>    else
+</span>82 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(&quot;Configurazione Invalida&quot;)</span><span style=''>
+</span>83 <span style=''>
+</span>84 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;add_quiz_menu.fxml&quot;)</span><span style=''>
+</span>85 <span style=''>
+</span>86 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>87 <span style=''>    </span><span style='background: #F0ADAD'>case CourseUpdate(updateParameter)</span><span style=''> =&gt;
+</span>88 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater { () =&gt;
+</span>89 <span style=''></span><span style='background: #F0ADAD'>        coursesVBox.getChildren.clear()
+</span>90 <span style=''></span><span style='background: #F0ADAD'>        updateParameter.get.foreach(savedCourse =&gt;
+</span>91 <span style=''></span><span style='background: #F0ADAD'>          val radioButton = RadioButton(savedCourse.courseId.courseName);
+</span>92 <span style=''></span><span style='background: #F0ADAD'>          radioButton.setToggleGroup(toggleGroup);
+</span>93 <span style=''></span><span style='background: #F0ADAD'>          radioButton.getStyleClass.add(&quot;label-dark&quot;);
+</span>94 <span style=''></span><span style='background: #F0ADAD'>          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+</span>95 <span style=''></span><span style='background: #F0ADAD'>            sendEvent(AddCourseAction(Option(savedCourse)))
+</span>96 <span style=''></span><span style='background: #F0ADAD'>          );
+</span>97 <span style=''></span><span style='background: #F0ADAD'>          coursesVBox.getChildren.addAll(radioButton)
+</span>98 <span style=''></span><span style='background: #F0ADAD'>        )
+</span>99 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
+</span>100 <span style=''>    </span><span style='background: #F0ADAD'>case QuizAddedUpdate</span><span style=''> =&gt;
+</span>101 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(&quot;Quiz Aggiunto!!!&quot;)</span><span style=''>
+</span>102 <span style=''>      </span><span style='background: #F0ADAD'>questionTextField.clear()</span><span style=''>
+</span>103 <span style=''>      </span><span style='background: #F0ADAD'>imagePathTextField.clear()</span><span style=''>
+</span>104 <span style=''>      </span><span style='background: #F0ADAD'>scoreIntegerField.setValue(10)</span><span style=''>
+</span>105 <span style=''>      while </span><span style='background: #F0ADAD'>answersVBox.getChildren.size()</span><span style=''>&gt;0 do </span><span style='background: #F0ADAD'>answersVBox.getChildren.remove(0)</span><span style=''>
+</span>106 <span style=''>      </span><span style='background: #F0ADAD'>addAnswerGUI()</span><span style=''>
+</span>107 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
+</span>108 <span style=''>
+</span>109 <span style=''>
+</span>110 <span style=''>  </span><span style='background: #F0ADAD'>private def checkInputs</span><span style=''>: Boolean =
+</span>111 <span style=''>    </span><span style='background: #F0ADAD'>questionTextField.getText.nonEmpty</span><span style=''> &amp;&amp; </span><span style='background: #F0ADAD'>toggleGroup.getToggles.removeIf(_.isSelected)</span><span style=''>
+</span>112 <span style=''>
+</span>113 <span style=''>
+</span>114 <span style=''>  </span><span style='background: #F0ADAD'>private def addAnswerGUI</span><span style=''>(): Unit =
+</span>115 <span style=''>    </span><span style='background: #F0ADAD'>Platform.runLater { () =&gt;
+</span>116 <span style=''></span><span style='background: #F0ADAD'>      val idNum = answersVBox.getChildren.size()
+</span>117 <span style=''></span><span style='background: #F0ADAD'>      val answerBox: HBox = HBox()
+</span>118 <span style=''></span><span style='background: #F0ADAD'>      answerBox.setAlignment(javafx.geometry.Pos.CENTER)
+</span>119 <span style=''></span><span style='background: #F0ADAD'>      answerBox.setPadding(Insets.apply(10, 0, 0, 10))
+</span>120 <span style=''></span><span style='background: #F0ADAD'>      val textField: TextField = TextField()
+</span>121 <span style=''></span><span style='background: #F0ADAD'>      textField.setId(&quot;answerTextField&quot; + idNum)
+</span>122 <span style=''></span><span style='background: #F0ADAD'>      textField.setPrefWidth(650.0)
+</span>123 <span style=''></span><span style='background: #F0ADAD'>      val checkBox = CheckBox()
+</span>124 <span style=''></span><span style='background: #F0ADAD'>      checkBox.setId(&quot;answerCorrectCheckBox&quot; + idNum)
+</span>125 <span style=''></span><span style='background: #F0ADAD'>      answerBox.getChildren.addAll(Label(&quot;Risposta &quot;), textField, Label(&quot; Corretta &quot;), checkBox)
+</span>126 <span style=''></span><span style='background: #F0ADAD'>      answersVBox.getChildren.addAll(answerBox)
+</span>127 <span style=''></span><span style='background: #F0ADAD'>    }</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          1272
+        </td>
+        <td>
+          1061
+          -
+          1074
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ToggleGroup()
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          1274
+        </td>
+        <td>
+          1204
+          -
+          1233
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          backButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def backButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1273
+        </td>
+        <td>
+          1248
+          -
+          1263
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Back)
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          1276
+        </td>
+        <td>
+          1267
+          -
+          1301
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          addAnswerButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def addAnswerButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          1275
+        </td>
+        <td>
+          1316
+          -
+          1330
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addAnswerGUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          addAnswerGUI()
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          1284
+        </td>
+        <td>
+          1334
+          -
+          1371
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          removeAnswerButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def removeAnswerButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1282
+        </td>
+        <td>
+          1427
+          -
+          1491
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          remove
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren.remove(answersVBox.getChildren.size()-1)
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1279
+        </td>
+        <td>
+          1427
+          -
+          1450
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1278
+        </td>
+        <td>
+          1389
+          -
+          1419
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren.size()
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1281
+        </td>
+        <td>
+          1458
+          -
+          1488
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren.size()
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1283
+        </td>
+        <td>
+          1427
+          -
+          1491
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren.remove(answersVBox.getChildren.size()-1)
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1277
+        </td>
+        <td>
+          1389
+          -
+          1412
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1280
+        </td>
+        <td>
+          1458
+          -
+          1481
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          1308
+        </td>
+        <td>
+          1495
+          -
+          1527
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          addQuizButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def addQuizButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          1285
+        </td>
+        <td>
+          1545
+          -
+          1556
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          checkInputs
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkInputs
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1305
+        </td>
+        <td>
+          1568
+          -
+          2334
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          val answerList:ListBuffer[Answer] = ListBuffer()
+      answersVBox.getChildren.forEach( hBox =&gt;
+        val answerTextField = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(1).asInstanceOf[TextField]
+        val answerCorrectCheckBox:CheckBox = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(3).asInstanceOf[CheckBox]
+        answerList += Answer(answerTextField.getText, answerCorrectCheckBox.isSelected)
+      )
+      val quiz = Quiz(question=questionTextField.getText, answerList = answerList.toList, maxScore = scoreIntegerField.getValue, imagePath = imagePathTextField.getText match
+        case &quot;&quot; =&gt; None
+        case text =&gt; Some(text)
+      )
+      import controller.AddQuizMenuController.AddQuizAction
+      sendEvent(AddQuizAction(Option(quiz)))
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1286
+        </td>
+        <td>
+          1604
+          -
+          1616
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ListBuffer()
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          1287
+        </td>
+        <td>
+          1623
+          -
+          1646
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          1295
+        </td>
+        <td>
+          1623
+          -
+          1991
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          forEach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren.forEach( hBox =&gt;
+        val answerTextField = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(1).asInstanceOf[TextField]
+        val answerCorrectCheckBox:CheckBox = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(3).asInstanceOf[CheckBox]
+        answerList += Answer(answerTextField.getText, answerCorrectCheckBox.isSelected)
+      )
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          1288
+        </td>
+        <td>
+          1694
+          -
+          1741
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildrenUnmodifiable
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          hBox.asInstanceOf[HBox].getChildrenUnmodifiable
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          1289
+        </td>
+        <td>
+          1694
+          -
+          1748
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(1)
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          1291
+        </td>
+        <td>
+          1818
+          -
+          1872
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(3)
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          1290
+        </td>
+        <td>
+          1818
+          -
+          1865
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildrenUnmodifiable
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          hBox.asInstanceOf[HBox].getChildrenUnmodifiable
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          1294
+        </td>
+        <td>
+          1904
+          -
+          1983
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +=
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answerList += Answer(answerTextField.getText, answerCorrectCheckBox.isSelected)
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          1293
+        </td>
+        <td>
+          1950
+          -
+          1982
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          isSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answerCorrectCheckBox.isSelected
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          1292
+        </td>
+        <td>
+          1925
+          -
+          1948
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answerTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          1297
+        </td>
+        <td>
+          2063
+          -
+          2080
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answerList.toList
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          1296
+        </td>
+        <td>
+          2023
+          -
+          2048
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          questionTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          1299
+        </td>
+        <td>
+          2133
+          -
+          2159
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          imagePathTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          1302
+        </td>
+        <td>
+          2009
+          -
+          2013
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Quiz
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          1298
+        </td>
+        <td>
+          2093
+          -
+          2119
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getValue
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scoreIntegerField.getValue
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1300
+        </td>
+        <td>
+          2174
+          -
+          2181
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case &quot;&quot;
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          1301
+        </td>
+        <td>
+          2198
+          -
+          2207
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case text
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          1303
+        </td>
+        <td>
+          2320
+          -
+          2332
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(quiz)
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          1304
+        </td>
+        <td>
+          2296
+          -
+          2334
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(AddQuizAction(Option(quiz)))
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          1306
+        </td>
+        <td>
+          2350
+          -
+          2398
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          feedbackLabel.setText(&quot;Configurazione Invalida&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          1307
+        </td>
+        <td>
+          2350
+          -
+          2398
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          feedbackLabel.setText(&quot;Configurazione Invalida&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          1309
+        </td>
+        <td>
+          2402
+          -
+          2444
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          loadGUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          loadGUI(stage, this, &quot;add_quiz_menu.fxml&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          1338
+        </td>
+        <td>
+          2448
+          -
+          2469
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def updateUI
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          1326
+        </td>
+        <td>
+          2523
+          -
+          2557
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case CourseUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          1325
+        </td>
+        <td>
+          2567
+          -
+          3081
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          runLater
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Platform.runLater { () =&gt;
+        coursesVBox.getChildren.clear()
+        updateParameter.get.foreach(savedCourse =&gt;
+          val radioButton = RadioButton(savedCourse.courseId.courseName);
+          radioButton.setToggleGroup(toggleGroup);
+          radioButton.getStyleClass.add(&quot;label-dark&quot;);
+          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+            sendEvent(AddCourseAction(Option(savedCourse)))
+          );
+          coursesVBox.getChildren.addAll(radioButton)
+        )
+      }
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          1311
+        </td>
+        <td>
+          2601
+          -
+          2632
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          clear
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren.clear()
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          1310
+        </td>
+        <td>
+          2601
+          -
+          2624
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          1324
+        </td>
+        <td>
+          2641
+          -
+          3073
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get.foreach(savedCourse =&gt;
+          val radioButton = RadioButton(savedCourse.courseId.courseName);
+          radioButton.setToggleGroup(toggleGroup);
+          radioButton.getStyleClass.add(&quot;label-dark&quot;);
+          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+            sendEvent(AddCourseAction(Option(savedCourse)))
+          );
+          coursesVBox.getChildren.addAll(radioButton)
+        )
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          1312
+        </td>
+        <td>
+          2641
+          -
+          2660
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          1315
+        </td>
+        <td>
+          2712
+          -
+          2756
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          RadioButton(savedCourse.courseId.courseName)
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          1314
+        </td>
+        <td>
+          2724
+          -
+          2755
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          savedCourse.courseId.courseName
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          1313
+        </td>
+        <td>
+          2724
+          -
+          2744
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          savedCourse.courseId
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          1316
+        </td>
+        <td>
+          2768
+          -
+          2807
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setToggleGroup
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.setToggleGroup(toggleGroup)
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          1318
+        </td>
+        <td>
+          2819
+          -
+          2862
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          add
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.getStyleClass.add(&quot;label-dark&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          1317
+        </td>
+        <td>
+          2819
+          -
+          2844
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getStyleClass
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.getStyleClass
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          1321
+        </td>
+        <td>
+          2874
+          -
+          3008
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addEventHandler
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+            sendEvent(AddCourseAction(Option(savedCourse)))
+          )
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          1320
+        </td>
+        <td>
+          2949
+          -
+          2996
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(AddCourseAction(Option(savedCourse)))
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          1319
+        </td>
+        <td>
+          2975
+          -
+          2994
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(savedCourse)
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          1323
+        </td>
+        <td>
+          3020
+          -
+          3063
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addAll
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren.addAll(radioButton)
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          1322
+        </td>
+        <td>
+          3020
+          -
+          3043
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          99
+        </td>
+        <td>
+          1336
+        </td>
+        <td>
+          3086
+          -
+          3106
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case QuizAddedUpdate
+        </td>
+      </tr><tr>
+        <td>
+          100
+        </td>
+        <td>
+          1327
+        </td>
+        <td>
+          3116
+          -
+          3157
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          feedbackLabel.setText(&quot;Quiz Aggiunto!!!&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          101
+        </td>
+        <td>
+          1328
+        </td>
+        <td>
+          3164
+          -
+          3189
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          clear
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          questionTextField.clear()
+        </td>
+      </tr><tr>
+        <td>
+          102
+        </td>
+        <td>
+          1329
+        </td>
+        <td>
+          3196
+          -
+          3222
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          clear
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          imagePathTextField.clear()
+        </td>
+      </tr><tr>
+        <td>
+          103
+        </td>
+        <td>
+          1330
+        </td>
+        <td>
+          3229
+          -
+          3259
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setValue
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scoreIntegerField.setValue(10)
+        </td>
+      </tr><tr>
+        <td>
+          104
+        </td>
+        <td>
+          1333
+        </td>
+        <td>
+          3308
+          -
+          3331
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          104
+        </td>
+        <td>
+          1332
+        </td>
+        <td>
+          3272
+          -
+          3302
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren.size()
+        </td>
+      </tr><tr>
+        <td>
+          104
+        </td>
+        <td>
+          1334
+        </td>
+        <td>
+          3308
+          -
+          3341
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          remove
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren.remove(0)
+        </td>
+      </tr><tr>
+        <td>
+          104
+        </td>
+        <td>
+          1331
+        </td>
+        <td>
+          3272
+          -
+          3295
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          1335
+        </td>
+        <td>
+          3348
+          -
+          3362
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addAnswerGUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          addAnswerGUI()
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          1337
+        </td>
+        <td>
+          3367
+          -
+          3373
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case _
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          1345
+        </td>
+        <td>
+          3384
+          -
+          3407
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          checkInputs
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          private def checkInputs
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          1342
+        </td>
+        <td>
+          3461
+          -
+          3483
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getToggles
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          toggleGroup.getToggles
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          1339
+        </td>
+        <td>
+          3423
+          -
+          3448
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          questionTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          1341
+        </td>
+        <td>
+          3423
+          -
+          3457
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          nonEmpty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          questionTextField.getText.nonEmpty
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          1344
+        </td>
+        <td>
+          3461
+          -
+          3506
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          removeIf
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          toggleGroup.getToggles.removeIf(_.isSelected)
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          1343
+        </td>
+        <td>
+          3493
+          -
+          3505
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          isSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          _.isSelected
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          1340
+        </td>
+        <td>
+          3423
+          -
+          3448
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          augmentString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          questionTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          113
+        </td>
+        <td>
+          1367
+        </td>
+        <td>
+          3511
+          -
+          3535
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          addAnswerGUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          private def addAnswerGUI
+        </td>
+      </tr><tr>
+        <td>
+          114
+        </td>
+        <td>
+          1366
+        </td>
+        <td>
+          3550
+          -
+          4138
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          runLater
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Platform.runLater { () =&gt;
+      val idNum = answersVBox.getChildren.size()
+      val answerBox: HBox = HBox()
+      answerBox.setAlignment(javafx.geometry.Pos.CENTER)
+      answerBox.setPadding(Insets.apply(10, 0, 0, 10))
+      val textField: TextField = TextField()
+      textField.setId(&quot;answerTextField&quot; + idNum)
+      textField.setPrefWidth(650.0)
+      val checkBox = CheckBox()
+      checkBox.setId(&quot;answerCorrectCheckBox&quot; + idNum)
+      answerBox.getChildren.addAll(Label(&quot;Risposta &quot;), textField, Label(&quot; Corretta &quot;), checkBox)
+      answersVBox.getChildren.addAll(answerBox)
+    }
+        </td>
+      </tr><tr>
+        <td>
+          115
+        </td>
+        <td>
+          1347
+        </td>
+        <td>
+          3594
+          -
+          3624
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren.size()
+        </td>
+      </tr><tr>
+        <td>
+          115
+        </td>
+        <td>
+          1346
+        </td>
+        <td>
+          3594
+          -
+          3617
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          116
+        </td>
+        <td>
+          1348
+        </td>
+        <td>
+          3653
+          -
+          3659
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          HBox()
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          1349
+        </td>
+        <td>
+          3666
+          -
+          3716
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setAlignment
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answerBox.setAlignment(javafx.geometry.Pos.CENTER)
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1351
+        </td>
+        <td>
+          3744
+          -
+          3770
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sfxInsets2jfx
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Insets.apply(10, 0, 0, 10)
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1350
+        </td>
+        <td>
+          3744
+          -
+          3770
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Insets.apply(10, 0, 0, 10)
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1352
+        </td>
+        <td>
+          3723
+          -
+          3771
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setPadding
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answerBox.setPadding(Insets.apply(10, 0, 0, 10))
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          1353
+        </td>
+        <td>
+          3805
+          -
+          3816
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          TextField()
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          1354
+        </td>
+        <td>
+          3839
+          -
+          3864
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;answerTextField&quot; + idNum
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          1355
+        </td>
+        <td>
+          3823
+          -
+          3865
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          textField.setId(&quot;answerTextField&quot; + idNum)
+        </td>
+      </tr><tr>
+        <td>
+          121
+        </td>
+        <td>
+          1356
+        </td>
+        <td>
+          3872
+          -
+          3901
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setPrefWidth
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          textField.setPrefWidth(650.0)
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          1357
+        </td>
+        <td>
+          3923
+          -
+          3933
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          CheckBox()
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          1359
+        </td>
+        <td>
+          3940
+          -
+          3987
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkBox.setId(&quot;answerCorrectCheckBox&quot; + idNum)
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          1358
+        </td>
+        <td>
+          3955
+          -
+          3986
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;answerCorrectCheckBox&quot; + idNum
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          1360
+        </td>
+        <td>
+          3994
+          -
+          4015
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answerBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          1363
+        </td>
+        <td>
+          3994
+          -
+          4084
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addAll
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answerBox.getChildren.addAll(Label(&quot;Risposta &quot;), textField, Label(&quot; Corretta &quot;), checkBox)
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          1362
+        </td>
+        <td>
+          4054
+          -
+          4073
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Label(&quot; Corretta &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          1361
+        </td>
+        <td>
+          4023
+          -
+          4041
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Label(&quot;Risposta &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          1365
+        </td>
+        <td>
+          4091
+          -
+          4132
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addAll
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren.addAll(answerBox)
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          1364
+        </td>
+        <td>
+          4091
+          -
+          4114
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

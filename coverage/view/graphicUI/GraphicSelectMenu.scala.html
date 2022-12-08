@@ -1,0 +1,1581 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          view/graphicUI/GraphicSelectMenu.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package view.graphicUI
+</span>2 <span style=''>
+</span>3 <span style=''>import controller.SelectMenuController.{Back, Custom, Start, Selection}
+</span>4 <span style=''>import view.View.{GraphicView, sendEvent}
+</span>5 <span style=''>import view.updates.ViewUpdate
+</span>6 <span style=''>import utils.GUILoader
+</span>7 <span style=''>import utils.GUILoader.loadGUI
+</span>8 <span style=''>import javafx.fxml.FXML
+</span>9 <span style=''>import javafx.scene.control.{Button, CheckBox, ScrollPane}
+</span>10 <span style=''>import javafx.scene.layout.VBox
+</span>11 <span style=''>import javafx.stage.Stage
+</span>12 <span style=''>import view.SelectMenuView.*
+</span>13 <span style=''>import javafx.application.Platform
+</span>14 <span style=''>import javafx.scene.input.MouseEvent
+</span>15 <span style=''>import model.SavedCourse
+</span>16 <span style=''>
+</span>17 <span style=''>import java.util
+</span>18 <span style=''>import scala.collection.mutable.ListBuffer
+</span>19 <span style=''>
+</span>20 <span style=''>object GraphicSelectMenu
+</span>21 <span style=''>
+</span>22 <span style=''>/** Select menu graphic interface  */
+</span>23 <span style=''>class GraphicSelectMenu(stage: Stage) extends GraphicView:
+</span>24 <span style=''>
+</span>25 <span style=''>  @FXML
+</span>26 <span style=''>  var backButton: Button = _
+</span>27 <span style=''>
+</span>28 <span style=''>  @FXML
+</span>29 <span style=''>  var coursesScrollPane: ScrollPane = _
+</span>30 <span style=''>
+</span>31 <span style=''>  @FXML
+</span>32 <span style=''>  var standardGameButton: Button = _
+</span>33 <span style=''>
+</span>34 <span style=''>  @FXML
+</span>35 <span style=''>  var reviewGameButton: Button = _
+</span>36 <span style=''>
+</span>37 <span style=''>  @FXML
+</span>38 <span style=''>  var customGameButton: Button = _
+</span>39 <span style=''>
+</span>40 <span style=''>  @FXML
+</span>41 <span style=''>  var coursesVBox: VBox = _
+</span>42 <span style=''>
+</span>43 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>44 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
+</span>45 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
+</span>46 <span style=''>
+</span>47 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>48 <span style=''></span><span style='background: #F0ADAD'>  def standardGameButtonClicked</span><span style=''>(): Unit =
+</span>49 <span style=''>    if </span><span style='background: #F0ADAD'>isCourseSelected</span><span style=''> then </span><span style='background: #F0ADAD'>sendEvent(Start)</span><span style=''>
+</span>50 <span style=''>
+</span>51 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>52 <span style=''></span><span style='background: #F0ADAD'>  def reviewGameButtonClicked</span><span style=''>(): Unit = </span><span style='background: #F0ADAD'>???</span><span style=''>
+</span>53 <span style=''>
+</span>54 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>55 <span style=''></span><span style='background: #F0ADAD'>  def customGameButtonClicked</span><span style=''>(): Unit =
+</span>56 <span style=''>    if </span><span style='background: #F0ADAD'>isCourseSelected</span><span style=''> then </span><span style='background: #F0ADAD'>sendEvent(Custom)</span><span style=''>
+</span>57 <span style=''>
+</span>58 <span style=''>  var checkBoxList: ListBuffer[CheckBox] = </span><span style='background: #F0ADAD'>ListBuffer()</span><span style=''>
+</span>59 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;select_menu.fxml&quot;)</span><span style=''>
+</span>60 <span style=''>
+</span>61 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>62 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
+</span>63 <span style=''>      </span><span style='background: #F0ADAD'>standardGameButton.setDisable(!isCourseSelected)</span><span style=''>
+</span>64 <span style=''>      </span><span style='background: #F0ADAD'>customGameButton.setDisable(!isCourseSelected)</span><span style=''>
+</span>65 <span style=''>    </span><span style='background: #F0ADAD'>case CourseUpdate(updateParameter)</span><span style=''> =&gt;
+</span>66 <span style=''>      if </span><span style='background: #F0ADAD'>update.updateParameter.isDefined</span><span style=''> then
+</span>67 <span style=''>        </span><span style='background: #F0ADAD'>val savedCourses: List[(SavedCourse, Boolean)] = updateParameter.get.asInstanceOf[List[(SavedCourse, Boolean)]]
+</span>68 <span style=''></span><span style='background: #F0ADAD'>        case class CourseToPrint(savedCourse: SavedCourse, isSelected: Boolean)
+</span>69 <span style=''></span><span style='background: #F0ADAD'>        var coursesToPrint: ListBuffer[CourseToPrint] = ListBuffer()
+</span>70 <span style=''></span><span style='background: #F0ADAD'>
+</span>71 <span style=''></span><span style='background: #F0ADAD'>        standardGameButton.setDisable(!isCourseSelected)
+</span>72 <span style=''></span><span style='background: #F0ADAD'>        customGameButton.setDisable(!isCourseSelected)
+</span>73 <span style=''></span><span style='background: #F0ADAD'>
+</span>74 <span style=''></span><span style='background: #F0ADAD'>        savedCourses.foreach(course =&gt;
+</span>75 <span style=''></span><span style='background: #F0ADAD'>          coursesToPrint += CourseToPrint(course._1, course._2)
+</span>76 <span style=''></span><span style='background: #F0ADAD'>        )
+</span>77 <span style=''></span><span style='background: #F0ADAD'>        Platform.runLater { () =&gt;
+</span>78 <span style=''></span><span style='background: #F0ADAD'>          coursesVBox.getChildren.clear()
+</span>79 <span style=''></span><span style='background: #F0ADAD'>          checkBoxList.clear()
+</span>80 <span style=''></span><span style='background: #F0ADAD'>          coursesToPrint.foreach(courseToPrint =&gt;
+</span>81 <span style=''></span><span style='background: #F0ADAD'>            val checkbox: CheckBox = new CheckBox(s&quot;${courseToPrint.savedCourse.courseId.courseName} (${courseToPrint.savedCourse.quizList.size} quiz)&quot;);
+</span>82 <span style=''></span><span style='background: #F0ADAD'>            checkbox.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+</span>83 <span style=''></span><span style='background: #F0ADAD'>              sendEvent(Selection(Option(coursesVBox.getChildren.indexOf(checkbox))))
+</span>84 <span style=''></span><span style='background: #F0ADAD'>            );
+</span>85 <span style=''></span><span style='background: #F0ADAD'>            checkbox.setSelected(courseToPrint.isSelected);
+</span>86 <span style=''></span><span style='background: #F0ADAD'>            checkBoxList += checkbox;
+</span>87 <span style=''></span><span style='background: #F0ADAD'>            checkbox.getStyleClass.add(&quot;label-dark&quot;);
+</span>88 <span style=''></span><span style='background: #F0ADAD'>            coursesVBox.getChildren.add(checkbox)
+</span>89 <span style=''></span><span style='background: #F0ADAD'>          )
+</span>90 <span style=''></span><span style='background: #F0ADAD'>        }</span><span style=''>
+</span>91 <span style=''>
+</span>92 <span style=''>  /* function to check if at least one course is selected before starting a game */
+</span>93 <span style=''>  </span><span style='background: #F0ADAD'>private def isCourseSelected</span><span style=''>: Boolean =
+</span>94 <span style=''>    </span><span style='background: #F0ADAD'>checkBoxList.exists(checkBox =&gt; checkBox.isSelected)</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          1607
+        </td>
+        <td>
+          936
+          -
+          965
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          backButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def backButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          1606
+        </td>
+        <td>
+          980
+          -
+          995
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Back)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1611
+        </td>
+        <td>
+          999
+          -
+          1036
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          standardGameButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def standardGameButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          1608
+        </td>
+        <td>
+          1054
+          -
+          1070
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isCourseSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          isCourseSelected
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          1610
+        </td>
+        <td>
+          1076
+          -
+          1092
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Start)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          1609
+        </td>
+        <td>
+          1076
+          -
+          1092
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Start)
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          1613
+        </td>
+        <td>
+          1096
+          -
+          1131
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          reviewGameButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def reviewGameButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          1612
+        </td>
+        <td>
+          1142
+          -
+          1145
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          ???
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ???
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          1617
+        </td>
+        <td>
+          1149
+          -
+          1184
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          customGameButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def customGameButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1614
+        </td>
+        <td>
+          1202
+          -
+          1218
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isCourseSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          isCourseSelected
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1616
+        </td>
+        <td>
+          1224
+          -
+          1241
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Custom)
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1615
+        </td>
+        <td>
+          1224
+          -
+          1241
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Custom)
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          1618
+        </td>
+        <td>
+          1286
+          -
+          1298
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ListBuffer()
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          1619
+        </td>
+        <td>
+          1301
+          -
+          1341
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          loadGUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          loadGUI(stage, this, &quot;select_menu.fxml&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          1660
+        </td>
+        <td>
+          1345
+          -
+          1366
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def updateUI
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1624
+        </td>
+        <td>
+          1420
+          -
+          1438
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case DefaultUpdate
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          1620
+        </td>
+        <td>
+          1479
+          -
+          1495
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isCourseSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          isCourseSelected
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          1621
+        </td>
+        <td>
+          1448
+          -
+          1496
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setDisable
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          standardGameButton.setDisable(!isCourseSelected)
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1623
+        </td>
+        <td>
+          1503
+          -
+          1549
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setDisable
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          customGameButton.setDisable(!isCourseSelected)
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1622
+        </td>
+        <td>
+          1532
+          -
+          1548
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isCourseSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          isCourseSelected
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          1659
+        </td>
+        <td>
+          1554
+          -
+          1588
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case CourseUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          1625
+        </td>
+        <td>
+          1601
+          -
+          1633
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isDefined
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          update.updateParameter.isDefined
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          1626
+        </td>
+        <td>
+          1696
+          -
+          1715
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          1658
+        </td>
+        <td>
+          1647
+          -
+          2842
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          val savedCourses: List[(SavedCourse, Boolean)] = updateParameter.get.asInstanceOf[List[(SavedCourse, Boolean)]]
+        case class CourseToPrint(savedCourse: SavedCourse, isSelected: Boolean)
+        var coursesToPrint: ListBuffer[CourseToPrint] = ListBuffer()
+
+        standardGameButton.setDisable(!isCourseSelected)
+        customGameButton.setDisable(!isCourseSelected)
+
+        savedCourses.foreach(course =&gt;
+          coursesToPrint += CourseToPrint(course._1, course._2)
+        )
+        Platform.runLater { () =&gt;
+          coursesVBox.getChildren.clear()
+          checkBoxList.clear()
+          coursesToPrint.foreach(courseToPrint =&gt;
+            val checkbox: CheckBox = new CheckBox(s&quot;${courseToPrint.savedCourse.courseId.courseName} (${courseToPrint.savedCourse.quizList.size} quiz)&quot;);
+            checkbox.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+              sendEvent(Selection(Option(coursesVBox.getChildren.indexOf(checkbox))))
+            );
+            checkbox.setSelected(courseToPrint.isSelected);
+            checkBoxList += checkbox;
+            checkbox.getStyleClass.add(&quot;label-dark&quot;);
+            coursesVBox.getChildren.add(checkbox)
+          )
+        }
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1627
+        </td>
+        <td>
+          1895
+          -
+          1907
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ListBuffer()
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          1629
+        </td>
+        <td>
+          1917
+          -
+          1965
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setDisable
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          standardGameButton.setDisable(!isCourseSelected)
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          1628
+        </td>
+        <td>
+          1948
+          -
+          1964
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isCourseSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          isCourseSelected
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          1631
+        </td>
+        <td>
+          1974
+          -
+          2020
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setDisable
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          customGameButton.setDisable(!isCourseSelected)
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          1630
+        </td>
+        <td>
+          2003
+          -
+          2019
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isCourseSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          isCourseSelected
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          1635
+        </td>
+        <td>
+          2030
+          -
+          2134
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          savedCourses.foreach(course =&gt;
+          coursesToPrint += CourseToPrint(course._1, course._2)
+        )
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          1632
+        </td>
+        <td>
+          2103
+          -
+          2112
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          course._1
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          1634
+        </td>
+        <td>
+          2071
+          -
+          2124
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +=
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesToPrint += CourseToPrint(course._1, course._2)
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          1633
+        </td>
+        <td>
+          2114
+          -
+          2123
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          course._2
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          1657
+        </td>
+        <td>
+          2143
+          -
+          2842
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          runLater
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Platform.runLater { () =&gt;
+          coursesVBox.getChildren.clear()
+          checkBoxList.clear()
+          coursesToPrint.foreach(courseToPrint =&gt;
+            val checkbox: CheckBox = new CheckBox(s&quot;${courseToPrint.savedCourse.courseId.courseName} (${courseToPrint.savedCourse.quizList.size} quiz)&quot;);
+            checkbox.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+              sendEvent(Selection(Option(coursesVBox.getChildren.indexOf(checkbox))))
+            );
+            checkbox.setSelected(courseToPrint.isSelected);
+            checkBoxList += checkbox;
+            checkbox.getStyleClass.add(&quot;label-dark&quot;);
+            coursesVBox.getChildren.add(checkbox)
+          )
+        }
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          1637
+        </td>
+        <td>
+          2179
+          -
+          2210
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          clear
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren.clear()
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          1636
+        </td>
+        <td>
+          2179
+          -
+          2202
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          1638
+        </td>
+        <td>
+          2221
+          -
+          2241
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          clear
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkBoxList.clear()
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          1656
+        </td>
+        <td>
+          2252
+          -
+          2832
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesToPrint.foreach(courseToPrint =&gt;
+            val checkbox: CheckBox = new CheckBox(s&quot;${courseToPrint.savedCourse.courseId.courseName} (${courseToPrint.savedCourse.quizList.size} quiz)&quot;);
+            checkbox.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+              sendEvent(Selection(Option(coursesVBox.getChildren.indexOf(checkbox))))
+            );
+            checkbox.setSelected(courseToPrint.isSelected);
+            checkBoxList += checkbox;
+            checkbox.getStyleClass.add(&quot;label-dark&quot;);
+            coursesVBox.getChildren.add(checkbox)
+          )
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          1641
+        </td>
+        <td>
+          2396
+          -
+          2430
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          quizList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseToPrint.savedCourse.quizList
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          1644
+        </td>
+        <td>
+          2329
+          -
+          2444
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new CheckBox(s&quot;${courseToPrint.savedCourse.courseId.courseName} (${courseToPrint.savedCourse.quizList.size} quiz)&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          1643
+        </td>
+        <td>
+          2342
+          -
+          2443
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;${courseToPrint.savedCourse.courseId.courseName} (${courseToPrint.savedCourse.quizList.size} quiz)&quot;
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          1640
+        </td>
+        <td>
+          2346
+          -
+          2391
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseToPrint.savedCourse.courseId.courseName
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          1642
+        </td>
+        <td>
+          2396
+          -
+          2435
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseToPrint.savedCourse.quizList.size
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          1639
+        </td>
+        <td>
+          2346
+          -
+          2380
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseToPrint.savedCourse.courseId
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          1649
+        </td>
+        <td>
+          2458
+          -
+          2617
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addEventHandler
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkbox.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+              sendEvent(Selection(Option(coursesVBox.getChildren.indexOf(checkbox))))
+            )
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          1647
+        </td>
+        <td>
+          2552
+          -
+          2601
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(coursesVBox.getChildren.indexOf(checkbox))
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          1646
+        </td>
+        <td>
+          2559
+          -
+          2600
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          indexOf
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren.indexOf(checkbox)
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          1645
+        </td>
+        <td>
+          2559
+          -
+          2582
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          1648
+        </td>
+        <td>
+          2532
+          -
+          2603
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Selection(Option(coursesVBox.getChildren.indexOf(checkbox))))
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          1650
+        </td>
+        <td>
+          2631
+          -
+          2677
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkbox.setSelected(courseToPrint.isSelected)
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          1651
+        </td>
+        <td>
+          2691
+          -
+          2715
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +=
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkBoxList += checkbox
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          1653
+        </td>
+        <td>
+          2729
+          -
+          2769
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          add
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkbox.getStyleClass.add(&quot;label-dark&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          1652
+        </td>
+        <td>
+          2729
+          -
+          2751
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getStyleClass
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkbox.getStyleClass
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          1655
+        </td>
+        <td>
+          2783
+          -
+          2820
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          add
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren.add(checkbox)
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          1654
+        </td>
+        <td>
+          2783
+          -
+          2806
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          1663
+        </td>
+        <td>
+          2930
+          -
+          2958
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          isCourseSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          private def isCourseSelected
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          1662
+        </td>
+        <td>
+          2974
+          -
+          3026
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          exists
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkBoxList.exists(checkBox =&gt; checkBox.isSelected)
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          1661
+        </td>
+        <td>
+          3006
+          -
+          3025
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          isSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkBox.isSelected
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

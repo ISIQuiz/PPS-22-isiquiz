@@ -1,0 +1,1527 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          view/terminalUI/TerminalAddQuizMenu.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package view.terminalUI
+</span>2 <span style=''>
+</span>3 <span style=''>import controller.AddQuizMenuController
+</span>4 <span style=''>import controller.AddQuizMenuController.Back
+</span>5 <span style=''>import controller.actions.Action
+</span>6 <span style=''>import model.Answer.Answer
+</span>7 <span style=''>import model.SavedCourse
+</span>8 <span style=''>import view.View.*
+</span>9 <span style=''>import view.updates.ViewUpdate
+</span>10 <span style=''>import view.AddQuizMenuView.*
+</span>11 <span style=''>
+</span>12 <span style=''>import java.util.UUID
+</span>13 <span style=''>import scala.collection.mutable.Map
+</span>14 <span style=''>import scala.io.StdIn.readLine
+</span>15 <span style=''>
+</span>16 <span style=''>object TerminalAddQuizMenu
+</span>17 <span style=''>
+</span>18 <span style=''>/** Add quiz terminal interface  */
+</span>19 <span style=''>class TerminalAddQuizMenu extends TerminalView:
+</span>20 <span style=''>
+</span>21 <span style=''>  var courseList:List[SavedCourse] = </span><span style='background: #F0ADAD'>Nil</span><span style=''>
+</span>22 <span style=''>
+</span>23 <span style=''>  override val actionsMap: Map[String, Action[Any]] = </span><span style='background: #F0ADAD'>Map(
+</span>24 <span style=''></span><span style='background: #F0ADAD'>    &quot;B&quot; -&gt; Back,
+</span>25 <span style=''></span><span style='background: #F0ADAD'>  )</span><span style=''>
+</span>26 <span style=''>
+</span>27 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>28 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
+</span>29 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Menu aggiunta quiz:\n1) Menu principale&quot;)</span><span style=''>
+</span>30 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Aggiunta quiz:&quot;)</span><span style=''>
+</span>31 <span style=''>    </span><span style='background: #F0ADAD'>case CourseUpdate(updateParameter)</span><span style=''> =&gt;
+</span>32 <span style=''>      courseList = </span><span style='background: #F0ADAD'>updateParameter.get</span><span style=''>
+</span>33 <span style=''>    </span><span style='background: #F0ADAD'>case AskCourseUpdate</span><span style=''> =&gt;
+</span>34 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Seleziona il corso al quale aggiungere la domanda&quot;)</span><span style=''>
+</span>35 <span style=''>      </span><span style='background: #F0ADAD'>courseList.map(course=&gt;course.courseId.courseName).zipWithIndex.foreach{ case (e, i) =&gt; println(i+&quot;] &quot;+e) }</span><span style=''>
+</span>36 <span style=''>      val courseIndex = </span><span style='background: #F0ADAD'>readLine.toInt</span><span style=''>
+</span>37 <span style=''>      import controller.AddQuizMenuController.AddCourseAction
+</span>38 <span style=''>      </span><span style='background: #F0ADAD'>sendEvent(AddCourseAction(courseList.lift(courseIndex)))</span><span style=''>
+</span>39 <span style=''>    </span><span style='background: #F0ADAD'>case AskQuizUpdate</span><span style=''> =&gt;
+</span>40 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Inserisci domanda:&quot;)</span><span style=''>
+</span>41 <span style=''>      val question = </span><span style='background: #F0ADAD'>readLine</span><span style=''>
+</span>42 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Inserisci score:&quot;)</span><span style=''>
+</span>43 <span style=''>      val score = </span><span style='background: #F0ADAD'>readLine.toInt</span><span style=''>
+</span>44 <span style=''>      import model.Answer.Answer
+</span>45 <span style=''>      var answerList:List[Answer] = </span><span style='background: #F0ADAD'>Nil</span><span style=''>
+</span>46 <span style=''>      while {</span><span style='background: #F0ADAD'>println(&quot;Vuoi aggiungere una risposta? S:si&quot;)</span><span style=''>; &quot;s&quot; == </span><span style='background: #F0ADAD'>readLine.toLowerCase</span><span style=''>} do
+</span>47 <span style=''>        </span><span style='background: #F0ADAD'>println(&quot;Inserisci riposta&quot;)</span><span style=''>
+</span>48 <span style=''>        val answerText = </span><span style='background: #F0ADAD'>readLine</span><span style=''>
+</span>49 <span style=''>        </span><span style='background: #F0ADAD'>println(&quot;La risposta è corretta? S:si&quot;)</span><span style=''>
+</span>50 <span style=''>        val isCorrect = &quot;s&quot; == </span><span style='background: #F0ADAD'>readLine.toLowerCase</span><span style=''>
+</span>51 <span style=''>        answerList = </span><span style='background: #F0ADAD'>answerList.::(Answer(answerText, isCorrect))</span><span style=''>
+</span>52 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Vuoi aggiungere un'image path? S:si&quot;)</span><span style=''>
+</span>53 <span style=''>      var imagePath:Option[String] = None
+</span>54 <span style=''>      if &quot;s&quot;==</span><span style='background: #F0ADAD'>readLine.toLowerCase</span><span style=''> then
+</span>55 <span style=''>        </span><span style='background: #F0ADAD'>println(&quot;inserisci image path:&quot;)
+</span>56 <span style=''></span><span style='background: #F0ADAD'>        imagePath = Some(readLine)</span><span style=''>
+</span>57 <span style=''>      import controller.AddQuizMenuController.AddQuizAction
+</span>58 <span style=''>      import model.Quiz.Quiz
+</span>59 <span style=''>      </span><span style='background: #F0ADAD'>sendEvent(AddQuizAction(Option(Quiz(question = question, answerList = answerList, maxScore = score, imagePath = imagePath))))</span><span style=''>
+</span>60 <span style=''>    </span><span style='background: #F0ADAD'>case QuizPrintUpdate(updateParameter)</span><span style=''> =&gt;
+</span>61 <span style=''>      import model.Quiz.*
+</span>62 <span style=''>      </span><span style='background: #F0ADAD'>println(printQuizFull(updateParameter.get))</span><span style=''>
+</span>63 <span style=''>    </span><span style='background: #F0ADAD'>case QuizAddedUpdate</span><span style=''> =&gt;
+</span>64 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Quiz Aggiunto!&quot;)</span><span style=''>
+</span>65 <span style=''>      </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
+</span>66 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          1870
+        </td>
+        <td>
+          516
+          -
+          519
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          Nil
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Nil
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          1872
+        </td>
+        <td>
+          575
+          -
+          600
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Map(
+    &quot;B&quot; -&gt; Back,
+  )
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          1871
+        </td>
+        <td>
+          584
+          -
+          596
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          -&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;B&quot; -&gt; Back,
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          1928
+        </td>
+        <td>
+          604
+          -
+          625
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def updateUI
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          1875
+        </td>
+        <td>
+          679
+          -
+          697
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case DefaultUpdate
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          1873
+        </td>
+        <td>
+          707
+          -
+          757
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Menu aggiunta quiz:\n1) Menu principale&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          1874
+        </td>
+        <td>
+          764
+          -
+          789
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Aggiunta quiz:&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          1877
+        </td>
+        <td>
+          794
+          -
+          828
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case CourseUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          1876
+        </td>
+        <td>
+          851
+          -
+          870
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          1893
+        </td>
+        <td>
+          875
+          -
+          895
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case AskCourseUpdate
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          1878
+        </td>
+        <td>
+          905
+          -
+          965
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Seleziona il corso al quale aggiungere la domanda&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          1883
+        </td>
+        <td>
+          1068
+          -
+          1076
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          i+&quot;] &quot;+e
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          1886
+        </td>
+        <td>
+          972
+          -
+          1079
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseList.map(course=&gt;course.courseId.courseName).zipWithIndex.foreach{ case (e, i) =&gt; println(i+&quot;] &quot;+e) }
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          1880
+        </td>
+        <td>
+          995
+          -
+          1021
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          course.courseId.courseName
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          1882
+        </td>
+        <td>
+          972
+          -
+          1035
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          zipWithIndex
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseList.map(course=&gt;course.courseId.courseName).zipWithIndex
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          1885
+        </td>
+        <td>
+          1045
+          -
+          1056
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case (e, i)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          1879
+        </td>
+        <td>
+          995
+          -
+          1010
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          course.courseId
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          1881
+        </td>
+        <td>
+          972
+          -
+          1022
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseList.map(course=&gt;course.courseId.courseName)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          1884
+        </td>
+        <td>
+          1060
+          -
+          1077
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(i+&quot;] &quot;+e)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          1889
+        </td>
+        <td>
+          1104
+          -
+          1118
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toInt
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine.toInt
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          1888
+        </td>
+        <td>
+          1104
+          -
+          1112
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          augmentString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          1887
+        </td>
+        <td>
+          1104
+          -
+          1112
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          1892
+        </td>
+        <td>
+          1187
+          -
+          1243
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(AddCourseAction(courseList.lift(courseIndex)))
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          1891
+        </td>
+        <td>
+          1213
+          -
+          1241
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseList.lift(courseIndex)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          1890
+        </td>
+        <td>
+          1213
+          -
+          1228
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          lift
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseList.lift
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          1919
+        </td>
+        <td>
+          1248
+          -
+          1266
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case AskQuizUpdate
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          1894
+        </td>
+        <td>
+          1276
+          -
+          1305
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Inserisci domanda:&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          1895
+        </td>
+        <td>
+          1327
+          -
+          1335
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1896
+        </td>
+        <td>
+          1342
+          -
+          1369
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Inserisci score:&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          1898
+        </td>
+        <td>
+          1388
+          -
+          1396
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          augmentString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          1897
+        </td>
+        <td>
+          1388
+          -
+          1396
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          1899
+        </td>
+        <td>
+          1388
+          -
+          1402
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toInt
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine.toInt
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          1900
+        </td>
+        <td>
+          1472
+          -
+          1475
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          Nil
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Nil
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          1901
+        </td>
+        <td>
+          1489
+          -
+          1534
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Vuoi aggiungere una risposta? S:si&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          1903
+        </td>
+        <td>
+          1543
+          -
+          1563
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toLowerCase
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine.toLowerCase
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          1902
+        </td>
+        <td>
+          1543
+          -
+          1551
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          1904
+        </td>
+        <td>
+          1576
+          -
+          1604
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Inserisci riposta&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1905
+        </td>
+        <td>
+          1630
+          -
+          1638
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          1906
+        </td>
+        <td>
+          1647
+          -
+          1686
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;La risposta è corretta? S:si&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          1907
+        </td>
+        <td>
+          1718
+          -
+          1726
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          1908
+        </td>
+        <td>
+          1718
+          -
+          1738
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toLowerCase
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine.toLowerCase
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          1909
+        </td>
+        <td>
+          1760
+          -
+          1804
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          ::
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answerList.::(Answer(answerText, isCorrect))
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          1910
+        </td>
+        <td>
+          1811
+          -
+          1857
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Vuoi aggiungere un'image path? S:si&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          1912
+        </td>
+        <td>
+          1914
+          -
+          1934
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toLowerCase
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine.toLowerCase
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          1911
+        </td>
+        <td>
+          1914
+          -
+          1922
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          1913
+        </td>
+        <td>
+          1948
+          -
+          1980
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;inserisci image path:&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          1915
+        </td>
+        <td>
+          1948
+          -
+          2015
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;inserisci image path:&quot;)
+        imagePath = Some(readLine)
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1914
+        </td>
+        <td>
+          2006
+          -
+          2014
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          1916
+        </td>
+        <td>
+          2142
+          -
+          2146
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Quiz
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          1918
+        </td>
+        <td>
+          2111
+          -
+          2236
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(AddQuizAction(Option(Quiz(question = question, answerList = answerList, maxScore = score, imagePath = imagePath))))
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          1917
+        </td>
+        <td>
+          2135
+          -
+          2234
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(Quiz(question = question, answerList = answerList, maxScore = score, imagePath = imagePath))
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          1923
+        </td>
+        <td>
+          2241
+          -
+          2278
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case QuizPrintUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1922
+        </td>
+        <td>
+          2314
+          -
+          2357
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(printQuizFull(updateParameter.get))
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1921
+        </td>
+        <td>
+          2322
+          -
+          2356
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          printQuizFull(updateParameter.get)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1920
+        </td>
+        <td>
+          2336
+          -
+          2355
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          1926
+        </td>
+        <td>
+          2362
+          -
+          2382
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case QuizAddedUpdate
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1924
+        </td>
+        <td>
+          2392
+          -
+          2417
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Quiz Aggiunto!&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          1925
+        </td>
+        <td>
+          2424
+          -
+          2439
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Back)
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          1927
+        </td>
+        <td>
+          2444
+          -
+          2450
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case _
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

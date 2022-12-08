@@ -1,0 +1,354 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          model/SavedCourse.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model
+</span>2 <span style=''>
+</span>3 <span style=''>import model.Quiz.*
+</span>4 <span style=''>/**
+</span>5 <span style=''> *  Trait for a saved course
+</span>6 <span style=''> */
+</span>7 <span style=''>trait SavedCourse extends Course:
+</span>8 <span style=''>  
+</span>9 <span style=''>  /**
+</span>10 <span style=''>   * @return course description
+</span>11 <span style=''>   */
+</span>12 <span style=''>  def description: Option[String]
+</span>13 <span style=''>
+</span>14 <span style=''>  /**
+</span>15 <span style=''>   * @return list of quiz
+</span>16 <span style=''>   */
+</span>17 <span style=''>  def quizList: List[Quiz]
+</span>18 <span style=''>
+</span>19 <span style=''>
+</span>20 <span style=''>/**
+</span>21 <span style=''> * Object used for managing a saved course
+</span>22 <span style=''> */
+</span>23 <span style=''>case object SavedCourse:
+</span>24 <span style=''>
+</span>25 <span style=''>  /**
+</span>26 <span style=''>   * Creates a new [[SavedCourse]]
+</span>27 <span style=''>   * @param courseId course identifier
+</span>28 <span style=''>   * @param description course description (optional)
+</span>29 <span style=''>   * @param quizList quiz list of the course 
+</span>30 <span style=''>   * @return SavedCourse
+</span>31 <span style=''>   */
+</span>32 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(courseId: CourseIdentifier,
+</span>33 <span style=''>            description: Option[String],
+</span>34 <span style=''>            quizList: List[Quiz]): SavedCourse =
+</span>35 <span style=''>    SavedCourseImpl(courseId, description, quizList)
+</span>36 <span style=''>
+</span>37 <span style=''>  /** Case class for saved course model
+</span>38 <span style=''>  * @param description description of the course (optional)
+</span>39 <span style=''>  * @param quizList quiz list of saved quiz
+</span>40 <span style=''>  */
+</span>41 <span style=''>  case class SavedCourseImpl(override val courseId: CourseIdentifier,
+</span>42 <span style=''>                             override val description: Option[String],
+</span>43 <span style=''>                             override val quizList: List[Quiz]) extends SavedCourse
+</span>44 <span style=''>  
+</span>45 <span style=''>  /**
+</span>46 <span style=''>   * Change the course identifier
+</span>47 <span style=''>   * @param savedCourse the saved course to edit
+</span>48 <span style=''>   * @param courseId a new course identifier
+</span>49 <span style=''>   * @return SavedCourse
+</span>50 <span style=''>   */
+</span>51 <span style=''>  </span><span style='background: #AEF1AE'>def changeCourseIdentifier</span><span style=''>(savedCourse: SavedCourse, courseId: CourseIdentifier): SavedCourse = savedCourse match
+</span>52 <span style=''>    </span><span style='background: #AEF1AE'>case SavedCourseImpl(_, description, quizList)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>SavedCourse(courseId, description, quizList)</span><span style=''>
+</span>53 <span style=''>
+</span>54 <span style=''>  /**
+</span>55 <span style=''>   * Change the course description
+</span>56 <span style=''>   * @param savedCourse the saved course to edit
+</span>57 <span style=''>   * @param description a new course description (optional)
+</span>58 <span style=''>   * @return SavedCourse
+</span>59 <span style=''>   */
+</span>60 <span style=''>  </span><span style='background: #AEF1AE'>def changeDescription</span><span style=''>(savedCourse: SavedCourse, description: Option[String]): SavedCourse = savedCourse match
+</span>61 <span style=''>    </span><span style='background: #AEF1AE'>case SavedCourseImpl(courseId, _, quizList)</span><span style=''> =&gt;
+</span>62 <span style=''>      </span><span style='background: #AEF1AE'>SavedCourse(courseId, description, quizList)</span><span style=''>
+</span>63 <span style=''>
+</span>64 <span style=''>  /**
+</span>65 <span style=''>   * Change the list of quiz
+</span>66 <span style=''>   * @param savedCourse the saved course to edit
+</span>67 <span style=''>   * @param quizList a new list of quiz
+</span>68 <span style=''>   * @return SavedCourse
+</span>69 <span style=''>   */
+</span>70 <span style=''>  </span><span style='background: #AEF1AE'>def changeQuizList</span><span style=''>(savedCourse: SavedCourse, quizList: List[Quiz]): SavedCourse = savedCourse match
+</span>71 <span style=''>    </span><span style='background: #AEF1AE'>case SavedCourseImpl(courseId, description, _)</span><span style=''> =&gt;
+</span>72 <span style=''>      </span><span style='background: #AEF1AE'>SavedCourse(courseId, description, quizList)</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          488
+        </td>
+        <td>
+          545
+          -
+          554
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          491
+        </td>
+        <td>
+          1271
+          -
+          1297
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeCourseIdentifier
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def changeCourseIdentifier
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          490
+        </td>
+        <td>
+          1389
+          -
+          1435
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case SavedCourseImpl(_, description, quizList)
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          489
+        </td>
+        <td>
+          1439
+          -
+          1483
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SavedCourse(courseId, description, quizList)
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          494
+        </td>
+        <td>
+          1668
+          -
+          1689
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeDescription
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def changeDescription
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          493
+        </td>
+        <td>
+          1782
+          -
+          1825
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case SavedCourseImpl(courseId, _, quizList)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          492
+        </td>
+        <td>
+          1835
+          -
+          1879
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SavedCourse(courseId, description, quizList)
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          497
+        </td>
+        <td>
+          2038
+          -
+          2056
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeQuizList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def changeQuizList
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          496
+        </td>
+        <td>
+          2142
+          -
+          2188
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case SavedCourseImpl(courseId, description, _)
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          495
+        </td>
+        <td>
+          2198
+          -
+          2242
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SavedCourse(courseId, description, quizList)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

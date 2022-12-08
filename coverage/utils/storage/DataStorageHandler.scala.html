@@ -1,0 +1,1482 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          utils/storage/DataStorageHandler.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package utils.storage
+</span>2 <span style=''>
+</span>3 <span style=''>import model.Answer.Answer
+</span>4 <span style=''>import model.Quiz.Quiz
+</span>5 <span style=''>import model.stats.PlayerStats.{PlayerStats, initStats}
+</span>6 <span style=''>import model.{SavedCourse, Session}
+</span>7 <span style=''>import play.api.libs.json.JsObject
+</span>8 <span style=''>import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
+</span>9 <span style=''>import utils.storage.Configuration.{PlayerDataDirectoryPath, PlayerStatsFilePath}
+</span>10 <span style=''>import scala.util.{Failure, Success, Try}
+</span>11 <span style=''>
+</span>12 <span style=''>/** Trait fo Data store management */
+</span>13 <span style=''>trait DataStorageHandler:
+</span>14 <span style=''>
+</span>15 <span style=''>  /**
+</span>16 <span style=''>   * Store a [[JsObject]] as string in a file
+</span>17 <span style=''>   *
+</span>18 <span style=''>   * @param jsonObject
+</span>19 <span style=''>   * @param path where store the file
+</span>20 <span style=''>   * @return a Try[String] with file path
+</span>21 <span style=''>   */
+</span>22 <span style=''>  </span><span style='background: #AEF1AE'>private def storeObjectToPath</span><span style=''>(jsonObject: JsObject, path: String): Try[String] =
+</span>23 <span style=''>    </span><span style='background: #AEF1AE'>FileHandler.writeFile(path, JsonParser.toString(jsonObject))</span><span style=''>
+</span>24 <span style=''>
+</span>25 <span style=''>  /**
+</span>26 <span style=''>   * Store JSON parsed data in a file depending on which [[JsonParser]] type is passed
+</span>27 <span style=''>   *
+</span>28 <span style=''>   * @param data
+</span>29 <span style=''>   * @param filePath
+</span>30 <span style=''>   * @tparam A
+</span>31 <span style=''>   * @return a Try[String] with file path
+</span>32 <span style=''>   */
+</span>33 <span style=''>  </span><span style='background: #AEF1AE'>def storeDataToPath</span><span style=''>[A](data: A, filePath: String): Try[String] =
+</span>34 <span style=''>    </span><span style='background: #AEF1AE'>FileHandler.createDirectory(PlayerDataDirectoryPath)</span><span style=''>
+</span>35 <span style=''>    </span><span style='background: #AEF1AE'>storeObjectToPath(
+</span>36 <span style=''></span><span style='background: #AEF1AE'>      data match
+</span>37 <span style=''></span><span style='background: #AEF1AE'>        case savedCourseList: List[SavedCourse] =&gt; CourseJsonParser().serialize(savedCourseList)
+</span>38 <span style=''></span><span style='background: #AEF1AE'>        case playerStats: PlayerStats =&gt; StatsJsonParser().serialize(playerStats)
+</span>39 <span style=''></span><span style='background: #AEF1AE'>      ,
+</span>40 <span style=''></span><span style='background: #AEF1AE'>      filePath
+</span>41 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>42 <span style=''>
+</span>43 <span style=''>  /**
+</span>44 <span style=''>   * Load data from a file and return the object depending on which [[JsonParser]] type is passed
+</span>45 <span style=''>   *
+</span>46 <span style=''>   * @param jsonParser
+</span>47 <span style=''>   * @param filePath
+</span>48 <span style=''>   * @tparam A
+</span>49 <span style=''>   * @return a Try[A]
+</span>50 <span style=''>   */
+</span>51 <span style=''>  </span><span style='background: #AEF1AE'>def loadDataFromFile</span><span style=''>[A](jsonParser: JsonParser[A], filePath: String): Try[A] =
+</span>52 <span style=''>    </span><span style='background: #AEF1AE'>FileHandler.readFile(filePath)</span><span style=''> match
+</span>53 <span style=''>      </span><span style='background: #AEF1AE'>case Success(jsonString: String)</span><span style=''> =&gt;
+</span>54 <span style=''>        </span><span style='background: #AEF1AE'>for {
+</span>55 <span style=''></span><span style='background: #AEF1AE'>          jsonParser &lt;- jsonParser.deserialize(jsonString)
+</span>56 <span style=''></span><span style='background: #AEF1AE'>        } yield {
+</span>57 <span style=''></span><span style='background: #AEF1AE'>          jsonParser match
+</span>58 <span style=''></span><span style='background: #AEF1AE'>            case savedCourseList: List[SavedCourse] =&gt; savedCourseList
+</span>59 <span style=''></span><span style='background: #AEF1AE'>            case playerStats: PlayerStats =&gt; playerStats
+</span>60 <span style=''></span><span style='background: #AEF1AE'>        }</span><span style=''>
+</span>61 <span style=''>      </span><span style='background: #AEF1AE'>case Failure(f)</span><span style=''> =&gt; Failure(f)
+</span>62 <span style=''>
+</span>63 <span style=''>
+</span>64 <span style=''>/** Companion object of DataStorageHandler trait */
+</span>65 <span style=''>object DataStorageHandler:
+</span>66 <span style=''>
+</span>67 <span style=''>  /**
+</span>68 <span style=''>   * Merge the elements of two list of [[SavedCourses]] using [[List.groupMapReduce]].
+</span>69 <span style=''>   * If two or more elements have the same id, it checks if their value are the same,
+</span>70 <span style=''>   *
+</span>71 <span style=''>   * @param savedCourseList
+</span>72 <span style=''>   * @param newSavedCourseList
+</span>73 <span style=''>   * @return a resulting List[SavedCourse]
+</span>74 <span style=''>   */
+</span>75 <span style=''>  </span><span style='background: #AEF1AE'>def mergeSavedCourseLists</span><span style=''>(savedCourseList: List[SavedCourse], newSavedCourseList: List[SavedCourse]): List[SavedCourse] =
+</span>76 <span style=''>    </span><span style='background: #AEF1AE'>(savedCourseList ::: newSavedCourseList).groupMapReduce(sc =&gt; sc.courseId)(sc =&gt; (sc.description, sc.quizList))(
+</span>77 <span style=''></span><span style='background: #AEF1AE'>      (savedCourse, newSavedCourse) =&gt; (savedCourse._1, mergeQuizLists(savedCourse._2, newSavedCourse._2))
+</span>78 <span style=''></span><span style='background: #AEF1AE'>    ).map((k, v) =&gt; SavedCourse(k, v._1, v._2)).toList</span><span style=''>
+</span>79 <span style=''>
+</span>80 <span style=''>  // Used by mergeSavedCourseLists to merge quiz lists
+</span>81 <span style=''>  </span><span style='background: #AEF1AE'>private def mergeQuizLists</span><span style=''>(quizList: List[Quiz], newQuizList: List[Quiz]): List[Quiz] =
+</span>82 <span style=''>    </span><span style='background: #AEF1AE'>(quizList ::: newQuizList).groupMapReduce(q =&gt; q.quizId)(q =&gt; (q.question, q.answerList, q.maxScore, q.imagePath))(
+</span>83 <span style=''></span><span style='background: #AEF1AE'>      (quiz, newQuiz) =&gt; (quiz._1, mergeAnswerLists(quiz._2, newQuiz._2), quiz._3, quiz._4)
+</span>84 <span style=''></span><span style='background: #AEF1AE'>    ).map((k, v) =&gt; Quiz(k, v._1, v._2, v._3, v._4)).toList</span><span style=''>
+</span>85 <span style=''>
+</span>86 <span style=''>  // Used by mergeQuizLists to merge answer lists
+</span>87 <span style=''>  </span><span style='background: #AEF1AE'>private def mergeAnswerLists</span><span style=''>(answerList: List[Answer], newAnswerList: List[Answer]): List[Answer] =
+</span>88 <span style=''>    </span><span style='background: #AEF1AE'>(answerList ::: newAnswerList).groupMapReduce(a =&gt; a.text)(a =&gt; a.isCorrect)(
+</span>89 <span style=''></span><span style='background: #AEF1AE'>      (answer, newAnswer) =&gt; answer
+</span>90 <span style=''></span><span style='background: #AEF1AE'>    ).map((k, v) =&gt; Answer(k, v)).toList</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          909
+        </td>
+        <td>
+          626
+          -
+          655
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          storeObjectToPath
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          private def storeObjectToPath
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          908
+        </td>
+        <td>
+          711
+          -
+          771
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          writeFile
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          FileHandler.writeFile(path, JsonParser.toString(jsonObject))
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          907
+        </td>
+        <td>
+          739
+          -
+          770
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          JsonParser.toString(jsonObject)
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          918
+        </td>
+        <td>
+          974
+          -
+          993
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          storeDataToPath
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def storeDataToPath
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          910
+        </td>
+        <td>
+          1043
+          -
+          1095
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          createDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          FileHandler.createDirectory(PlayerDataDirectoryPath)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          917
+        </td>
+        <td>
+          1100
+          -
+          1343
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          storeObjectToPath
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          storeObjectToPath(
+      data match
+        case savedCourseList: List[SavedCourse] =&gt; CourseJsonParser().serialize(savedCourseList)
+        case playerStats: PlayerStats =&gt; StatsJsonParser().serialize(playerStats)
+      ,
+      filePath
+    )
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          911
+        </td>
+        <td>
+          1187
+          -
+          1205
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CourseJsonParser()
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          913
+        </td>
+        <td>
+          1144
+          -
+          1183
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case savedCourseList: List[SavedCourse]
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          912
+        </td>
+        <td>
+          1187
+          -
+          1232
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          serialize
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CourseJsonParser().serialize(savedCourseList)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          914
+        </td>
+        <td>
+          1274
+          -
+          1291
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StatsJsonParser()
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          916
+        </td>
+        <td>
+          1241
+          -
+          1270
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case playerStats: PlayerStats
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          915
+        </td>
+        <td>
+          1274
+          -
+          1314
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          serialize
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StatsJsonParser().serialize(playerStats)
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          926
+        </td>
+        <td>
+          1543
+          -
+          1563
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          loadDataFromFile
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def loadDataFromFile
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          919
+        </td>
+        <td>
+          1626
+          -
+          1656
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readFile
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          FileHandler.readFile(filePath)
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          924
+        </td>
+        <td>
+          1669
+          -
+          1701
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case Success(jsonString: String)
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          923
+        </td>
+        <td>
+          1713
+          -
+          1960
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          for {
+          jsonParser &lt;- jsonParser.deserialize(jsonString)
+        } yield {
+          jsonParser match
+            case savedCourseList: List[SavedCourse] =&gt; savedCourseList
+            case playerStats: PlayerStats =&gt; playerStats
+        }
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          920
+        </td>
+        <td>
+          1743
+          -
+          1777
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          deserialize
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          jsonParser.deserialize(jsonString)
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          921
+        </td>
+        <td>
+          1835
+          -
+          1874
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case savedCourseList: List[SavedCourse]
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          922
+        </td>
+        <td>
+          1906
+          -
+          1935
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case playerStats: PlayerStats
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          925
+        </td>
+        <td>
+          1967
+          -
+          1982
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case Failure(f)
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          941
+        </td>
+        <td>
+          2373
+          -
+          2398
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          mergeSavedCourseLists
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def mergeSavedCourseLists
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          935
+        </td>
+        <td>
+          2499
+          -
+          2724
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          groupMapReduce
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          (savedCourseList ::: newSavedCourseList).groupMapReduce(sc =&gt; sc.courseId)(sc =&gt; (sc.description, sc.quizList))(
+      (savedCourse, newSavedCourse) =&gt; (savedCourse._1, mergeQuizLists(savedCourse._2, newSavedCourse._2))
+    )
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          929
+        </td>
+        <td>
+          2581
+          -
+          2595
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          description
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          sc.description
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          928
+        </td>
+        <td>
+          2561
+          -
+          2572
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          sc.courseId
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          927
+        </td>
+        <td>
+          2500
+          -
+          2538
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          :::
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          savedCourseList ::: newSavedCourseList
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          930
+        </td>
+        <td>
+          2597
+          -
+          2608
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          quizList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          sc.quizList
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          932
+        </td>
+        <td>
+          2683
+          -
+          2697
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          savedCourse._2
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          931
+        </td>
+        <td>
+          2652
+          -
+          2666
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          savedCourse._1
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          934
+        </td>
+        <td>
+          2668
+          -
+          2717
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          mergeQuizLists
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          mergeQuizLists(savedCourse._2, newSavedCourse._2)
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          933
+        </td>
+        <td>
+          2699
+          -
+          2716
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          newSavedCourse._2
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          938
+        </td>
+        <td>
+          2739
+          -
+          2765
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          SavedCourse(k, v._1, v._2)
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          937
+        </td>
+        <td>
+          2760
+          -
+          2764
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          v._2
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          940
+        </td>
+        <td>
+          2499
+          -
+          2773
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          (savedCourseList ::: newSavedCourseList).groupMapReduce(sc =&gt; sc.courseId)(sc =&gt; (sc.description, sc.quizList))(
+      (savedCourse, newSavedCourse) =&gt; (savedCourse._1, mergeQuizLists(savedCourse._2, newSavedCourse._2))
+    ).map((k, v) =&gt; SavedCourse(k, v._1, v._2)).toList
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          936
+        </td>
+        <td>
+          2754
+          -
+          2758
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          v._1
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          939
+        </td>
+        <td>
+          2499
+          -
+          2766
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          (savedCourseList ::: newSavedCourseList).groupMapReduce(sc =&gt; sc.courseId)(sc =&gt; (sc.description, sc.quizList))(
+      (savedCourse, newSavedCourse) =&gt; (savedCourse._1, mergeQuizLists(savedCourse._2, newSavedCourse._2))
+    ).map((k, v) =&gt; SavedCourse(k, v._1, v._2))
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          956
+        </td>
+        <td>
+          2832
+          -
+          2858
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          mergeQuizLists
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          private def mergeQuizLists
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          949
+        </td>
+        <td>
+          2924
+          -
+          3137
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          groupMapReduce
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          (quizList ::: newQuizList).groupMapReduce(q =&gt; q.quizId)(q =&gt; (q.question, q.answerList, q.maxScore, q.imagePath))(
+      (quiz, newQuiz) =&gt; (quiz._1, mergeAnswerLists(quiz._2, newQuiz._2), quiz._3, quiz._4)
+    )
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          942
+        </td>
+        <td>
+          2925
+          -
+          2949
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          :::
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          quizList ::: newQuizList
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          944
+        </td>
+        <td>
+          3092
+          -
+          3099
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          quiz._2
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          947
+        </td>
+        <td>
+          3114
+          -
+          3121
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          quiz._3
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          946
+        </td>
+        <td>
+          3075
+          -
+          3112
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          mergeAnswerLists
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          mergeAnswerLists(quiz._2, newQuiz._2)
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          943
+        </td>
+        <td>
+          3066
+          -
+          3073
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          quiz._1
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          945
+        </td>
+        <td>
+          3101
+          -
+          3111
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          newQuiz._2
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          948
+        </td>
+        <td>
+          3123
+          -
+          3130
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          quiz._4
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          950
+        </td>
+        <td>
+          3160
+          -
+          3164
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          v._1
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          953
+        </td>
+        <td>
+          3178
+          -
+          3182
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          v._4
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          955
+        </td>
+        <td>
+          2924
+          -
+          3191
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          (quizList ::: newQuizList).groupMapReduce(q =&gt; q.quizId)(q =&gt; (q.question, q.answerList, q.maxScore, q.imagePath))(
+      (quiz, newQuiz) =&gt; (quiz._1, mergeAnswerLists(quiz._2, newQuiz._2), quiz._3, quiz._4)
+    ).map((k, v) =&gt; Quiz(k, v._1, v._2, v._3, v._4)).toList
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          952
+        </td>
+        <td>
+          3172
+          -
+          3176
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          v._3
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          954
+        </td>
+        <td>
+          2924
+          -
+          3184
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          (quizList ::: newQuizList).groupMapReduce(q =&gt; q.quizId)(q =&gt; (q.question, q.answerList, q.maxScore, q.imagePath))(
+      (quiz, newQuiz) =&gt; (quiz._1, mergeAnswerLists(quiz._2, newQuiz._2), quiz._3, quiz._4)
+    ).map((k, v) =&gt; Quiz(k, v._1, v._2, v._3, v._4))
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          951
+        </td>
+        <td>
+          3166
+          -
+          3170
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          v._2
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          961
+        </td>
+        <td>
+          3245
+          -
+          3273
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          mergeAnswerLists
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          private def mergeAnswerLists
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          958
+        </td>
+        <td>
+          3349
+          -
+          3468
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          groupMapReduce
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          (answerList ::: newAnswerList).groupMapReduce(a =&gt; a.text)(a =&gt; a.isCorrect)(
+      (answer, newAnswer) =&gt; answer
+    )
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          957
+        </td>
+        <td>
+          3350
+          -
+          3378
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          :::
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          answerList ::: newAnswerList
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          959
+        </td>
+        <td>
+          3349
+          -
+          3496
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          (answerList ::: newAnswerList).groupMapReduce(a =&gt; a.text)(a =&gt; a.isCorrect)(
+      (answer, newAnswer) =&gt; answer
+    ).map((k, v) =&gt; Answer(k, v))
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          960
+        </td>
+        <td>
+          3349
+          -
+          3503
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          (answerList ::: newAnswerList).groupMapReduce(a =&gt; a.text)(a =&gt; a.isCorrect)(
+      (answer, newAnswer) =&gt; answer
+    ).map((k, v) =&gt; Answer(k, v)).toList
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

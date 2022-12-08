@@ -1,0 +1,935 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          utils/Timer.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package utils
+</span>2 <span style=''>
+</span>3 <span style=''>trait Timer:
+</span>4 <span style=''>
+</span>5 <span style=''>  val maxTime: Long
+</span>6 <span style=''>
+</span>7 <span style=''>  def startTimer(): Unit
+</span>8 <span style=''>  def stopTimer(): Unit
+</span>9 <span style=''>  def getTime: Double
+</span>10 <span style=''>  def getRemainingTime: Double
+</span>11 <span style=''>  def getCompletionPercentage: Double
+</span>12 <span style=''>  def isExpired: Boolean
+</span>13 <span style=''>  def isStopped: Boolean
+</span>14 <span style=''>
+</span>15 <span style=''>object Timer:
+</span>16 <span style=''>
+</span>17 <span style=''>  </span><span style='background: #F0ADAD'>def apply</span><span style=''>(maxTime: Long): Timer = </span><span style='background: #F0ADAD'>new TimerImpl(maxTime * 1000)</span><span style=''>
+</span>18 <span style=''>
+</span>19 <span style=''>  class TimerImpl(val maxTime: Long) extends Timer:
+</span>20 <span style=''>
+</span>21 <span style=''>    var initialTime: Long = _
+</span>22 <span style=''>
+</span>23 <span style=''>    var stopTime: Long = _
+</span>24 <span style=''>
+</span>25 <span style=''>    </span><span style='background: #F0ADAD'>def currentTime</span><span style=''>(): Long = </span><span style='background: #F0ADAD'>System.currentTimeMillis()</span><span style=''>
+</span>26 <span style=''>
+</span>27 <span style=''>    </span><span style='background: #F0ADAD'>override def startTimer</span><span style=''>(): Unit =
+</span>28 <span style=''>      stopTime = 0
+</span>29 <span style=''>      initialTime = </span><span style='background: #F0ADAD'>currentTime()</span><span style=''>
+</span>30 <span style=''>
+</span>31 <span style=''>    </span><span style='background: #F0ADAD'>override def stopTimer</span><span style=''>(): Unit = stopTime = </span><span style='background: #F0ADAD'>currentTime()</span><span style=''>
+</span>32 <span style=''>
+</span>33 <span style=''>    </span><span style='background: #F0ADAD'>override def getTime</span><span style=''>: Double = </span><span style='background: #F0ADAD'>millisToSeconds(currentTime() - initialTime)</span><span style=''>
+</span>34 <span style=''>
+</span>35 <span style=''>    </span><span style='background: #F0ADAD'>override def getRemainingTime</span><span style=''>: Double = </span><span style='background: #F0ADAD'>millisToSeconds(maxTime)</span><span style=''> - </span><span style='background: #F0ADAD'>getTime</span><span style=''>
+</span>36 <span style=''>
+</span>37 <span style=''>    </span><span style='background: #F0ADAD'>override def getCompletionPercentage</span><span style=''>: Double =
+</span>38 <span style=''>      val percentage: Double = (</span><span style='background: #F0ADAD'>currentTime()</span><span style=''> - initialTime) / maxTime.toDouble
+</span>39 <span style=''>      percentage match
+</span>40 <span style=''>        </span><span style='background: #F0ADAD'>case n if n &lt; 100 &amp;&amp; n &gt;= 0</span><span style=''> =&gt; n
+</span>41 <span style=''>        </span><span style='background: #F0ADAD'>case n if n &gt;= 100</span><span style=''> =&gt; 100
+</span>42 <span style=''>        </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>throw new IllegalArgumentException()</span><span style=''>
+</span>43 <span style=''>
+</span>44 <span style=''>    </span><span style='background: #F0ADAD'>override def isExpired</span><span style=''>: Boolean = </span><span style='background: #F0ADAD'>currentTime()</span><span style=''> - initialTime match
+</span>45 <span style=''>      </span><span style='background: #F0ADAD'>case n if n &gt;= maxTime</span><span style=''> =&gt; true
+</span>46 <span style=''>      </span><span style='background: #F0ADAD'>case n if n &lt; maxTime</span><span style=''> =&gt; false
+</span>47 <span style=''>      </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>throw new IllegalArgumentException()</span><span style=''>
+</span>48 <span style=''>
+</span>49 <span style=''>    </span><span style='background: #F0ADAD'>override def isStopped</span><span style=''>: Boolean = stopTime != 0
+</span>50 <span style=''>
+</span>51 <span style=''>    </span><span style='background: #F0ADAD'>override def toString</span><span style=''>: String = </span><span style='background: #F0ADAD'>s&quot;Current timer: ${this.getTime} / ${this.maxTime/1000}&quot;</span><span style=''>
+</span>52 <span style=''>
+</span>53 <span style=''>    </span><span style='background: #F0ADAD'>def millisToSeconds</span><span style=''>(time: Double) = time / 1000
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          608
+        </td>
+        <td>
+          258
+          -
+          267
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          607
+        </td>
+        <td>
+          292
+          -
+          321
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new TimerImpl(maxTime * 1000)
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          609
+        </td>
+        <td>
+          465
+          -
+          491
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          currentTimeMillis
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          System.currentTimeMillis()
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          610
+        </td>
+        <td>
+          439
+          -
+          454
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          currentTime
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          def currentTime
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          612
+        </td>
+        <td>
+          497
+          -
+          520
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          startTimer
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def startTimer
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          611
+        </td>
+        <td>
+          570
+          -
+          583
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          currentTime
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          currentTime()
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          614
+        </td>
+        <td>
+          589
+          -
+          611
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          stopTimer
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def stopTimer
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          613
+        </td>
+        <td>
+          633
+          -
+          646
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          currentTime
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          currentTime()
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          618
+        </td>
+        <td>
+          652
+          -
+          672
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          getTime
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def getTime
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          615
+        </td>
+        <td>
+          699
+          -
+          712
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          currentTime
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          currentTime()
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          617
+        </td>
+        <td>
+          683
+          -
+          727
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          millisToSeconds
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          millisToSeconds(currentTime() - initialTime)
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          616
+        </td>
+        <td>
+          699
+          -
+          726
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          long2double
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          currentTime() - initialTime
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          621
+        </td>
+        <td>
+          800
+          -
+          807
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          getTime
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          getTime
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          620
+        </td>
+        <td>
+          773
+          -
+          797
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          millisToSeconds
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          millisToSeconds(maxTime)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          622
+        </td>
+        <td>
+          733
+          -
+          762
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          getRemainingTime
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def getRemainingTime
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          619
+        </td>
+        <td>
+          789
+          -
+          796
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          long2double
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          maxTime
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          629
+        </td>
+        <td>
+          813
+          -
+          849
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          getCompletionPercentage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def getCompletionPercentage
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          623
+        </td>
+        <td>
+          892
+          -
+          905
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          currentTime
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          currentTime()
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          624
+        </td>
+        <td>
+          971
+          -
+          998
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case n if n &lt; 100 &amp;&amp; n &gt;= 0
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          625
+        </td>
+        <td>
+          1012
+          -
+          1030
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case n if n &gt;= 100
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          627
+        </td>
+        <td>
+          1056
+          -
+          1092
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          throw
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          throw new IllegalArgumentException()
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          626
+        </td>
+        <td>
+          1062
+          -
+          1092
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new IllegalArgumentException()
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          628
+        </td>
+        <td>
+          1046
+          -
+          1052
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case _
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          636
+        </td>
+        <td>
+          1098
+          -
+          1120
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          isExpired
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def isExpired
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          630
+        </td>
+        <td>
+          1132
+          -
+          1145
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          currentTime
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          currentTime()
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          631
+        </td>
+        <td>
+          1172
+          -
+          1194
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case n if n &gt;= maxTime
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          632
+        </td>
+        <td>
+          1209
+          -
+          1230
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case n if n &lt; maxTime
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          633
+        </td>
+        <td>
+          1262
+          -
+          1292
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new IllegalArgumentException()
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          635
+        </td>
+        <td>
+          1246
+          -
+          1252
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case _
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          634
+        </td>
+        <td>
+          1256
+          -
+          1292
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          throw
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          throw new IllegalArgumentException()
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          637
+        </td>
+        <td>
+          1298
+          -
+          1320
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          isStopped
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def isStopped
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          639
+        </td>
+        <td>
+          1383
+          -
+          1439
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;Current timer: ${this.getTime} / ${this.maxTime/1000}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          638
+        </td>
+        <td>
+          1402
+          -
+          1414
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          getTime
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          this.getTime
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          640
+        </td>
+        <td>
+          1351
+          -
+          1372
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          toString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def toString
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          641
+        </td>
+        <td>
+          1445
+          -
+          1464
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          millisToSeconds
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          def millisToSeconds
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

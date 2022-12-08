@@ -1,0 +1,1101 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          controller/SelectMenuController.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package controller
+</span>2 <span style=''>
+</span>3 <span style=''>import controller.{AppController, PageController}
+</span>4 <span style=''>import controller.AppController.*
+</span>5 <span style=''>import controller.actions.{Action, BackAction, ParameterlessAction}
+</span>6 <span style=''>import view.{SelectMenuView, View}
+</span>7 <span style=''>import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+</span>8 <span style=''>import controller.{AppController, PageController}
+</span>9 <span style=''>import model.{GameStage, QuizInGame, Session}
+</span>10 <span style=''>import model.GameStage.*
+</span>11 <span style=''>import view.SelectMenuView.*
+</span>12 <span style=''>
+</span>13 <span style=''>import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
+</span>14 <span style=''>import scala.collection.mutable.ListBuffer
+</span>15 <span style=''>import scala.concurrent.{Await, Promise}
+</span>16 <span style=''>import scala.concurrent.duration.Duration
+</span>17 <span style=''>
+</span>18 <span style=''>/** Companion object of select menu controller */
+</span>19 <span style=''>object SelectMenuController extends BackAction:
+</span>20 <span style=''>
+</span>21 <span style=''>  case object Start extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>22 <span style=''>  case object Custom extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>23 <span style=''>  case class Selection[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>24 <span style=''>
+</span>25 <span style=''>/** Defines the logic of the select page */
+</span>26 <span style=''>class SelectMenuController extends PageController:
+</span>27 <span style=''>
+</span>28 <span style=''>  import SelectMenuController.*
+</span>29 <span style=''>
+</span>30 <span style=''>  var gameStage = </span><span style='background: #F0ADAD'>GameStage()</span><span style=''>
+</span>31 <span style=''>
+</span>32 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
+</span>33 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(AppController.MainMenuAction)</span><span style=''>
+</span>34 <span style=''>    </span><span style='background: #F0ADAD'>case Start</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(AppController.StandardGameAction(Option(gameStage)))</span><span style=''>
+</span>35 <span style=''>    </span><span style='background: #F0ADAD'>case Custom</span><span style=''> =&gt;  </span><span style='background: #F0ADAD'>AppController.handle(AppController.CustomMenuAction(Option(gameStage)))</span><span style=''>
+</span>36 <span style=''>    </span><span style='background: #F0ADAD'>case Selection(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>modifySelectedCourses(actionParameter)</span><span style=''>
+</span>37 <span style=''>
+</span>38 <span style=''>  // Get session from application controller
+</span>39 <span style=''>  </span><span style='background: #F0ADAD'>def getSession</span><span style=''>: Session = </span><span style='background: #F0ADAD'>AppController.session</span><span style=''>
+</span>40 <span style=''>
+</span>41 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
+</span>42 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(DefaultUpdate)</span><span style=''>
+</span>43 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(CourseUpdate(Option(getSession.savedCourses.map(course =&gt; (course,gameStage.coursesInGame.contains(course))))))</span><span style=''>
+</span>44 <span style=''>
+</span>45 <span style=''>  </span><span style='background: #F0ADAD'>private def modifySelectedCourses</span><span style=''>[T](courseIndex: Option[T]): Unit =
+</span>46 <span style=''>    val selectedCourse = </span><span style='background: #F0ADAD'>getSession.savedCourses(courseIndex.get.asInstanceOf[Int])</span><span style=''>
+</span>47 <span style=''>
+</span>48 <span style=''>    if </span><span style='background: #F0ADAD'>gameStage.coursesInGame.contains(selectedCourse)</span><span style=''> then
+</span>49 <span style=''>      </span><span style='background: #F0ADAD'>gameStage.coursesInGame = gameStage.coursesInGame.diff(List(selectedCourse))</span><span style=''>
+</span>50 <span style=''>    else
+</span>51 <span style=''>      </span><span style='background: #F0ADAD'>gameStage.coursesInGame = gameStage.coursesInGame ::: List(selectedCourse)</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          280
+        </td>
+        <td>
+          746
+          -
+          765
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ParameterlessAction
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          281
+        </td>
+        <td>
+          795
+          -
+          814
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ParameterlessAction
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          282
+        </td>
+        <td>
+          890
+          -
+          913
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Action(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          286
+        </td>
+        <td>
+          1062
+          -
+          1073
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GameStage()
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          283
+        </td>
+        <td>
+          1062
+          -
+          1071
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GameStage
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          285
+        </td>
+        <td>
+          1062
+          -
+          1071
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GameStage
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          284
+        </td>
+        <td>
+          1062
+          -
+          1071
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GameStage
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          297
+        </td>
+        <td>
+          1077
+          -
+          1096
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def handle
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          288
+        </td>
+        <td>
+          1144
+          -
+          1153
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Back
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          287
+        </td>
+        <td>
+          1157
+          -
+          1207
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.handle(AppController.MainMenuAction)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          289
+        </td>
+        <td>
+          1280
+          -
+          1297
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(gameStage)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          291
+        </td>
+        <td>
+          1212
+          -
+          1222
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Start
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          290
+        </td>
+        <td>
+          1226
+          -
+          1299
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.handle(AppController.StandardGameAction(Option(gameStage)))
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          292
+        </td>
+        <td>
+          1372
+          -
+          1389
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(gameStage)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          294
+        </td>
+        <td>
+          1304
+          -
+          1315
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Custom
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          293
+        </td>
+        <td>
+          1320
+          -
+          1391
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.handle(AppController.CustomMenuAction(Option(gameStage)))
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          295
+        </td>
+        <td>
+          1431
+          -
+          1469
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          modifySelectedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          modifySelectedCourses(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          296
+        </td>
+        <td>
+          1396
+          -
+          1427
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Selection(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          298
+        </td>
+        <td>
+          1544
+          -
+          1565
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          299
+        </td>
+        <td>
+          1518
+          -
+          1532
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          getSession
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          def getSession
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          309
+        </td>
+        <td>
+          1569
+          -
+          1595
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          nextIteration
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def nextIteration
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          301
+        </td>
+        <td>
+          1610
+          -
+          1668
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage.pageView.updateUI(DefaultUpdate)
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          300
+        </td>
+        <td>
+          1610
+          -
+          1635
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          currentPage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          304
+        </td>
+        <td>
+          1737
+          -
+          1760
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          savedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          getSession.savedCourses
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          307
+        </td>
+        <td>
+          1730
+          -
+          1826
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(getSession.savedCourses.map(course =&gt; (course,gameStage.coursesInGame.contains(course))))
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          303
+        </td>
+        <td>
+          1737
+          -
+          1747
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          getSession
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          getSession
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          306
+        </td>
+        <td>
+          1737
+          -
+          1825
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          getSession.savedCourses.map(course =&gt; (course,gameStage.coursesInGame.contains(course)))
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          308
+        </td>
+        <td>
+          1673
+          -
+          1828
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage.pageView.updateUI(CourseUpdate(Option(getSession.savedCourses.map(course =&gt; (course,gameStage.coursesInGame.contains(course))))))
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          302
+        </td>
+        <td>
+          1673
+          -
+          1698
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          currentPage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          305
+        </td>
+        <td>
+          1783
+          -
+          1823
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          contains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.coursesInGame.contains(course)
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          321
+        </td>
+        <td>
+          1832
+          -
+          1865
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          modifySelectedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          private def modifySelectedCourses
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          313
+        </td>
+        <td>
+          1926
+          -
+          1984
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          getSession.savedCourses(courseIndex.get.asInstanceOf[Int])
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          310
+        </td>
+        <td>
+          1926
+          -
+          1936
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          getSession
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          getSession
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          312
+        </td>
+        <td>
+          1950
+          -
+          1965
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseIndex.get
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          311
+        </td>
+        <td>
+          1926
+          -
+          1949
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          savedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          getSession.savedCourses
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          314
+        </td>
+        <td>
+          1993
+          -
+          2041
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          contains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.coursesInGame.contains(selectedCourse)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          316
+        </td>
+        <td>
+          2079
+          -
+          2129
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          diff
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.coursesInGame.diff(List(selectedCourse))
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          315
+        </td>
+        <td>
+          2108
+          -
+          2128
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          List(selectedCourse)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          317
+        </td>
+        <td>
+          2053
+          -
+          2129
+        </td>
+        <td>
+          Assign
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.coursesInGame = gameStage.coursesInGame.diff(List(selectedCourse))
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          319
+        </td>
+        <td>
+          2171
+          -
+          2219
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          :::
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.coursesInGame ::: List(selectedCourse)
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          318
+        </td>
+        <td>
+          2199
+          -
+          2219
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          List(selectedCourse)
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          320
+        </td>
+        <td>
+          2145
+          -
+          2219
+        </td>
+        <td>
+          Assign
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.coursesInGame = gameStage.coursesInGame ::: List(selectedCourse)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

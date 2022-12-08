@@ -1,0 +1,351 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          model/CourseIdentifier.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model
+</span>2 <span style=''>
+</span>3 <span style=''>/**
+</span>4 <span style=''> * Trait for the identifier of the course
+</span>5 <span style=''> */
+</span>6 <span style=''>trait CourseIdentifier:
+</span>7 <span style=''>  /**
+</span>8 <span style=''>   * @return name of the course
+</span>9 <span style=''>   */
+</span>10 <span style=''>  def courseName: String
+</span>11 <span style=''>
+</span>12 <span style=''>  /**
+</span>13 <span style=''>   * @return name of the course degree 
+</span>14 <span style=''>   */
+</span>15 <span style=''>  def degreeName: String
+</span>16 <span style=''>
+</span>17 <span style=''>  /**
+</span>18 <span style=''>   * @return name of the course university 
+</span>19 <span style=''>   */
+</span>20 <span style=''>  def universityName: String
+</span>21 <span style=''>
+</span>22 <span style=''>/**
+</span>23 <span style=''> * Object used for managing a course identifier
+</span>24 <span style=''> */
+</span>25 <span style=''>object CourseIdentifier:
+</span>26 <span style=''>
+</span>27 <span style=''>  /**
+</span>28 <span style=''>   * Creates a new [[CourseIdentifier]]
+</span>29 <span style=''>   * @param courseName the name of the course (E.g. Paradigmi di Programmazione e Sviluppo)
+</span>30 <span style=''>   * @param degreeName the name of the degree course (E.g. Laurea Magistrale in Ingegneria e Scienze Informatiche)
+</span>31 <span style=''>   * @param universityName the name of the university (E.g. University of Bologna)
+</span>32 <span style=''>   * @return CourseIdentifier
+</span>33 <span style=''>   */
+</span>34 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(courseName: String, degreeName: String, universityName: String): CourseIdentifier = CourseIdentifierImpl(courseName, degreeName, universityName)
+</span>35 <span style=''>
+</span>36 <span style=''>  /**
+</span>37 <span style=''>   * Case class for the course identifier model
+</span>38 <span style=''>   * @param courseName the name of the course (E.g. Paradigmi di Programmazione e Sviluppo)
+</span>39 <span style=''>   * @param degreeName the name of the degree course (E.g. Laurea Magistrale in Ingegneria e Scienze Informatiche)
+</span>40 <span style=''>   * @param universityName the name of the university (E.g. University of Bologna)
+</span>41 <span style=''>   */
+</span>42 <span style=''>  case class CourseIdentifierImpl(override val courseName: String, override val degreeName: String, override val universityName: String) extends CourseIdentifier
+</span>43 <span style=''>
+</span>44 <span style=''>  /**
+</span>45 <span style=''>   * Change the name of the course 
+</span>46 <span style=''>   * @param courseId the course identifier to edit
+</span>47 <span style=''>   * @param courseName name of the course
+</span>48 <span style=''>   * @return CourseIdentifier
+</span>49 <span style=''>   */
+</span>50 <span style=''>  </span><span style='background: #AEF1AE'>def changeCourseName</span><span style=''>(courseId: CourseIdentifier, courseName: String): CourseIdentifier = courseId match
+</span>51 <span style=''>    </span><span style='background: #AEF1AE'>case CourseIdentifierImpl(_, degreeName, universityName)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>CourseIdentifier(courseName, degreeName, universityName)</span><span style=''>
+</span>52 <span style=''>
+</span>53 <span style=''>  /**
+</span>54 <span style=''>   * Change the name of the course  degree
+</span>55 <span style=''>   * @param courseId the course identifier to edit
+</span>56 <span style=''>   * @param degreeName name of the course degree
+</span>57 <span style=''>   * @return CourseIdentifier
+</span>58 <span style=''>   */
+</span>59 <span style=''>  </span><span style='background: #AEF1AE'>def changeDegreeName</span><span style=''>(courseId: CourseIdentifier, degreeName: String): CourseIdentifier = courseId match
+</span>60 <span style=''>    </span><span style='background: #AEF1AE'>case CourseIdentifierImpl(courseName, _, universityName)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>CourseIdentifier(courseName, degreeName, universityName)</span><span style=''>
+</span>61 <span style=''>
+</span>62 <span style=''>  /**
+</span>63 <span style=''>   * Change the name of the course university 
+</span>64 <span style=''>   * @param courseId the course identifier to edit
+</span>65 <span style=''>   * @param universityName name of the course university
+</span>66 <span style=''>   * @return CourseIdentifier
+</span>67 <span style=''>   */
+</span>68 <span style=''>  </span><span style='background: #AEF1AE'>def changeUniversityName</span><span style=''>(courseId: CourseIdentifier, universityName: String): CourseIdentifier = courseId match
+</span>69 <span style=''>    </span><span style='background: #AEF1AE'>case CourseIdentifierImpl(courseName, degreeName, _)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>CourseIdentifier(courseName, degreeName, universityName)</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          443
+        </td>
+        <td>
+          779
+          -
+          788
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          446
+        </td>
+        <td>
+          1621
+          -
+          1641
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeCourseName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def changeCourseName
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          445
+        </td>
+        <td>
+          1729
+          -
+          1785
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case CourseIdentifierImpl(_, degreeName, universityName)
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          444
+        </td>
+        <td>
+          1789
+          -
+          1845
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CourseIdentifier(courseName, degreeName, universityName)
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          449
+        </td>
+        <td>
+          2034
+          -
+          2054
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeDegreeName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def changeDegreeName
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          448
+        </td>
+        <td>
+          2142
+          -
+          2198
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case CourseIdentifierImpl(courseName, _, universityName)
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          447
+        </td>
+        <td>
+          2202
+          -
+          2258
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CourseIdentifier(courseName, degreeName, universityName)
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          452
+        </td>
+        <td>
+          2459
+          -
+          2483
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeUniversityName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def changeUniversityName
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          451
+        </td>
+        <td>
+          2575
+          -
+          2627
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case CourseIdentifierImpl(courseName, degreeName, _)
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          450
+        </td>
+        <td>
+          2631
+          -
+          2687
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CourseIdentifier(courseName, degreeName, universityName)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

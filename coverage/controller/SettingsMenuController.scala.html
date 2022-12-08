@@ -1,0 +1,509 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          controller/SettingsMenuController.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package controller
+</span>2 <span style=''>
+</span>3 <span style=''>import controller.{AppController, PageController}
+</span>4 <span style=''>import controller.AppController.*
+</span>5 <span style=''>import controller.actions.{Action, BackAction, ParameterlessAction}
+</span>6 <span style=''>import view.View
+</span>7 <span style=''>import view.SettingsMenuView.*
+</span>8 <span style=''>import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+</span>9 <span style=''>import scala.collection.mutable.ListBuffer
+</span>10 <span style=''>import scala.concurrent.Await
+</span>11 <span style=''>import scala.concurrent.duration.Duration
+</span>12 <span style=''>import view.SettingsMenuView.*
+</span>13 <span style=''>
+</span>14 <span style=''>/** Companion object of settings menu controller */
+</span>15 <span style=''>object SettingsMenuController extends BackAction:
+</span>16 <span style=''>
+</span>17 <span style=''>  case object AddCourse extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>18 <span style=''>  case object AddQuiz extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>19 <span style=''>  case object EditCourse extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>20 <span style=''>  case object EditQuiz extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>21 <span style=''>
+</span>22 <span style=''>/** Defines the logic of the settings page */
+</span>23 <span style=''>class SettingsMenuController extends PageController :
+</span>24 <span style=''>
+</span>25 <span style=''>  import SettingsMenuController.*
+</span>26 <span style=''>
+</span>27 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
+</span>28 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(MainMenuAction)</span><span style=''>
+</span>29 <span style=''>    </span><span style='background: #F0ADAD'>case AddCourse</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(AddCourseMenuAction)</span><span style=''>
+</span>30 <span style=''>    </span><span style='background: #F0ADAD'>case AddQuiz</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(AddQuizMenuAction)</span><span style=''>
+</span>31 <span style=''>    </span><span style='background: #F0ADAD'>case EditCourse</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(EditCourseMenuAction)</span><span style=''>
+</span>32 <span style=''>    </span><span style='background: #F0ADAD'>case EditQuiz</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(EditQuizMenuAction)</span><span style=''>
+</span>33 <span style=''>
+</span>34 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
+</span>35 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(DefaultUpdate)</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          322
+        </td>
+        <td>
+          560
+          -
+          579
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ParameterlessAction
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          323
+        </td>
+        <td>
+          610
+          -
+          629
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ParameterlessAction
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          324
+        </td>
+        <td>
+          663
+          -
+          682
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ParameterlessAction
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          325
+        </td>
+        <td>
+          714
+          -
+          733
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ParameterlessAction
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          336
+        </td>
+        <td>
+          873
+          -
+          892
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def handle
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          327
+        </td>
+        <td>
+          940
+          -
+          949
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Back
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          326
+        </td>
+        <td>
+          953
+          -
+          989
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.handle(MainMenuAction)
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          328
+        </td>
+        <td>
+          1012
+          -
+          1053
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.handle(AddCourseMenuAction)
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          329
+        </td>
+        <td>
+          994
+          -
+          1008
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case AddCourse
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          331
+        </td>
+        <td>
+          1058
+          -
+          1070
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case AddQuiz
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          330
+        </td>
+        <td>
+          1074
+          -
+          1113
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.handle(AddQuizMenuAction)
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          333
+        </td>
+        <td>
+          1118
+          -
+          1133
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case EditCourse
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          332
+        </td>
+        <td>
+          1137
+          -
+          1179
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.handle(EditCourseMenuAction)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          334
+        </td>
+        <td>
+          1201
+          -
+          1241
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.handle(EditQuizMenuAction)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          335
+        </td>
+        <td>
+          1184
+          -
+          1197
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case EditQuiz
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          339
+        </td>
+        <td>
+          1245
+          -
+          1271
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          nextIteration
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def nextIteration
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          337
+        </td>
+        <td>
+          1286
+          -
+          1311
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          currentPage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          338
+        </td>
+        <td>
+          1286
+          -
+          1344
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage.pageView.updateUI(DefaultUpdate)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

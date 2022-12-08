@@ -1,0 +1,330 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          model/stats/QuizInStats.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model.stats
+</span>2 <span style=''>
+</span>3 <span style=''>import java.util.UUID
+</span>4 <span style=''>
+</span>5 <span style=''>/** Object for quiz in player stats model */
+</span>6 <span style=''>object QuizInStats:
+</span>7 <span style=''>
+</span>8 <span style=''>  // Case class of quiz in stats
+</span>9 <span style=''>  case class QuizInStats(quizId: UUID, totalSeen: Int, totalRightAnswers: Int, averageTimeAnswer: Double)
+</span>10 <span style=''>
+</span>11 <span style=''>  /**
+</span>12 <span style=''>   * Create a new [[QuizInStats]]
+</span>13 <span style=''>   * @param totalSeen number of times the user has answered the quiz
+</span>14 <span style=''>   * @param totalRightAnswers number of time the user answered the quiz correctly
+</span>15 <span style=''>   * @param averageTimeAnswer average time taken by user to answer
+</span>16 <span style=''>   * @return a [[QuizInStats]]
+</span>17 <span style=''>   */
+</span>18 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(quizId: UUID,
+</span>19 <span style=''>            totalSeen: Int = 0,
+</span>20 <span style=''>            totalRightAnswers: Int = 0,
+</span>21 <span style=''>            averageTimeAnswer: Double = 0) = QuizInStats(quizId, totalSeen, totalRightAnswers, averageTimeAnswer)
+</span>22 <span style=''>
+</span>23 <span style=''>  /**
+</span>24 <span style=''>   * Change total seen in quiz in stats
+</span>25 <span style=''>   * @param quizInStats
+</span>26 <span style=''>   * @param totalSeen
+</span>27 <span style=''>   * @return updated [[QuizInStats]]
+</span>28 <span style=''>   */
+</span>29 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalSeen</span><span style=''>(quizInStats: QuizInStats, totalSeen: Int): QuizInStats = quizInStats match
+</span>30 <span style=''>    </span><span style='background: #AEF1AE'>case QuizInStats(quizId, _, totalRightAnswers, averageTimeAnswer)</span><span style=''> =&gt; QuizInStats(quizId, totalSeen, totalRightAnswers, averageTimeAnswer)
+</span>31 <span style=''>
+</span>32 <span style=''>  /**
+</span>33 <span style=''>   * Change total right answers in quiz in stats
+</span>34 <span style=''>   * @param quizInStats
+</span>35 <span style=''>   * @param totalRightAnswers
+</span>36 <span style=''>   * @return updated [[QuizInStats]]
+</span>37 <span style=''>   */
+</span>38 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalRightAnswers</span><span style=''>(quizInStats: QuizInStats, totalRightAnswers: Int): QuizInStats = quizInStats match
+</span>39 <span style=''>    </span><span style='background: #AEF1AE'>case QuizInStats(quizId, totalSeen, _, averageTimeAnswer)</span><span style=''> =&gt; QuizInStats(quizId, totalSeen, totalRightAnswers, averageTimeAnswer)
+</span>40 <span style=''>
+</span>41 <span style=''>  /**
+</span>42 <span style=''>   * Change average time answer in quiz in stats
+</span>43 <span style=''>   * @param quizInStats
+</span>44 <span style=''>   * @param averageTimeAnswer
+</span>45 <span style=''>   * @return updated [[QuizInStats]]
+</span>46 <span style=''>   */
+</span>47 <span style=''>  </span><span style='background: #AEF1AE'>def changeAverageTimeAnswer</span><span style=''>(quizInStats: QuizInStats, averageTimeAnswer: Double): QuizInStats = quizInStats match
+</span>48 <span style=''>    </span><span style='background: #AEF1AE'>case QuizInStats(quizId, totalSeen, totalRightAnswers, _)</span><span style=''> =&gt; QuizInStats(quizId, totalSeen, totalRightAnswers, averageTimeAnswer)
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          569
+        </td>
+        <td>
+          547
+          -
+          556
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          570
+        </td>
+        <td>
+          600
+          -
+          600
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply$default$2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          571
+        </td>
+        <td>
+          640
+          -
+          640
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          572
+        </td>
+        <td>
+          683
+          -
+          683
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          574
+        </td>
+        <td>
+          895
+          -
+          914
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeTotalSeen
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def changeTotalSeen
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          573
+        </td>
+        <td>
+          994
+          -
+          1059
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case QuizInStats(quizId, _, totalRightAnswers, averageTimeAnswer)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          576
+        </td>
+        <td>
+          1287
+          -
+          1314
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeTotalRightAnswers
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def changeTotalRightAnswers
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          575
+        </td>
+        <td>
+          1402
+          -
+          1459
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case QuizInStats(quizId, totalSeen, _, averageTimeAnswer)
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          578
+        </td>
+        <td>
+          1687
+          -
+          1714
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeAverageTimeAnswer
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def changeAverageTimeAnswer
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          577
+        </td>
+        <td>
+          1805
+          -
+          1862
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case QuizInStats(quizId, totalSeen, totalRightAnswers, _)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

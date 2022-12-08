@@ -1,0 +1,1101 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          controller/AddQuizMenuController.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package controller
+</span>2 <span style=''>
+</span>3 <span style=''>import controller.actions.{Action, BackAction, ParameterlessAction}
+</span>4 <span style=''>import controller.{AppController, PageController}
+</span>5 <span style=''>import controller.AppController.*
+</span>6 <span style=''>import model.{Course, SavedCourse}
+</span>7 <span style=''>import model.Quiz.Quiz
+</span>8 <span style=''>import model.GameStage.*
+</span>9 <span style=''>import view.AddQuizMenuView.*
+</span>10 <span style=''>import view.updates.ViewUpdate
+</span>11 <span style=''>
+</span>12 <span style=''>import scala.collection.mutable.ListBuffer
+</span>13 <span style=''>import scala.concurrent.{Await, Promise}
+</span>14 <span style=''>import scala.concurrent.duration.Duration
+</span>15 <span style=''>
+</span>16 <span style=''>/** Companion object of add quiz menu controller */
+</span>17 <span style=''>object AddQuizMenuController extends BackAction:
+</span>18 <span style=''>
+</span>19 <span style=''>  case class AddCourseAction(override val actionParameter: Option[SavedCourse]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>20 <span style=''>  case class AddQuizAction(override val actionParameter: Option[Quiz]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>21 <span style=''>
+</span>22 <span style=''>/** Defines the logic of the add course page */
+</span>23 <span style=''>class AddQuizMenuController extends PageController :
+</span>24 <span style=''>
+</span>25 <span style=''>  import AddQuizMenuController.*
+</span>26 <span style=''>
+</span>27 <span style=''>  var courseSelected:Option[SavedCourse] = </span><span style='background: #F0ADAD'>Option.empty</span><span style=''>
+</span>28 <span style=''>  var quizToAdd:Option[Quiz] = </span><span style='background: #F0ADAD'>Option.empty</span><span style=''>
+</span>29 <span style=''>
+</span>30 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
+</span>31 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(SettingsMenuAction)</span><span style=''>
+</span>32 <span style=''>    </span><span style='background: #F0ADAD'>case AddCourseAction(actionParameter)</span><span style=''> =&gt; courseSelected = actionParameter
+</span>33 <span style=''>    </span><span style='background: #F0ADAD'>case AddQuizAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>addQuiz(actionParameter)</span><span style=''>
+</span>34 <span style=''>
+</span>35 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
+</span>36 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(DefaultUpdate)</span><span style=''>
+</span>37 <span style=''>    if </span><span style='background: #F0ADAD'>courseSelected.isEmpty</span><span style=''> then
+</span>38 <span style=''>      </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(CourseUpdate(Option(AppController.session.savedCourses)))
+</span>39 <span style=''></span><span style='background: #F0ADAD'>      AppController.currentPage.pageView.updateUI(AskCourseUpdate)</span><span style=''>
+</span>40 <span style=''>    else
+</span>41 <span style=''>      </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(AskQuizUpdate)</span><span style=''>
+</span>42 <span style=''>
+</span>43 <span style=''>  </span><span style='background: #F0ADAD'>private def addQuiz</span><span style=''>[T](actionParameter: Option[Quiz]): Unit =
+</span>44 <span style=''>    quizToAdd = actionParameter
+</span>45 <span style=''>    val newSavedCourse = </span><span style='background: #F0ADAD'>SavedCourse.changeQuizList(courseSelected.get, courseSelected.get.quizList.::(quizToAdd.get))</span><span style=''>
+</span>46 <span style=''>    val newListCourses = </span><span style='background: #F0ADAD'>AppController.session.savedCourses.filterNot(course =&gt; course == courseSelected.get).appended(newSavedCourse)</span><span style=''>
+</span>47 <span style=''>    </span><span style='background: #F0ADAD'>AppController.changeSavedCourses(newListCourses)</span><span style=''>
+</span>48 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(QuizPrintUpdate(quizToAdd))</span><span style=''>
+</span>49 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(QuizAddedUpdate)</span><span style=''>
+</span>50 <span style=''>    courseSelected = None
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          23
+        </td>
+        <td>
+          634
+          -
+          657
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Action(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          24
+        </td>
+        <td>
+          737
+          -
+          760
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Action(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          25
+        </td>
+        <td>
+          941
+          -
+          953
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option.empty
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          26
+        </td>
+        <td>
+          985
+          -
+          997
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option.empty
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          32
+        </td>
+        <td>
+          1001
+          -
+          1020
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def handle
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          28
+        </td>
+        <td>
+          1068
+          -
+          1077
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Back
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          27
+        </td>
+        <td>
+          1081
+          -
+          1121
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.handle(SettingsMenuAction)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          29
+        </td>
+        <td>
+          1126
+          -
+          1163
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case AddCourseAction(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          31
+        </td>
+        <td>
+          1204
+          -
+          1239
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case AddQuizAction(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          30
+        </td>
+        <td>
+          1243
+          -
+          1267
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addQuiz
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          addQuiz(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          47
+        </td>
+        <td>
+          1271
+          -
+          1297
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          nextIteration
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def nextIteration
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          34
+        </td>
+        <td>
+          1312
+          -
+          1370
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage.pageView.updateUI(DefaultUpdate)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          33
+        </td>
+        <td>
+          1312
+          -
+          1337
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          currentPage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          35
+        </td>
+        <td>
+          1378
+          -
+          1400
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isEmpty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseSelected.isEmpty
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          38
+        </td>
+        <td>
+          1476
+          -
+          1510
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          savedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session.savedCourses
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          40
+        </td>
+        <td>
+          1412
+          -
+          1513
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage.pageView.updateUI(CourseUpdate(Option(AppController.session.savedCourses)))
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          43
+        </td>
+        <td>
+          1412
+          -
+          1580
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage.pageView.updateUI(CourseUpdate(Option(AppController.session.savedCourses)))
+      AppController.currentPage.pageView.updateUI(AskCourseUpdate)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          37
+        </td>
+        <td>
+          1476
+          -
+          1497
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          36
+        </td>
+        <td>
+          1412
+          -
+          1437
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          currentPage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          39
+        </td>
+        <td>
+          1469
+          -
+          1511
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(AppController.session.savedCourses)
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          41
+        </td>
+        <td>
+          1520
+          -
+          1545
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          currentPage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          42
+        </td>
+        <td>
+          1520
+          -
+          1580
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage.pageView.updateUI(AskCourseUpdate)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          44
+        </td>
+        <td>
+          1596
+          -
+          1621
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          currentPage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          46
+        </td>
+        <td>
+          1596
+          -
+          1654
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage.pageView.updateUI(AskQuizUpdate)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          45
+        </td>
+        <td>
+          1596
+          -
+          1654
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage.pageView.updateUI(AskQuizUpdate)
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          64
+        </td>
+        <td>
+          1658
+          -
+          1677
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          addQuiz
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          private def addQuiz
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          50
+        </td>
+        <td>
+          1824
+          -
+          1851
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          quizList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseSelected.get.quizList
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          53
+        </td>
+        <td>
+          1777
+          -
+          1870
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          changeQuizList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SavedCourse.changeQuizList(courseSelected.get, courseSelected.get.quizList.::(quizToAdd.get))
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          49
+        </td>
+        <td>
+          1824
+          -
+          1842
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseSelected.get
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          52
+        </td>
+        <td>
+          1824
+          -
+          1869
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          ::
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseSelected.get.quizList.::(quizToAdd.get)
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          48
+        </td>
+        <td>
+          1804
+          -
+          1822
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseSelected.get
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          51
+        </td>
+        <td>
+          1855
+          -
+          1868
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizToAdd.get
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          56
+        </td>
+        <td>
+          1961
+          -
+          1979
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseSelected.get
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          55
+        </td>
+        <td>
+          1896
+          -
+          1930
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          savedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session.savedCourses
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          58
+        </td>
+        <td>
+          1896
+          -
+          2005
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          appended
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session.savedCourses.filterNot(course =&gt; course == courseSelected.get).appended(newSavedCourse)
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          54
+        </td>
+        <td>
+          1896
+          -
+          1917
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          57
+        </td>
+        <td>
+          1896
+          -
+          1980
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          filterNot
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session.savedCourses.filterNot(course =&gt; course == courseSelected.get)
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          59
+        </td>
+        <td>
+          2010
+          -
+          2058
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          changeSavedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.changeSavedCourses(newListCourses)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          61
+        </td>
+        <td>
+          2063
+          -
+          2134
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage.pageView.updateUI(QuizPrintUpdate(quizToAdd))
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          60
+        </td>
+        <td>
+          2063
+          -
+          2088
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          currentPage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          62
+        </td>
+        <td>
+          2139
+          -
+          2164
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          currentPage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          63
+        </td>
+        <td>
+          2139
+          -
+          2199
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage.pageView.updateUI(QuizAddedUpdate)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

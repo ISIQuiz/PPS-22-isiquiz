@@ -1,0 +1,1594 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          view/graphicUI/GraphicSettingsMenu.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package view.graphicUI
+</span>2 <span style=''>
+</span>3 <span style=''>import controller.AppController
+</span>4 <span style=''>import controller.SettingsMenuController.*
+</span>5 <span style=''>import view.View.{GraphicView, sendEvent}
+</span>6 <span style=''>import view.updates.ViewUpdate
+</span>7 <span style=''>import utils.GUILoader
+</span>8 <span style=''>import utils.GUILoader.loadGUI
+</span>9 <span style=''>import javafx.fxml.FXML
+</span>10 <span style=''>import javafx.scene.control.Alert.AlertType
+</span>11 <span style=''>import javafx.scene.control.{Alert, Button, Label, TextField}
+</span>12 <span style=''>import javafx.stage.FileChooser.ExtensionFilter
+</span>13 <span style=''>import javafx.stage.{DirectoryChooser, FileChooser, Stage}
+</span>14 <span style=''>import utils.storage.Configuration.{CurrentDirectoryPath, HomeDirectoryPath, PlayerCoursesFileName}
+</span>15 <span style=''>import utils.storage.{ExportHandler, ImportHandler}
+</span>16 <span style=''>
+</span>17 <span style=''>import java.io.File
+</span>18 <span style=''>import scala.util.{Failure, Success}
+</span>19 <span style=''>
+</span>20 <span style=''>object GraphicSettingsMenu
+</span>21 <span style=''>
+</span>22 <span style=''>/** Settings menu graphic interface */
+</span>23 <span style=''>class GraphicSettingsMenu(stage: Stage) extends GraphicView:
+</span>24 <span style=''>
+</span>25 <span style=''>  val alert = </span><span style='background: #F0ADAD'>Alert(AlertType.NONE)</span><span style=''>
+</span>26 <span style=''>
+</span>27 <span style=''>  @FXML
+</span>28 <span style=''>  var backButton: Button = _
+</span>29 <span style=''>
+</span>30 <span style=''>  @FXML
+</span>31 <span style=''>  var menuLabel: Label = _
+</span>32 <span style=''>
+</span>33 <span style=''>  @FXML
+</span>34 <span style=''>  var usernameTextField: TextField = _
+</span>35 <span style=''>
+</span>36 <span style=''>  @FXML
+</span>37 <span style=''>  var importButton: Button = _
+</span>38 <span style=''>
+</span>39 <span style=''>  @FXML
+</span>40 <span style=''>  var exportButton: Button = _
+</span>41 <span style=''>
+</span>42 <span style=''>  @FXML
+</span>43 <span style=''>  var addCourseButton: Button = _
+</span>44 <span style=''>
+</span>45 <span style=''>  @FXML
+</span>46 <span style=''>  var addQuizButton: Button = _
+</span>47 <span style=''>
+</span>48 <span style=''>  @FXML
+</span>49 <span style=''>  var editCourseButton: Button = _
+</span>50 <span style=''>
+</span>51 <span style=''>  @FXML
+</span>52 <span style=''>  var editQuizButton: Button = _
+</span>53 <span style=''>
+</span>54 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>55 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
+</span>56 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
+</span>57 <span style=''>
+</span>58 <span style=''>
+</span>59 <span style=''>  </span><span style='background: #F0ADAD'>private def showDialogAlert</span><span style=''>(alertType: AlertType, title: String, headerText: String, path: String = &quot;&quot;): Unit =
+</span>60 <span style=''>    </span><span style='background: #F0ADAD'>alert.setAlertType(alertType)</span><span style=''>
+</span>61 <span style=''>    </span><span style='background: #F0ADAD'>alert.setTitle(title)</span><span style=''>
+</span>62 <span style=''>    </span><span style='background: #F0ADAD'>alert.setHeaderText(headerText + &quot;\n&quot; + path)</span><span style=''>
+</span>63 <span style=''>    </span><span style='background: #F0ADAD'>alert.show()</span><span style=''>
+</span>64 <span style=''>
+</span>65 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>66 <span style=''></span><span style='background: #F0ADAD'>  def importButtonClicked</span><span style=''>(): Unit =
+</span>67 <span style=''>    val extensionFilter: ExtensionFilter = </span><span style='background: #F0ADAD'>ExtensionFilter(&quot;JSON file&quot;, &quot;*.json&quot;)</span><span style=''>
+</span>68 <span style=''>    val fileChooser: FileChooser = </span><span style='background: #F0ADAD'>FileChooser()</span><span style=''>
+</span>69 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.getExtensionFilters.add(extensionFilter)</span><span style=''>
+</span>70 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.setTitle(&quot;Importa i corsi&quot;)</span><span style=''>
+</span>71 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.setInitialDirectory(File(CurrentDirectoryPath))</span><span style=''>
+</span>72 <span style=''>    val selectedFile = </span><span style='background: #F0ADAD'>fileChooser.showOpenDialog(stage)</span><span style=''>
+</span>73 <span style=''>    if (selectedFile != null)
+</span>74 <span style=''>      </span><span style='background: #F0ADAD'>ImportHandler.importSavedCourseListFromFile(AppController.session, selectedFile.getPath) match
+</span>75 <span style=''></span><span style='background: #F0ADAD'>        case Success(savedCourseList) =&gt;
+</span>76 <span style=''></span><span style='background: #F0ADAD'>          AppController.changeSavedCourses(savedCourseList)
+</span>77 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
+</span>78 <span style=''></span><span style='background: #F0ADAD'>            AlertType.INFORMATION,
+</span>79 <span style=''></span><span style='background: #F0ADAD'>            &quot;Importazione&quot;,
+</span>80 <span style=''></span><span style='background: #F0ADAD'>            &quot;Importazione avvenuta con successo!&quot;,
+</span>81 <span style=''></span><span style='background: #F0ADAD'>            selectedFile.getPath
+</span>82 <span style=''></span><span style='background: #F0ADAD'>          )
+</span>83 <span style=''></span><span style='background: #F0ADAD'>        case Failure(f) =&gt;
+</span>84 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
+</span>85 <span style=''></span><span style='background: #F0ADAD'>            AlertType.ERROR,
+</span>86 <span style=''></span><span style='background: #F0ADAD'>            &quot;Importazione&quot;,
+</span>87 <span style=''></span><span style='background: #F0ADAD'>            &quot;Errore! File non valido!&quot;
+</span>88 <span style=''></span><span style='background: #F0ADAD'>          )</span><span style=''>
+</span>89 <span style=''>
+</span>90 <span style=''>
+</span>91 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>92 <span style=''></span><span style='background: #F0ADAD'>  def exportButtonClicked</span><span style=''>(): Unit =
+</span>93 <span style=''>    val directoryChooser: DirectoryChooser = </span><span style='background: #F0ADAD'>DirectoryChooser()</span><span style=''>
+</span>94 <span style=''>    </span><span style='background: #F0ADAD'>directoryChooser.setTitle(&quot;Esporta i corsi&quot;)</span><span style=''>
+</span>95 <span style=''>    </span><span style='background: #F0ADAD'>directoryChooser.setInitialDirectory(File(HomeDirectoryPath))</span><span style=''>
+</span>96 <span style=''>    val selectedDirectory = </span><span style='background: #F0ADAD'>directoryChooser.showDialog(stage)</span><span style=''>
+</span>97 <span style=''>    if (selectedDirectory != null)
+</span>98 <span style=''>      </span><span style='background: #F0ADAD'>ExportHandler.exportSavedCoursesToPath(AppController.session.savedCourses, selectedDirectory.toString) match
+</span>99 <span style=''></span><span style='background: #F0ADAD'>        case Success(path) =&gt;
+</span>100 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
+</span>101 <span style=''></span><span style='background: #F0ADAD'>            AlertType.INFORMATION,
+</span>102 <span style=''></span><span style='background: #F0ADAD'>            &quot;Esportazione&quot;,
+</span>103 <span style=''></span><span style='background: #F0ADAD'>            &quot;Esportazione avvenuta con successo!&quot;,
+</span>104 <span style=''></span><span style='background: #F0ADAD'>            path
+</span>105 <span style=''></span><span style='background: #F0ADAD'>          )
+</span>106 <span style=''></span><span style='background: #F0ADAD'>        case Failure(f) =&gt;
+</span>107 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
+</span>108 <span style=''></span><span style='background: #F0ADAD'>            AlertType.ERROR,
+</span>109 <span style=''></span><span style='background: #F0ADAD'>            &quot;Esportazione&quot;,
+</span>110 <span style=''></span><span style='background: #F0ADAD'>            &quot;Errore! File non valido!&quot;
+</span>111 <span style=''></span><span style='background: #F0ADAD'>          )</span><span style=''>
+</span>112 <span style=''>
+</span>113 <span style=''>
+</span>114 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>115 <span style=''></span><span style='background: #F0ADAD'>  def addCourseButtonClicked</span><span style=''>(): Unit =
+</span>116 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(AddCourse)</span><span style=''>
+</span>117 <span style=''>
+</span>118 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>119 <span style=''></span><span style='background: #F0ADAD'>  def addQuizButtonClicked</span><span style=''>(): Unit =
+</span>120 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(AddQuiz)</span><span style=''>
+</span>121 <span style=''>
+</span>122 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>123 <span style=''></span><span style='background: #F0ADAD'>  def editCourseButtonClicked</span><span style=''>(): Unit =
+</span>124 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(EditCourse)</span><span style=''>
+</span>125 <span style=''>
+</span>126 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>127 <span style=''></span><span style='background: #F0ADAD'>  def editQuizButtonClicked</span><span style=''>(): Unit =
+</span>128 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(EditQuiz)</span><span style=''>
+</span>129 <span style=''>
+</span>130 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;settings_menu.fxml&quot;)</span><span style=''>
+</span>131 <span style=''>
+</span>132 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = {}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          1664
+        </td>
+        <td>
+          817
+          -
+          838
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Alert(AlertType.NONE)
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          1666
+        </td>
+        <td>
+          1214
+          -
+          1243
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          backButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def backButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1665
+        </td>
+        <td>
+          1258
+          -
+          1273
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Back)
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          1674
+        </td>
+        <td>
+          1378
+          -
+          1378
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          showDialogAlert$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          1673
+        </td>
+        <td>
+          1278
+          -
+          1305
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          showDialogAlert
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          private def showDialogAlert
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          1667
+        </td>
+        <td>
+          1394
+          -
+          1423
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setAlertType
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          alert.setAlertType(alertType)
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          1668
+        </td>
+        <td>
+          1428
+          -
+          1449
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setTitle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          alert.setTitle(title)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1671
+        </td>
+        <td>
+          1454
+          -
+          1499
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setHeaderText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          alert.setHeaderText(headerText + &quot;\n&quot; + path)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1670
+        </td>
+        <td>
+          1474
+          -
+          1498
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          headerText + &quot;\n&quot; + path
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1669
+        </td>
+        <td>
+          1474
+          -
+          1491
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          headerText + &quot;\n&quot;
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          1672
+        </td>
+        <td>
+          1504
+          -
+          1516
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          show
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          alert.show()
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          1694
+        </td>
+        <td>
+          1520
+          -
+          1551
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          importButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def importButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          1675
+        </td>
+        <td>
+          1605
+          -
+          1643
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ExtensionFilter(&quot;JSON file&quot;, &quot;*.json&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          1676
+        </td>
+        <td>
+          1679
+          -
+          1692
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          FileChooser()
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1677
+        </td>
+        <td>
+          1697
+          -
+          1728
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getExtensionFilters
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          fileChooser.getExtensionFilters
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1678
+        </td>
+        <td>
+          1697
+          -
+          1749
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          add
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          fileChooser.getExtensionFilters.add(extensionFilter)
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          1679
+        </td>
+        <td>
+          1754
+          -
+          1793
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setTitle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          fileChooser.setTitle(&quot;Importa i corsi&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          1680
+        </td>
+        <td>
+          1830
+          -
+          1856
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          File(CurrentDirectoryPath)
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          1681
+        </td>
+        <td>
+          1798
+          -
+          1857
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setInitialDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          fileChooser.setInitialDirectory(File(CurrentDirectoryPath))
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          1682
+        </td>
+        <td>
+          1881
+          -
+          1914
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          showOpenDialog
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          fileChooser.showOpenDialog(stage)
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          1683
+        </td>
+        <td>
+          1995
+          -
+          2016
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          1685
+        </td>
+        <td>
+          1951
+          -
+          2039
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          importSavedCourseListFromFile
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ImportHandler.importSavedCourseListFromFile(AppController.session, selectedFile.getPath)
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          1693
+        </td>
+        <td>
+          1951
+          -
+          2494
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ImportHandler.importSavedCourseListFromFile(AppController.session, selectedFile.getPath) match
+        case Success(savedCourseList) =&gt;
+          AppController.changeSavedCourses(savedCourseList)
+          showDialogAlert(
+            AlertType.INFORMATION,
+            &quot;Importazione&quot;,
+            &quot;Importazione avvenuta con successo!&quot;,
+            selectedFile.getPath
+          )
+        case Failure(f) =&gt;
+          showDialogAlert(
+            AlertType.ERROR,
+            &quot;Importazione&quot;,
+            &quot;Errore! File non valido!&quot;
+          )
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          1684
+        </td>
+        <td>
+          2018
+          -
+          2038
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getPath
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          selectedFile.getPath
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          1689
+        </td>
+        <td>
+          2054
+          -
+          2083
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Success(savedCourseList)
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1686
+        </td>
+        <td>
+          2097
+          -
+          2146
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          changeSavedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.changeSavedCourses(savedCourseList)
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          1688
+        </td>
+        <td>
+          2157
+          -
+          2332
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          showDialogAlert
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          showDialogAlert(
+            AlertType.INFORMATION,
+            &quot;Importazione&quot;,
+            &quot;Importazione avvenuta con successo!&quot;,
+            selectedFile.getPath
+          )
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          1687
+        </td>
+        <td>
+          2300
+          -
+          2320
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getPath
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          selectedFile.getPath
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          1692
+        </td>
+        <td>
+          2341
+          -
+          2356
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Failure(f)
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          1691
+        </td>
+        <td>
+          2370
+          -
+          2494
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          showDialogAlert
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          showDialogAlert(
+            AlertType.ERROR,
+            &quot;Importazione&quot;,
+            &quot;Errore! File non valido!&quot;
+          )
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          1690
+        </td>
+        <td>
+          2370
+          -
+          2385
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          showDialogAlert$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          showDialogAlert
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          1710
+        </td>
+        <td>
+          2499
+          -
+          2530
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          exportButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def exportButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          1695
+        </td>
+        <td>
+          2586
+          -
+          2604
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          DirectoryChooser()
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          1696
+        </td>
+        <td>
+          2609
+          -
+          2653
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setTitle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          directoryChooser.setTitle(&quot;Esporta i corsi&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          1698
+        </td>
+        <td>
+          2658
+          -
+          2719
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setInitialDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          directoryChooser.setInitialDirectory(File(HomeDirectoryPath))
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          1697
+        </td>
+        <td>
+          2695
+          -
+          2718
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          File(HomeDirectoryPath)
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          1699
+        </td>
+        <td>
+          2748
+          -
+          2782
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          showDialog
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          directoryChooser.showDialog(stage)
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          1701
+        </td>
+        <td>
+          2863
+          -
+          2897
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          savedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session.savedCourses
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          1703
+        </td>
+        <td>
+          2824
+          -
+          2926
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          exportSavedCoursesToPath
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ExportHandler.exportSavedCoursesToPath(AppController.session.savedCourses, selectedDirectory.toString)
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          1700
+        </td>
+        <td>
+          2863
+          -
+          2884
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          1709
+        </td>
+        <td>
+          2824
+          -
+          3294
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ExportHandler.exportSavedCoursesToPath(AppController.session.savedCourses, selectedDirectory.toString) match
+        case Success(path) =&gt;
+          showDialogAlert(
+            AlertType.INFORMATION,
+            &quot;Esportazione&quot;,
+            &quot;Esportazione avvenuta con successo!&quot;,
+            path
+          )
+        case Failure(f) =&gt;
+          showDialogAlert(
+            AlertType.ERROR,
+            &quot;Esportazione&quot;,
+            &quot;Errore! File non valido!&quot;
+          )
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          1702
+        </td>
+        <td>
+          2899
+          -
+          2925
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          selectedDirectory.toString
+        </td>
+      </tr><tr>
+        <td>
+          98
+        </td>
+        <td>
+          1705
+        </td>
+        <td>
+          2941
+          -
+          2959
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Success(path)
+        </td>
+      </tr><tr>
+        <td>
+          99
+        </td>
+        <td>
+          1704
+        </td>
+        <td>
+          2973
+          -
+          3132
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          showDialogAlert
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          showDialogAlert(
+            AlertType.INFORMATION,
+            &quot;Esportazione&quot;,
+            &quot;Esportazione avvenuta con successo!&quot;,
+            path
+          )
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          1708
+        </td>
+        <td>
+          3141
+          -
+          3156
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Failure(f)
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          1707
+        </td>
+        <td>
+          3170
+          -
+          3294
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          showDialogAlert
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          showDialogAlert(
+            AlertType.ERROR,
+            &quot;Esportazione&quot;,
+            &quot;Errore! File non valido!&quot;
+          )
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          1706
+        </td>
+        <td>
+          3170
+          -
+          3185
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          showDialogAlert$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          showDialogAlert
+        </td>
+      </tr><tr>
+        <td>
+          114
+        </td>
+        <td>
+          1712
+        </td>
+        <td>
+          3299
+          -
+          3333
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          addCourseButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def addCourseButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          115
+        </td>
+        <td>
+          1711
+        </td>
+        <td>
+          3348
+          -
+          3368
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(AddCourse)
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1714
+        </td>
+        <td>
+          3372
+          -
+          3404
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          addQuizButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def addQuizButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          1713
+        </td>
+        <td>
+          3419
+          -
+          3437
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(AddQuiz)
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          1716
+        </td>
+        <td>
+          3441
+          -
+          3476
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          editCourseButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def editCourseButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          1715
+        </td>
+        <td>
+          3491
+          -
+          3512
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(EditCourse)
+        </td>
+      </tr><tr>
+        <td>
+          126
+        </td>
+        <td>
+          1718
+        </td>
+        <td>
+          3516
+          -
+          3549
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          editQuizButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def editQuizButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          127
+        </td>
+        <td>
+          1717
+        </td>
+        <td>
+          3564
+          -
+          3583
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(EditQuiz)
+        </td>
+      </tr><tr>
+        <td>
+          129
+        </td>
+        <td>
+          1719
+        </td>
+        <td>
+          3587
+          -
+          3629
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          loadGUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          loadGUI(stage, this, &quot;settings_menu.fxml&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          131
+        </td>
+        <td>
+          1720
+        </td>
+        <td>
+          3633
+          -
+          3654
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def updateUI
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

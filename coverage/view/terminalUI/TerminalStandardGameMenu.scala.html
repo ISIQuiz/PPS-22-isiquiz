@@ -1,0 +1,787 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          view/terminalUI/TerminalStandardGameMenu.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package view.terminalUI
+</span>2 <span style=''>
+</span>3 <span style=''>import controller.StandardGameController
+</span>4 <span style=''>import controller.StandardGameController.*
+</span>5 <span style=''>import controller.actions.{Action, ParameterlessAction}
+</span>6 <span style=''>import model.GameStage
+</span>7 <span style=''>import view.View.TerminalView
+</span>8 <span style=''>import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+</span>9 <span style=''>
+</span>10 <span style=''>import scala.collection.mutable.Map
+</span>11 <span style=''>
+</span>12 <span style=''>object TerminalStandardGameMenu:
+</span>13 <span style=''>
+</span>14 <span style=''>  case object DefaultUpdate extends </span><span style='background: #F0ADAD'>ParameterlessViewUpdate</span><span style=''>
+</span>15 <span style=''>  case class NewQuizUpdate[T](override val updateParameter: Option[T]) extends </span><span style='background: #F0ADAD'>ViewUpdate[T](updateParameter)</span><span style=''>
+</span>16 <span style=''>  case class AnswerFeedbackUpdate[T](override val updateParameter: Option[T]) extends </span><span style='background: #F0ADAD'>ViewUpdate[T](updateParameter)</span><span style=''>
+</span>17 <span style=''>
+</span>18 <span style=''>/** Standard game terminal interface  */
+</span>19 <span style=''>class TerminalStandardGameMenu extends TerminalView:
+</span>20 <span style=''>
+</span>21 <span style=''>  override val actionsMap: Map[String, Action[Any]] = </span><span style='background: #F0ADAD'>Map(
+</span>22 <span style=''></span><span style='background: #F0ADAD'>    &quot;0&quot; -&gt; Back
+</span>23 <span style=''></span><span style='background: #F0ADAD'>  )</span><span style=''>
+</span>24 <span style=''>
+</span>25 <span style=''>  import TerminalStandardGameMenu.*
+</span>26 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>27 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
+</span>28 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Standard quiz:&quot;)</span><span style=''>
+</span>29 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;0) Termina quiz&quot;)</span><span style=''>
+</span>30 <span style=''>    </span><span style='background: #F0ADAD'>case NewQuizUpdate(updateParameter: Option[T])</span><span style=''> =&gt;
+</span>31 <span style=''>      if </span><span style='background: #F0ADAD'>updateParameter.isDefined</span><span style=''> then
+</span>32 <span style=''>        </span><span style='background: #F0ADAD'>val quizInGame = updateParameter.get.asInstanceOf[GameStage].quizInGame
+</span>33 <span style=''></span><span style='background: #F0ADAD'>        val printAnswers = quizInGame.answers.map(answer =&gt;
+</span>34 <span style=''></span><span style='background: #F0ADAD'>          s&quot;${quizInGame.answers.indexOf(answer) + 1}) ${answer.text}&quot;)
+</span>35 <span style=''></span><span style='background: #F0ADAD'>        println(quizInGame.quiz.question)
+</span>36 <span style=''></span><span style='background: #F0ADAD'>        quizInGame.answers.foreach(answer =&gt; actionsMap += ((quizInGame.answers.indexOf(answer) + 1).toString -&gt; SelectAnswer(Option(quizInGame.answers.indexOf(answer) + 1))))
+</span>37 <span style=''></span><span style='background: #F0ADAD'>        println(&quot;Seleziona una risposta:&quot;)
+</span>38 <span style=''></span><span style='background: #F0ADAD'>        printAnswers.foreach(answer =&gt; println(answer))</span><span style=''>
+</span>39 <span style=''>    </span><span style='background: #F0ADAD'>case AnswerFeedbackUpdate(updateParameter: Option[T])</span><span style=''> =&gt;
+</span>40 <span style=''>      </span><span style='background: #F0ADAD'>println(updateParameter.get)</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          2126
+        </td>
+        <td>
+          384
+          -
+          407
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ParameterlessViewUpdate
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          2127
+        </td>
+        <td>
+          487
+          -
+          517
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ViewUpdate[T](updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          15
+        </td>
+        <td>
+          2128
+        </td>
+        <td>
+          604
+          -
+          634
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ViewUpdate[T](updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          2130
+        </td>
+        <td>
+          785
+          -
+          809
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Map(
+    &quot;0&quot; -&gt; Back
+  )
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          2129
+        </td>
+        <td>
+          794
+          -
+          805
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          -&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;0&quot; -&gt; Back
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          2154
+        </td>
+        <td>
+          849
+          -
+          870
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def updateUI
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          2133
+        </td>
+        <td>
+          924
+          -
+          942
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case DefaultUpdate
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          2131
+        </td>
+        <td>
+          952
+          -
+          977
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Standard quiz:&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          2132
+        </td>
+        <td>
+          984
+          -
+          1010
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;0) Termina quiz&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          2150
+        </td>
+        <td>
+          1015
+          -
+          1061
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case NewQuizUpdate(updateParameter: Option[T])
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          2134
+        </td>
+        <td>
+          1074
+          -
+          1099
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isDefined
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.isDefined
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          2149
+        </td>
+        <td>
+          1113
+          -
+          1633
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          val quizInGame = updateParameter.get.asInstanceOf[GameStage].quizInGame
+        val printAnswers = quizInGame.answers.map(answer =&gt;
+          s&quot;${quizInGame.answers.indexOf(answer) + 1}) ${answer.text}&quot;)
+        println(quizInGame.quiz.question)
+        quizInGame.answers.foreach(answer =&gt; actionsMap += ((quizInGame.answers.indexOf(answer) + 1).toString -&gt; SelectAnswer(Option(quizInGame.answers.indexOf(answer) + 1))))
+        println(&quot;Seleziona una risposta:&quot;)
+        printAnswers.foreach(answer =&gt; println(answer))
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          2135
+        </td>
+        <td>
+          1130
+          -
+          1149
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          2138
+        </td>
+        <td>
+          1212
+          -
+          1316
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInGame.answers.map(answer =&gt;
+          s&quot;${quizInGame.answers.indexOf(answer) + 1}) ${answer.text}&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          2137
+        </td>
+        <td>
+          1255
+          -
+          1315
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;${quizInGame.answers.indexOf(answer) + 1}) ${answer.text}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          2136
+        </td>
+        <td>
+          1259
+          -
+          1293
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          indexOf
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInGame.answers.indexOf(answer)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          2139
+        </td>
+        <td>
+          1325
+          -
+          1358
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(quizInGame.quiz.question)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2140
+        </td>
+        <td>
+          1420
+          -
+          1454
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          indexOf
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInGame.answers.indexOf(answer)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2143
+        </td>
+        <td>
+          1419
+          -
+          1532
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          -&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          (quizInGame.answers.indexOf(answer) + 1).toString -&gt; SelectAnswer(Option(quizInGame.answers.indexOf(answer) + 1))
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2145
+        </td>
+        <td>
+          1367
+          -
+          1534
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInGame.answers.foreach(answer =&gt; actionsMap += ((quizInGame.answers.indexOf(answer) + 1).toString -&gt; SelectAnswer(Option(quizInGame.answers.indexOf(answer) + 1))))
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2142
+        </td>
+        <td>
+          1485
+          -
+          1531
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(quizInGame.answers.indexOf(answer) + 1)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2141
+        </td>
+        <td>
+          1492
+          -
+          1526
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          indexOf
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInGame.answers.indexOf(answer)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2144
+        </td>
+        <td>
+          1404
+          -
+          1532
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +=
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          actionsMap += ((quizInGame.answers.indexOf(answer) + 1).toString -&gt; SelectAnswer(Option(quizInGame.answers.indexOf(answer) + 1))
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          2146
+        </td>
+        <td>
+          1543
+          -
+          1577
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Seleziona una risposta:&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          2147
+        </td>
+        <td>
+          1617
+          -
+          1632
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(answer)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          2148
+        </td>
+        <td>
+          1586
+          -
+          1633
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          printAnswers.foreach(answer =&gt; println(answer))
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          2153
+        </td>
+        <td>
+          1638
+          -
+          1691
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case AnswerFeedbackUpdate(updateParameter: Option[T])
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          2152
+        </td>
+        <td>
+          1701
+          -
+          1729
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(updateParameter.get)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          2151
+        </td>
+        <td>
+          1709
+          -
+          1728
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

@@ -1,0 +1,822 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          view/graphicUI/GraphicAddCourseMenu.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package view.graphicUI
+</span>2 <span style=''>
+</span>3 <span style=''>
+</span>4 <span style=''>import controller.AddCourseMenuController.{AddCourseAction, Back}
+</span>5 <span style=''>import view.AddCourseMenuView.{CourseAddedUpdate, CoursePrintUpdate}
+</span>6 <span style=''>import javafx.fxml.FXML
+</span>7 <span style=''>import javafx.scene.control.{Label, TextField}
+</span>8 <span style=''>import javafx.stage.Stage
+</span>9 <span style=''>import utils.GUILoader
+</span>10 <span style=''>import utils.GUILoader.loadGUI
+</span>11 <span style=''>import view.View.{GraphicView, sendEvent}
+</span>12 <span style=''>import view.updates.ViewUpdate
+</span>13 <span style=''>import model.SavedCourse.SavedCourseImpl
+</span>14 <span style=''>import model.CourseIdentifier.CourseIdentifierImpl
+</span>15 <span style=''>import model.Quiz.Quiz
+</span>16 <span style=''>
+</span>17 <span style=''>object GraphicAddCourseMenu
+</span>18 <span style=''>
+</span>19 <span style=''>/** Default menu graphic interface  */
+</span>20 <span style=''>class GraphicAddCourseMenu(stage: Stage) extends GraphicView:
+</span>21 <span style=''>
+</span>22 <span style=''>
+</span>23 <span style=''>  @FXML
+</span>24 <span style=''>  var courseNameTextField: TextField = _
+</span>25 <span style=''>  @FXML
+</span>26 <span style=''>  var degreeNameTextField: TextField = _
+</span>27 <span style=''>  @FXML
+</span>28 <span style=''>  var universityNameTextField: TextField = _
+</span>29 <span style=''>  @FXML
+</span>30 <span style=''>  var descriptionCourseTextField: TextField = _
+</span>31 <span style=''>
+</span>32 <span style=''>  @FXML
+</span>33 <span style=''>  var feedbackLabel: Label = _
+</span>34 <span style=''>
+</span>35 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>36 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
+</span>37 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
+</span>38 <span style=''>
+</span>39 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>40 <span style=''></span><span style='background: #F0ADAD'>  def addCourseButtonClicked</span><span style=''>(): Unit =
+</span>41 <span style=''>    if </span><span style='background: #F0ADAD'>checkInputs</span><span style=''> then
+</span>42 <span style=''>      </span><span style='background: #F0ADAD'>val course = SavedCourseImpl(
+</span>43 <span style=''></span><span style='background: #F0ADAD'>        courseId = CourseIdentifierImpl(
+</span>44 <span style=''></span><span style='background: #F0ADAD'>          courseName = courseNameTextField.getText,
+</span>45 <span style=''></span><span style='background: #F0ADAD'>          degreeName = degreeNameTextField.getText,
+</span>46 <span style=''></span><span style='background: #F0ADAD'>          universityName = universityNameTextField.getText
+</span>47 <span style=''></span><span style='background: #F0ADAD'>        ),
+</span>48 <span style=''></span><span style='background: #F0ADAD'>        description = descriptionCourseTextField.getText match
+</span>49 <span style=''></span><span style='background: #F0ADAD'>          case &quot;&quot; =&gt; None
+</span>50 <span style=''></span><span style='background: #F0ADAD'>          case text =&gt; Some(text)
+</span>51 <span style=''></span><span style='background: #F0ADAD'>        ,quizList = Nil
+</span>52 <span style=''></span><span style='background: #F0ADAD'>      )
+</span>53 <span style=''></span><span style='background: #F0ADAD'>      import controller.AddCourseMenuController.AddCourseAction
+</span>54 <span style=''></span><span style='background: #F0ADAD'>      sendEvent(AddCourseAction(Option(course)))</span><span style=''>
+</span>55 <span style=''>    else
+</span>56 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(&quot;Nome mancante&quot;)</span><span style=''>
+</span>57 <span style=''>
+</span>58 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;add_course_menu.fxml&quot;)</span><span style=''>
+</span>59 <span style=''>
+</span>60 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>61 <span style=''>    </span><span style='background: #F0ADAD'>case CourseAddedUpdate</span><span style=''> =&gt;
+</span>62 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(&quot;Corso Aggiunto!!!&quot;)</span><span style=''>
+</span>63 <span style=''>      </span><span style='background: #F0ADAD'>courseNameTextField.clear()</span><span style=''>
+</span>64 <span style=''>      </span><span style='background: #F0ADAD'>degreeNameTextField.clear()</span><span style=''>
+</span>65 <span style=''>      </span><span style='background: #F0ADAD'>universityNameTextField.clear()</span><span style=''>
+</span>66 <span style=''>      </span><span style='background: #F0ADAD'>descriptionCourseTextField.clear()</span><span style=''>
+</span>67 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
+</span>68 <span style=''>
+</span>69 <span style=''>  </span><span style='background: #F0ADAD'>private def checkInputs</span><span style=''>: Boolean =
+</span>70 <span style=''>    </span><span style='background: #F0ADAD'>courseNameTextField.getText.nonEmpty</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          1244
+        </td>
+        <td>
+          882
+          -
+          911
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          backButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def backButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          1243
+        </td>
+        <td>
+          926
+          -
+          941
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Back)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          1258
+        </td>
+        <td>
+          945
+          -
+          979
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          addCourseButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def addCourseButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          1245
+        </td>
+        <td>
+          997
+          -
+          1008
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          checkInputs
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkInputs
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1255
+        </td>
+        <td>
+          1020
+          -
+          1532
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          val course = SavedCourseImpl(
+        courseId = CourseIdentifierImpl(
+          courseName = courseNameTextField.getText,
+          degreeName = degreeNameTextField.getText,
+          universityName = universityNameTextField.getText
+        ),
+        description = descriptionCourseTextField.getText match
+          case &quot;&quot; =&gt; None
+          case text =&gt; Some(text)
+        ,quizList = Nil
+      )
+      import controller.AddCourseMenuController.AddCourseAction
+      sendEvent(AddCourseAction(Option(course)))
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          1246
+        </td>
+        <td>
+          1114
+          -
+          1141
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseNameTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          1247
+        </td>
+        <td>
+          1166
+          -
+          1193
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          degreeNameTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          1248
+        </td>
+        <td>
+          1222
+          -
+          1253
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          universityNameTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1249
+        </td>
+        <td>
+          1287
+          -
+          1321
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          descriptionCourseTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          1250
+        </td>
+        <td>
+          1338
+          -
+          1345
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case &quot;&quot;
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          1251
+        </td>
+        <td>
+          1364
+          -
+          1373
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case text
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          1252
+        </td>
+        <td>
+          1408
+          -
+          1411
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          Nil
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Nil
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          1254
+        </td>
+        <td>
+          1490
+          -
+          1532
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(AddCourseAction(Option(course)))
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          1253
+        </td>
+        <td>
+          1516
+          -
+          1530
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(course)
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1257
+        </td>
+        <td>
+          1548
+          -
+          1586
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          feedbackLabel.setText(&quot;Nome mancante&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1256
+        </td>
+        <td>
+          1548
+          -
+          1586
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          feedbackLabel.setText(&quot;Nome mancante&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          1259
+        </td>
+        <td>
+          1590
+          -
+          1634
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          loadGUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          loadGUI(stage, this, &quot;add_course_menu.fxml&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          1267
+        </td>
+        <td>
+          1638
+          -
+          1659
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def updateUI
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          1265
+        </td>
+        <td>
+          1713
+          -
+          1735
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case CourseAddedUpdate
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1260
+        </td>
+        <td>
+          1745
+          -
+          1787
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          feedbackLabel.setText(&quot;Corso Aggiunto!!!&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          1261
+        </td>
+        <td>
+          1794
+          -
+          1821
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          clear
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseNameTextField.clear()
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1262
+        </td>
+        <td>
+          1828
+          -
+          1855
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          clear
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          degreeNameTextField.clear()
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          1263
+        </td>
+        <td>
+          1862
+          -
+          1893
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          clear
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          universityNameTextField.clear()
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          1264
+        </td>
+        <td>
+          1900
+          -
+          1934
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          clear
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          descriptionCourseTextField.clear()
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          1266
+        </td>
+        <td>
+          1939
+          -
+          1945
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case _
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1271
+        </td>
+        <td>
+          1955
+          -
+          1978
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          checkInputs
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          private def checkInputs
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          1270
+        </td>
+        <td>
+          1994
+          -
+          2030
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          nonEmpty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseNameTextField.getText.nonEmpty
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          1269
+        </td>
+        <td>
+          1994
+          -
+          2021
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          augmentString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseNameTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          1268
+        </td>
+        <td>
+          1994
+          -
+          2021
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseNameTextField.getText
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

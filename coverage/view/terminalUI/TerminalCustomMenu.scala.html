@@ -1,0 +1,756 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          view/terminalUI/TerminalCustomMenu.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package view.terminalUI
+</span>2 <span style=''>
+</span>3 <span style=''>import controller.CustomMenuController
+</span>4 <span style=''>import controller.CustomMenuController.*
+</span>5 <span style=''>import controller.actions.Action
+</span>6 <span style=''>import model.settings.{GameSettings, StandardGameSettings}
+</span>7 <span style=''>import view.View.*
+</span>8 <span style=''>import view.updates.{ViewUpdate}
+</span>9 <span style=''>import view.CustomMenuView.*
+</span>10 <span style=''>import scala.collection.mutable.Map
+</span>11 <span style=''>import scala.io.StdIn.readLine
+</span>12 <span style=''>
+</span>13 <span style=''>object TerminalCustomMenu
+</span>14 <span style=''>
+</span>15 <span style=''>/** Custom settings menu terminal interface */
+</span>16 <span style=''>class TerminalCustomMenu extends TerminalView:
+</span>17 <span style=''>
+</span>18 <span style=''>  override val actionsMap: Map[String, Action[Any]] = </span><span style='background: #F0ADAD'>Map(
+</span>19 <span style=''></span><span style='background: #F0ADAD'>    &quot;M&quot; -&gt; Back
+</span>20 <span style=''></span><span style='background: #F0ADAD'>  )</span><span style=''>
+</span>21 <span style=''>
+</span>22 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>23 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
+</span>24 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Menu impostazioni personalizzate:\nM) Menu principale&quot;)</span><span style=''>
+</span>25 <span style=''>
+</span>26 <span style=''>      </span><span style='background: #F0ADAD'>def checkControls</span><span style=''>(control: String): Unit =
+</span>27 <span style=''>        if </span><span style='background: #F0ADAD'>actionsMap.contains(control)</span><span style=''> then
+</span>28 <span style=''>          </span><span style='background: #F0ADAD'>sendEvent(actionsMap.get(control).get)</span><span style=''>
+</span>29 <span style=''>
+</span>30 <span style=''>      </span><span style='background: #F0ADAD'>print(&quot;Tempo massimo per domanda: &quot;)</span><span style=''>
+</span>31 <span style=''>      val quizMaxTime = </span><span style='background: #F0ADAD'>readLine()</span><span style=''>
+</span>32 <span style=''>      </span><span style='background: #F0ADAD'>checkControls(quizMaxTime)</span><span style=''>
+</span>33 <span style=''>      </span><span style='background: #F0ADAD'>print(&quot;Numero di domande: &quot;)</span><span style=''>
+</span>34 <span style=''>      val maxQuizzes = </span><span style='background: #F0ADAD'>readLine()</span><span style=''>
+</span>35 <span style=''>      </span><span style='background: #F0ADAD'>checkControls(maxQuizzes)</span><span style=''>
+</span>36 <span style=''>      </span><span style='background: #F0ADAD'>print(&quot;Numero massimo di aiuti: &quot;)</span><span style=''>
+</span>37 <span style=''>      val helpsNumber = </span><span style='background: #F0ADAD'>readLine()</span><span style=''>
+</span>38 <span style=''>      </span><span style='background: #F0ADAD'>checkControls(helpsNumber)</span><span style=''>
+</span>39 <span style=''>      val gameSettings: GameSettings = StandardGameSettings(</span><span style='background: #F0ADAD'>quizMaxTime.toInt</span><span style=''>, </span><span style='background: #F0ADAD'>maxQuizzes.toInt</span><span style=''>, </span><span style='background: #F0ADAD'>helpsNumber.toInt</span><span style=''>)
+</span>40 <span style=''>      </span><span style='background: #F0ADAD'>sendEvent(NewGameSettings(Option(gameSettings)))</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          1930
+        </td>
+        <td>
+          522
+          -
+          546
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Map(
+    &quot;M&quot; -&gt; Back
+  )
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          1929
+        </td>
+        <td>
+          531
+          -
+          542
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          -&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;M&quot; -&gt; Back
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          1956
+        </td>
+        <td>
+          550
+          -
+          571
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def updateUI
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          1955
+        </td>
+        <td>
+          625
+          -
+          643
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case DefaultUpdate
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          1931
+        </td>
+        <td>
+          653
+          -
+          717
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Menu impostazioni personalizzate:\nM) Menu principale&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          1937
+        </td>
+        <td>
+          725
+          -
+          742
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          checkControls
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          def checkControls
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          1932
+        </td>
+        <td>
+          779
+          -
+          807
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          contains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          actionsMap.contains(control)
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          1934
+        </td>
+        <td>
+          833
+          -
+          860
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          actionsMap.get(control).get
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          1933
+        </td>
+        <td>
+          833
+          -
+          856
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          actionsMap.get(control)
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          1936
+        </td>
+        <td>
+          823
+          -
+          861
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(actionsMap.get(control).get)
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          1935
+        </td>
+        <td>
+          823
+          -
+          861
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(actionsMap.get(control).get)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          1938
+        </td>
+        <td>
+          869
+          -
+          905
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          print
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          print(&quot;Tempo massimo per domanda: &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          1939
+        </td>
+        <td>
+          930
+          -
+          940
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine()
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          1940
+        </td>
+        <td>
+          947
+          -
+          973
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          checkControls
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkControls(quizMaxTime)
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          1941
+        </td>
+        <td>
+          980
+          -
+          1008
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          print
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          print(&quot;Numero di domande: &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          1942
+        </td>
+        <td>
+          1032
+          -
+          1042
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine()
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          1943
+        </td>
+        <td>
+          1049
+          -
+          1074
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          checkControls
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkControls(maxQuizzes)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          1944
+        </td>
+        <td>
+          1081
+          -
+          1115
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          print
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          print(&quot;Numero massimo di aiuti: &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          1945
+        </td>
+        <td>
+          1140
+          -
+          1150
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine()
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          1946
+        </td>
+        <td>
+          1157
+          -
+          1183
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          checkControls
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkControls(helpsNumber)
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          1952
+        </td>
+        <td>
+          1281
+          -
+          1298
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toInt
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          helpsNumber.toInt
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          1949
+        </td>
+        <td>
+          1263
+          -
+          1273
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          augmentString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          maxQuizzes
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          1951
+        </td>
+        <td>
+          1281
+          -
+          1292
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          augmentString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          helpsNumber
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          1948
+        </td>
+        <td>
+          1244
+          -
+          1261
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toInt
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizMaxTime.toInt
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          1947
+        </td>
+        <td>
+          1244
+          -
+          1255
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          augmentString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizMaxTime
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          1950
+        </td>
+        <td>
+          1263
+          -
+          1279
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toInt
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          maxQuizzes.toInt
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          1954
+        </td>
+        <td>
+          1306
+          -
+          1354
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(NewGameSettings(Option(gameSettings)))
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          1953
+        </td>
+        <td>
+          1332
+          -
+          1352
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(gameSettings)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>
