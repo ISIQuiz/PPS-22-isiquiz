@@ -1,6 +1,6 @@
 package model
 
-import model. Answer.*
+import model.Answer.*
 import model.stats.PlayerStats
 import model.stats.PlayerStats.initStats
 import org.scalatest.funsuite.AnyFunSuite
