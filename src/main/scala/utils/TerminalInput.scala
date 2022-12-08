@@ -2,7 +2,7 @@ package utils
 
 import CancellableFuture.*
 import controller.AppController
-import controller.StandardGameController.{SelectAnswer, TimeExpired}
+import controller.StandardGameController.SelectAnswer
 
 import java.util.concurrent.{CountDownLatch, TimeUnit}
 import scala.concurrent.{Future, Promise}

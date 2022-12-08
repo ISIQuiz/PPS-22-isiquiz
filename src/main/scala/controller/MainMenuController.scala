@@ -35,4 +35,4 @@ class MainMenuController extends PageController:
     case Quit => System.exit(0)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(DefaultUpdate)
+    sendUpdate(DefaultUpdate)

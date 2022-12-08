@@ -32,4 +32,4 @@ class SettingsMenuController extends PageController :
     case EditQuiz => AppController.handle(EditQuizMenuAction)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(DefaultUpdate)
+    sendUpdate(DefaultUpdate)
