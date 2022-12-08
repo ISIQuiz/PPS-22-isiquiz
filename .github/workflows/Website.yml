@@ -18,7 +18,7 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Artifacts
+          name: ReadmeArtifacts
           path: |
             README.md
   CreateArtifactDoc:      
@@ -38,17 +38,16 @@ jobs:
           cache: 'sbt'
       - name: Generate documentation
         run: sbt doc
-      - name: Print Branch
+      - name: Create NoJekill
         run: |
-          git status
           git branch
-          tree
+          git touch ./target/scala-3.2.0/api/.nojekyll
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Artifacts
+          name: DocArtifacts
           path: |
-            .
+            ./target/scala-3.2.0/api
   DeployWebsite:      
     needs: [CreateArtifactReadme, CreateArtifactDoc]
     runs-on: ubuntu-latest
@@ -69,16 +68,19 @@ jobs:
           git checkout gh-pages
           tree
           git rm -rf .
-          #git checkout -f main README.md
-      - name: Download Artifacts
+      - name: Download Readme Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: Artifacts
+          name: ReadmeArtifacts
+          path: .
+      - name: Download Doc Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: DocArtifacts
+          path: ./docs/
       - name: Deploy Website
         run: |
           git status
-          git branch
-          tree
           git add .
           git commit -m 'Updated gh-pages' || true
           git push
