@@ -5,6 +5,7 @@ import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
 import javafx.event.Event
 import javafx.fxml.FXMLLoader
+import javafx.scene.image.Image
 import javafx.scene.layout.Pane
 import javafx.stage.StageStyle
 import scalafx.application.{JFXApp3, Platform}
@@ -12,9 +13,9 @@ import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
 import scalafx.stage.Stage
 import utils.{TerminalInput, TerminalInputImpl}
-import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalMainMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
+import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalEditCourseMenu, TerminalEditQuizMenu, TerminalMainMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
 import view.graphicUI.GraphicMainMenu.*
-import view.graphicUI.{GraphicCustomMenu, GraphicDefaultMenu, GraphicMainMenu, GraphicReviewMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu, GraphicStatisticsMenu}
+import view.graphicUI.{GraphicAddCourseMenu, GraphicAddQuizMenu, GraphicCustomMenu, GraphicDefaultMenu, GraphicEditCourseMenu, GraphicEditQuizMenu, GraphicMainMenu, GraphicReviewMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu, GraphicStatisticsMenu}
 import view.updates.ViewUpdate
 
 import scala.io.StdIn.readLine
@@ -38,6 +39,7 @@ object View:
   _stage.resizable = false
   _stage.scene = _scene
   _stage.onCloseRequest = _ => System.exit(0)
+  _stage.getIcons.add(new Image(View.getClass.getResourceAsStream("/images/favicon_265_text.png")));
   _scene.root.value = _basePanel
 
   def sendEvent[T](action: Action[T]): Unit = AppController.handle(action)
@@ -65,10 +67,16 @@ object View:
         case ScalaFX => GraphicSettingsMenu(_stage)
       case AddCourseMenuAction => _currentGUIType match
         case Terminal => TerminalAddCourseMenu()
-        case ScalaFX => GraphicDefaultMenu(_stage)
+        case ScalaFX => GraphicAddCourseMenu(_stage)
       case AddQuizMenuAction => _currentGUIType match
         case Terminal => TerminalAddQuizMenu()
-        case ScalaFX => GraphicDefaultMenu(_stage)
+        case ScalaFX => GraphicAddQuizMenu(_stage)
+      case EditCourseMenuAction => _currentGUIType match
+        case Terminal => TerminalEditCourseMenu()
+        case ScalaFX => GraphicEditCourseMenu(_stage)
+      case EditQuizMenuAction => _currentGUIType match
+        case Terminal => TerminalEditQuizMenu()
+        case ScalaFX => GraphicEditQuizMenu(_stage)
       case ReviewMenuAction => _currentGUIType match
         case Terminal => throw new IllegalArgumentException
         case ScalaFX => GraphicReviewMenu(_stage)

@@ -5,6 +5,8 @@ import view.updates.{DefaultUpdate, ParameterlessViewUpdate, ViewUpdate}
 
 object AddCourseMenuView extends DefaultUpdate:
 
-  case class CoursePrint(override val updateParameter: Option[SavedCourse]) extends ViewUpdate(updateParameter)
+  case object AskCourseUpdate extends ParameterlessViewUpdate
 
-  case object AskCoursePrint extends ParameterlessViewUpdate
+  case class CoursePrintUpdate(override val updateParameter: Option[SavedCourse]) extends ViewUpdate(updateParameter)
+  
+  case object CourseAddedUpdate extends ParameterlessViewUpdate

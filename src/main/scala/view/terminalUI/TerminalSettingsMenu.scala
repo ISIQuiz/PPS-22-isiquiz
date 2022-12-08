@@ -16,8 +16,10 @@ class TerminalSettingsMenu extends TerminalView:
   override val actionsMap: Map[String, Action[Any]] = Map(
     "1" -> Back,
     "2" -> AddCourse,
-    "3" -> AddQuiz
+    "3" -> AddQuiz,
+    "4" -> EditCourse,
+    "5" -> EditQuiz,
   )
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit =
-    println("Menu impostazioni:\n1) Menu principale\n2) Aggiungi corso\n3) Aggiungi quiz")
+    println("Menu impostazioni:\n1) Menu principale\n2) Aggiungi corso\n3) Aggiungi quiz\n4) Modifica corso\n5) Modifica quiz")

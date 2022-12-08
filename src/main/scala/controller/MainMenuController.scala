@@ -3,7 +3,7 @@ package controller
 import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
-import utils.{Timer, TimerImpl}
+import utils.Timer
 import view.View
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import view.MainMenuView
@@ -35,4 +35,4 @@ class MainMenuController extends PageController:
     case Quit => System.exit(0)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(DefaultUpdate)
+    sendUpdate(DefaultUpdate)

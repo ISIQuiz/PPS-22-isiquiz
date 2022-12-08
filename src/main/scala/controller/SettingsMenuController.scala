@@ -9,12 +9,15 @@ import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
+import view.SettingsMenuView.*
 
 /** Companion object of settings menu controller */
 object SettingsMenuController extends BackAction:
 
   case object AddCourse extends ParameterlessAction
   case object AddQuiz extends ParameterlessAction
+  case object EditCourse extends ParameterlessAction
+  case object EditQuiz extends ParameterlessAction
 
 /** Defines the logic of the settings page */
 class SettingsMenuController extends PageController :
@@ -25,6 +28,8 @@ class SettingsMenuController extends PageController :
     case Back => AppController.handle(MainMenuAction)
     case AddCourse => AppController.handle(AddCourseMenuAction)
     case AddQuiz => AppController.handle(AddQuizMenuAction)
+    case EditCourse => AppController.handle(EditCourseMenuAction)
+    case EditQuiz => AppController.handle(EditQuizMenuAction)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(DefaultUpdate)
+    sendUpdate(DefaultUpdate)

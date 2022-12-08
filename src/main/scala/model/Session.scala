@@ -1,10 +1,10 @@
 package model
 
-import model.stats.PlayerStats.PlayerStats
-import utils.Configuration.SavedCoursesFilePath
-import utils.DefaultDataList.{defaultCourseList, defaultPlayerStats}
+import model.stats.PlayerStats.{PlayerStats, initStats}
+import utils.storage.Configuration.PlayerCoursesFilePath
+import utils.storage.DefaultDataList.defaultCourseList
 import utils.parser.CourseJsonParser
-import utils.{DefaultDataList, FileHandler}
+import utils.storage.{DefaultDataList, FileHandler}
 
 import scala.util.{Failure, Success, Try}
 
@@ -30,7 +30,7 @@ object Session:
    * @param savedCourses the list of saved course, if empty it uses a sample list
    * @return Session
    */
-  def apply(savedCourses: List[SavedCourse] = defaultCourseList, playerStats: PlayerStats = defaultPlayerStats): Session = SessionImpl(savedCourses, playerStats)
+  def apply(savedCourses: List[SavedCourse] = defaultCourseList, playerStats: PlayerStats = initStats): Session = SessionImpl(savedCourses, playerStats)
 
   /**
    * Case class for session model
@@ -54,4 +54,3 @@ object Session:
    */
   def changePlayerStats(session: Session, playerStats: PlayerStats): Session = session match
     case SessionImpl(savedCourses, _) => SessionImpl(savedCourses, playerStats)
-

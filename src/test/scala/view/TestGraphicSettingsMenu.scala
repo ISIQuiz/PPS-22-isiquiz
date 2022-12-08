@@ -23,7 +23,7 @@ class TestGraphicSettingsMenu extends ViewTest with ButtonTest:
     graphicSettingsMenu = new GraphicSettingsMenu(stage)
 
   @Test def testBackButton(robot: FxRobot): Unit =
-    testButton(graphicSettingsMenu.backButton, "back")(robot)
+    testButton(graphicSettingsMenu.backButton, "Indietro")(robot)
 
   @Test def testImportButton(robot: FxRobot): Unit =
     testButton(graphicSettingsMenu.importButton, "Importa domande")(robot)
@@ -31,5 +31,8 @@ class TestGraphicSettingsMenu extends ViewTest with ButtonTest:
   @Test def testExportButton(robot: FxRobot): Unit =
     testButton(graphicSettingsMenu.exportButton, "Esporta domande")(robot)
 
-  @Test def testEditButton(robot: FxRobot): Unit =
-    testButton(graphicSettingsMenu.editButton, "Modifica domande")(robot)
+  @Test def testEditCourseButton(robot: FxRobot): Unit =
+    testButton(graphicSettingsMenu.editCourseButton, "Modifica corso")(robot)
+
+  @Test def testEditQuizButton(robot: FxRobot): Unit =
+    testButton(graphicSettingsMenu.editQuizButton, "Modifica quiz")(robot)

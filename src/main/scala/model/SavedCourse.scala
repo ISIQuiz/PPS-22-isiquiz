@@ -20,7 +20,7 @@ trait SavedCourse extends Course:
 /**
  * Object used for managing a saved course
  */
-object SavedCourse:
+case object SavedCourse:
 
   /**
    * Creates a new [[SavedCourse]]

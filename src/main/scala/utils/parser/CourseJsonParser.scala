@@ -6,6 +6,7 @@ import model.{Course, CourseIdentifier, SavedCourse, Session}
 import play.api.libs.json.*
 import utils.parser.JsonLabels.*
 
+import java.util.UUID
 import scala.util.Try
 
 /** Trait for the [[CourseJsonParser]] parser */
@@ -38,6 +39,7 @@ object CourseJsonParser:
           ))
         case quiz: Quiz => // Quiz
           JsObject(Seq(
+            QuizIdLabel -> JsString(quiz.quizId.toString),
             QuestionLabel -> JsString(quiz.question),
             AnswerListLabel -> JsArray(quiz.answerList.map(serializeObjectOfSavedCourse)),
             MaxScoreLabel -> JsNumber(quiz.maxScore),
@@ -63,6 +65,12 @@ object CourseJsonParser:
       } yield {
         deserializeObjectOfSavedCourse((jsonObject \ SavedCourseListLabel).as[JsArray], SavedCourseListLabel).asInstanceOf[List[SavedCourse]]
       }
+      
+      /* TODO
+      def mergeLists[T](list: T, newList: T): T = (list, newList) match
+        case (savedCourseList: List[SavedCourse], newSavedCourseList: List[SavedCourse]) => savedCourseList
+
+      */
 
     // Deserialize an object based on his type
     private def deserializeObjectOfSavedCourse(jsonArray: JsArray, label: String): List[SavedCourse] | List[Quiz] | List[Answer] =
@@ -80,6 +88,7 @@ object CourseJsonParser:
           jsonArray.value.map(
             quiz =>
               Quiz(
+                quizId = UUID.fromString((quiz \ QuizIdLabel).as[String]),
                 question = (quiz \ QuestionLabel).as[String],
                 answerList = deserializeObjectOfSavedCourse((quiz \ AnswerListLabel).as[JsArray], AnswerListLabel).asInstanceOf[List[Answer]],
                 maxScore = (quiz \ MaxScoreLabel).as[Int],
