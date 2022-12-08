@@ -21,7 +21,6 @@ import scala.concurrent.duration.Duration
 /** Companion object of standard game controller */
 object StandardGameController extends BackAction:
 
-  case object TimeExpired extends ParameterlessAction
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
   case object NextQuiz extends ParameterlessAction
 
@@ -41,26 +40,22 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)
-    case TimeExpired =>
-      // TODO: Remove this action since timer expired is not an action but a condition checked in every iteration
-      println("Time expired")
     case SelectAnswer(actionParameter) => selectAnswer(actionParameter)
     case NextQuiz => nextQuiz()
 
   override def nextIteration(): Unit =
-    // TODO: Improve update sending to view page
-    AppController.currentPage.pageView.updateUI(DefaultUpdate)
+    sendUpdate(DefaultUpdate)
     if timer.isExpired then
-      AppController.currentPage.pageView.updateUI(TimeExpiredUpdate)
+      sendUpdate(TimeExpiredUpdate)
     else
-      AppController.currentPage.pageView.updateUI(NewQuizUpdate(Option(gameStage)))
-      if !timer.isStopped then AppController.currentPage.pageView.updateUI(TimerUpdate(Option(timer)))
+      sendUpdate(NewQuizUpdate(Option(gameStage)))
+      if !timer.isStopped then sendUpdate(TimerUpdate(Option(timer)))
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
     timer.stopTimer()
     if actionParameter.isDefined then
       val selectedAnswerIndex: Int = actionParameter.get.asInstanceOf[Int]
-      AppController.currentPage.pageView.updateUI(AnswerFeedbackUpdate(Option((selectedAnswerIndex, gameStage.quizInGame.answers(selectedAnswerIndex).isCorrect))))
+      sendUpdate(AnswerFeedbackUpdate(Option((selectedAnswerIndex, gameStage.quizInGame.answers(selectedAnswerIndex).isCorrect))))
 
   override def nextQuiz(): QuizInGame =
     val selectedCourse = gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)
