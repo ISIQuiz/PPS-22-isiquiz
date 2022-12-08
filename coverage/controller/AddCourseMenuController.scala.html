@@ -50,14 +50,14 @@
 </span>26 <span style=''>    </span><span style='background: #F0ADAD'>case AddCourseAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>addCourse(actionParameter)</span><span style=''>
 </span>27 <span style=''>
 </span>28 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>29 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(DefaultUpdate)</span><span style=''>
-</span>30 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(AskCourseUpdate)</span><span style=''>
+</span>29 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
+</span>30 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(AskCourseUpdate)</span><span style=''>
 </span>31 <span style=''>
 </span>32 <span style=''>  </span><span style='background: #F0ADAD'>def addCourse</span><span style=''>(actionParameter:Option[SavedCourse]):Unit =
 </span>33 <span style=''>    val newListCourses = </span><span style='background: #F0ADAD'>AppController.session.savedCourses.appended(actionParameter.get)</span><span style=''>
 </span>34 <span style=''>    </span><span style='background: #F0ADAD'>AppController.changeSavedCourses(newListCourses)</span><span style=''>
-</span>35 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(CoursePrintUpdate(actionParameter))</span><span style=''>
-</span>36 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(CourseAddedUpdate)</span><span style=''>
+</span>35 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CoursePrintUpdate(actionParameter))</span><span style=''>
+</span>36 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CourseAddedUpdate)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -219,7 +219,7 @@
           27
         </td>
         <td>
-          12
+          10
         </td>
         <td>
           960
@@ -251,100 +251,52 @@
           1026
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          currentPage
+          sendUpdate
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          AppController.currentPage
+          sendUpdate(DefaultUpdate)
         </td>
       </tr><tr>
         <td>
-          28
+          29
         </td>
         <td>
           9
         </td>
         <td>
-          1001
+          1031
           -
-          1059
+          1058
         </td>
         <td>
           Apply
         </td>
         <td>
-          updateUI
+          sendUpdate
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          AppController.currentPage.pageView.updateUI(DefaultUpdate)
-        </td>
-      </tr><tr>
-        <td>
-          29
-        </td>
-        <td>
-          11
-        </td>
-        <td>
-          1064
-          -
-          1124
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          updateUI
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.currentPage.pageView.updateUI(AskCourseUpdate)
-        </td>
-      </tr><tr>
-        <td>
-          29
-        </td>
-        <td>
-          10
-        </td>
-        <td>
-          1064
-          -
-          1089
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          currentPage
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.currentPage
+          sendUpdate(AskCourseUpdate)
         </td>
       </tr><tr>
         <td>
           31
         </td>
         <td>
-          22
+          18
         </td>
         <td>
-          1128
+          1062
           -
-          1141
+          1075
         </td>
         <td>
           DefDef
@@ -363,36 +315,12 @@
           32
         </td>
         <td>
-          14
+          11
         </td>
         <td>
-          1211
+          1145
           -
-          1245
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          savedCourses
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session.savedCourses
-        </td>
-      </tr><tr>
-        <td>
-          32
-        </td>
-        <td>
-          13
-        </td>
-        <td>
-          1211
-          -
-          1232
+          1166
         </td>
         <td>
           Select
@@ -411,12 +339,12 @@
           32
         </td>
         <td>
-          16
+          14
         </td>
         <td>
-          1211
+          1145
           -
-          1275
+          1209
         </td>
         <td>
           Apply
@@ -435,12 +363,12 @@
           32
         </td>
         <td>
-          15
+          13
         </td>
         <td>
-          1255
+          1189
           -
-          1274
+          1208
         </td>
         <td>
           Select
@@ -456,15 +384,39 @@
         </td>
       </tr><tr>
         <td>
+          32
+        </td>
+        <td>
+          12
+        </td>
+        <td>
+          1145
+          -
+          1179
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          savedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session.savedCourses
+        </td>
+      </tr><tr>
+        <td>
           33
         </td>
         <td>
-          17
+          15
         </td>
         <td>
-          1280
+          1214
           -
-          1328
+          1262
         </td>
         <td>
           Apply
@@ -483,96 +435,48 @@
           34
         </td>
         <td>
-          19
+          16
         </td>
         <td>
-          1333
+          1267
           -
-          1412
+          1313
         </td>
         <td>
           Apply
         </td>
         <td>
-          updateUI
+          sendUpdate
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          AppController.currentPage.pageView.updateUI(CoursePrintUpdate(actionParameter))
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          18
-        </td>
-        <td>
-          1333
-          -
-          1358
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          currentPage
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.currentPage
+          sendUpdate(CoursePrintUpdate(actionParameter))
         </td>
       </tr><tr>
         <td>
           35
         </td>
         <td>
-          20
+          17
         </td>
         <td>
-          1417
+          1318
           -
-          1442
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          currentPage
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.currentPage
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          21
-        </td>
-        <td>
-          1417
-          -
-          1479
+          1347
         </td>
         <td>
           Apply
         </td>
         <td>
-          updateUI
+          sendUpdate
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          AppController.currentPage.pageView.updateUI(CourseAddedUpdate)
+          sendUpdate(CourseAddedUpdate)
         </td>
       </tr>
     </table>

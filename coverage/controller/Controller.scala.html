@@ -2,7 +2,7 @@
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title id="title">
-          view/updates/ViewUpdate.scala.html
+          controller/Controller.scala.html
         </title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
         $(document).ready(function() {$(".tablesorter").tablesorter();});
@@ -22,18 +22,34 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package view.updates
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package controller
 </span>2 <span style=''>
-</span>3 <span style=''>/** Defines a type of update to perform on the graphical interface
-</span>4 <span style=''> * @tparam T the type of the additional parameter associated with the update
-</span>5 <span style=''> * @param updateParameter additional parameter needed to perform the update
-</span>6 <span style=''> */
-</span>7 <span style=''>trait ViewUpdate[+T](val updateParameter: Option[T]):
-</span>8 <span style=''>  </span><span style='background: #F0ADAD'>def get</span><span style=''>[T]: T =
-</span>9 <span style=''>    </span><span style='background: #F0ADAD'>updateParameter.get</span><span style=''>.asInstanceOf[T]
+</span>3 <span style=''>import controller.actions.Action
+</span>4 <span style=''>import view.updates.ViewUpdate
+</span>5 <span style=''>
+</span>6 <span style=''>import concurrent.ExecutionContext.Implicits.global
+</span>7 <span style=''>import scala.collection.mutable.ListBuffer
+</span>8 <span style=''>import scala.concurrent.Promise
+</span>9 <span style=''>import scala.util.Try
 </span>10 <span style=''>
-</span>11 <span style=''>/** Defines a view update that never needs additional parameters */
-</span>12 <span style=''>abstract class ParameterlessViewUpdate extends </span><span style='background: #F0ADAD'>ViewUpdate(Option.empty)</span><span style=''>
+</span>11 <span style=''>/** Trait of a generic controller that should handle actions with their optional values
+</span>12 <span style=''> * @param [T] type of the optional parameter associated with an action available
+</span>13 <span style=''> * @param action the action to handle
+</span>14 <span style=''> * */
+</span>15 <span style=''>trait Controller:
+</span>16 <span style=''>  def handle[T](action: Action[T]): Unit
+</span>17 <span style=''>
+</span>18 <span style=''>/** PageController should include all behaviours common between different pages controllers */
+</span>19 <span style=''>trait PageController extends Controller:
+</span>20 <span style=''>
+</span>21 <span style=''>  /** Defines the logic of an iteration (step) in the corresponding page controller */
+</span>22 <span style=''>  def nextIteration(): Unit
+</span>23 <span style=''>
+</span>24 <span style=''>  </span><span style='background: #F0ADAD'>def sendUpdate</span><span style=''>(viewUpdate: ViewUpdate[Any]): Unit =
+</span>25 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(viewUpdate)</span><span style=''>
+</span>26 <span style=''>
+</span>27 <span style=''>/** Provides a binder between the page logic and the relative page view */
+</span>28 <span style=''>case class Page[C, V](var pageController: C, var pageView: V)
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -48,99 +64,75 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          7
+          23
         </td>
         <td>
-          2149
+          143
         </td>
         <td>
-          302
+          763
           -
-          309
+          777
         </td>
         <td>
           DefDef
         </td>
         <td>
-          get
+          sendUpdate
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          def get
+          def sendUpdate
         </td>
       </tr><tr>
         <td>
-          8
+          24
         </td>
         <td>
-          2148
+          142
         </td>
         <td>
-          322
+          819
           -
-          341
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          get
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          updateParameter.get
-        </td>
-      </tr><tr>
-        <td>
-          11
-        </td>
-        <td>
-          2151
-        </td>
-        <td>
-          474
-          -
-          498
+          874
         </td>
         <td>
           Apply
         </td>
         <td>
-          &lt;init&gt;
+          updateUI
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          ViewUpdate(Option.empty)
+          AppController.currentPage.pageView.updateUI(viewUpdate)
         </td>
       </tr><tr>
         <td>
-          11
+          24
         </td>
         <td>
-          2150
+          141
         </td>
         <td>
-          485
+          819
           -
-          497
+          844
         </td>
         <td>
           Select
         </td>
         <td>
-          empty
+          currentPage
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          Option.empty
+          AppController.currentPage
         </td>
       </tr>
     </table>
