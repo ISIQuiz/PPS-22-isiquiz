@@ -31,4 +31,4 @@ class CustomMenuController(var gameStage: GameStage) extends PageController :
       AppController.handle(AppController.StandardGameAction(Option(gameStage)))
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(DefaultUpdate)
+    sendUpdate(DefaultUpdate)

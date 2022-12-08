@@ -23,4 +23,4 @@ class StatisticsMenuController extends PageController :
     case Back => AppController.handle(MainMenuAction)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(DefaultUpdate)
+    sendUpdate(DefaultUpdate)

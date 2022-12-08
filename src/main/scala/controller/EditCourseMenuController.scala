@@ -33,16 +33,16 @@ class EditCourseMenuController extends PageController:
   override def nextIteration(): Unit =
     AppController.currentPage.pageView.updateUI(DefaultUpdate)
     if courseSelected.isEmpty then
-      AppController.currentPage.pageView.updateUI(CourseUpdate(Option(AppController.session.savedCourses)))
-      AppController.currentPage.pageView.updateUI(AskCourseUpdate)
+      sendUpdate(CourseUpdate(Option(AppController.session.savedCourses)))
+      sendUpdate(AskCourseUpdate)
     else
-      AppController.currentPage.pageView.updateUI(CoursePrintUpdate(courseSelected))
-      AppController.currentPage.pageView.updateUI(AskCourseEditUpdate)
+      sendUpdate(CoursePrintUpdate(courseSelected))
+      sendUpdate(AskCourseEditUpdate)
 
   def editCourse(actionParameter:Option[SavedCourse]):Unit =
     val editedSavedCourse = SavedCourse.changeQuizList(actionParameter.get, courseSelected.get.quizList)
     val newListCourses = AppController.session.savedCourses.filterNot(course => course==courseSelected.get).appended(editedSavedCourse)
     AppController.changeSavedCourses(newListCourses)
-    AppController.currentPage.pageView.updateUI(CoursePrintUpdate(Option(editedSavedCourse)))
-    AppController.currentPage.pageView.updateUI(CourseEditedUpdate)
+    sendUpdate(CoursePrintUpdate(Option(editedSavedCourse)))
+    sendUpdate(CourseEditedUpdate)
     courseSelected = None
