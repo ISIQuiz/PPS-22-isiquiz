@@ -1,6 +1,5 @@
 package view.graphicUI
 
-import com.sun.javafx.scene.control.IntegerField
 import controller.EditQuizMenuController.*
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -33,6 +32,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
 
   @FXML
   var coursesVBox: VBox = _
+
   @FXML
   var quizVBox: VBox = _
 
@@ -43,7 +43,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
   var imagePathTextField: TextField = _
 
   @FXML
-  var scoreIntegerField: IntegerField = _
+  var scoreIntegerField: TextField = _
 
   @FXML
   var answersVBox: VBox = _
@@ -73,7 +73,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
         val answerCorrectCheckBox: CheckBox = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(3).asInstanceOf[CheckBox]
           answerList += Answer(answerTextField.getText, answerCorrectCheckBox.isSelected)
       )
-      val quiz = Quiz(question = questionTextField.getText, answerList = answerList.toList, maxScore = scoreIntegerField.getValue, imagePath = imagePathTextField.getText match
+      val quiz = Quiz(question = questionTextField.getText, answerList = answerList.toList, maxScore = scoreIntegerField.getText.toInt, imagePath = imagePathTextField.getText match
         case "" => None
         case text => Some(text)
       )
@@ -110,7 +110,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
             questionTextField.setText(quiz.question);
             imagePathTextField.setText(if quiz.imagePath.isDefined then quiz.imagePath.get else "");
-            scoreIntegerField.setValue(quiz.maxScore);
+            scoreIntegerField.setText(quiz.maxScore.toString);
             clearAllAnswers();
             quiz.answerList.foreach(ans => addAnswerGUI(Option(ans)));
             sendEvent(SelectQuizAction(Option(quiz)));
@@ -119,11 +119,11 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
         )
       }
     case QuizEditedUpdate =>
-      feedbackLabel.setText("Quiz Modificato!!!")
+      feedbackLabel.setText("Quiz Modificato")
       quizVBox.getChildren.clear()
       questionTextField.clear()
       imagePathTextField.clear()
-      scoreIntegerField.setValue(10)
+      scoreIntegerField.setText("10")
       clearAllAnswers()
       addAnswerGUI(None)
     case _ => {}
