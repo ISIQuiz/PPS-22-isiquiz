@@ -41,10 +41,7 @@ object Timer:
         case n if n >= 100 => 100
         case _ => throw new IllegalArgumentException()
 
-    override def isExpired: Boolean = currentTime() - initialTime match
-      case n if n >= maxTime => true
-      case n if n < maxTime => false
-      case _ => throw new IllegalArgumentException()
+    override def isExpired: Boolean = getRemainingTime < 0
 
     override def isStopped: Boolean = stopTime != 0
 

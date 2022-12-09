@@ -12,4 +12,4 @@ trait GameController:
 
   def chooseAnswers(quiz: Quiz): List[Answer]
 
-  def endQuiz(): Unit
+  def endGame(): Unit

@@ -5,9 +5,11 @@ import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
 import view.View
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate, TimeExpiredUpdate, TimerUpdate}
+import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, CurrentGameUpdate, TimeExpiredUpdate, TimerUpdate}
 import model.Answer.Answer
 import model.GameStage
+import model.Review
+import model.QuizAnswered
 import model.{QuizInGame, SavedCourse}
 import model.Quiz.Quiz
 import model.settings.StandardGameSettings
@@ -19,24 +21,26 @@ import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
 /** Companion object of standard game controller */
-object StandardGameController extends BackAction:
+object StandardGameController extends BackAction :
 
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
+
   case object NextQuiz extends ParameterlessAction
 
   def apply(game: GameStage): StandardGameController =
     val standardGameController = new StandardGameController(game)
-    standardGameController.nextQuiz()
+    standardGameController.extractQuizInGame()
     standardGameController.timer.startTimer()
     standardGameController
 
 /** Defines the logic of the select page */
-class StandardGameController(val game: GameStage) extends PageController, GameController:
+class StandardGameController(val game: GameStage) extends PageController, GameController :
 
   import StandardGameController.*
 
-  val gameStage: GameStage = game
+  val gameStage: GameStage = game //dentro game stage c'è la lista dei selezionati corsi COMPLETI, il quiz in game null e settings
   val timer: Timer = Timer.apply(gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime)
+  var currentAnswer: Option[Answer] = None
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)
@@ -46,24 +50,36 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
   override def nextIteration(): Unit =
     sendUpdate(DefaultUpdate)
     if timer.isExpired then
+      timer.stopTimer()
       sendUpdate(TimeExpiredUpdate)
     else
-      sendUpdate(NewQuizUpdate(Option(gameStage)))
+      sendUpdate(CurrentGameUpdate(Option(gameStage)))
       if !timer.isStopped then sendUpdate(TimerUpdate(Option(timer)))
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
     timer.stopTimer()
-    if actionParameter.isDefined then
+    if actionParameter.isDefined && !timer.isExpired then
       val selectedAnswerIndex: Int = actionParameter.get.asInstanceOf[Int]
-      sendUpdate(AnswerFeedbackUpdate(Option((selectedAnswerIndex, gameStage.quizInGame.answers(selectedAnswerIndex).isCorrect))))
+      val answerSelected: Answer = gameStage.quizInGame.answers(selectedAnswerIndex)
+      currentAnswer = Some(answerSelected)
+      sendUpdate(AnswerFeedbackUpdate(Option((selectedAnswerIndex, answerSelected.isCorrect))))
 
   override def nextQuiz(): QuizInGame =
+    currentAnswer match
+      case Some(ans) => gameStage.addReviewQuizAnswer(ans)
+      case _ => gameStage.addReviewQuizNotAnswered
+    if gameStage.maxQuizzesReached then endGame()
+    currentAnswer = None
+    timer.startTimer()
+    extractQuizInGame()
+
+
+  def extractQuizInGame(): QuizInGame =
     val selectedCourse = gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)
     val selectedQuiz = chooseQuiz(selectedCourse)
     val selectedAnswers = chooseAnswers(selectedQuiz)
-    val quizInGame = QuizInGame.apply(selectedCourse, selectedQuiz, selectedAnswers)
+    val quizInGame = QuizInGame(selectedCourse, selectedQuiz, selectedAnswers)
     gameStage.quizInGame_(quizInGame)
-    timer.startTimer()
     quizInGame
 
   override def chooseQuiz(course: SavedCourse): Quiz = course.quizList(randomNumberGenerator(1, course.quizList.size).head)
@@ -77,6 +93,5 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
 
     scala.util.Random.shuffle(correctAnswers ::: wrongAnswers)
 
-  override def endQuiz(): Unit = ???
-
+  override def endGame(): Unit = AppController.handle(ReviewMenuAction(Option(gameStage)))
   def randomNumberGenerator(quantity: Int, range: Int): List[Int] = scala.util.Random.shuffle(0 until range).take(quantity).toList
