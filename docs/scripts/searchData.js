@@ -382,6 +382,7 @@ pages = [{"l":"index.html#","e":false,"i":"","n":"root","t":"root","d":"","k":"s
 {"l":"view/graphicUI/GraphicEditQuizMenu$.html#","e":false,"i":"","n":"GraphicEditQuizMenu","t":"GraphicEditQuizMenu","d":"view.graphicUI","k":"object"},
 {"l":"view/graphicUI/GraphicEditQuizMenu.html#","e":false,"i":"","n":"GraphicEditQuizMenu","t":"GraphicEditQuizMenu(stage: Stage) extends GraphicView","d":"view.graphicUI","k":"class"},
 {"l":"view/graphicUI/GraphicEditQuizMenu.html#addAnswerButtonClicked-94c","e":false,"i":"","n":"addAnswerButtonClicked","t":"addAnswerButtonClicked(): Unit","d":"view.graphicUI.GraphicEditQuizMenu","k":"def"},
+{"l":"view/graphicUI/GraphicEditQuizMenu.html#answerTextField-0","e":false,"i":"","n":"answerTextField","t":"answerTextField: TextField","d":"view.graphicUI.GraphicEditQuizMenu","k":"var"},
 {"l":"view/graphicUI/GraphicEditQuizMenu.html#answersVBox-0","e":false,"i":"","n":"answersVBox","t":"answersVBox: VBox","d":"view.graphicUI.GraphicEditQuizMenu","k":"var"},
 {"l":"view/graphicUI/GraphicEditQuizMenu.html#backButtonClicked-94c","e":false,"i":"","n":"backButtonClicked","t":"backButtonClicked(): Unit","d":"view.graphicUI.GraphicEditQuizMenu","k":"def"},
 {"l":"view/graphicUI/GraphicEditQuizMenu.html#coursesVBox-0","e":false,"i":"","n":"coursesVBox","t":"coursesVBox: VBox","d":"view.graphicUI.GraphicEditQuizMenu","k":"var"},
