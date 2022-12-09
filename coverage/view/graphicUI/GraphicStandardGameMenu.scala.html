@@ -36,12 +36,12 @@
 </span>12 <span style=''>import javafx.stage.Stage
 </span>13 <span style=''>import model.GameStage
 </span>14 <span style=''>import model.settings.StandardGameSettings
-</span>15 <span style=''>import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate, TimeExpiredUpdate, TimerUpdate}
+</span>15 <span style=''>import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, CurrentGameUpdate, TimeExpiredUpdate, TimerUpdate}
 </span>16 <span style=''>
 </span>17 <span style=''>object GraphicStandardGameMenu
 </span>18 <span style=''>
 </span>19 <span style=''>/** Standard Game menu graphic interface */
-</span>20 <span style=''>class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
+</span>20 <span style=''>class GraphicStandardGameMenu(stage: Stage) extends GraphicView :
 </span>21 <span style=''>
 </span>22 <span style=''>  @FXML
 </span>23 <span style=''>  var backButton: Button = _
@@ -79,97 +79,80 @@
 </span>55 <span style=''>  @FXML
 </span>56 <span style=''>  var nextButton: Button = _
 </span>57 <span style=''>
-</span>58 <span style=''>  var maxScore: Int = 0
-</span>59 <span style=''>
-</span>60 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>61 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
-</span>62 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
-</span>63 <span style=''>
-</span>64 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>65 <span style=''></span><span style='background: #F0ADAD'>  def firstAnswerButtonClicked</span><span style=''>(): Unit =
-</span>66 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(0)))</span><span style=''>
-</span>67 <span style=''>    </span><span style='background: #F0ADAD'>disableButton(answerButtons)</span><span style=''>
-</span>68 <span style=''>
-</span>69 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>70 <span style=''></span><span style='background: #F0ADAD'>  def secondAnswerButtonClicked</span><span style=''>(): Unit =
-</span>71 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(1)))</span><span style=''>
-</span>72 <span style=''>    </span><span style='background: #F0ADAD'>disableButton(answerButtons)</span><span style=''>
-</span>73 <span style=''>
-</span>74 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>75 <span style=''></span><span style='background: #F0ADAD'>  def thirdAnswerButtonClicked</span><span style=''>(): Unit =
-</span>76 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(2)))</span><span style=''>
-</span>77 <span style=''>    </span><span style='background: #F0ADAD'>disableButton(answerButtons)</span><span style=''>
-</span>78 <span style=''>
-</span>79 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>80 <span style=''></span><span style='background: #F0ADAD'>  def fourthAnswerButtonClicked</span><span style=''>(): Unit =
-</span>81 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(3)))</span><span style=''>
-</span>82 <span style=''>    </span><span style='background: #F0ADAD'>disableButton(answerButtons)</span><span style=''>
-</span>83 <span style=''>
-</span>84 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>85 <span style=''></span><span style='background: #F0ADAD'>  def nextButtonClicked</span><span style=''>(): Unit =
-</span>86 <span style=''>    </span><span style='background: #F0ADAD'>resetAnswerButton(answerButtons)</span><span style=''>
-</span>87 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(NextQuiz)</span><span style=''>
+</span>58 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>59 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
+</span>60 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
+</span>61 <span style=''>
+</span>62 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>63 <span style=''></span><span style='background: #F0ADAD'>  def firstAnswerButtonClicked</span><span style=''>(): Unit =
+</span>64 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(0)))</span><span style=''>
+</span>65 <span style=''>    </span><span style='background: #F0ADAD'>disableButton(answerButtons)</span><span style=''>
+</span>66 <span style=''>
+</span>67 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>68 <span style=''></span><span style='background: #F0ADAD'>  def secondAnswerButtonClicked</span><span style=''>(): Unit =
+</span>69 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(1)))</span><span style=''>
+</span>70 <span style=''>    </span><span style='background: #F0ADAD'>disableButton(answerButtons)</span><span style=''>
+</span>71 <span style=''>
+</span>72 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>73 <span style=''></span><span style='background: #F0ADAD'>  def thirdAnswerButtonClicked</span><span style=''>(): Unit =
+</span>74 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(2)))</span><span style=''>
+</span>75 <span style=''>    </span><span style='background: #F0ADAD'>disableButton(answerButtons)</span><span style=''>
+</span>76 <span style=''>
+</span>77 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>78 <span style=''></span><span style='background: #F0ADAD'>  def fourthAnswerButtonClicked</span><span style=''>(): Unit =
+</span>79 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(3)))</span><span style=''>
+</span>80 <span style=''>    </span><span style='background: #F0ADAD'>disableButton(answerButtons)</span><span style=''>
+</span>81 <span style=''>
+</span>82 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>83 <span style=''></span><span style='background: #F0ADAD'>  def nextButtonClicked</span><span style=''>(): Unit =
+</span>84 <span style=''>    </span><span style='background: #F0ADAD'>resetAnswerButton(answerButtons)</span><span style=''>
+</span>85 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(NextQuiz)</span><span style=''>
+</span>86 <span style=''>
+</span>87 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;standard_game.fxml&quot;)</span><span style=''>
 </span>88 <span style=''>
-</span>89 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;standard_game.fxml&quot;)</span><span style=''>
+</span>89 <span style=''>  val answerButtons: List[Button] = </span><span style='background: #F0ADAD'>List(firstAnswerButton, secondAnswerButton, thirdAnswerButton, fourthAnswerButton)</span><span style=''>
 </span>90 <span style=''>
-</span>91 <span style=''>  val answerButtons: List[Button] = </span><span style='background: #F0ADAD'>List(firstAnswerButton, secondAnswerButton, thirdAnswerButton, fourthAnswerButton)</span><span style=''>
-</span>92 <span style=''>
-</span>93 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
-</span>94 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt; {}
-</span>95 <span style=''>    </span><span style='background: #F0ADAD'>case NewQuizUpdate(updateParameter)</span><span style=''> =&gt;
-</span>96 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
-</span>97 <span style=''></span><span style='background: #F0ADAD'>        val gameStage: GameStage = updateParameter.get.asInstanceOf[GameStage]
-</span>98 <span style=''></span><span style='background: #F0ADAD'>        maxScore = gameStage.quizInGame.quiz.maxScore
-</span>99 <span style=''></span><span style='background: #F0ADAD'>        courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
-</span>100 <span style=''></span><span style='background: #F0ADAD'>        quizNumberLabel.setText(s&quot;x/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}&quot;)
-</span>101 <span style=''></span><span style='background: #F0ADAD'>        pointsLabel.setText(maxScore.toString + &quot; punti&quot;)
-</span>102 <span style=''></span><span style='background: #F0ADAD'>        quizLabel.setText(gameStage.quizInGame.quiz.question)
-</span>103 <span style=''></span><span style='background: #F0ADAD'>        firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
-</span>104 <span style=''></span><span style='background: #F0ADAD'>        secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
-</span>105 <span style=''></span><span style='background: #F0ADAD'>        thirdAnswerButton.setText(gameStage.quizInGame.answers(2).text)
-</span>106 <span style=''></span><span style='background: #F0ADAD'>        fourthAnswerButton.setText(gameStage.quizInGame.answers(3).text)
-</span>107 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
-</span>108 <span style=''>    </span><span style='background: #F0ADAD'>case AnswerFeedbackUpdate(updateParameter)</span><span style=''> =&gt;
-</span>109 <span style=''>      val feedback = </span><span style='background: #F0ADAD'>updateParameter.get</span><span style=''>.asInstanceOf[(Int, Boolean)]
-</span>110 <span style=''>      </span><span style='background: #F0ADAD'>feedback._1</span><span style=''> match
-</span>111 <span style=''>        </span><span style='background: #F0ADAD'>case 0</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>feedback._2</span><span style=''> then </span><span style='background: #F0ADAD'>firstAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)</span><span style=''> else </span><span style='background: #F0ADAD'>firstAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)</span><span style=''>
-</span>112 <span style=''>        </span><span style='background: #F0ADAD'>case 1</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>feedback._2</span><span style=''> then </span><span style='background: #F0ADAD'>secondAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)</span><span style=''> else </span><span style='background: #F0ADAD'>secondAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)</span><span style=''>
-</span>113 <span style=''>        </span><span style='background: #F0ADAD'>case 2</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>feedback._2</span><span style=''> then </span><span style='background: #F0ADAD'>thirdAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)</span><span style=''> else </span><span style='background: #F0ADAD'>thirdAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)</span><span style=''>
-</span>114 <span style=''>        </span><span style='background: #F0ADAD'>case 3</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>feedback._2</span><span style=''> then </span><span style='background: #F0ADAD'>fourthAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)</span><span style=''> else </span><span style='background: #F0ADAD'>fourthAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)</span><span style=''>
-</span>115 <span style=''>    </span><span style='background: #F0ADAD'>case TimerUpdate(updateParameter)</span><span style=''> =&gt;
-</span>116 <span style=''>      val timer: Timer = </span><span style='background: #F0ADAD'>updateParameter.get</span><span style=''>.asInstanceOf[Timer]
-</span>117 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
-</span>118 <span style=''></span><span style='background: #F0ADAD'>        timeRemainingLabel.setText(s&quot;${timer.getRemainingTime.toInt}&quot;)
-</span>119 <span style=''></span><span style='background: #F0ADAD'>        timeProgressBar.setProgress(timer.getCompletionPercentage)
-</span>120 <span style=''></span><span style='background: #F0ADAD'>        val newPoints =
-</span>121 <span style=''></span><span style='background: #F0ADAD'>          updatePoints(
-</span>122 <span style=''></span><span style='background: #F0ADAD'>            timer.getRemainingTime.toInt,
-</span>123 <span style=''></span><span style='background: #F0ADAD'>            timer.maxTime,
-</span>124 <span style=''></span><span style='background: #F0ADAD'>            maxScore
-</span>125 <span style=''></span><span style='background: #F0ADAD'>          )
-</span>126 <span style=''></span><span style='background: #F0ADAD'>        pointsLabel.setText(newPoints + &quot; punti&quot;)
-</span>127 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
-</span>128 <span style=''>
-</span>129 <span style=''>    </span><span style='background: #F0ADAD'>case TimeExpiredUpdate</span><span style=''> =&gt;
-</span>130 <span style=''>      </span><span style='background: #F0ADAD'>disableButton(answerButtons)</span><span style=''>
-</span>131 <span style=''>
-</span>132 <span style=''>  </span><span style='background: #F0ADAD'>def updatePoints</span><span style=''>(timeRemaining: Int, maxTime: Long, maxScore: Int): Int = {
-</span>133 <span style=''>    val coeff: Double = maxScore.toDouble / (maxTime / 1000).toDouble
-</span>134 <span style=''>    (coeff * timeRemaining).toInt
-</span>135 <span style=''>  }
-</span>136 <span style=''>
-</span>137 <span style=''>
-</span>138 <span style=''>  </span><span style='background: #F0ADAD'>def resetAnswerButton</span><span style=''>(buttons: List[Button]): Unit =
-</span>139 <span style=''>    </span><span style='background: #F0ADAD'>buttons.foreach(button =&gt;
-</span>140 <span style=''></span><span style='background: #F0ADAD'>      button.getStyleClass.remove(&quot;correct-answer&quot;);
-</span>141 <span style=''></span><span style='background: #F0ADAD'>      button.getStyleClass.remove(&quot;wrong-answer&quot;);
-</span>142 <span style=''></span><span style='background: #F0ADAD'>      button.setDisable(false);
-</span>143 <span style=''></span><span style='background: #F0ADAD'>    )</span><span style=''>
-</span>144 <span style=''>
-</span>145 <span style=''>  </span><span style='background: #F0ADAD'>def disableButton</span><span style=''>(buttons: List[Button]): Unit =
-</span>146 <span style=''>    </span><span style='background: #F0ADAD'>buttons.foreach(button =&gt;
-</span>147 <span style=''></span><span style='background: #F0ADAD'>      button.setDisable(true);
-</span>148 <span style=''></span><span style='background: #F0ADAD'>    )</span><span style=''>
+</span>91 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>92 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt; {}
+</span>93 <span style=''>    </span><span style='background: #F0ADAD'>case CurrentGameUpdate(updateParameter)</span><span style=''> =&gt;
+</span>94 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
+</span>95 <span style=''></span><span style='background: #F0ADAD'>        val gameStage: GameStage = updateParameter.get
+</span>96 <span style=''></span><span style='background: #F0ADAD'>        courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
+</span>97 <span style=''></span><span style='background: #F0ADAD'>        quizNumberLabel.setText(s&quot;${gameStage.review.numberQuizAnswered+1}/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}&quot;)
+</span>98 <span style=''></span><span style='background: #F0ADAD'>        pointsLabel.setText(gameStage.quizInGame.quiz.maxScore.toString + &quot; punti&quot;)
+</span>99 <span style=''></span><span style='background: #F0ADAD'>        quizLabel.setText(gameStage.quizInGame.quiz.question)
+</span>100 <span style=''></span><span style='background: #F0ADAD'>        firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
+</span>101 <span style=''></span><span style='background: #F0ADAD'>        secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
+</span>102 <span style=''></span><span style='background: #F0ADAD'>        thirdAnswerButton.setText(gameStage.quizInGame.answers(2).text)
+</span>103 <span style=''></span><span style='background: #F0ADAD'>        fourthAnswerButton.setText(gameStage.quizInGame.answers(3).text)
+</span>104 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
+</span>105 <span style=''>    </span><span style='background: #F0ADAD'>case AnswerFeedbackUpdate(updateParameter)</span><span style=''> =&gt;
+</span>106 <span style=''>      val feedback = </span><span style='background: #F0ADAD'>updateParameter.get</span><span style=''>
+</span>107 <span style=''>      </span><span style='background: #F0ADAD'>feedback._1</span><span style=''> match
+</span>108 <span style=''>        </span><span style='background: #F0ADAD'>case 0</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>feedback._2</span><span style=''> then </span><span style='background: #F0ADAD'>firstAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)</span><span style=''> else </span><span style='background: #F0ADAD'>firstAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)</span><span style=''>
+</span>109 <span style=''>        </span><span style='background: #F0ADAD'>case 1</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>feedback._2</span><span style=''> then </span><span style='background: #F0ADAD'>secondAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)</span><span style=''> else </span><span style='background: #F0ADAD'>secondAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)</span><span style=''>
+</span>110 <span style=''>        </span><span style='background: #F0ADAD'>case 2</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>feedback._2</span><span style=''> then </span><span style='background: #F0ADAD'>thirdAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)</span><span style=''> else </span><span style='background: #F0ADAD'>thirdAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)</span><span style=''>
+</span>111 <span style=''>        </span><span style='background: #F0ADAD'>case 3</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>feedback._2</span><span style=''> then </span><span style='background: #F0ADAD'>fourthAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)</span><span style=''> else </span><span style='background: #F0ADAD'>fourthAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)</span><span style=''>
+</span>112 <span style=''>    </span><span style='background: #F0ADAD'>case TimerUpdate(updateParameter)</span><span style=''> =&gt;
+</span>113 <span style=''>      val timer: Timer = </span><span style='background: #F0ADAD'>updateParameter.get</span><span style=''>
+</span>114 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
+</span>115 <span style=''></span><span style='background: #F0ADAD'>        timeRemainingLabel.setText(s&quot;${timer.getRemainingTime.toInt}&quot;)
+</span>116 <span style=''></span><span style='background: #F0ADAD'>        timeProgressBar.setProgress(timer.getCompletionPercentage)
+</span>117 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
+</span>118 <span style=''>    </span><span style='background: #F0ADAD'>case TimeExpiredUpdate</span><span style=''> =&gt;
+</span>119 <span style=''>      </span><span style='background: #F0ADAD'>disableButton(answerButtons)</span><span style=''>
+</span>120 <span style=''>
+</span>121 <span style=''>  </span><span style='background: #F0ADAD'>def resetAnswerButton</span><span style=''>(buttons: List[Button]): Unit =
+</span>122 <span style=''>    </span><span style='background: #F0ADAD'>buttons.foreach(button =&gt;
+</span>123 <span style=''></span><span style='background: #F0ADAD'>      button.getStyleClass.remove(&quot;correct-answer&quot;);
+</span>124 <span style=''></span><span style='background: #F0ADAD'>      button.getStyleClass.remove(&quot;wrong-answer&quot;);
+</span>125 <span style=''></span><span style='background: #F0ADAD'>      button.setDisable(false);
+</span>126 <span style=''></span><span style='background: #F0ADAD'>    )</span><span style=''>
+</span>127 <span style=''>
+</span>128 <span style=''>  </span><span style='background: #F0ADAD'>def disableButton</span><span style=''>(buttons: List[Button]): Unit =
+</span>129 <span style=''>    </span><span style='background: #F0ADAD'>buttons.foreach(button =&gt;
+</span>130 <span style=''></span><span style='background: #F0ADAD'>      button.setDisable(true);
+</span>131 <span style=''></span><span style='background: #F0ADAD'>    )</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -184,15 +167,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          60
+          58
         </td>
         <td>
-          1688
+          1801
         </td>
         <td>
-          1291
+          1271
           -
-          1320
+          1300
         </td>
         <td>
           DefDef
@@ -209,15 +192,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          59
         </td>
         <td>
-          1687
+          1800
         </td>
         <td>
-          1335
+          1315
           -
-          1350
+          1330
         </td>
         <td>
           Apply
@@ -233,15 +216,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          62
         </td>
         <td>
-          1692
+          1805
         </td>
         <td>
-          1354
+          1334
           -
-          1390
+          1370
         </td>
         <td>
           DefDef
@@ -258,15 +241,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          63
         </td>
         <td>
-          1689
+          1802
         </td>
         <td>
-          1428
+          1408
           -
-          1437
+          1417
         </td>
         <td>
           Apply
@@ -282,15 +265,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          63
         </td>
         <td>
-          1690
+          1803
         </td>
         <td>
-          1405
+          1385
           -
-          1439
+          1419
         </td>
         <td>
           Apply
@@ -306,15 +289,15 @@
         </td>
       </tr><tr>
         <td>
-          66
+          64
         </td>
         <td>
-          1691
+          1804
         </td>
         <td>
-          1444
+          1424
           -
-          1472
+          1452
         </td>
         <td>
           Apply
@@ -330,15 +313,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          67
         </td>
         <td>
-          1696
+          1809
         </td>
         <td>
-          1476
+          1456
           -
-          1513
+          1493
         </td>
         <td>
           DefDef
@@ -355,39 +338,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          68
         </td>
         <td>
-          1694
+          1806
         </td>
         <td>
-          1528
+          1531
           -
-          1562
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendEvent
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendEvent(SelectAnswer(Option(1)))
-        </td>
-      </tr><tr>
-        <td>
-          70
-        </td>
-        <td>
-          1693
-        </td>
-        <td>
-          1551
-          -
-          1560
+          1540
         </td>
         <td>
           Apply
@@ -403,15 +362,39 @@
         </td>
       </tr><tr>
         <td>
-          71
+          68
         </td>
         <td>
-          1695
+          1807
         </td>
         <td>
-          1567
+          1508
           -
-          1595
+          1542
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(SelectAnswer(Option(1)))
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          1808
+        </td>
+        <td>
+          1547
+          -
+          1575
         </td>
         <td>
           Apply
@@ -427,15 +410,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          72
         </td>
         <td>
-          1700
+          1813
         </td>
         <td>
-          1599
+          1579
           -
-          1635
+          1615
         </td>
         <td>
           DefDef
@@ -452,15 +435,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          73
         </td>
         <td>
-          1698
+          1811
         </td>
         <td>
-          1650
+          1630
           -
-          1684
+          1664
         </td>
         <td>
           Apply
@@ -476,15 +459,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          73
         </td>
         <td>
-          1697
+          1810
         </td>
         <td>
-          1673
+          1653
           -
-          1682
+          1662
         </td>
         <td>
           Apply
@@ -500,15 +483,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          74
         </td>
         <td>
-          1699
+          1812
         </td>
         <td>
-          1689
+          1669
           -
-          1717
+          1697
         </td>
         <td>
           Apply
@@ -524,15 +507,15 @@
         </td>
       </tr><tr>
         <td>
-          79
+          77
         </td>
         <td>
-          1704
+          1817
         </td>
         <td>
-          1721
+          1701
           -
-          1758
+          1738
         </td>
         <td>
           DefDef
@@ -549,39 +532,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          78
         </td>
         <td>
-          1701
+          1815
         </td>
         <td>
-          1796
+          1753
           -
-          1805
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option(3)
-        </td>
-      </tr><tr>
-        <td>
-          80
-        </td>
-        <td>
-          1702
-        </td>
-        <td>
-          1773
-          -
-          1807
+          1787
         </td>
         <td>
           Apply
@@ -597,15 +556,39 @@
         </td>
       </tr><tr>
         <td>
-          81
+          78
         </td>
         <td>
-          1703
+          1814
         </td>
         <td>
-          1812
+          1776
           -
-          1840
+          1785
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(3)
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          1816
+        </td>
+        <td>
+          1792
+          -
+          1820
         </td>
         <td>
           Apply
@@ -621,15 +604,15 @@
         </td>
       </tr><tr>
         <td>
-          84
+          82
         </td>
         <td>
-          1707
+          1820
         </td>
         <td>
-          1844
+          1824
           -
-          1873
+          1853
         </td>
         <td>
           DefDef
@@ -646,15 +629,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          83
         </td>
         <td>
-          1705
+          1818
         </td>
         <td>
-          1888
+          1868
           -
-          1920
+          1900
         </td>
         <td>
           Apply
@@ -670,15 +653,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          84
         </td>
         <td>
-          1706
+          1819
         </td>
         <td>
-          1925
+          1905
           -
-          1944
+          1924
         </td>
         <td>
           Apply
@@ -694,15 +677,15 @@
         </td>
       </tr><tr>
         <td>
-          88
+          86
         </td>
         <td>
-          1708
+          1821
         </td>
         <td>
-          1948
+          1928
           -
-          1990
+          1970
         </td>
         <td>
           Apply
@@ -718,15 +701,15 @@
         </td>
       </tr><tr>
         <td>
-          90
+          88
         </td>
         <td>
-          1709
+          1822
         </td>
         <td>
-          2028
+          2008
           -
-          2110
+          2090
         </td>
         <td>
           Apply
@@ -742,15 +725,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          90
         </td>
         <td>
-          1778
+          1889
         </td>
         <td>
-          2114
+          2094
           -
-          2135
+          2115
         </td>
         <td>
           DefDef
@@ -766,15 +749,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          91
         </td>
         <td>
-          1710
+          1823
         </td>
         <td>
-          2189
+          2169
           -
-          2207
+          2187
         </td>
         <td>
           Block
@@ -790,15 +773,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          92
         </td>
         <td>
-          1729
+          1843
         </td>
         <td>
-          2218
+          2198
           -
-          2253
+          2237
         </td>
         <td>
           Block
@@ -810,19 +793,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          case NewQuizUpdate(updateParameter)
+          case CurrentGameUpdate(updateParameter)
         </td>
       </tr><tr>
         <td>
-          95
+          93
         </td>
         <td>
-          1728
+          1842
         </td>
         <td>
-          2263
+          2247
           -
-          3027
+          2998
         </td>
         <td>
           Apply
@@ -835,11 +818,10 @@
         </td>
         <td style="background: #F0ADAD">
           Platform.runLater(() =&gt; {
-        val gameStage: GameStage = updateParameter.get.asInstanceOf[GameStage]
-        maxScore = gameStage.quizInGame.quiz.maxScore
+        val gameStage: GameStage = updateParameter.get
         courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
-        quizNumberLabel.setText(s&quot;x/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}&quot;)
-        pointsLabel.setText(maxScore.toString + &quot; punti&quot;)
+        quizNumberLabel.setText(s&quot;${gameStage.review.numberQuizAnswered+1}/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}&quot;)
+        pointsLabel.setText(gameStage.quizInGame.quiz.maxScore.toString + &quot; punti&quot;)
         quizLabel.setText(gameStage.quizInGame.quiz.question)
         firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
         secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
@@ -849,15 +831,15 @@
         </td>
       </tr><tr>
         <td>
-          96
+          94
         </td>
         <td>
-          1711
+          1824
         </td>
         <td>
-          2324
+          2308
           -
-          2343
+          2327
         </td>
         <td>
           Select
@@ -873,15 +855,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          95
         </td>
         <td>
-          1713
+          1826
         </td>
         <td>
-          2450
+          2356
           -
-          2497
+          2403
         </td>
         <td>
           Select
@@ -897,15 +879,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          95
         </td>
         <td>
-          1712
+          1825
         </td>
         <td>
-          2450
+          2356
           -
-          2486
+          2392
         </td>
         <td>
           Select
@@ -921,15 +903,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          95
         </td>
         <td>
-          1714
+          1827
         </td>
         <td>
-          2430
+          2336
           -
-          2498
+          2404
         </td>
         <td>
           Apply
@@ -945,39 +927,15 @@
         </td>
       </tr><tr>
         <td>
-          99
+          96
         </td>
         <td>
-          1716
+          1829
         </td>
         <td>
-          2507
+          2437
           -
-          2608
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          setText
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizNumberLabel.setText(s&quot;x/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          99
-        </td>
-        <td>
-          1715
-        </td>
-        <td>
-          2531
-          -
-          2607
+          2552
         </td>
         <td>
           Apply
@@ -989,19 +947,43 @@
           
         </td>
         <td style="background: #F0ADAD">
-          s&quot;x/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}&quot;
+          s&quot;${gameStage.review.numberQuizAnswered+1}/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}&quot;
         </td>
       </tr><tr>
         <td>
-          100
+          96
         </td>
         <td>
-          1718
+          1828
         </td>
         <td>
-          2617
+          2441
           -
-          2666
+          2476
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          numberQuizAnswered
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.review.numberQuizAnswered
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          1830
+        </td>
+        <td>
+          2413
+          -
+          2553
         </td>
         <td>
           Apply
@@ -1013,19 +995,43 @@
           
         </td>
         <td style="background: #F0ADAD">
-          pointsLabel.setText(maxScore.toString + &quot; punti&quot;)
+          quizNumberLabel.setText(s&quot;${gameStage.review.numberQuizAnswered+1}/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}&quot;)
         </td>
       </tr><tr>
         <td>
-          100
+          97
         </td>
         <td>
-          1717
+          1832
         </td>
         <td>
-          2637
+          2562
           -
-          2665
+          2637
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          pointsLabel.setText(gameStage.quizInGame.quiz.maxScore.toString + &quot; punti&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          1831
+        </td>
+        <td>
+          2582
+          -
+          2636
         </td>
         <td>
           Apply
@@ -1037,19 +1043,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          maxScore.toString + &quot; punti&quot;
+          gameStage.quizInGame.quiz.maxScore.toString + &quot; punti&quot;
         </td>
       </tr><tr>
         <td>
-          101
+          98
         </td>
         <td>
-          1719
+          1833
         </td>
         <td>
-          2675
+          2646
           -
-          2728
+          2699
         </td>
         <td>
           Apply
@@ -1065,15 +1071,15 @@
         </td>
       </tr><tr>
         <td>
-          102
+          99
         </td>
         <td>
-          1721
+          1835
         </td>
         <td>
-          2737
+          2708
           -
-          2800
+          2771
         </td>
         <td>
           Apply
@@ -1089,15 +1095,15 @@
         </td>
       </tr><tr>
         <td>
-          102
+          99
         </td>
         <td>
-          1720
+          1834
         </td>
         <td>
-          2763
+          2734
           -
-          2794
+          2765
         </td>
         <td>
           Apply
@@ -1113,39 +1119,15 @@
         </td>
       </tr><tr>
         <td>
-          103
+          100
         </td>
         <td>
-          1722
+          1837
         </td>
         <td>
-          2836
+          2780
           -
-          2867
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          gameStage.quizInGame.answers(1)
-        </td>
-      </tr><tr>
-        <td>
-          103
-        </td>
-        <td>
-          1723
-        </td>
-        <td>
-          2809
-          -
-          2873
+          2844
         </td>
         <td>
           Apply
@@ -1161,39 +1143,39 @@
         </td>
       </tr><tr>
         <td>
-          104
+          100
         </td>
         <td>
-          1725
+          1836
         </td>
         <td>
-          2882
+          2807
           -
-          2945
+          2838
         </td>
         <td>
           Apply
         </td>
         <td>
-          setText
+          apply
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          thirdAnswerButton.setText(gameStage.quizInGame.answers(2).text)
+          gameStage.quizInGame.answers(1)
         </td>
       </tr><tr>
         <td>
-          104
+          101
         </td>
         <td>
-          1724
+          1838
         </td>
         <td>
-          2908
+          2879
           -
-          2939
+          2910
         </td>
         <td>
           Apply
@@ -1209,15 +1191,39 @@
         </td>
       </tr><tr>
         <td>
-          105
+          101
         </td>
         <td>
-          1727
+          1839
         </td>
         <td>
-          2954
+          2853
           -
-          3018
+          2916
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          thirdAnswerButton.setText(gameStage.quizInGame.answers(2).text)
+        </td>
+      </tr><tr>
+        <td>
+          102
+        </td>
+        <td>
+          1841
+        </td>
+        <td>
+          2925
+          -
+          2989
         </td>
         <td>
           Apply
@@ -1233,15 +1239,15 @@
         </td>
       </tr><tr>
         <td>
-          105
+          102
         </td>
         <td>
-          1726
+          1840
         </td>
         <td>
-          2981
+          2952
           -
-          3012
+          2983
         </td>
         <td>
           Apply
@@ -1257,15 +1263,15 @@
         </td>
       </tr><tr>
         <td>
-          107
+          104
         </td>
         <td>
-          1764
+          1878
         </td>
         <td>
-          3032
+          3003
           -
-          3074
+          3045
         </td>
         <td>
           Block
@@ -1281,15 +1287,15 @@
         </td>
       </tr><tr>
         <td>
-          108
+          105
         </td>
         <td>
-          1730
+          1844
         </td>
         <td>
-          3099
+          3070
           -
-          3118
+          3089
         </td>
         <td>
           Select
@@ -1305,15 +1311,15 @@
         </td>
       </tr><tr>
         <td>
-          109
+          106
         </td>
         <td>
-          1731
+          1845
         </td>
         <td>
-          3154
+          3096
           -
-          3165
+          3107
         </td>
         <td>
           Select
@@ -1329,39 +1335,15 @@
         </td>
       </tr><tr>
         <td>
-          110
+          107
         </td>
         <td>
-          1734
+          1851
         </td>
         <td>
-          3210
+          3211
           -
-          3263
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          add
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          firstAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          110
-        </td>
-        <td>
-          1737
-        </td>
-        <td>
-          3269
-          -
-          3320
+          3262
         </td>
         <td>
           Apply
@@ -1377,15 +1359,39 @@
         </td>
       </tr><tr>
         <td>
-          110
+          107
         </td>
         <td>
-          1739
+          1850
         </td>
         <td>
-          3180
+          3211
           -
-          3186
+          3242
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getStyleClass
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          firstAnswerButton.getStyleClass
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          1853
+        </td>
+        <td>
+          3122
+          -
+          3128
         </td>
         <td>
           Block
@@ -1401,15 +1407,15 @@
         </td>
       </tr><tr>
         <td>
-          110
+          107
         </td>
         <td>
-          1733
+          1847
         </td>
         <td>
-          3210
+          3152
           -
-          3241
+          3183
         </td>
         <td>
           Apply
@@ -1425,39 +1431,39 @@
         </td>
       </tr><tr>
         <td>
-          110
+          107
         </td>
         <td>
-          1736
+          1846
         </td>
         <td>
-          3269
+          3135
           -
-          3300
+          3146
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          getStyleClass
+          _2
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          firstAnswerButton.getStyleClass
+          feedback._2
         </td>
       </tr><tr>
         <td>
-          110
+          107
         </td>
         <td>
-          1735
+          1849
         </td>
         <td>
-          3210
+          3152
           -
-          3263
+          3205
         </td>
         <td>
           Block
@@ -1473,15 +1479,15 @@
         </td>
       </tr><tr>
         <td>
-          110
+          107
         </td>
         <td>
-          1738
+          1852
         </td>
         <td>
-          3269
+          3211
           -
-          3320
+          3262
         </td>
         <td>
           Block
@@ -1497,87 +1503,15 @@
         </td>
       </tr><tr>
         <td>
-          110
+          107
         </td>
         <td>
-          1732
+          1848
         </td>
         <td>
-          3193
+          3152
           -
-          3204
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _2
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          feedback._2
-        </td>
-      </tr><tr>
-        <td>
-          111
-        </td>
-        <td>
-          1743
-        </td>
-        <td>
-          3359
-          -
-          3413
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          secondAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          111
-        </td>
-        <td>
-          1746
-        </td>
-        <td>
-          3419
-          -
-          3471
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          secondAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          111
-        </td>
-        <td>
-          1742
-        </td>
-        <td>
-          3359
-          -
-          3413
+          3205
         </td>
         <td>
           Apply
@@ -1589,19 +1523,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          secondAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)
+          firstAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)
         </td>
       </tr><tr>
         <td>
-          111
+          108
         </td>
         <td>
-          1745
+          1859
         </td>
         <td>
-          3419
+          3361
           -
-          3471
+          3413
         </td>
         <td>
           Apply
@@ -1617,15 +1551,39 @@
         </td>
       </tr><tr>
         <td>
-          111
+          108
         </td>
         <td>
-          1744
+          1856
         </td>
         <td>
-          3419
+          3301
           -
-          3451
+          3355
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          add
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          secondAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          108
+        </td>
+        <td>
+          1855
+        </td>
+        <td>
+          3301
+          -
+          3333
         </td>
         <td>
           Apply
@@ -1641,15 +1599,39 @@
         </td>
       </tr><tr>
         <td>
-          111
+          108
         </td>
         <td>
-          1747
+          1858
         </td>
         <td>
-          3329
+          3361
           -
-          3335
+          3393
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getStyleClass
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          secondAnswerButton.getStyleClass
+        </td>
+      </tr><tr>
+        <td>
+          108
+        </td>
+        <td>
+          1861
+        </td>
+        <td>
+          3271
+          -
+          3277
         </td>
         <td>
           Block
@@ -1665,39 +1647,39 @@
         </td>
       </tr><tr>
         <td>
-          111
+          108
         </td>
         <td>
-          1741
+          1860
         </td>
         <td>
-          3359
+          3361
           -
-          3391
+          3413
         </td>
         <td>
-          Apply
+          Block
         </td>
         <td>
-          getStyleClass
+          &lt;none&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          secondAnswerButton.getStyleClass
+          secondAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)
         </td>
       </tr><tr>
         <td>
-          111
+          108
         </td>
         <td>
-          1740
+          1854
         </td>
         <td>
-          3342
+          3284
           -
-          3353
+          3295
         </td>
         <td>
           Select
@@ -1713,39 +1695,159 @@
         </td>
       </tr><tr>
         <td>
-          112
+          108
         </td>
         <td>
-          1752
+          1857
         </td>
         <td>
-          3569
+          3301
           -
-          3600
+          3355
         </td>
         <td>
-          Apply
+          Block
         </td>
         <td>
-          getStyleClass
+          &lt;none&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          thirdAnswerButton.getStyleClass
+          secondAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)
         </td>
       </tr><tr>
         <td>
-          112
+          109
         </td>
         <td>
-          1755
+          1868
         </td>
         <td>
-          3480
+          3511
           -
-          3486
+          3562
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          thirdAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          1862
+        </td>
+        <td>
+          3435
+          -
+          3446
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          feedback._2
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          1865
+        </td>
+        <td>
+          3452
+          -
+          3505
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          thirdAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          1864
+        </td>
+        <td>
+          3452
+          -
+          3505
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          add
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          thirdAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          1867
+        </td>
+        <td>
+          3511
+          -
+          3562
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          add
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          thirdAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          1869
+        </td>
+        <td>
+          3422
+          -
+          3428
         </td>
         <td>
           Block
@@ -1761,135 +1863,15 @@
         </td>
       </tr><tr>
         <td>
-          112
+          109
         </td>
         <td>
-          1754
+          1863
         </td>
         <td>
-          3569
+          3452
           -
-          3620
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          thirdAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          112
-        </td>
-        <td>
-          1748
-        </td>
-        <td>
-          3493
-          -
-          3504
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _2
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          feedback._2
-        </td>
-      </tr><tr>
-        <td>
-          112
-        </td>
-        <td>
-          1751
-        </td>
-        <td>
-          3510
-          -
-          3563
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          thirdAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          112
-        </td>
-        <td>
-          1753
-        </td>
-        <td>
-          3569
-          -
-          3620
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          add
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          thirdAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          112
-        </td>
-        <td>
-          1750
-        </td>
-        <td>
-          3510
-          -
-          3563
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          add
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          thirdAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          112
-        </td>
-        <td>
-          1749
-        </td>
-        <td>
-          3510
-          -
-          3541
+          3483
         </td>
         <td>
           Apply
@@ -1905,39 +1887,63 @@
         </td>
       </tr><tr>
         <td>
-          113
+          109
         </td>
         <td>
-          1761
+          1866
         </td>
         <td>
-          3719
+          3511
           -
-          3771
+          3542
         </td>
         <td>
           Apply
         </td>
         <td>
-          add
+          getStyleClass
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          fourthAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)
+          thirdAnswerButton.getStyleClass
         </td>
       </tr><tr>
         <td>
-          113
+          110
         </td>
         <td>
-          1763
+          1874
         </td>
         <td>
-          3629
+          3661
           -
-          3635
+          3693
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getStyleClass
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          fourthAnswerButton.getStyleClass
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          1877
+        </td>
+        <td>
+          3571
+          -
+          3577
         </td>
         <td>
           Block
@@ -1953,15 +1959,15 @@
         </td>
       </tr><tr>
         <td>
-          113
+          110
         </td>
         <td>
-          1757
+          1871
         </td>
         <td>
-          3659
+          3601
           -
-          3691
+          3633
         </td>
         <td>
           Apply
@@ -1977,39 +1983,39 @@
         </td>
       </tr><tr>
         <td>
-          113
+          110
         </td>
         <td>
-          1760
+          1873
         </td>
         <td>
-          3719
+          3601
           -
-          3751
+          3655
         </td>
         <td>
-          Apply
+          Block
         </td>
         <td>
-          getStyleClass
+          &lt;none&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          fourthAnswerButton.getStyleClass
+          fourthAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)
         </td>
       </tr><tr>
         <td>
-          113
+          110
         </td>
         <td>
-          1762
+          1876
         </td>
         <td>
-          3719
+          3661
           -
-          3771
+          3713
         </td>
         <td>
           Block
@@ -2025,15 +2031,15 @@
         </td>
       </tr><tr>
         <td>
-          113
+          110
         </td>
         <td>
-          1756
+          1870
         </td>
         <td>
-          3642
+          3584
           -
-          3653
+          3595
         </td>
         <td>
           Select
@@ -2049,39 +2055,15 @@
         </td>
       </tr><tr>
         <td>
-          113
+          110
         </td>
         <td>
-          1759
+          1872
         </td>
         <td>
-          3659
+          3601
           -
-          3713
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          fourthAnswerButton.getStyleClass.add(&quot;correct-answer&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          113
-        </td>
-        <td>
-          1758
-        </td>
-        <td>
-          3659
-          -
-          3713
+          3655
         </td>
         <td>
           Apply
@@ -2097,15 +2079,39 @@
         </td>
       </tr><tr>
         <td>
-          114
+          110
         </td>
         <td>
-          1775
+          1875
         </td>
         <td>
-          3776
+          3661
           -
-          3809
+          3713
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          add
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          fourthAnswerButton.getStyleClass.add(&quot;wrong-answer&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          111
+        </td>
+        <td>
+          1886
+        </td>
+        <td>
+          3718
+          -
+          3751
         </td>
         <td>
           Block
@@ -2121,15 +2127,15 @@
         </td>
       </tr><tr>
         <td>
-          115
+          112
         </td>
         <td>
-          1765
+          1879
         </td>
         <td>
-          3838
+          3780
           -
-          3857
+          3799
         </td>
         <td>
           Select
@@ -2145,15 +2151,15 @@
         </td>
       </tr><tr>
         <td>
-          116
+          113
         </td>
         <td>
-          1774
+          1885
         </td>
         <td>
-          3884
+          3806
           -
-          4256
+          3978
         </td>
         <td>
           Apply
@@ -2168,26 +2174,19 @@
           Platform.runLater(() =&gt; {
         timeRemainingLabel.setText(s&quot;${timer.getRemainingTime.toInt}&quot;)
         timeProgressBar.setProgress(timer.getCompletionPercentage)
-        val newPoints =
-          updatePoints(
-            timer.getRemainingTime.toInt,
-            timer.maxTime,
-            maxScore
-          )
-        pointsLabel.setText(newPoints + &quot; punti&quot;)
       })
         </td>
       </tr><tr>
         <td>
-          117
+          114
         </td>
         <td>
-          1766
+          1880
         </td>
         <td>
-          3949
+          3871
           -
-          3971
+          3893
         </td>
         <td>
           Select
@@ -2203,15 +2202,15 @@
         </td>
       </tr><tr>
         <td>
-          117
+          114
         </td>
         <td>
-          1768
+          1882
         </td>
         <td>
-          3918
+          3840
           -
-          3980
+          3902
         </td>
         <td>
           Apply
@@ -2227,15 +2226,15 @@
         </td>
       </tr><tr>
         <td>
-          117
+          114
         </td>
         <td>
-          1767
+          1881
         </td>
         <td>
-          3945
+          3867
           -
-          3979
+          3901
         </td>
         <td>
           Apply
@@ -2251,39 +2250,15 @@
         </td>
       </tr><tr>
         <td>
-          118
+          115
         </td>
         <td>
-          1770
+          1883
         </td>
         <td>
-          3989
+          3939
           -
-          4047
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          setProgress
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          timeProgressBar.setProgress(timer.getCompletionPercentage)
-        </td>
-      </tr><tr>
-        <td>
-          118
-        </td>
-        <td>
-          1769
-        </td>
-        <td>
-          4017
-          -
-          4046
+          3968
         </td>
         <td>
           Select
@@ -2299,91 +2274,39 @@
         </td>
       </tr><tr>
         <td>
-          120
+          115
         </td>
         <td>
-          1772
+          1884
         </td>
         <td>
-          4082
+          3911
           -
-          4197
+          3969
         </td>
         <td>
           Apply
         </td>
         <td>
-          updatePoints
+          setProgress
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          updatePoints(
-            timer.getRemainingTime.toInt,
-            timer.maxTime,
-            maxScore
-          )
+          timeProgressBar.setProgress(timer.getCompletionPercentage)
         </td>
       </tr><tr>
         <td>
-          121
+          117
         </td>
         <td>
-          1771
+          1888
         </td>
         <td>
-          4108
+          3983
           -
-          4130
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          getRemainingTime
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          timer.getRemainingTime
-        </td>
-      </tr><tr>
-        <td>
-          125
-        </td>
-        <td>
-          1773
-        </td>
-        <td>
-          4206
-          -
-          4247
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          setText
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          pointsLabel.setText(newPoints + &quot; punti&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          128
-        </td>
-        <td>
-          1777
-        </td>
-        <td>
-          4262
-          -
-          4284
+          4005
         </td>
         <td>
           Block
@@ -2399,15 +2322,15 @@
         </td>
       </tr><tr>
         <td>
-          129
+          118
         </td>
         <td>
-          1776
+          1887
         </td>
         <td>
-          4294
+          4015
           -
-          4322
+          4043
         </td>
         <td>
           Apply
@@ -2423,39 +2346,15 @@
         </td>
       </tr><tr>
         <td>
-          131
+          120
         </td>
         <td>
-          1779
+          1896
         </td>
         <td>
-          4326
+          4047
           -
-          4342
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          updatePoints
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          def updatePoints
-        </td>
-      </tr><tr>
-        <td>
-          137
-        </td>
-        <td>
-          1786
-        </td>
-        <td>
-          4514
-          -
-          4535
+          4068
         </td>
         <td>
           DefDef
@@ -2471,15 +2370,15 @@
         </td>
       </tr><tr>
         <td>
-          138
+          121
         </td>
         <td>
-          1785
+          1895
         </td>
         <td>
-          4571
+          4104
           -
-          4738
+          4271
         </td>
         <td>
           Apply
@@ -2499,15 +2398,15 @@
         </td>
       </tr><tr>
         <td>
-          139
+          122
         </td>
         <td>
-          1781
+          1891
         </td>
         <td>
-          4603
+          4136
           -
-          4648
+          4181
         </td>
         <td>
           Apply
@@ -2523,15 +2422,15 @@
         </td>
       </tr><tr>
         <td>
-          139
+          122
         </td>
         <td>
-          1780
+          1890
         </td>
         <td>
-          4603
+          4136
           -
-          4623
+          4156
         </td>
         <td>
           Apply
@@ -2547,15 +2446,15 @@
         </td>
       </tr><tr>
         <td>
-          140
+          123
         </td>
         <td>
-          1782
+          1892
         </td>
         <td>
-          4656
+          4189
           -
-          4676
+          4209
         </td>
         <td>
           Apply
@@ -2571,15 +2470,15 @@
         </td>
       </tr><tr>
         <td>
-          140
+          123
         </td>
         <td>
-          1783
+          1893
         </td>
         <td>
-          4656
+          4189
           -
-          4699
+          4232
         </td>
         <td>
           Apply
@@ -2595,15 +2494,15 @@
         </td>
       </tr><tr>
         <td>
-          141
+          124
         </td>
         <td>
-          1784
+          1894
         </td>
         <td>
-          4707
+          4240
           -
-          4731
+          4264
         </td>
         <td>
           Apply
@@ -2619,15 +2518,15 @@
         </td>
       </tr><tr>
         <td>
-          144
+          127
         </td>
         <td>
-          1789
+          1899
         </td>
         <td>
-          4742
+          4275
           -
-          4759
+          4292
         </td>
         <td>
           DefDef
@@ -2643,15 +2542,15 @@
         </td>
       </tr><tr>
         <td>
-          145
+          128
         </td>
         <td>
-          1788
+          1898
         </td>
         <td>
-          4795
+          4328
           -
-          4857
+          4390
         </td>
         <td>
           Apply
@@ -2669,15 +2568,15 @@
         </td>
       </tr><tr>
         <td>
-          146
+          129
         </td>
         <td>
-          1787
+          1897
         </td>
         <td>
-          4827
+          4360
           -
-          4850
+          4383
         </td>
         <td>
           Apply
