@@ -12,12 +12,12 @@ import javafx.scene.control.{Button, Label, ProgressBar}
 import javafx.stage.Stage
 import model.GameStage
 import model.settings.StandardGameSettings
-import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate, TimeExpiredUpdate, TimerUpdate}
+import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, CurrentGameUpdate, TimeExpiredUpdate, TimerUpdate}
 
 object GraphicStandardGameMenu
 
 /** Standard Game menu graphic interface */
-class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
+class GraphicStandardGameMenu(stage: Stage) extends GraphicView :
 
   @FXML
   var backButton: Button = _
@@ -93,13 +93,13 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case DefaultUpdate => {}
-    case NewQuizUpdate(updateParameter) =>
+    case CurrentGameUpdate(updateParameter) =>
       Platform.runLater(() => {
-        val gameStage: GameStage = updateParameter.get.asInstanceOf[GameStage]
+        val gameStage: GameStage = updateParameter.get
         maxScore = gameStage.quizInGame.quiz.maxScore
-        courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
-        quizNumberLabel.setText(s"x/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}")
         pointsLabel.setText(actualScore.toString + " punti")
+        courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
+        quizNumberLabel.setText(s"${gameStage.currentQuizNumber}/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}")
         quizLabel.setText(gameStage.quizInGame.quiz.question)
         firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
         secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
@@ -107,14 +107,14 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
         fourthAnswerButton.setText(gameStage.quizInGame.answers(3).text)
       })
     case AnswerFeedbackUpdate(updateParameter) =>
-      val feedback = updateParameter.get.asInstanceOf[(Int, Boolean)]
+      val feedback = updateParameter.get
       feedback._1 match
         case 0 => if feedback._2 then firstAnswerButton.getStyleClass.add("correct-answer") else firstAnswerButton.getStyleClass.add("wrong-answer")
         case 1 => if feedback._2 then secondAnswerButton.getStyleClass.add("correct-answer") else secondAnswerButton.getStyleClass.add("wrong-answer")
         case 2 => if feedback._2 then thirdAnswerButton.getStyleClass.add("correct-answer") else thirdAnswerButton.getStyleClass.add("wrong-answer")
         case 3 => if feedback._2 then fourthAnswerButton.getStyleClass.add("correct-answer") else fourthAnswerButton.getStyleClass.add("wrong-answer")
     case TimerUpdate(updateParameter) =>
-      val timer: Timer = updateParameter.get.asInstanceOf[Timer]
+      val timer: Timer = updateParameter.get
       Platform.runLater(() => {
         timeRemainingLabel.setText(s"${timer.getRemainingTime.toInt}")
         timeProgressBar.setProgress(timer.getCompletionPercentage)
