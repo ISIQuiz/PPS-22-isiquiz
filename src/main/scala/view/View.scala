@@ -77,7 +77,7 @@ object View:
       case EditQuizMenuAction => _currentGUIType match
         case Terminal => TerminalEditQuizMenu()
         case ScalaFX => GraphicEditQuizMenu(_stage)
-      case ReviewMenuAction => _currentGUIType match
+      case ReviewMenuAction(_) => _currentGUIType match
         case Terminal => throw new IllegalArgumentException
         case ScalaFX => GraphicReviewMenu(_stage)
       case CustomMenuAction(_) => _currentGUIType match
