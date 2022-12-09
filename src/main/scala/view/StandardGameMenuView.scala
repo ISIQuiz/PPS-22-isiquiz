@@ -14,5 +14,8 @@ object StandardGameMenuView extends DefaultUpdate :
   /** Update for the view containing the timer, used to get the remaining time and the percentage */
   case class TimerUpdate(override val updateParameter: Option[Timer]) extends ViewUpdate(updateParameter)
 
+  /** Update quiz score */
+  case class QuizScoreUpdate(override val updateParameter: Option[Int]) extends ViewUpdate(updateParameter)
+
   /** Update for the view when the timer is expired */
   case object TimeExpiredUpdate extends ParameterlessViewUpdate
