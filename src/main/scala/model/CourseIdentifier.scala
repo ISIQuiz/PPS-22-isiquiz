@@ -4,6 +4,7 @@ package model
  * Trait for the identifier of the course
  */
 trait CourseIdentifier:
+  
   /**
    * @return name of the course
    */
@@ -35,9 +36,9 @@ object CourseIdentifier:
 
   /**
    * Case class for the course identifier model
-   * @param courseName the name of the course (E.g. Paradigmi di Programmazione e Sviluppo)
-   * @param degreeName the name of the degree course (E.g. Laurea Magistrale in Ingegneria e Scienze Informatiche)
-   * @param universityName the name of the university (E.g. University of Bologna)
+   * @param courseName the name of the course
+   * @param degreeName the name of the degree course
+   * @param universityName the name of the university
    */
   case class CourseIdentifierImpl(override val courseName: String, override val degreeName: String, override val universityName: String) extends CourseIdentifier
 
