@@ -94,7 +94,7 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView :
       Platform.runLater(() => {
         val gameStage: GameStage = updateParameter.get
         courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
-        quizNumberLabel.setText(s"${gameStage.review.numberQuizAnswered+1}/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}")
+        quizNumberLabel.setText(s"${gameStage.currentQuizNumber}/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}")
         pointsLabel.setText(gameStage.quizInGame.quiz.maxScore.toString + " punti")
         quizLabel.setText(gameStage.quizInGame.quiz.question)
         firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)

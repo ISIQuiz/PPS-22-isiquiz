@@ -1,5 +1,8 @@
 package utils
-
+/** a timer tracks the amount of time passed since the start,
+ * can also be a countdown when maxTime is set, returning the remaining time and if is expired
+ * attention: stopping the timer doesn't interfere with its expiration
+ */
 trait Timer:
 
   val maxTime: Long

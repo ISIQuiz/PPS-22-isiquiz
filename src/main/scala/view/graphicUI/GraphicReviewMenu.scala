@@ -12,21 +12,22 @@ import controller.ReviewMenuController.*
 import javafx.application.Platform
 import javafx.scene.layout.VBox
 import model.QuizAnswered
+import scalafx.geometry.Insets
+import scalafx.scene.layout.Pane
 
 object GraphicReviewMenu
 
 /** Review menu graphic interface  */
 class GraphicReviewMenu(stage: Stage) extends GraphicView:
 
+  var showAllAnswers = false
 
   @FXML
-  var rightAnswersLabel: Label = _
+  var totRightAnswersLabel: Label = _
 
 
   @FXML
   var totPointsLabel: Label = _
-  @FXML
-  var rispTest: Label = _
 
 
   @FXML
@@ -34,9 +35,14 @@ class GraphicReviewMenu(stage: Stage) extends GraphicView:
 
   @FXML
   var endButton: Button = _
+
   @FXML
   def endButtonClicked(): Unit =
     sendEvent(End)
+
+  @FXML
+  def filterButtonClicked(): Unit =
+    showAllAnswers = !showAllAnswers
 
 
   loadGUI(stage, this, "review_menu.fxml")
@@ -44,7 +50,7 @@ class GraphicReviewMenu(stage: Stage) extends GraphicView:
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case TotalCorrectAnswersUpdate(updateParameter) => if updateParameter.isDefined then
       Platform.runLater(() => {
-        rightAnswersLabel.textProperty().set(s"Risposte corrette: ${updateParameter.get}")
+        totRightAnswersLabel.textProperty().set(s"Risposte corrette: ${updateParameter.get}")
       })
     case TotalPointsUpdate(updateParameter) => if updateParameter.isDefined then
       Platform.runLater(() => {
@@ -59,15 +65,20 @@ class GraphicReviewMenu(stage: Stage) extends GraphicView:
         quizAnsweredList foreach (quizAnswered =>
           val quizVBox = VBox();
           quizVBox.getStyleClass.setAll("review-quiz-box");
-          val quizQuestionLabel = Label(s"${quizAnswered.quizInGame.quiz.question} ${quizAnswered.quizInGame.course.courseId.courseName} " +
-            s"Points: ${quizAnswered.quizInGame.quiz.maxScore}");
+          val quizQuestionLabel = Label(quizAnswered.quizInGame.quiz.question);
           quizQuestionLabel.getStyleClass.setAll("review-question");
           quizVBox.getChildren.addAll(quizQuestionLabel);
-          quizAnswered.quizInGame.answers foreach (answerQuiz =>
+          val quizDescLabel = Label(s"(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}");
+          quizDescLabel.getStyleClass.setAll("label-dark");
+          quizVBox.getChildren.addAll(quizDescLabel);
+          quizAnswered.quizInGame.answers
+            .filter(ans => showAllAnswers || ans.isCorrect || (if quizAnswered.answer.isDefined then quizAnswered.answer.get==ans else false))
+            .foreach(answerQuiz =>
             val quizAnswerLabel = Label(s"${answerQuiz.text}");
-            quizAnswerLabel.getStyleClass.setAll("review-answer");
+            if answerQuiz.isCorrect then quizAnswerLabel.getStyleClass.setAll("review-correct-answer") else quizAnswerLabel.getStyleClass.setAll("review-wrong-answer");
             quizVBox.getChildren.addAll(quizAnswerLabel);
             );
+          quizAnsweredVBox.setSpacing(10);
           quizAnsweredVBox.getChildren.addAll(quizVBox);
           )
       })

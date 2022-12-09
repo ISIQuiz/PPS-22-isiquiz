@@ -38,7 +38,7 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
 
   import StandardGameController.*
 
-  val gameStage: GameStage = game //dentro game stage c'è la lista dei selezionati corsi COMPLETI, il quiz in game null e settings
+  val gameStage: GameStage = game
   val timer: Timer = Timer.apply(gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime)
   var currentAnswer: Option[Answer] = None
 

@@ -9,9 +9,9 @@ import view.updates.DefaultUpdate
 
 
 /** Companion object of review menu controller containing all the actions can be sent */
-object ReviewMenuController extends BackAction:
+object ReviewMenuController extends BackAction :
   case object End extends ParameterlessAction
-
+/** Controls the behavior of the review page */
 class ReviewMenuController(var gameStage: GameStage) extends PageController :
 
   import ReviewMenuController.*
@@ -24,6 +24,5 @@ class ReviewMenuController(var gameStage: GameStage) extends PageController :
     sendUpdate(DefaultUpdate)
     sendUpdate(CurrentReviewUpdate(Option(gameStage.review)))
     sendUpdate(TotalPointsUpdate(Option(gameStage.review.totalPoints)))
-    val b = gameStage.review.totalCorrectAnswers
     sendUpdate(TotalCorrectAnswersUpdate(Option(gameStage.review.totalCorrectAnswers)))
 
