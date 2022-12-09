@@ -4,6 +4,7 @@ import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
 import model.SavedCourse
+import utils.storage.ExportHandler
 import view.AddCourseMenuView.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
@@ -32,5 +33,6 @@ class AddCourseMenuController extends PageController:
   def addCourse(actionParameter:Option[SavedCourse]):Unit =
     val newListCourses = AppController.session.savedCourses.appended(actionParameter.get)
     AppController.changeSavedCourses(newListCourses)
+    ExportHandler.exportDataToPersonalDirectory(newListCourses) // Export saved course list to personal directory
     sendUpdate(CoursePrintUpdate(actionParameter))
     sendUpdate(CourseAddedUpdate)

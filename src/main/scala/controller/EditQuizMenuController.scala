@@ -5,6 +5,7 @@ import controller.actions.{Action, BackAction, ParameterlessAction}
 import controller.{AppController, PageController}
 import model.Quiz.Quiz
 import model.SavedCourse
+import utils.storage.ExportHandler
 import view.EditQuizMenuView.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
@@ -55,6 +56,7 @@ class EditQuizMenuController extends PageController:
     val newSavedCourse = SavedCourse.changeQuizList(courseSelected.get, newQuizList)
     val newListCourses = AppController.session.savedCourses.filterNot(course => course==courseSelected.get).appended(newSavedCourse)
     AppController.changeSavedCourses(newListCourses)
+    ExportHandler.exportDataToPersonalDirectory(newListCourses) // Export saved course list to personal directory
     sendUpdate(QuizPrintUpdate(quizEdited))
     sendUpdate(QuizEditedUpdate)
     courseSelected = None

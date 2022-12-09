@@ -6,6 +6,7 @@ import controller.AppController.*
 import model.{Course, SavedCourse}
 import model.Quiz.Quiz
 import model.GameStage.*
+import utils.storage.ExportHandler
 import view.AddQuizMenuView.*
 import view.updates.ViewUpdate
 
@@ -45,6 +46,7 @@ class AddQuizMenuController extends PageController :
     val newSavedCourse = SavedCourse.changeQuizList(courseSelected.get, courseSelected.get.quizList.::(quizToAdd.get))
     val newListCourses = AppController.session.savedCourses.filterNot(course => course == courseSelected.get).appended(newSavedCourse)
     AppController.changeSavedCourses(newListCourses)
+    ExportHandler.exportDataToPersonalDirectory(newListCourses) // Export saved course list to personal directory
     sendUpdate(QuizPrintUpdate(quizToAdd))
     sendUpdate(QuizAddedUpdate)
     courseSelected = None
