@@ -1,6 +1,7 @@
 package model
 
 import model.Quiz.*
+
 /**
  *  Trait for a saved course
  */
@@ -16,7 +17,6 @@ trait SavedCourse extends Course:
    */
   def quizList: List[Quiz]
 
-
 /**
  * Object used for managing a saved course
  */
@@ -31,12 +31,13 @@ case object SavedCourse:
    */
   def apply(courseId: CourseIdentifier,
             description: Option[String],
-            quizList: List[Quiz]): SavedCourse =
-    SavedCourseImpl(courseId, description, quizList)
+            quizList: List[Quiz]): SavedCourse = SavedCourseImpl(courseId, description, quizList)
 
-  /** Case class for saved course model
-  * @param description description of the course (optional)
-  * @param quizList quiz list of saved quiz
+  /**
+   * Case class for saved course model
+   * @param courseId course identifier
+   * @param description description of the course (optional)
+   * @param quizList quiz list of saved quiz
   */
   case class SavedCourseImpl(override val courseId: CourseIdentifier,
                              override val description: Option[String],
@@ -58,8 +59,7 @@ case object SavedCourse:
    * @return SavedCourse
    */
   def changeDescription(savedCourse: SavedCourse, description: Option[String]): SavedCourse = savedCourse match
-    case SavedCourseImpl(courseId, _, quizList) =>
-      SavedCourse(courseId, description, quizList)
+    case SavedCourseImpl(courseId, _, quizList) => SavedCourse(courseId, description, quizList)
 
   /**
    * Change the list of quiz
@@ -68,5 +68,4 @@ case object SavedCourse:
    * @return SavedCourse
    */
   def changeQuizList(savedCourse: SavedCourse, quizList: List[Quiz]): SavedCourse = savedCourse match
-    case SavedCourseImpl(courseId, description, _) =>
-      SavedCourse(courseId, description, quizList)
+    case SavedCourseImpl(courseId, description, _) => SavedCourse(courseId, description, quizList)
