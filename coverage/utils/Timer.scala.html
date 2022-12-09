@@ -23,52 +23,52 @@
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package utils
-</span>2 <span style=''>
-</span>3 <span style=''>trait Timer:
-</span>4 <span style=''>
-</span>5 <span style=''>  val maxTime: Long
-</span>6 <span style=''>
-</span>7 <span style=''>  def startTimer(): Unit
-</span>8 <span style=''>  def stopTimer(): Unit
-</span>9 <span style=''>  def getTime: Double
-</span>10 <span style=''>  def getRemainingTime: Double
-</span>11 <span style=''>  def getCompletionPercentage: Double
-</span>12 <span style=''>  def isExpired: Boolean
-</span>13 <span style=''>  def isStopped: Boolean
-</span>14 <span style=''>
-</span>15 <span style=''>object Timer:
-</span>16 <span style=''>
-</span>17 <span style=''>  </span><span style='background: #F0ADAD'>def apply</span><span style=''>(maxTime: Long): Timer = </span><span style='background: #F0ADAD'>new TimerImpl(maxTime * 1000)</span><span style=''>
-</span>18 <span style=''>
-</span>19 <span style=''>  class TimerImpl(val maxTime: Long) extends Timer:
-</span>20 <span style=''>
-</span>21 <span style=''>    var initialTime: Long = _
-</span>22 <span style=''>
-</span>23 <span style=''>    var stopTime: Long = _
-</span>24 <span style=''>
-</span>25 <span style=''>    </span><span style='background: #F0ADAD'>def currentTime</span><span style=''>(): Long = </span><span style='background: #F0ADAD'>System.currentTimeMillis()</span><span style=''>
-</span>26 <span style=''>
-</span>27 <span style=''>    </span><span style='background: #F0ADAD'>override def startTimer</span><span style=''>(): Unit =
-</span>28 <span style=''>      stopTime = 0
-</span>29 <span style=''>      initialTime = </span><span style='background: #F0ADAD'>currentTime()</span><span style=''>
-</span>30 <span style=''>
-</span>31 <span style=''>    </span><span style='background: #F0ADAD'>override def stopTimer</span><span style=''>(): Unit = stopTime = </span><span style='background: #F0ADAD'>currentTime()</span><span style=''>
-</span>32 <span style=''>
-</span>33 <span style=''>    </span><span style='background: #F0ADAD'>override def getTime</span><span style=''>: Double = </span><span style='background: #F0ADAD'>millisToSeconds(currentTime() - initialTime)</span><span style=''>
-</span>34 <span style=''>
-</span>35 <span style=''>    </span><span style='background: #F0ADAD'>override def getRemainingTime</span><span style=''>: Double = </span><span style='background: #F0ADAD'>millisToSeconds(maxTime)</span><span style=''> - </span><span style='background: #F0ADAD'>getTime</span><span style=''>
-</span>36 <span style=''>
-</span>37 <span style=''>    </span><span style='background: #F0ADAD'>override def getCompletionPercentage</span><span style=''>: Double =
-</span>38 <span style=''>      val percentage: Double = (</span><span style='background: #F0ADAD'>currentTime()</span><span style=''> - initialTime) / maxTime.toDouble
-</span>39 <span style=''>      percentage match
-</span>40 <span style=''>        </span><span style='background: #F0ADAD'>case n if n &lt; 100 &amp;&amp; n &gt;= 0</span><span style=''> =&gt; n
-</span>41 <span style=''>        </span><span style='background: #F0ADAD'>case n if n &gt;= 100</span><span style=''> =&gt; 100
-</span>42 <span style=''>        </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>throw new IllegalArgumentException()</span><span style=''>
-</span>43 <span style=''>
-</span>44 <span style=''>    </span><span style='background: #F0ADAD'>override def isExpired</span><span style=''>: Boolean = </span><span style='background: #F0ADAD'>currentTime()</span><span style=''> - initialTime match
-</span>45 <span style=''>      </span><span style='background: #F0ADAD'>case n if n &gt;= maxTime</span><span style=''> =&gt; true
-</span>46 <span style=''>      </span><span style='background: #F0ADAD'>case n if n &lt; maxTime</span><span style=''> =&gt; false
-</span>47 <span style=''>      </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>throw new IllegalArgumentException()</span><span style=''>
+</span>2 <span style=''>/** a timer tracks the amount of time passed since the start,
+</span>3 <span style=''> * can also be a countdown when maxTime is set, returning the remaining time and if is expired
+</span>4 <span style=''> * attention: stopping the timer doesn't interfere with its expiration
+</span>5 <span style=''> */
+</span>6 <span style=''>trait Timer:
+</span>7 <span style=''>
+</span>8 <span style=''>  val maxTime: Long
+</span>9 <span style=''>
+</span>10 <span style=''>  def startTimer(): Unit
+</span>11 <span style=''>  def stopTimer(): Unit
+</span>12 <span style=''>  def getTime: Double
+</span>13 <span style=''>  def getRemainingTime: Double
+</span>14 <span style=''>  def getCompletionPercentage: Double
+</span>15 <span style=''>  def isExpired: Boolean
+</span>16 <span style=''>  def isStopped: Boolean
+</span>17 <span style=''>
+</span>18 <span style=''>object Timer:
+</span>19 <span style=''>
+</span>20 <span style=''>  </span><span style='background: #F0ADAD'>def apply</span><span style=''>(maxTime: Long): Timer = </span><span style='background: #F0ADAD'>new TimerImpl(maxTime * 1000)</span><span style=''>
+</span>21 <span style=''>
+</span>22 <span style=''>  class TimerImpl(val maxTime: Long) extends Timer:
+</span>23 <span style=''>
+</span>24 <span style=''>    var initialTime: Long = _
+</span>25 <span style=''>
+</span>26 <span style=''>    var stopTime: Long = _
+</span>27 <span style=''>
+</span>28 <span style=''>    </span><span style='background: #F0ADAD'>def currentTime</span><span style=''>(): Long = </span><span style='background: #F0ADAD'>System.currentTimeMillis()</span><span style=''>
+</span>29 <span style=''>
+</span>30 <span style=''>    </span><span style='background: #F0ADAD'>override def startTimer</span><span style=''>(): Unit =
+</span>31 <span style=''>      stopTime = 0
+</span>32 <span style=''>      initialTime = </span><span style='background: #F0ADAD'>currentTime()</span><span style=''>
+</span>33 <span style=''>
+</span>34 <span style=''>    </span><span style='background: #F0ADAD'>override def stopTimer</span><span style=''>(): Unit = stopTime = </span><span style='background: #F0ADAD'>currentTime()</span><span style=''>
+</span>35 <span style=''>
+</span>36 <span style=''>    </span><span style='background: #F0ADAD'>override def getTime</span><span style=''>: Double = </span><span style='background: #F0ADAD'>millisToSeconds(currentTime() - initialTime)</span><span style=''>
+</span>37 <span style=''>
+</span>38 <span style=''>    </span><span style='background: #F0ADAD'>override def getRemainingTime</span><span style=''>: Double = </span><span style='background: #F0ADAD'>millisToSeconds(maxTime)</span><span style=''> - </span><span style='background: #F0ADAD'>getTime</span><span style=''>
+</span>39 <span style=''>
+</span>40 <span style=''>    </span><span style='background: #F0ADAD'>override def getCompletionPercentage</span><span style=''>: Double =
+</span>41 <span style=''>      val percentage: Double = (</span><span style='background: #F0ADAD'>currentTime()</span><span style=''> - initialTime) / maxTime.toDouble
+</span>42 <span style=''>      percentage match
+</span>43 <span style=''>        </span><span style='background: #F0ADAD'>case n if n &lt; 100 &amp;&amp; n &gt;= 0</span><span style=''> =&gt; n
+</span>44 <span style=''>        </span><span style='background: #F0ADAD'>case n if n &gt;= 100</span><span style=''> =&gt; 100
+</span>45 <span style=''>        </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>throw new IllegalArgumentException()</span><span style=''>
+</span>46 <span style=''>
+</span>47 <span style=''>    </span><span style='background: #F0ADAD'>override def isExpired</span><span style=''>: Boolean = </span><span style='background: #F0ADAD'>getRemainingTime</span><span style=''> &lt; 0
 </span>48 <span style=''>
 </span>49 <span style=''>    </span><span style='background: #F0ADAD'>override def isStopped</span><span style=''>: Boolean = stopTime != 0
 </span>50 <span style=''>
@@ -89,15 +89,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          16
+          19
         </td>
         <td>
-          573
+          636
         </td>
         <td>
-          292
+          523
           -
-          321
+          552
         </td>
         <td>
           Apply
@@ -113,15 +113,15 @@
         </td>
       </tr><tr>
         <td>
-          16
+          19
         </td>
         <td>
-          574
+          637
         </td>
         <td>
-          258
+          489
           -
-          267
+          498
         </td>
         <td>
           DefDef
@@ -137,15 +137,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          27
         </td>
         <td>
-          576
+          639
         </td>
         <td>
-          439
+          670
           -
-          454
+          685
         </td>
         <td>
           DefDef
@@ -161,15 +161,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          27
         </td>
         <td>
-          575
+          638
         </td>
         <td>
-          465
+          696
           -
-          491
+          722
         </td>
         <td>
           Apply
@@ -185,15 +185,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          29
         </td>
         <td>
-          578
+          641
         </td>
         <td>
-          497
+          728
           -
-          520
+          751
         </td>
         <td>
           DefDef
@@ -209,15 +209,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          31
         </td>
         <td>
-          577
+          640
         </td>
         <td>
-          570
+          801
           -
-          583
+          814
         </td>
         <td>
           Apply
@@ -233,15 +233,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          33
         </td>
         <td>
-          579
+          642
         </td>
         <td>
-          633
+          864
           -
-          646
+          877
         </td>
         <td>
           Apply
@@ -257,15 +257,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          33
         </td>
         <td>
-          580
+          643
         </td>
         <td>
-          589
+          820
           -
-          611
+          842
         </td>
         <td>
           DefDef
@@ -281,15 +281,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          35
         </td>
         <td>
-          582
+          645
         </td>
         <td>
-          699
+          930
           -
-          726
+          957
         </td>
         <td>
           Apply
@@ -305,15 +305,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          35
         </td>
         <td>
-          581
+          644
         </td>
         <td>
-          699
+          930
           -
-          712
+          943
         </td>
         <td>
           Apply
@@ -329,15 +329,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          35
         </td>
         <td>
-          584
+          647
         </td>
         <td>
-          652
+          883
           -
-          672
+          903
         </td>
         <td>
           DefDef
@@ -353,15 +353,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          35
         </td>
         <td>
-          583
+          646
         </td>
         <td>
-          683
+          914
           -
-          727
+          958
         </td>
         <td>
           Apply
@@ -377,15 +377,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          37
         </td>
         <td>
-          585
+          648
         </td>
         <td>
-          789
+          1020
           -
-          796
+          1027
         </td>
         <td>
           Apply
@@ -401,15 +401,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          37
         </td>
         <td>
-          588
+          651
         </td>
         <td>
-          733
+          964
           -
-          762
+          993
         </td>
         <td>
           DefDef
@@ -425,15 +425,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          37
         </td>
         <td>
-          587
+          650
         </td>
         <td>
-          800
+          1031
           -
-          807
+          1038
         </td>
         <td>
           Select
@@ -449,15 +449,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          37
         </td>
         <td>
-          586
+          649
         </td>
         <td>
-          773
+          1004
           -
-          797
+          1028
         </td>
         <td>
           Apply
@@ -473,15 +473,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          39
         </td>
         <td>
-          595
+          658
         </td>
         <td>
-          813
+          1044
           -
-          849
+          1080
         </td>
         <td>
           DefDef
@@ -497,15 +497,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          40
         </td>
         <td>
-          589
+          652
         </td>
         <td>
-          892
+          1123
           -
-          905
+          1136
         </td>
         <td>
           Apply
@@ -521,15 +521,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          42
         </td>
         <td>
-          590
+          653
         </td>
         <td>
-          971
+          1202
           -
-          998
+          1229
         </td>
         <td>
           Block
@@ -545,15 +545,15 @@
         </td>
       </tr><tr>
         <td>
-          40
+          43
         </td>
         <td>
-          591
+          654
         </td>
         <td>
-          1012
+          1243
           -
-          1030
+          1261
         </td>
         <td>
           Block
@@ -569,15 +569,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          44
         </td>
         <td>
-          594
+          657
         </td>
         <td>
-          1046
+          1277
           -
-          1052
+          1283
         </td>
         <td>
           Block
@@ -593,15 +593,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          44
         </td>
         <td>
-          593
+          656
         </td>
         <td>
-          1056
+          1287
           -
-          1092
+          1323
         </td>
         <td>
           Apply
@@ -617,15 +617,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          44
         </td>
         <td>
-          592
+          655
         </td>
         <td>
-          1062
+          1293
           -
-          1092
+          1323
         </td>
         <td>
           Apply
@@ -641,15 +641,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          46
         </td>
         <td>
-          602
+          660
         </td>
         <td>
-          1098
+          1329
           -
-          1120
+          1351
         </td>
         <td>
           DefDef
@@ -665,159 +665,39 @@
         </td>
       </tr><tr>
         <td>
-          43
-        </td>
-        <td>
-          596
-        </td>
-        <td>
-          1132
-          -
-          1145
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          currentTime
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          currentTime()
-        </td>
-      </tr><tr>
-        <td>
-          44
-        </td>
-        <td>
-          597
-        </td>
-        <td>
-          1172
-          -
-          1194
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case n if n &gt;= maxTime
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          598
-        </td>
-        <td>
-          1209
-          -
-          1230
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case n if n &lt; maxTime
-        </td>
-      </tr><tr>
-        <td>
           46
         </td>
         <td>
-          600
+          659
         </td>
         <td>
-          1256
+          1363
           -
-          1292
+          1379
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          throw
+          getRemainingTime
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          throw new IllegalArgumentException()
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          599
-        </td>
-        <td>
-          1262
-          -
-          1292
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          new IllegalArgumentException()
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          601
-        </td>
-        <td>
-          1246
-          -
-          1252
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case _
+          getRemainingTime
         </td>
       </tr><tr>
         <td>
           48
         </td>
         <td>
-          603
+          661
         </td>
         <td>
-          1298
+          1389
           -
-          1320
+          1411
         </td>
         <td>
           DefDef
@@ -836,36 +716,12 @@
           50
         </td>
         <td>
-          606
+          663
         </td>
         <td>
-          1351
+          1474
           -
-          1372
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          toString
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          override def toString
-        </td>
-      </tr><tr>
-        <td>
-          50
-        </td>
-        <td>
-          605
-        </td>
-        <td>
-          1383
-          -
-          1439
+          1530
         </td>
         <td>
           Apply
@@ -884,12 +740,12 @@
           50
         </td>
         <td>
-          604
+          662
         </td>
         <td>
-          1402
+          1493
           -
-          1414
+          1505
         </td>
         <td>
           Select
@@ -905,15 +761,39 @@
         </td>
       </tr><tr>
         <td>
+          50
+        </td>
+        <td>
+          664
+        </td>
+        <td>
+          1442
+          -
+          1463
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          toString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def toString
+        </td>
+      </tr><tr>
+        <td>
           52
         </td>
         <td>
-          607
+          665
         </td>
         <td>
-          1445
+          1536
           -
-          1464
+          1555
         </td>
         <td>
           DefDef
