@@ -20,17 +20,20 @@ object GraphicEditCourseMenu
 /** Default menu graphic interface  */
 class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
 
-
   val toggleGroup: ToggleGroup = ToggleGroup()
   
   @FXML
   var coursesVBox: VBox = _
+  
   @FXML
   var courseNameTextField: TextField = _
+  
   @FXML
   var degreeNameTextField: TextField = _
+  
   @FXML
   var universityNameTextField: TextField = _
+  
   @FXML
   var descriptionCourseTextField: TextField = _
 
@@ -84,7 +87,7 @@ class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
         )
       }
     case CourseEditedUpdate =>
-      feedbackLabel.setText("Corso Modificato!!!")
+      feedbackLabel.setText("Corso modificato")
       courseNameTextField.clear()
       degreeNameTextField.clear()
       universityNameTextField.clear()

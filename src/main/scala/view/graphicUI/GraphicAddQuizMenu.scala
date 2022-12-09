@@ -99,7 +99,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
         )
       }
     case QuizAddedUpdate =>
-      feedbackLabel.setText("Quiz Aggiunto")
+      feedbackLabel.setText("Quiz aggiunto")
       questionTextField.clear()
       imagePathTextField.clear()
       scoreIntegerField.setText("10")

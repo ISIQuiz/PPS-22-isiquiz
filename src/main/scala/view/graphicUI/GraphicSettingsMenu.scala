@@ -55,7 +55,6 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
   def backButtonClicked(): Unit =
     sendEvent(Back)
 
-
   private def showDialogAlert(alertType: AlertType, title: String, headerText: String, path: String = ""): Unit =
     alert.setAlertType(alertType)
     alert.setTitle(title)
@@ -87,7 +86,6 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
             "Errore! File non valido!"
           )
 
-
   @FXML
   def exportButtonClicked(): Unit =
     val directoryChooser: DirectoryChooser = DirectoryChooser()
@@ -109,7 +107,6 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
             "Esportazione",
             "Errore! File non valido!"
           )
-
 
   @FXML
   def addCourseButtonClicked(): Unit =
