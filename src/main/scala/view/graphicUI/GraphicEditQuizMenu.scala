@@ -25,7 +25,6 @@ object GraphicEditQuizMenu
 /** Default menu graphic interface  */
 class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
 
-
   val toggleCourseGroup: ToggleGroup = ToggleGroup()
 
   val toggleQuizGroup: ToggleGroup = ToggleGroup()
@@ -49,8 +48,10 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
   var answersVBox: VBox = _
 
   @FXML
-  var feedbackLabel: Label = _
+  var answerTextField: TextField = _
 
+  @FXML
+  var feedbackLabel: Label = _
 
   @FXML
   def backButtonClicked(): Unit =
@@ -81,7 +82,6 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
       sendEvent(EditQuizAction(Option(quiz)))
     else
       feedbackLabel.setText("Configurazione Invalida")
-
 
   loadGUI(stage, this, "edit_quiz_menu.fxml")
 
@@ -142,10 +142,12 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
       answerBox.setPadding(Insets.apply(10, 0, 0, 10))
       val textField: TextField = TextField(if opAnswer.nonEmpty then opAnswer.get.text else "")
       textField.setId("answerTextField" + idNum)
-      textField.setPrefWidth(650.0)
+      textField.getStyleClass.add("text-field-extra-large")
       val checkBox = CheckBox()
       checkBox.setSelected(if opAnswer.nonEmpty then opAnswer.get.isCorrect else false)
       checkBox.setId("answerCorrectCheckBox" + idNum)
-      answerBox.getChildren.addAll(Label("Risposta "), textField, Label(" Corretta "), checkBox)
+      checkBox.setText("corretta")
+      checkBox.getStyleClass.add("checkbox-dark")
+      answerBox.getChildren.addAll(textField, checkBox)
       answersVBox.getChildren.addAll(answerBox)
   }
