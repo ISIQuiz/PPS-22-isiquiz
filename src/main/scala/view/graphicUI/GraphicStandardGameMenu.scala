@@ -56,6 +56,7 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
   var nextButton: Button = _
 
   var maxScore: Int = 0
+  var actualScore: Int = 0
 
   @FXML
   def backButtonClicked(): Unit =
@@ -98,7 +99,7 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
         maxScore = gameStage.quizInGame.quiz.maxScore
         courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
         quizNumberLabel.setText(s"x/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}")
-        pointsLabel.setText(maxScore.toString + " punti")
+        pointsLabel.setText(actualScore.toString + " punti")
         quizLabel.setText(gameStage.quizInGame.quiz.question)
         firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
         secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
@@ -117,23 +118,24 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
       Platform.runLater(() => {
         timeRemainingLabel.setText(s"${timer.getRemainingTime.toInt}")
         timeProgressBar.setProgress(timer.getCompletionPercentage)
-        val newPoints =
-          updatePoints(
-            timer.getRemainingTime.toInt,
-            timer.maxTime,
-            maxScore
-          )
-        pointsLabel.setText(newPoints + " punti")
+        actualScore = updateScore(
+          timer.getRemainingTime.toInt,
+          timer.maxTime,
+          maxScore
+        )
+        pointsLabel.setText(actualScore + " punti")
       })
 
     case TimeExpiredUpdate =>
       disableButton(answerButtons)
 
-  def updatePoints(timeRemaining: Int, maxTime: Long, maxScore: Int): Int = {
+  def updateScore(timeRemaining: Int, maxTime: Long, maxScore: Int): Int = {
     val coeff: Double = maxScore.toDouble / (maxTime / 1000).toDouble
-    (coeff * timeRemaining).toInt
+    val score = (coeff * timeRemaining).toInt
+    /*println("ms: " + maxScore + "  |  mt: " + maxTime + "  |  c: " + coeff + "  |  tr" + timeRemaining)
+    println(score)*/
+    if (score >= maxScore) score else score + 1
   }
-
 
   def resetAnswerButton(buttons: List[Button]): Unit =
     buttons.foreach(button =>
