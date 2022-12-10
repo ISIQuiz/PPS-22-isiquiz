@@ -16,7 +16,7 @@ import scala.collection.mutable.ListBuffer
 import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
-/** Companion object of select menu controller */
+/** Companion object of select menu controller containing all the actions can be sent to it */
 object SelectMenuController extends BackAction:
 
   case object Start extends ParameterlessAction
@@ -40,8 +40,8 @@ class SelectMenuController extends PageController:
   def getSession: Session = AppController.session
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(DefaultUpdate)
-    AppController.currentPage.pageView.updateUI(CourseUpdate(Option(getSession.savedCourses.map(course => (course,gameStage.coursesInGame.contains(course))))))
+    sendUpdate(DefaultUpdate)
+    sendUpdate(CourseUpdate(Option(getSession.savedCourses.map(course => (course,gameStage.coursesInGame.contains(course))))))
 
   private def modifySelectedCourses[T](courseIndex: Option[T]): Unit =
     val selectedCourse = getSession.savedCourses(courseIndex.get.asInstanceOf[Int])

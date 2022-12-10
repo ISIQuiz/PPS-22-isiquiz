@@ -3,6 +3,7 @@ package controller
 import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
+import utils.storage.ExportHandler
 import model.SavedCourse.SavedCourse
 import view.AddCourseMenuView.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
@@ -14,6 +15,7 @@ import scala.concurrent.duration.Duration
 /** Companion object of add course menu controller */
 object AddCourseMenuController extends BackAction:
 
+  /** action to add a course in the add course controller */
   case class AddCourseAction(override val actionParameter: Option[SavedCourse]) extends Action(actionParameter)
 
 /** Defines the logic of the add course page */
@@ -26,11 +28,12 @@ class AddCourseMenuController extends PageController:
     case AddCourseAction(actionParameter) => addCourse(actionParameter)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(DefaultUpdate)
-    AppController.currentPage.pageView.updateUI(AskCourseUpdate)
+    sendUpdate(DefaultUpdate)
+    sendUpdate(AskCourseUpdate)
 
   def addCourse(actionParameter:Option[SavedCourse]):Unit =
     val newListCourses = AppController.session.savedCourses.appended(actionParameter.get)
     AppController.changeSavedCourses(newListCourses)
-    AppController.currentPage.pageView.updateUI(CoursePrintUpdate(actionParameter))
-    AppController.currentPage.pageView.updateUI(CourseAddedUpdate)
+    ExportHandler.exportDataToPersonalDirectory(newListCourses) // Export saved course list to personal directory
+    sendUpdate(CoursePrintUpdate(actionParameter))
+    sendUpdate(CourseAddedUpdate)

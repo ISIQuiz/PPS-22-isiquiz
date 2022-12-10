@@ -56,6 +56,7 @@ object StatsJsonParser:
             Seq(
               QuizIdLabel -> JsString(quizInStats.quizId.toString),
               TotalSeenLabel -> JsNumber(quizInStats.totalSeen),
+              TotalScoreLabel -> JsNumber(quizInStats.totalScore),
               TotalRightAnswersLabel -> JsNumber(quizInStats.totalRightAnswers),
               AverageTimeAnswerLabel -> JsNumber(quizInStats.averageTimeAnswer)
             )
@@ -102,6 +103,7 @@ object StatsJsonParser:
               QuizInStats(
                 quizId = UUID.fromString((quizInStats \ QuizIdLabel).as[String]),
                 totalSeen = (quizInStats \ TotalSeenLabel).as[Int],
+                totalScore = (quizInStats\ TotalScoreLabel).as[Int],
                 totalRightAnswers = (quizInStats \ TotalRightAnswersLabel).as[Int],
                 averageTimeAnswer = (quizInStats \ AverageTimeAnswerLabel).as[Double]
               )

@@ -2,19 +2,18 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.CheckBox?>
-<?import com.sun.javafx.scene.control.IntegerField?>
-<?import javafx.scene.control.Separator?>
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="pane" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="pane" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" percentWidth="3.0" />
     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
@@ -25,33 +24,32 @@
   <rowConstraints>
     <RowConstraints percentHeight="5.0" vgrow="SOMETIMES" />
     <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
-      <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
-    <RowConstraints percentHeight="70.0" vgrow="SOMETIMES" />
+    <RowConstraints percentHeight="80.0" vgrow="SOMETIMES" />
     <RowConstraints percentHeight="5.0" vgrow="SOMETIMES" />
   </rowConstraints>
   <children>
     <Button fx:id="backButton" mnemonicParsing="false" onMouseClicked="#backButtonClicked" styleClass="button-small" text="Indietro" GridPane.columnIndex="1" GridPane.rowIndex="1" />
     <Label fx:id="menuLabel" styleClass="title" text="Modifica Quiz" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-    <VBox GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+    <VBox GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
       <children>
 
-        <HBox alignment="CENTER" prefHeight="400.0" minHeight="150">
+        <HBox alignment="CENTER">
         <children>
-          <VBox alignment="CENTER" prefHeight="400.0" prefWidth="850.0">
+          <VBox alignment="CENTER">
             <children>
               <Label text="Seleziona un corso:" />
-              <ScrollPane fx:id="coursesScrollPane" prefHeight="400.0" prefWidth="250.0">
+              <ScrollPane fx:id="coursesScrollPane">
                 <content>
                   <VBox fx:id="coursesVBox" />
                 </content>
               </ScrollPane>
             </children>
           </VBox>
-          <Separator/>
-          <VBox alignment="CENTER" prefHeight="400.0" prefWidth="850.0">
+                  <Pane styleClass="horizontal-separator" />
+          <VBox alignment="CENTER">
             <children>
               <Label text="Seleziona un quiz:" />
-              <ScrollPane fx:id="quizScrollPane" prefHeight="400.0" prefWidth="250.0" >
+              <ScrollPane fx:id="quizScrollPane">
                 <content>
                   <VBox fx:id="quizVBox" />
                 </content>
@@ -60,14 +58,14 @@
           </VBox>
         </children>
           <VBox.margin>
-            <Insets bottom="15.0" />
+            <Insets bottom="10.0" />
           </VBox.margin>
         </HBox>
 
         <HBox alignment="CENTER">
           <children>
-            <Label text="Domanda" />
-            <TextField fx:id="questionTextField" prefHeight="80.0" prefWidth="650.0">
+            <Label alignment="CENTER_RIGHT" styleClass="label-large" text="Domanda" />
+            <TextField fx:id="questionTextField" styleClass="text-field-large">
               <HBox.margin>
                 <Insets left="25.0" />
               </HBox.margin></TextField>
@@ -78,8 +76,8 @@
         </HBox>
         <HBox alignment="CENTER">
           <children>
-            <Label text="ImagePath" />
-            <TextField fx:id="imagePathTextField"  prefWidth="350.0">
+            <Label alignment="CENTER_RIGHT" styleClass="label-large" text="ImagePath" />
+            <TextField fx:id="imagePathTextField" styleClass="text-field-large">
               <HBox.margin>
                 <Insets left="25.0" />
               </HBox.margin></TextField>
@@ -90,53 +88,70 @@
         </HBox>
         <HBox alignment="CENTER">
           <children>
-            <Label text="Score" />
-            <IntegerField fx:id="scoreIntegerField" value="10" prefWidth="50.0">
-              <HBox.margin>
-                <Insets left="25.0" />
-              </HBox.margin></IntegerField>
+            <Label alignment="CENTER_RIGHT" styleClass="label-large" text="Score" />
+            <TextField fx:id="scoreIntegerField" styleClass="text-field-large">
+                     <HBox.margin>
+                        <Insets left="25.0" />
+                     </HBox.margin></TextField>
           </children>
           <VBox.margin>
             <Insets bottom="10.0" />
           </VBox.margin>
         </HBox>
-        <VBox fx:id="answersVBox">
-          <HBox alignment="CENTER">
-            <children>
-              <Label text="  Risposta " />
-              <TextField fx:id="answerTextField0" prefWidth="650.0"/>
-              <Label text=" Corretta " />
-              <CheckBox fx:id="answerCorrectCheckBox0"/>
-            </children>
-          </HBox>
-        </VBox>
+            <HBox alignment="CENTER">
+               <children>
+                  <Label alignment="CENTER" styleClass="label-large" text="Risposte:" />
+               </children>
+            </HBox>
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
+               <content>
+                  <VBox fx:id="answersVBox" />
+               </content>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </ScrollPane>
+       <HBox alignment="CENTER">
+         <children>
+                  <Label text="Risposta:" />
+           <TextField fx:id="answerTextField" styleClass="text-field-large">
+                     <HBox.margin>
+                        <Insets left="25.0" right="25.0" />
+                     </HBox.margin>
+                  </TextField>
+           <CheckBox fx:id="answerCorrectCheckBox0" styleClass="checkbox" text="Corretta" />
+         </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+       </HBox>
         <HBox alignment="CENTER">
-          <Button fx:id="addAnswerButton" mnemonicParsing="false" onMouseClicked="#addAnswerButtonClicked" styleClass="button-tiny" text="Aggiungi Risposta" />
-          <Button fx:id="removeAnswerButton" mnemonicParsing="false" onMouseClicked="#removeAnswerButtonClicked" styleClass="button-tiny" text="Rimuovi Risposta" ><HBox.margin>
+          <Button fx:id="addAnswerButton" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#addAnswerButtonClicked" style="-fx-pref-width: 250px;" styleClass="button-tiny" text="Aggiungi Risposta" />
+          <Button fx:id="removeAnswerButton" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#removeAnswerButtonClicked" style="-fx-pref-width: 250px;" styleClass="button-tiny" text="Rimuovi Risposta"><HBox.margin>
             <Insets left="25.0" />
           </HBox.margin></Button>
           <VBox.margin>
-            <Insets bottom="15.0" top="15.0" />
+            <Insets bottom="10.0" />
           </VBox.margin>
         </HBox>
 
         <HBox alignment="CENTER">
           <children>
-            <Button fx:id="editCourseButton" mnemonicParsing="false" onMouseClicked="#editQuizButtonClicked" styleClass="button-large" text="Salva" />
+            <Button fx:id="editQuizButton" mnemonicParsing="false" onMouseClicked="#editQuizButtonClicked" styleClass="button-large" text="Salva" />
+              <Button fx:id="deleteQuizButton" mnemonicParsing="false" onMouseClicked="#deleteQuizButtonClicked" styleClass="button-large" text="Cancella quiz"><HBox.margin>
+                  <Insets left="25.0" />
+              </HBox.margin></Button>
           </children>
           <VBox.margin>
             <Insets bottom="15.0" />
-          </VBox.margin>
-        </HBox>
-        <HBox alignment="CENTER">
-          <children>
-            <Label fx:id="feedbackLabel" text="" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-          </children>
-          <VBox.margin>
-            <Insets bottom="25.0" />
           </VBox.margin>
         </HBox>
       </children>
     </VBox>
+  <HBox alignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="3">
+    <children>
+      <Label fx:id="feedbackLabel" text="" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+    </children>
+  </HBox>
   </children>
 </GridPane>
