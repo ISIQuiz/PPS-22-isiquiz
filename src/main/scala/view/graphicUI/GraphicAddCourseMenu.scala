@@ -16,7 +16,7 @@ import model.Quiz.Quiz
 
 object GraphicAddCourseMenu
 
-/** Default menu graphic interface  */
+/** add course menu graphic interface  */
 class GraphicAddCourseMenu(stage: Stage) extends GraphicView:
 
   @FXML

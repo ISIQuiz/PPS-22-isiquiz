@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent
 import javafx.stage.Stage
 import model.settings.StandardGameSettings
 import scala.collection.mutable.ListBuffer
+import view.CustomMenuView.DefaultUpdate
 
 object GraphicCustomMenu
 
@@ -47,7 +48,5 @@ class GraphicCustomMenu(stage: Stage) extends GraphicView:
 
   loadGUI(stage, this, "custom_menu.fxml")
 
-  override def updateUI[T](update: ViewUpdate[Any]): Unit =
-    maxQuizzesTextField.setText(AppController.currentPage.pageController.asInstanceOf[CustomMenuController].gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes.toString)
-    quizMaxTimeTextField.setText(AppController.currentPage.pageController.asInstanceOf[CustomMenuController].gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime.toString)
-
+  override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
+    case DefaultUpdate => {}

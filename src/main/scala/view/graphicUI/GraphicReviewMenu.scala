@@ -25,10 +25,8 @@ class GraphicReviewMenu(stage: Stage) extends GraphicView:
   @FXML
   var totRightAnswersLabel: Label = _
 
-
   @FXML
   var totPointsLabel: Label = _
-
 
   @FXML
   var quizAnsweredVBox: VBox = _
@@ -43,7 +41,6 @@ class GraphicReviewMenu(stage: Stage) extends GraphicView:
   @FXML
   def filterButtonClicked(): Unit =
     showAllAnswers = !showAllAnswers
-
 
   loadGUI(stage, this, "review_menu.fxml")
 

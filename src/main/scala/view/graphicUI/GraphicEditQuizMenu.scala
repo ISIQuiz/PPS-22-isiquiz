@@ -1,6 +1,7 @@
 package view.graphicUI
 
-import controller.EditQuizMenuController.*
+import com.sun.javafx.scene.control.IntegerField
+import controller.EditQuizMenuController.Back
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -22,7 +23,7 @@ import scala.collection.mutable.ListBuffer
 
 object GraphicEditQuizMenu
 
-/** Default menu graphic interface  */
+/** edit quiz menu graphic interface  */
 class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
 
   val toggleCourseGroup: ToggleGroup = ToggleGroup()
@@ -83,6 +84,14 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
     else
       feedbackLabel.setText("Configurazione Invalida")
 
+  @FXML
+  def deleteQuizButtonClicked(): Unit =
+    if checkSelections then
+      import controller.EditQuizMenuController.EditQuizAction
+      sendEvent(EditQuizAction(Option.empty))
+    else
+      feedbackLabel.setText("Selezione Invalida")
+
   loadGUI(stage, this, "edit_quiz_menu.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
@@ -95,6 +104,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
           radioButton.setToggleGroup(toggleCourseGroup);
           radioButton.getStyleClass.add("label-dark");
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
+            import controller.EditQuizMenuController.SelectCourseAction
             sendEvent(SelectCourseAction(Option(savedCourse)));
           );
           coursesVBox.getChildren.addAll(radioButton)
@@ -113,23 +123,33 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
             scoreIntegerField.setText(quiz.maxScore.toString);
             clearAllAnswers();
             quiz.answerList.foreach(ans => addAnswerGUI(Option(ans)));
+            import controller.EditQuizMenuController.SelectQuizAction
             sendEvent(SelectQuizAction(Option(quiz)));
           );
           quizVBox.getChildren.addAll(radioButton)
         )
       }
     case QuizEditedUpdate =>
-      feedbackLabel.setText("Quiz Modificato")
-      quizVBox.getChildren.clear()
-      questionTextField.clear()
-      imagePathTextField.clear()
-      scoreIntegerField.setText("10")
-      clearAllAnswers()
-      addAnswerGUI(None)
+      feedbackLabel.setText("Quiz modificato")
+      clearAllFields()
+    case QuizDeletedUpdate =>
+      feedbackLabel.setText("Quiz cancellato")
+      clearAllFields()
     case _ => {}
 
   private def checkInputs: Boolean =
-    questionTextField.getText.nonEmpty && toggleCourseGroup.getToggles.removeIf(_.isSelected) && toggleQuizGroup.getToggles.removeIf(_.isSelected)
+    questionTextField.getText.nonEmpty && checkSelections
+
+  private def checkSelections: Boolean =
+    toggleCourseGroup.getToggles.removeIf(_.isSelected) && toggleQuizGroup.getToggles.removeIf(_.isSelected)
+
+  private def clearAllFields():Unit =
+    quizVBox.getChildren.clear()
+    questionTextField.clear()
+    imagePathTextField.clear()
+    scoreIntegerField.setText("0")
+    clearAllAnswers()
+    addAnswerGUI(None)
 
   private def clearAllAnswers(): Unit =
     while answersVBox.getChildren.size() > 0 do answersVBox.getChildren.remove(0)

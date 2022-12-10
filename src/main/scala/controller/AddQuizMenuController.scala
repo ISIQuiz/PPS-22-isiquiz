@@ -16,8 +16,9 @@ import scala.concurrent.duration.Duration
 
 /** Companion object of add quiz menu controller */
 object AddQuizMenuController extends BackAction:
-
-  case class AddCourseAction(override val actionParameter: Option[SavedCourse]) extends Action(actionParameter)
+  /** action to select a course in the add quiz controller */
+  case class SelectCourseAction(override val actionParameter: Option[SavedCourse]) extends Action(actionParameter)
+  /** action to add a quiz in the course selected in the add quiz controller */
   case class AddQuizAction(override val actionParameter: Option[Quiz]) extends Action(actionParameter)
 
 /** Defines the logic of the add course page */
@@ -30,14 +31,14 @@ class AddQuizMenuController extends PageController :
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(SettingsMenuAction)
-    case AddCourseAction(actionParameter) => courseSelected = actionParameter
+    case SelectCourseAction(actionParameter) => courseSelected = actionParameter
     case AddQuizAction(actionParameter) => addQuiz(actionParameter)
 
   override def nextIteration(): Unit =
-    AppController.currentPage.pageView.updateUI(DefaultUpdate)
+    sendUpdate(DefaultUpdate)
     if courseSelected.isEmpty then
-      sendUpdate(CourseUpdate(Option(AppController.session.savedCourses)))
-      sendUpdate(AskCourseUpdate)
+      sendUpdate(CourseListUpdate(Option(AppController.session.savedCourses)))
+      sendUpdate(AskCourseSelectUpdate)
     else
       sendUpdate(AskQuizUpdate)
 
