@@ -171,11 +171,12 @@ object PlayerStats:
       )
     ).map((k, v) => QuizInStats(k, v._1, v._2, v._3, v._4)).toList
 
-  // Needed to calculate weighted average
+  // Calculate weighted average
   private def calculateWeightedAverage(averageTimeAnswer: Double, totalSeen: Int, newAverageTimeAnswer: Double, newTotalSeen: Int): Double =
-    Try(
-      ((averageTimeAnswer * (if (totalSeen == 0) 1 else totalSeen)) + newAverageTimeAnswer) / (totalSeen + newTotalSeen)
-    ).getOrElse(averageTimeAnswer)
+    val c: Double = Try(
+      ((averageTimeAnswer * totalSeen) + (newAverageTimeAnswer * newTotalSeen)) / (totalSeen + newTotalSeen)
+    ).getOrElse(0)
+    BigDecimal(c).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
 
   // Calculate total score
   private def calculateTotalScore(courseInStatsList: List[CourseInStats]): Int =
@@ -204,7 +205,7 @@ object PlayerStats:
   // Calculates total answer precision
   private def calculateTotalAnswerPrecision(courseInStatsList: List[CourseInStats]): Int =
     Try(calculateTotalCorrectAnswer(courseInStatsList) * 100 / calculateTotalAnsweredQuestions(courseInStatsList)).getOrElse(0)
-  
+
   // Calculates total average time to answer
   private def calculateTotalAverageTimeAnswer(courseInStatsList: List[CourseInStats]): Double =
     courseInStatsList.filter(courseInStats => courseInStats.quizInStatsList.nonEmpty).map(
