@@ -96,7 +96,6 @@ object PlayerStats:
     case PlayerStats(totalScore, totalAnsweredQuestions, totalCorrectAnswers, totalAnswerPrecision, _, courseInStatsList) =>
       PlayerStats(totalScore, totalAnsweredQuestions, totalCorrectAnswers, totalAnswerPrecision, totalAverageTimeAnswer, courseInStatsList)
 
-
   /**
    * Change course in stats list
    *
@@ -107,7 +106,6 @@ object PlayerStats:
   def changeCourseInStatsList(playerStats: PlayerStats, courseInStatsList: List[CourseInStats]): PlayerStats = playerStats match
     case PlayerStats(totalScore, totalAnsweredQuestions, totalCorrectAnswers, totalAnswerPrecision, totalAverageTimeAnswer, _) =>
       PlayerStats(totalScore, totalAnsweredQuestions, totalCorrectAnswers, totalAnswerPrecision, totalAverageTimeAnswer, courseInStatsList)
-
 
   /**
    * Update player stats with all the value that can be derivated
@@ -125,7 +123,6 @@ object PlayerStats:
         calculateTotalAverageTimeAnswer(playerStats),
         courseInStatsList
       )
-
 
   /**
    * Calculates total correct answer

@@ -2,7 +2,9 @@ package utils.storage
 
 import model.Answer.Answer
 import model.Quiz.Quiz
-import model.{SavedCourse, Session}
+import model.SavedCourse.SavedCourse
+import model.{Session}
+import model.Session.*
 import model.stats.PlayerStats.{PlayerStats, initStats}
 import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
 import utils.storage.Configuration.{PlayerCoursesFilePath, PlayerStatsFilePath}

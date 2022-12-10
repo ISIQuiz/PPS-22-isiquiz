@@ -3,7 +3,7 @@ package controller
 import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
-import model.SavedCourse
+import model.SavedCourse.SavedCourse
 import view.AddCourseMenuView.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 

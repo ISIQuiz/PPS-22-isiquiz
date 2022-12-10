@@ -8,8 +8,8 @@ import javafx.scene.control.*
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
-import model.CourseIdentifier.CourseIdentifierImpl
-import model.SavedCourse.SavedCourseImpl
+import model.CourseIdentifier.CourseIdentifier
+import model.SavedCourse.SavedCourse
 import utils.GUILoader
 import utils.GUILoader.loadGUI
 import view.View.{GraphicView, sendEvent}
@@ -44,8 +44,8 @@ class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
   @FXML
   def editCourseButtonClicked(): Unit =
     if checkInputs then
-      val course = SavedCourseImpl(
-        courseId = CourseIdentifierImpl(
+      val course = SavedCourse(
+        courseId = CourseIdentifier(
           courseName = courseNameTextField.getText,
           degreeName = degreeNameTextField.getText,
           universityName = universityNameTextField.getText

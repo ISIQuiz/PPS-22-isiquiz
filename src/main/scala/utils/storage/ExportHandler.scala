@@ -5,7 +5,9 @@ import model.Answer.Answer
 import model.Quiz.Quiz
 import model.stats.PlayerStats.{PlayerStats, initStats}
 import model.stats.{CourseInStats, QuizInStats}
-import model.{Course, SavedCourse, Session}
+import model.{Course, Session}
+import model.Session.Session
+import model.SavedCourse.SavedCourse
 import play.api.libs.json.JsObject
 import utils.storage.FileHandler
 import utils.storage.Configuration.*

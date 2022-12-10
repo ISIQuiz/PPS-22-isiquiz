@@ -8,7 +8,8 @@ import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate, TimeExpiredUpdate, TimerUpdate}
 import model.Answer.Answer
 import model.GameStage
-import model.{QuizInGame, SavedCourse}
+import model.QuizInGame
+import model.SavedCourse.SavedCourse
 import model.Quiz.Quiz
 import model.settings.StandardGameSettings
 import utils.{TerminalInput, TerminalInputImpl, Timer}

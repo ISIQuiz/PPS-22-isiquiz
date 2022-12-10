@@ -4,6 +4,7 @@ import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
 import controller.{AppController, PageController}
 import model.SavedCourse
+import model.SavedCourse.*
 import view.EditCourseMenuView.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 

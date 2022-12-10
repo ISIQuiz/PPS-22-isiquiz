@@ -5,6 +5,7 @@ import controller.actions.{Action, BackAction, ParameterlessAction}
 import controller.{AppController, PageController}
 import model.Quiz.Quiz
 import model.SavedCourse
+import model.SavedCourse.*
 import view.EditQuizMenuView.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 

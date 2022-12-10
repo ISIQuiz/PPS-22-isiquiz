@@ -10,9 +10,9 @@ import javafx.scene.input.MouseEvent
 import javafx.stage.Stage
 import model.Answer.Answer
 import scalafx.geometry.Insets
-import model.CourseIdentifier.CourseIdentifierImpl
+import model.CourseIdentifier.CourseIdentifier
 import model.Quiz.Quiz
-import model.SavedCourse.SavedCourseImpl
+import model.SavedCourse.SavedCourse
 import utils.GUILoader
 import utils.GUILoader.loadGUI
 import view.EditQuizMenuView.*

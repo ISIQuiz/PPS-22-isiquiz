@@ -2,7 +2,9 @@ package utils.parser
 
 import model.Answer.Answer
 import model.Quiz.Quiz
-import model.{Course, CourseIdentifier, SavedCourse, Session}
+import model.SavedCourse.SavedCourse
+import model.CourseIdentifier.CourseIdentifier
+import model.{Course, Session}
 import play.api.libs.json.*
 import utils.parser.JsonLabels.*
 

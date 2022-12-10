@@ -3,7 +3,9 @@ package controller
 import controller.actions.{Action, BackAction, ParameterlessAction}
 import controller.{AppController, PageController}
 import controller.AppController.*
-import model.{Course, SavedCourse}
+import model.Course
+import model.SavedCourse
+import model.SavedCourse.*
 import model.Quiz.Quiz
 import model.GameStage.*
 import view.AddQuizMenuView.*
