@@ -15,7 +15,7 @@ import scalafx.stage.Stage
 import utils.{TerminalInput, TerminalInputImpl}
 import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalEditCourseMenu, TerminalEditQuizMenu, TerminalMainMenu, TerminalReviewMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
 import view.graphicUI.GraphicMainMenu.*
-import view.graphicUI.{GraphicAddCourseMenu, GraphicAddQuizMenu, GraphicCustomMenu, GraphicDefaultMenu, GraphicEditCourseMenu, GraphicEditQuizMenu, GraphicMainMenu, GraphicReviewMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu, GraphicStatisticsMenu}
+import view.graphicUI.{GraphicAddCourseMenu, GraphicAddQuizMenu, GraphicBlitzGameMenu, GraphicCustomMenu, GraphicDefaultMenu, GraphicEditCourseMenu, GraphicEditQuizMenu, GraphicMainMenu, GraphicReviewMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu, GraphicStatisticsMenu}
 import view.updates.ViewUpdate
 
 import scala.io.StdIn.readLine
@@ -86,6 +86,9 @@ object View:
       case StandardGameAction(_) => _currentGUIType match
         case Terminal => TerminalStandardGameMenu()
         case ScalaFX => GraphicStandardGameMenu(_stage)
+      case BlitzGameAction(_) => _currentGUIType match
+        case Terminal => ???
+        case ScalaFX => GraphicBlitzGameMenu(_stage)
 
   /** PageView should include all behaviours common between different pages views */
   trait PageView:

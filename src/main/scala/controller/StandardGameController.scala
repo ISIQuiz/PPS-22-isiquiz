@@ -25,7 +25,7 @@ import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
 /** Companion object of standard game controller */
-object StandardGameController extends BackAction :
+object StandardGameController extends BackAction:
   /** action to select an answer in the controller of a standard game */
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
   /** action to go to the next quiz in the controller of a standard game */
@@ -33,7 +33,7 @@ object StandardGameController extends BackAction :
 
   def apply(game: GameStage): StandardGameController =
     val standardGameController = new StandardGameController(game)
-    standardGameController.extractQuizInGame()
+    standardGameController.gameStage.quizInGame = standardGameController.extractQuizInGame(game)
     standardGameController.timer.startTimer()
     standardGameController
 
@@ -79,7 +79,7 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
         case _ => throw IllegalArgumentException()
       sendUpdate(AnswerFeedbackUpdate(Option((gameStage.quizInGame.answers.indexOf(currentAnswer.get), currentAnswer.get.isCorrect))))
 
-  override def nextQuiz(): QuizInGame =
+  override def nextQuiz(): Unit =
     val maxTime = timer.maxTime/1000
     currentAnswer match
       case Some(ans) =>
@@ -93,32 +93,12 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
         gameStage.addReviewQuizNotAnswered()
         gameStage.addQuizToStats(false, 0, maxTime)
 
-    if gameStage.maxQuizzesReached then endGame()
+    if gameStage.maxQuizzesReached then endGame(gameStage)
     currentAnswer = None
     currentScore = 0
     currentTime = 0
     timer.startTimer()
-    extractQuizInGame()
-
-
-  def extractQuizInGame(): QuizInGame =
-    val selectedCourse = gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)
-    val selectedQuiz = chooseQuiz(selectedCourse)
-    val selectedAnswers = chooseAnswers(selectedQuiz)
-    val quizInGame = QuizInGame(selectedCourse, selectedQuiz, selectedAnswers)
-    gameStage.quizInGame_(quizInGame)
-    quizInGame
-
-  override def chooseQuiz(course: SavedCourse): Quiz = course.quizList(randomNumberGenerator(1, course.quizList.size).head)
-
-  override def chooseAnswers(quiz: Quiz): List[Answer] =
-    val allCorrectAnswers = quiz.answerList.filter(answer => answer.isCorrect)
-    val allWrongAnswers = quiz.answerList.filter(answer => !answer.isCorrect)
-
-    val correctAnswers = randomNumberGenerator(1, allCorrectAnswers.size).map(allCorrectAnswers)
-    val wrongAnswers = randomNumberGenerator(3, allWrongAnswers.size).map(allWrongAnswers)
-
-    scala.util.Random.shuffle(correctAnswers ::: wrongAnswers)
+    gameStage.quizInGame = extractQuizInGame(gameStage)
 
   // update the game score based on time remaining
   private def updateScore(timeRemaining: Int, maxTime: Long, maxScore: Int): Int = {
@@ -126,12 +106,3 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
     val score = (coeff * timeRemaining).toInt
     if (score >= maxScore) score else score + 1
   }
-
-  override def endGame(): Unit =
-    // Update session player stats and export to personal stats
-    AppController.changePlayerStats(PlayerStats.mergePlayerStats(AppController.session.playerStats, gameStage.playerStatsInGame))
-    ExportHandler.exportDataToPersonalDirectory(AppController.session.playerStats)
-
-    AppController.handle(ReviewMenuAction(Option(gameStage)))
-
-  def randomNumberGenerator(quantity: Int, range: Int): List[Int] = scala.util.Random.shuffle(0 until range).take(quantity).toList
