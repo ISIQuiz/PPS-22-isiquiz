@@ -105,7 +105,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
       feedbackLabel.setText("Quiz aggiunto")
       questionTextField.clear()
       imagePathTextField.clear()
-      scoreIntegerField.setText("10")
+      scoreIntegerField.setText("0")
       while answersVBox.getChildren.size()>0 do answersVBox.getChildren.remove(0)
       addAnswerGUI()
     case _ => {}

@@ -104,6 +104,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
           radioButton.setToggleGroup(toggleCourseGroup);
           radioButton.getStyleClass.add("label-dark");
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
+            import controller.EditQuizMenuController.SelectCourseAction
             sendEvent(SelectCourseAction(Option(savedCourse)));
           );
           coursesVBox.getChildren.addAll(radioButton)
@@ -122,6 +123,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
             scoreIntegerField.setText(quiz.maxScore.toString);
             clearAllAnswers();
             quiz.answerList.foreach(ans => addAnswerGUI(Option(ans)));
+            import controller.EditQuizMenuController.SelectQuizAction
             sendEvent(SelectQuizAction(Option(quiz)));
           );
           quizVBox.getChildren.addAll(radioButton)
@@ -145,7 +147,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
     quizVBox.getChildren.clear()
     questionTextField.clear()
     imagePathTextField.clear()
-    scoreIntegerField.setValue(10)
+    scoreIntegerField.setText("0")
     clearAllAnswers()
     addAnswerGUI(None)
 

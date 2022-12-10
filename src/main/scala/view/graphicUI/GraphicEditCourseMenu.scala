@@ -88,7 +88,8 @@ class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
             descriptionCourseTextField.setText(savedCourse.description match
               case Some(text) => text
               case _ => ""
-            ); 
+            );
+            import controller.EditCourseMenuController.SelectCourseAction
             sendEvent(SelectCourseAction(Option(savedCourse)));
           );
           coursesVBox.getChildren.addAll(radioButton)
