@@ -27,33 +27,42 @@
 </span>3 <span style=''>import model.CourseIdentifier.CourseIdentifierImpl
 </span>4 <span style=''>import model.SavedCourse.SavedCourseImpl
 </span>5 <span style=''>import model.Quiz.*
-</span>6 <span style=''>import model.Answer.*
-</span>7 <span style=''>import model.settings.{GameSettings, StandardGameSettings}
-</span>8 <span style=''>
-</span>9 <span style=''>/** a quiz to play with a sub list of answers to play and the relative course */
-</span>10 <span style=''>case class QuizInGame(course: Course, quiz: Quiz, answers: List[Answer])
-</span>11 <span style=''>
-</span>12 <span style=''>/**
-</span>13 <span style=''> * Holds the list of the full-courses selected, a QuizInGame current, a Review of the quizzes played, and some settings
-</span>14 <span style=''> * @param coursesInGame a list of the curses selected to play in this game, sublist of all courses
-</span>15 <span style=''> * @param quizInGame    a quiz to play, with a sub list of answers selected and the relative course
-</span>16 <span style=''> * @param review a list of quizzes played
-</span>17 <span style=''> * @param gameSettings  settings like maximum number question, time
-</span>18 <span style=''> */
-</span>19 <span style=''>class GameStage(var coursesInGame: List[SavedCourse] = </span><span style='background: #AEF1AE'>List()</span><span style=''>, var quizInGame: QuizInGame = null, var review: Review = </span><span style='background: #AEF1AE'>Review</span><span style=''>(), var gameSettings: GameSettings = </span><span style='background: #AEF1AE'>StandardGameSettings</span><span style=''>()):
-</span>20 <span style=''>  </span><span style='background: #AEF1AE'>def quizInGame_</span><span style=''>(_quizInGame: QuizInGame) = quizInGame = _quizInGame
-</span>21 <span style=''>
-</span>22 <span style=''>  </span><span style='background: #AEF1AE'>def quizInGamePresent</span><span style=''>:Boolean = quizInGame.isInstanceOf[QuizInGame]
-</span>23 <span style=''>
-</span>24 <span style=''>  </span><span style='background: #AEF1AE'>def addReviewQuizNotAnswered</span><span style=''> = </span><span style='background: #AEF1AE'>review.addQuizAnswered(QuizAnswered(quizInGame, None))</span><span style=''>
+</span>6 <span style=''>import model.Quiz
+</span>7 <span style=''>import model.Answer.*
+</span>8 <span style=''>import model.settings.{GameSettings, StandardGameSettings}
+</span>9 <span style=''>import model.stats.PlayerStats.{PlayerStats, addQuizInGameToStats, initStats}
+</span>10 <span style=''>
+</span>11 <span style=''>/** a quiz to play with a sub list of answers to play and the relative course */
+</span>12 <span style=''>case class QuizInGame(course: Course, quiz: Quiz, answers: List[Answer])
+</span>13 <span style=''>
+</span>14 <span style=''>/**
+</span>15 <span style=''> * Holds the list of the full-courses selected, a QuizInGame current, a Review of the quizzes played, and some settings
+</span>16 <span style=''> *
+</span>17 <span style=''> * @param coursesInGame     a list of the curses selected to play in this game, sublist of all courses
+</span>18 <span style=''> * @param quizInGame        a quiz to play, with a sub list of answers selected and the relative course
+</span>19 <span style=''> * @param review            a list of quizzes played
+</span>20 <span style=''> * @param gameSettings      settings like maximum number question, time
+</span>21 <span style=''> * @param playerStatsInGame the stats of the game currently playing
+</span>22 <span style=''> */
+</span>23 <span style=''>class GameStage(var coursesInGame: List[SavedCourse] = </span><span style='background: #AEF1AE'>List()</span><span style=''>, var quizInGame: QuizInGame = null, var review: Review = </span><span style='background: #AEF1AE'>Review</span><span style=''>(), var gameSettings: GameSettings = </span><span style='background: #AEF1AE'>StandardGameSettings</span><span style=''>(), var playerStatsInGame: PlayerStats = </span><span style='background: #AEF1AE'>initStats</span><span style=''>):
+</span>24 <span style=''>  </span><span style='background: #AEF1AE'>def quizInGame_</span><span style=''>(_quizInGame: QuizInGame) = quizInGame = _quizInGame
 </span>25 <span style=''>
-</span>26 <span style=''>  </span><span style='background: #AEF1AE'>def addReviewQuizAnswer</span><span style=''>(answer: Answer) = </span><span style='background: #AEF1AE'>review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer)))</span><span style=''>
+</span>26 <span style=''>  </span><span style='background: #AEF1AE'>def quizInGamePresent</span><span style=''>: Boolean = quizInGame.isInstanceOf[QuizInGame]
 </span>27 <span style=''>
-</span>28 <span style=''>  </span><span style='background: #AEF1AE'>def currentQuizNumber</span><span style=''>:Int = </span><span style='background: #AEF1AE'>review.numberQuizAnswered</span><span style=''>+1
+</span>28 <span style=''>  </span><span style='background: #AEF1AE'>def addReviewQuizNotAnswered</span><span style=''>() = </span><span style='background: #AEF1AE'>review.addQuizAnswered(QuizAnswered(quizInGame, None))</span><span style=''>
 </span>29 <span style=''>
-</span>30 <span style=''>  </span><span style='background: #AEF1AE'>def maxQuizzesReached</span><span style=''>: Boolean = gameSettings match
-</span>31 <span style=''>    </span><span style='background: #AEF1AE'>case StandardGameSettings(_, maxQuizzes, _)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>review.numberQuizAnswered</span><span style=''> &gt;= maxQuizzes
-</span>32 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; false
+</span>30 <span style=''>  </span><span style='background: #AEF1AE'>def addReviewQuizAnswer</span><span style=''>(answer: Answer, score: Int, timeToAnswer: Double) =
+</span>31 <span style=''>    </span><span style='background: #AEF1AE'>review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer), score, timeToAnswer))</span><span style=''>
+</span>32 <span style=''>
+</span>33 <span style=''>  //Add a quiz in game to stats
+</span>34 <span style=''>  </span><span style='background: #AEF1AE'>def addQuizToStats</span><span style=''>(isCorrect: Boolean, score: Int, timeToAnswer: Double): Unit =
+</span>35 <span style=''>    playerStatsInGame = </span><span style='background: #AEF1AE'>addQuizInGameToStats(playerStatsInGame, quizInGame, isCorrect, score, timeToAnswer)</span><span style=''>
+</span>36 <span style=''>
+</span>37 <span style=''>  </span><span style='background: #AEF1AE'>def currentQuizNumber</span><span style=''>: Int = </span><span style='background: #AEF1AE'>review.numberQuizAnswered</span><span style=''> + 1
+</span>38 <span style=''>
+</span>39 <span style=''>  </span><span style='background: #AEF1AE'>def maxQuizzesReached</span><span style=''>: Boolean = gameSettings match
+</span>40 <span style=''>    </span><span style='background: #AEF1AE'>case StandardGameSettings(_, maxQuizzes, _)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>review.numberQuizAnswered</span><span style=''> &gt;= maxQuizzes
+</span>41 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; false
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -68,15 +77,63 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          18
+          22
         </td>
         <td>
-          487
+          496
         </td>
         <td>
-          963
+          1110
           -
-          983
+          1110
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          499
+        </td>
+        <td>
+          1153
+          -
+          1173
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StandardGameSettings
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          498
+        </td>
+        <td>
+          1153
+          -
+          1173
         </td>
         <td>
           Select
@@ -92,15 +149,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          22
         </td>
         <td>
-          481
+          492
         </td>
         <td>
-          856
+          1046
           -
-          862
+          1052
         </td>
         <td>
           Apply
@@ -116,159 +173,39 @@
         </td>
       </tr><tr>
         <td>
-          18
+          22
         </td>
         <td>
-          489
+          501
         </td>
         <td>
-          963
+          1214
           -
-          963
+          1223
         </td>
         <td>
-          DefDef
+          Ident
         </td>
         <td>
-          $lessinit$greater$default$4
+          initStats
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          
+          initStats
         </td>
       </tr><tr>
         <td>
-          18
+          22
         </td>
         <td>
-          483
+          495
         </td>
         <td>
-          893
+          1110
           -
-          893
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          $lessinit$greater$default$2
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          
-        </td>
-      </tr><tr>
-        <td>
-          18
-        </td>
-        <td>
-          486
-        </td>
-        <td>
-          963
-          -
-          983
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          $lessinit$greater$default$1
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          StandardGameSettings
-        </td>
-      </tr><tr>
-        <td>
-          18
-        </td>
-        <td>
-          488
-        </td>
-        <td>
-          963
-          -
-          983
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          $lessinit$greater$default$3
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          StandardGameSettings
-        </td>
-      </tr><tr>
-        <td>
-          18
-        </td>
-        <td>
-          482
-        </td>
-        <td>
-          856
-          -
-          856
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          $lessinit$greater$default$1
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          
-        </td>
-      </tr><tr>
-        <td>
-          18
-        </td>
-        <td>
-          485
-        </td>
-        <td>
-          920
-          -
-          920
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          $lessinit$greater$default$3
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          
-        </td>
-      </tr><tr>
-        <td>
-          18
-        </td>
-        <td>
-          484
-        </td>
-        <td>
-          920
-          -
-          926
+          1116
         </td>
         <td>
           Select
@@ -284,15 +221,135 @@
         </td>
       </tr><tr>
         <td>
-          19
+          22
         </td>
         <td>
-          468
+          497
         </td>
         <td>
-          990
+          1153
           -
-          1005
+          1173
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StandardGameSettings
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          500
+        </td>
+        <td>
+          1153
+          -
+          1153
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          494
+        </td>
+        <td>
+          1083
+          -
+          1083
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          493
+        </td>
+        <td>
+          1046
+          -
+          1046
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          502
+        </td>
+        <td>
+          1214
+          -
+          1214
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$5
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          475
+        </td>
+        <td>
+          1228
+          -
+          1243
         </td>
         <td>
           DefDef
@@ -308,15 +365,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          25
         </td>
         <td>
-          469
+          476
         </td>
         <td>
-          1061
+          1299
           -
-          1082
+          1320
         </td>
         <td>
           DefDef
@@ -332,15 +389,39 @@
         </td>
       </tr><tr>
         <td>
-          23
+          27
         </td>
         <td>
-          471
+          478
         </td>
         <td>
-          1132
+          1427
           -
-          1160
+          1439
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          QuizAnswered
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          480
+        </td>
+        <td>
+          1371
+          -
+          1399
         </td>
         <td>
           DefDef
@@ -356,15 +437,39 @@
         </td>
       </tr><tr>
         <td>
-          23
+          27
         </td>
         <td>
-          470
+          477
         </td>
         <td>
-          1163
+          1427
           -
-          1217
+          1439
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          QuizAnswered
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          479
+        </td>
+        <td>
+          1404
+          -
+          1458
         </td>
         <td>
           Apply
@@ -380,39 +485,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          29
         </td>
         <td>
-          472
+          483
         </td>
         <td>
-          1311
+          1462
           -
-          1325
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          Option(answer)
-        </td>
-      </tr><tr>
-        <td>
-          25
-        </td>
-        <td>
-          474
-        </td>
-        <td>
-          1221
-          -
-          1244
+          1485
         </td>
         <td>
           DefDef
@@ -428,15 +509,39 @@
         </td>
       </tr><tr>
         <td>
-          25
+          30
         </td>
         <td>
-          473
+          481
         </td>
         <td>
-          1263
+          1590
           -
-          1327
+          1604
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Option(answer)
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          482
+        </td>
+        <td>
+          1542
+          -
+          1627
         </td>
         <td>
           Apply
@@ -448,19 +553,67 @@
           
         </td>
         <td style="background: #AEF1AE">
-          review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer)))
+          review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer), score, timeToAnswer))
         </td>
       </tr><tr>
         <td>
-          27
+          33
         </td>
         <td>
-          476
+          485
         </td>
         <td>
-          1331
+          1663
           -
-          1352
+          1681
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          addQuizToStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def addQuizToStats
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          484
+        </td>
+        <td>
+          1768
+          -
+          1851
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addQuizInGameToStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          addQuizInGameToStats(playerStatsInGame, quizInGame, isCorrect, score, timeToAnswer)
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          487
+        </td>
+        <td>
+          1855
+          -
+          1876
         </td>
         <td>
           DefDef
@@ -476,15 +629,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          36
         </td>
         <td>
-          475
+          486
         </td>
         <td>
-          1359
+          1884
           -
-          1384
+          1909
         </td>
         <td>
           Select
@@ -500,15 +653,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          38
         </td>
         <td>
-          480
+          491
         </td>
         <td>
-          1390
+          1917
           -
-          1411
+          1938
         </td>
         <td>
           DefDef
@@ -524,15 +677,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          39
         </td>
         <td>
-          478
+          489
         </td>
         <td>
-          1446
+          1973
           -
-          1489
+          2016
         </td>
         <td>
           Block
@@ -548,15 +701,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          39
         </td>
         <td>
-          477
+          488
         </td>
         <td>
-          1493
+          2020
           -
-          1518
+          2045
         </td>
         <td>
           Select
@@ -572,15 +725,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          40
         </td>
         <td>
-          479
+          490
         </td>
         <td>
-          1537
+          2064
           -
-          1543
+          2070
         </td>
         <td>
           Block

@@ -38,9 +38,9 @@
 </span>14 <span style=''>
 </span>15 <span style=''>/** Companion object of edit course menu controller */
 </span>16 <span style=''>object EditCourseMenuController extends BackAction:
-</span>17 <span style=''>  /** action to select a course in the edit course controller */
+</span>17 <span style=''>
 </span>18 <span style=''>  case class SelectCourseAction(override val actionParameter: Option[SavedCourse]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
-</span>19 <span style=''>  /** action to edit a course selected in the edit course controller */
+</span>19 <span style=''>
 </span>20 <span style=''>  case class EditCourseAction(override val actionParameter: Option[SavedCourse]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
 </span>21 <span style=''>
 </span>22 <span style=''>/** Defines the logic of the edit course page */
@@ -56,28 +56,22 @@
 </span>32 <span style=''>    </span><span style='background: #F0ADAD'>case EditCourseAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>editCourse(actionParameter)</span><span style=''>
 </span>33 <span style=''>
 </span>34 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>35 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
+</span>35 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(DefaultUpdate)</span><span style=''>
 </span>36 <span style=''>    if </span><span style='background: #F0ADAD'>courseSelected.isEmpty</span><span style=''> then
-</span>37 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(CourseListUpdate(Option(AppController.session.savedCourses)))
-</span>38 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(AskCourseSelectUpdate)</span><span style=''>
+</span>37 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(CourseUpdate(Option(AppController.session.savedCourses)))
+</span>38 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(AskCourseUpdate)</span><span style=''>
 </span>39 <span style=''>    else
 </span>40 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(CoursePrintUpdate(courseSelected))
 </span>41 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(AskCourseEditUpdate)</span><span style=''>
 </span>42 <span style=''>
-</span>43 <span style=''>  </span><span style='background: #F0ADAD'>def editCourse</span><span style=''>(optionalCourseEdited:Option[SavedCourse]):Unit =
-</span>44 <span style=''>    val newListCourses = </span><span style='background: #F0ADAD'>AppController.session.savedCourses.filterNot(course =&gt; course==courseSelected.get)</span><span style=''>
-</span>45 <span style=''>    var feedbackUpdate:ParameterlessViewUpdate = DefaultUpdate
-</span>46 <span style=''>    optionalCourseEdited match
-</span>47 <span style=''>      </span><span style='background: #F0ADAD'>case Some(course)</span><span style=''> =&gt;
-</span>48 <span style=''>        </span><span style='background: #F0ADAD'>newListCourses.appended(SavedCourse.changeQuizList(course, courseSelected.get.quizList))</span><span style=''>
-</span>49 <span style=''>        feedbackUpdate = CourseEditedUpdate
-</span>50 <span style=''>      </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt;
-</span>51 <span style=''>        feedbackUpdate = CourseDeletedUpdate
-</span>52 <span style=''>    </span><span style='background: #F0ADAD'>AppController.changeSavedCourses(newListCourses)</span><span style=''>
-</span>53 <span style=''>    </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(newListCourses)</span><span style=''> // Export saved course list to personal directory
-</span>54 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CoursePrintUpdate(optionalCourseEdited))</span><span style=''>
-</span>55 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(feedbackUpdate)</span><span style=''>
-</span>56 <span style=''>    courseSelected = None
+</span>43 <span style=''>  </span><span style='background: #F0ADAD'>def editCourse</span><span style=''>(actionParameter:Option[SavedCourse]):Unit =
+</span>44 <span style=''>    val editedSavedCourse = </span><span style='background: #F0ADAD'>SavedCourse.changeQuizList(actionParameter.get, courseSelected.get.quizList)</span><span style=''>
+</span>45 <span style=''>    val newListCourses = </span><span style='background: #F0ADAD'>AppController.session.savedCourses.filterNot(course =&gt; course==courseSelected.get).appended(editedSavedCourse)</span><span style=''>
+</span>46 <span style=''>    </span><span style='background: #F0ADAD'>AppController.changeSavedCourses(newListCourses)</span><span style=''>
+</span>47 <span style=''>    </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(newListCourses)</span><span style=''> // Export saved course list to personal directory
+</span>48 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CoursePrintUpdate(Option(editedSavedCourse)))</span><span style=''>
+</span>49 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CourseEditedUpdate)</span><span style=''>
+</span>50 <span style=''>    courseSelected = None
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -95,12 +89,12 @@
           17
         </td>
         <td>
-          164
+          165
         </td>
         <td>
-          703
+          639
           -
-          726
+          662
         </td>
         <td>
           Apply
@@ -119,12 +113,12 @@
           19
         </td>
         <td>
-          165
+          166
         </td>
         <td>
-          888
+          753
           -
-          911
+          776
         </td>
         <td>
           Apply
@@ -143,12 +137,12 @@
           26
         </td>
         <td>
-          166
+          167
         </td>
         <td>
-          1099
+          964
           -
-          1111
+          976
         </td>
         <td>
           Select
@@ -167,12 +161,12 @@
           28
         </td>
         <td>
-          172
+          173
         </td>
         <td>
-          1115
+          980
           -
-          1134
+          999
         </td>
         <td>
           DefDef
@@ -191,36 +185,12 @@
           29
         </td>
         <td>
-          167
+          169
         </td>
         <td>
-          1195
+          1047
           -
-          1235
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          handle
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.handle(SettingsMenuAction)
-        </td>
-      </tr><tr>
-        <td>
-          29
-        </td>
-        <td>
-          168
-        </td>
-        <td>
-          1182
-          -
-          1191
+          1056
         </td>
         <td>
           Block
@@ -236,15 +206,39 @@
         </td>
       </tr><tr>
         <td>
+          29
+        </td>
+        <td>
+          168
+        </td>
+        <td>
+          1060
+          -
+          1100
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.handle(SettingsMenuAction)
+        </td>
+      </tr><tr>
+        <td>
           30
         </td>
         <td>
-          169
+          170
         </td>
         <td>
-          1240
+          1105
           -
-          1280
+          1145
         </td>
         <td>
           Block
@@ -263,12 +257,12 @@
           31
         </td>
         <td>
-          171
+          172
         </td>
         <td>
-          1321
+          1186
           -
-          1359
+          1224
         </td>
         <td>
           Block
@@ -287,12 +281,12 @@
           31
         </td>
         <td>
-          170
+          171
         </td>
         <td>
-          1363
+          1228
           -
-          1390
+          1255
         </td>
         <td>
           Apply
@@ -311,12 +305,12 @@
           33
         </td>
         <td>
-          184
+          186
         </td>
         <td>
-          1394
+          1259
           -
-          1420
+          1285
         </td>
         <td>
           DefDef
@@ -335,36 +329,60 @@
           34
         </td>
         <td>
-          173
+          175
         </td>
         <td>
-          1435
+          1300
           -
-          1460
+          1358
         </td>
         <td>
           Apply
         </td>
         <td>
-          sendUpdate
+          updateUI
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(DefaultUpdate)
+          AppController.currentPage.pageView.updateUI(DefaultUpdate)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          174
+        </td>
+        <td>
+          1300
+          -
+          1325
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          currentPage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.currentPage
         </td>
       </tr><tr>
         <td>
           35
         </td>
         <td>
-          174
+          176
         </td>
         <td>
-          1468
+          1366
           -
-          1490
+          1388
         </td>
         <td>
           Select
@@ -383,12 +401,37 @@
           36
         </td>
         <td>
-          176
+          182
         </td>
         <td>
-          1537
+          1400
           -
-          1571
+          1502
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendUpdate(CourseUpdate(Option(AppController.session.savedCourses)))
+      sendUpdate(AskCourseUpdate)
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          178
+        </td>
+        <td>
+          1431
+          -
+          1465
         </td>
         <td>
           Select
@@ -407,12 +450,36 @@
           36
         </td>
         <td>
-          175
+          180
         </td>
         <td>
-          1537
+          1400
           -
-          1558
+          1468
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendUpdate
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendUpdate(CourseUpdate(Option(AppController.session.savedCourses)))
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          177
+        </td>
+        <td>
+          1431
+          -
+          1452
         </td>
         <td>
           Select
@@ -431,61 +498,12 @@
           36
         </td>
         <td>
-          178
+          179
         </td>
         <td>
-          1502
+          1424
           -
-          1574
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendUpdate
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendUpdate(CourseListUpdate(Option(AppController.session.savedCourses)))
-        </td>
-      </tr><tr>
-        <td>
-          36
-        </td>
-        <td>
-          180
-        </td>
-        <td>
-          1502
-          -
-          1614
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendUpdate(CourseListUpdate(Option(AppController.session.savedCourses)))
-      sendUpdate(AskCourseSelectUpdate)
-        </td>
-      </tr><tr>
-        <td>
-          36
-        </td>
-        <td>
-          177
-        </td>
-        <td>
-          1530
-          -
-          1572
+          1466
         </td>
         <td>
           Apply
@@ -504,36 +522,12 @@
           37
         </td>
         <td>
-          179
-        </td>
-        <td>
-          1581
-          -
-          1614
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendUpdate
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendUpdate(AskCourseSelectUpdate)
-        </td>
-      </tr><tr>
-        <td>
-          39
-        </td>
-        <td>
           181
         </td>
         <td>
-          1630
+          1475
           -
-          1675
+          1502
         </td>
         <td>
           Apply
@@ -545,19 +539,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(CoursePrintUpdate(courseSelected))
+          sendUpdate(AskCourseUpdate)
         </td>
       </tr><tr>
         <td>
           39
         </td>
         <td>
-          183
+          185
         </td>
         <td>
-          1630
+          1518
           -
-          1713
+          1601
         </td>
         <td>
           Block
@@ -574,15 +568,39 @@
         </td>
       </tr><tr>
         <td>
+          39
+        </td>
+        <td>
+          183
+        </td>
+        <td>
+          1518
+          -
+          1563
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendUpdate
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendUpdate(CoursePrintUpdate(courseSelected))
+        </td>
+      </tr><tr>
+        <td>
           40
         </td>
         <td>
-          182
+          184
         </td>
         <td>
-          1682
+          1570
           -
-          1713
+          1601
         </td>
         <td>
           Apply
@@ -601,12 +619,12 @@
           42
         </td>
         <td>
-          199
+          201
         </td>
         <td>
-          1717
+          1605
           -
-          1731
+          1619
         </td>
         <td>
           DefDef
@@ -625,36 +643,12 @@
           43
         </td>
         <td>
-          185
-        </td>
-        <td>
-          1806
-          -
-          1827
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          session
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
           187
         </td>
         <td>
-          1869
+          1719
           -
-          1887
+          1738
         </td>
         <td>
           Select
@@ -666,91 +660,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          courseSelected.get
+          actionParameter.get
         </td>
       </tr><tr>
         <td>
           43
         </td>
         <td>
-          186
+          190
         </td>
         <td>
-          1806
+          1692
           -
-          1840
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          savedCourses
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session.savedCourses
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          188
-        </td>
-        <td>
-          1806
-          -
-          1888
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          filterNot
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session.savedCourses.filterNot(course =&gt; course==courseSelected.get)
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          193
-        </td>
-        <td>
-          1989
-          -
-          2006
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case Some(course)
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          191
-        </td>
-        <td>
-          2042
-          -
-          2105
+          1768
         </td>
         <td>
           Apply
@@ -762,19 +684,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          SavedCourse.changeQuizList(course, courseSelected.get.quizList)
+          SavedCourse.changeQuizList(actionParameter.get, courseSelected.get.quizList)
         </td>
       </tr><tr>
         <td>
-          47
+          43
         </td>
         <td>
-          190
+          189
         </td>
         <td>
-          2077
+          1740
           -
-          2104
+          1767
         </td>
         <td>
           Select
@@ -790,15 +712,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          43
         </td>
         <td>
-          189
+          188
         </td>
         <td>
-          2077
+          1740
           -
-          2095
+          1758
         </td>
         <td>
           Select
@@ -814,15 +736,111 @@
         </td>
       </tr><tr>
         <td>
-          47
+          44
+        </td>
+        <td>
+          191
+        </td>
+        <td>
+          1794
+          -
+          1815
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          194
+        </td>
+        <td>
+          1794
+          -
+          1876
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          filterNot
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session.savedCourses.filterNot(course =&gt; course==courseSelected.get)
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          193
+        </td>
+        <td>
+          1857
+          -
+          1875
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseSelected.get
+        </td>
+      </tr><tr>
+        <td>
+          44
         </td>
         <td>
           192
         </td>
         <td>
-          2018
+          1794
           -
-          2106
+          1828
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          savedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session.savedCourses
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          195
+        </td>
+        <td>
+          1794
+          -
+          1904
         </td>
         <td>
           Apply
@@ -834,43 +852,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          newListCourses.appended(SavedCourse.changeQuizList(course, courseSelected.get.quizList))
+          AppController.session.savedCourses.filterNot(course =&gt; course==courseSelected.get).appended(editedSavedCourse)
         </td>
       </tr><tr>
         <td>
-          49
+          45
         </td>
         <td>
-          194
+          196
         </td>
         <td>
-          2157
+          1909
           -
-          2163
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case _
-        </td>
-      </tr><tr>
-        <td>
-          51
-        </td>
-        <td>
-          195
-        </td>
-        <td>
-          2216
-          -
-          2264
+          1957
         </td>
         <td>
           Apply
@@ -886,15 +880,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          46
         </td>
         <td>
-          196
+          197
         </td>
         <td>
-          2269
+          1962
           -
-          2328
+          2021
         </td>
         <td>
           Apply
@@ -910,15 +904,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          47
         </td>
         <td>
-          197
+          199
         </td>
         <td>
-          2383
+          2076
           -
-          2434
+          2132
         </td>
         <td>
           Apply
@@ -930,19 +924,43 @@
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(CoursePrintUpdate(optionalCourseEdited))
+          sendUpdate(CoursePrintUpdate(Option(editedSavedCourse)))
         </td>
       </tr><tr>
         <td>
-          54
+          47
         </td>
         <td>
           198
         </td>
         <td>
-          2439
+          2105
           -
-          2465
+          2130
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(editedSavedCourse)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          200
+        </td>
+        <td>
+          2137
+          -
+          2167
         </td>
         <td>
           Apply
@@ -954,7 +972,7 @@
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(feedbackUpdate)
+          sendUpdate(CourseEditedUpdate)
         </td>
       </tr>
     </table>

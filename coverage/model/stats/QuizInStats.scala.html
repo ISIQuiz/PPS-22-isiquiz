@@ -30,46 +30,64 @@
 </span>6 <span style=''>object QuizInStats:
 </span>7 <span style=''>
 </span>8 <span style=''>  // Case class of quiz in stats
-</span>9 <span style=''>  case class QuizInStats(quizId: UUID, totalSeen: Int, totalRightAnswers: Int, averageTimeAnswer: Double)
+</span>9 <span style=''>  case class QuizInStats(quizId: UUID, totalSeen: Int, totalScore: Int, totalRightAnswers: Int, averageTimeAnswer: Double)
 </span>10 <span style=''>
 </span>11 <span style=''>  /**
 </span>12 <span style=''>   * Create a new [[QuizInStats]]
-</span>13 <span style=''>   * @param totalSeen number of times the user has answered the quiz
-</span>14 <span style=''>   * @param totalRightAnswers number of time the user answered the quiz correctly
-</span>15 <span style=''>   * @param averageTimeAnswer average time taken by user to answer
-</span>16 <span style=''>   * @return a [[QuizInStats]]
-</span>17 <span style=''>   */
-</span>18 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(quizId: UUID,
-</span>19 <span style=''>            totalSeen: Int = 0,
-</span>20 <span style=''>            totalRightAnswers: Int = 0,
-</span>21 <span style=''>            averageTimeAnswer: Double = 0) = QuizInStats(quizId, totalSeen, totalRightAnswers, averageTimeAnswer)
-</span>22 <span style=''>
-</span>23 <span style=''>  /**
-</span>24 <span style=''>   * Change total seen in quiz in stats
-</span>25 <span style=''>   * @param quizInStats
-</span>26 <span style=''>   * @param totalSeen
-</span>27 <span style=''>   * @return updated [[QuizInStats]]
-</span>28 <span style=''>   */
-</span>29 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalSeen</span><span style=''>(quizInStats: QuizInStats, totalSeen: Int): QuizInStats = quizInStats match
-</span>30 <span style=''>    </span><span style='background: #AEF1AE'>case QuizInStats(quizId, _, totalRightAnswers, averageTimeAnswer)</span><span style=''> =&gt; QuizInStats(quizId, totalSeen, totalRightAnswers, averageTimeAnswer)
-</span>31 <span style=''>
-</span>32 <span style=''>  /**
-</span>33 <span style=''>   * Change total right answers in quiz in stats
-</span>34 <span style=''>   * @param quizInStats
-</span>35 <span style=''>   * @param totalRightAnswers
-</span>36 <span style=''>   * @return updated [[QuizInStats]]
-</span>37 <span style=''>   */
-</span>38 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalRightAnswers</span><span style=''>(quizInStats: QuizInStats, totalRightAnswers: Int): QuizInStats = quizInStats match
-</span>39 <span style=''>    </span><span style='background: #AEF1AE'>case QuizInStats(quizId, totalSeen, _, averageTimeAnswer)</span><span style=''> =&gt; QuizInStats(quizId, totalSeen, totalRightAnswers, averageTimeAnswer)
-</span>40 <span style=''>
-</span>41 <span style=''>  /**
-</span>42 <span style=''>   * Change average time answer in quiz in stats
-</span>43 <span style=''>   * @param quizInStats
-</span>44 <span style=''>   * @param averageTimeAnswer
-</span>45 <span style=''>   * @return updated [[QuizInStats]]
-</span>46 <span style=''>   */
-</span>47 <span style=''>  </span><span style='background: #AEF1AE'>def changeAverageTimeAnswer</span><span style=''>(quizInStats: QuizInStats, averageTimeAnswer: Double): QuizInStats = quizInStats match
-</span>48 <span style=''>    </span><span style='background: #AEF1AE'>case QuizInStats(quizId, totalSeen, totalRightAnswers, _)</span><span style=''> =&gt; QuizInStats(quizId, totalSeen, totalRightAnswers, averageTimeAnswer)
+</span>13 <span style=''>   *
+</span>14 <span style=''>   * @param totalSeen         number of times the user has answered the quiz
+</span>15 <span style=''>   * @param totalScore        total score gained in the quiz
+</span>16 <span style=''>   * @param totalRightAnswers number of time the user answered the quiz correctly
+</span>17 <span style=''>   * @param averageTimeAnswer average time taken by user to answer
+</span>18 <span style=''>   * @return a [[QuizInStats]]
+</span>19 <span style=''>   */
+</span>20 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(quizId: UUID,
+</span>21 <span style=''>            totalSeen: Int = 0,
+</span>22 <span style=''>            totalScore: Int = 0,
+</span>23 <span style=''>            totalRightAnswers: Int = 0,
+</span>24 <span style=''>            averageTimeAnswer: Double = 0) = 
+</span>25 <span style=''>    QuizInStats(quizId, totalSeen, totalScore, totalRightAnswers, averageTimeAnswer)
+</span>26 <span style=''>
+</span>27 <span style=''>  /**
+</span>28 <span style=''>   * Change total seen in quiz in stats
+</span>29 <span style=''>   *
+</span>30 <span style=''>   * @param quizInStats
+</span>31 <span style=''>   * @param totalSeen
+</span>32 <span style=''>   * @return updated [[QuizInStats]]
+</span>33 <span style=''>   */
+</span>34 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalSeen</span><span style=''>(quizInStats: QuizInStats, totalSeen: Int): QuizInStats =
+</span>35 <span style=''>    QuizInStats(quizInStats.quizId, totalSeen, quizInStats.totalScore, quizInStats.totalRightAnswers, quizInStats.averageTimeAnswer)
+</span>36 <span style=''>
+</span>37 <span style=''>
+</span>38 <span style=''>  /**
+</span>39 <span style=''>   * Change total score of the quiz
+</span>40 <span style=''>   * @param quizInStats
+</span>41 <span style=''>   * @param totalScore
+</span>42 <span style=''>   * @return updated [[QuizInStats]]
+</span>43 <span style=''>   */
+</span>44 <span style=''>  </span><span style='background: #F0ADAD'>def changeTotalScore</span><span style=''>(quizInStats: QuizInStats, totalScore: Int): QuizInStats =
+</span>45 <span style=''>    QuizInStats(quizInStats.quizId, quizInStats.totalSeen, totalScore, quizInStats.totalRightAnswers, quizInStats.averageTimeAnswer)
+</span>46 <span style=''>
+</span>47 <span style=''>
+</span>48 <span style=''>  /**
+</span>49 <span style=''>   * Change total right answers in quiz in stats
+</span>50 <span style=''>   *
+</span>51 <span style=''>   * @param quizInStats
+</span>52 <span style=''>   * @param totalRightAnswers
+</span>53 <span style=''>   * @return updated [[QuizInStats]]
+</span>54 <span style=''>   */
+</span>55 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalRightAnswers</span><span style=''>(quizInStats: QuizInStats, totalRightAnswers: Int): QuizInStats =
+</span>56 <span style=''>    QuizInStats(quizInStats.quizId, quizInStats.totalSeen, quizInStats.totalScore, totalRightAnswers, quizInStats.averageTimeAnswer)
+</span>57 <span style=''>
+</span>58 <span style=''>  /**
+</span>59 <span style=''>   * Change average time answer in quiz in stats
+</span>60 <span style=''>   *
+</span>61 <span style=''>   * @param quizInStats
+</span>62 <span style=''>   * @param averageTimeAnswer
+</span>63 <span style=''>   * @return updated [[QuizInStats]]
+</span>64 <span style=''>   */
+</span>65 <span style=''>  </span><span style='background: #AEF1AE'>def changeAverageTimeAnswer</span><span style=''>(quizInStats: QuizInStats, averageTimeAnswer: Double): QuizInStats =
+</span>66 <span style=''>    QuizInStats(quizInStats.quizId, quizInStats.totalSeen, quizInStats.totalScore, quizInStats.totalRightAnswers, averageTimeAnswer)
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -84,15 +102,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          17
+          19
         </td>
         <td>
-          614
+          662
         </td>
         <td>
-          547
+          638
           -
-          556
+          647
         </td>
         <td>
           DefDef
@@ -108,15 +126,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          20
         </td>
         <td>
-          615
+          663
         </td>
         <td>
-          600
+          691
           -
-          600
+          691
         </td>
         <td>
           DefDef
@@ -132,15 +150,15 @@
         </td>
       </tr><tr>
         <td>
-          19
+          21
         </td>
         <td>
-          616
+          664
         </td>
         <td>
-          640
+          724
           -
-          640
+          724
         </td>
         <td>
           DefDef
@@ -156,15 +174,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          22
         </td>
         <td>
-          617
+          665
         </td>
         <td>
-          683
+          764
           -
-          683
+          764
         </td>
         <td>
           DefDef
@@ -180,15 +198,39 @@
         </td>
       </tr><tr>
         <td>
-          28
+          23
         </td>
         <td>
-          619
+          666
         </td>
         <td>
-          895
+          807
           -
-          914
+          807
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply$default$5
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          667
+        </td>
+        <td>
+          1041
+          -
+          1060
         </td>
         <td>
           DefDef
@@ -204,39 +246,39 @@
         </td>
       </tr><tr>
         <td>
-          29
+          43
         </td>
         <td>
-          618
+          668
         </td>
         <td>
-          994
+          1387
           -
-          1059
+          1407
         </td>
         <td>
-          Block
+          DefDef
         </td>
         <td>
-          &lt;none&gt;
+          changeTotalScore
         </td>
         <td>
           
         </td>
-        <td style="background: #AEF1AE">
-          case QuizInStats(quizId, _, totalRightAnswers, averageTimeAnswer)
+        <td style="background: #F0ADAD">
+          def changeTotalScore
         </td>
       </tr><tr>
         <td>
-          37
+          54
         </td>
         <td>
-          621
+          669
         </td>
         <td>
-          1287
+          1760
           -
-          1314
+          1787
         </td>
         <td>
           DefDef
@@ -252,39 +294,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          64
         </td>
         <td>
-          620
+          670
         </td>
         <td>
-          1402
+          2146
           -
-          1459
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          case QuizInStats(quizId, totalSeen, _, averageTimeAnswer)
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          623
-        </td>
-        <td>
-          1687
-          -
-          1714
+          2173
         </td>
         <td>
           DefDef
@@ -297,30 +315,6 @@
         </td>
         <td style="background: #AEF1AE">
           def changeAverageTimeAnswer
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          622
-        </td>
-        <td>
-          1805
-          -
-          1862
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          case QuizInStats(quizId, totalSeen, totalRightAnswers, _)
         </td>
       </tr>
     </table>

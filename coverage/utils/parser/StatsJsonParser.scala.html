@@ -79,57 +79,59 @@
 </span>55 <span style=''></span><span style='background: #F0ADAD'>            Seq(
 </span>56 <span style=''></span><span style='background: #F0ADAD'>              QuizIdLabel -&gt; JsString(quizInStats.quizId.toString),
 </span>57 <span style=''></span><span style='background: #F0ADAD'>              TotalSeenLabel -&gt; JsNumber(quizInStats.totalSeen),
-</span>58 <span style=''></span><span style='background: #F0ADAD'>              TotalRightAnswersLabel -&gt; JsNumber(quizInStats.totalRightAnswers),
-</span>59 <span style=''></span><span style='background: #F0ADAD'>              AverageTimeAnswerLabel -&gt; JsNumber(quizInStats.averageTimeAnswer)
-</span>60 <span style=''></span><span style='background: #F0ADAD'>            )
-</span>61 <span style=''></span><span style='background: #F0ADAD'>          )</span><span style=''>
-</span>62 <span style=''>        </span><span style='background: #F0ADAD'>case courseIdentifier: CourseIdentifier</span><span style=''> =&gt;
-</span>63 <span style=''>          </span><span style='background: #F0ADAD'>serializeCourseIdentifier(courseIdentifier)</span><span style=''>
-</span>64 <span style=''>
+</span>58 <span style=''></span><span style='background: #F0ADAD'>              TotalScoreLabel -&gt; JsNumber(quizInStats.totalScore),
+</span>59 <span style=''></span><span style='background: #F0ADAD'>              TotalRightAnswersLabel -&gt; JsNumber(quizInStats.totalRightAnswers),
+</span>60 <span style=''></span><span style='background: #F0ADAD'>              AverageTimeAnswerLabel -&gt; JsNumber(quizInStats.averageTimeAnswer)
+</span>61 <span style=''></span><span style='background: #F0ADAD'>            )
+</span>62 <span style=''></span><span style='background: #F0ADAD'>          )</span><span style=''>
+</span>63 <span style=''>        </span><span style='background: #F0ADAD'>case courseIdentifier: CourseIdentifier</span><span style=''> =&gt;
+</span>64 <span style=''>          </span><span style='background: #F0ADAD'>serializeCourseIdentifier(courseIdentifier)</span><span style=''>
 </span>65 <span style=''>
-</span>66 <span style=''>    </span><span style='background: #AEF1AE'>override def deserialize</span><span style=''>(string: String): Try[PlayerStats] =
-</span>67 <span style=''>      </span><span style='background: #AEF1AE'>for {
-</span>68 <span style=''></span><span style='background: #AEF1AE'>        // Check if string is empty
-</span>69 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- Try(if (string.isEmpty) throw IllegalArgumentException())
-</span>70 <span style=''></span><span style='background: #AEF1AE'>        // Check if json file is parsable
-</span>71 <span style=''></span><span style='background: #AEF1AE'>        jsonObject &lt;- Try(Json.parse(string).as[JsObject])
-</span>72 <span style=''></span><span style='background: #AEF1AE'>      } yield {
-</span>73 <span style=''></span><span style='background: #AEF1AE'>        deserializeObjectOfPlayerStats(jsonObject, PlayerStatsLabel).asInstanceOf[PlayerStats]
-</span>74 <span style=''></span><span style='background: #AEF1AE'>      }</span><span style=''>
-</span>75 <span style=''>
-</span>76 <span style=''>    // Deserialize an object based on his type
-</span>77 <span style=''>    </span><span style='background: #AEF1AE'>private def deserializeObjectOfPlayerStats</span><span style=''>(jsonValue: JsValue, label: String): PlayerStats | List[CourseInStats] | List[QuizInStats] =
-</span>78 <span style=''>      (jsonValue, label) match
-</span>79 <span style=''>        </span><span style='background: #AEF1AE'>case (jsonObject: JsObject, PlayerStatsLabel)</span><span style=''> =&gt;
-</span>80 <span style=''>          PlayerStats(
-</span>81 <span style=''>            totalScore = </span><span style='background: #AEF1AE'>(jsonObject \ TotalScoreLabel).as[Int]</span><span style=''>,
-</span>82 <span style=''>            totalAnsweredQuestions = </span><span style='background: #AEF1AE'>(jsonObject \ TotalAnsweredQuestionsLabel).as[Int]</span><span style=''>,
-</span>83 <span style=''>            totalCorrectAnswers = </span><span style='background: #AEF1AE'>(jsonObject \ TotalCorrectAnswersLabel).as[Int]</span><span style=''>,
-</span>84 <span style=''>            totalAnswerPrecision = </span><span style='background: #AEF1AE'>(jsonObject \ TotalAnswerPrecisionLabel).as[Int]</span><span style=''>,
-</span>85 <span style=''>            totalAverageTimeAnswer = </span><span style='background: #AEF1AE'>(jsonObject \ TotalAverageTimeAnswerLabel).as[Double]</span><span style=''>,
-</span>86 <span style=''>            courseInStatsList = </span><span style='background: #AEF1AE'>deserializeObjectOfPlayerStats((jsonObject \ SavedCourseListLabel).as[JsArray], SavedCourseListLabel)</span><span style=''>.asInstanceOf[List[CourseInStats]]
-</span>87 <span style=''>          )
-</span>88 <span style=''>        </span><span style='background: #AEF1AE'>case (jsonArray: JsArray, SavedCourseListLabel)</span><span style=''> =&gt;
-</span>89 <span style=''>          </span><span style='background: #AEF1AE'>jsonArray.value.map(
-</span>90 <span style=''></span><span style='background: #AEF1AE'>            courseInStats =&gt;
-</span>91 <span style=''></span><span style='background: #AEF1AE'>              CourseInStats(
-</span>92 <span style=''></span><span style='background: #AEF1AE'>                course = </span><span style='background: #F0ADAD'>Course(
-</span>93 <span style=''></span><span style='background: #F0ADAD'>                  courseId = deserializeCourseIdentifier((courseInStats \ CourseIdentifierLabel).as[JsObject])
-</span>94 <span style=''></span><span style='background: #F0ADAD'>                )</span><span style='background: #AEF1AE'>,
-</span>95 <span style=''></span><span style='background: #AEF1AE'>                quizInStatsList = </span><span style='background: #F0ADAD'>deserializeObjectOfPlayerStats((courseInStats \ QuizListLabel).as[JsArray], QuizListLabel)</span><span style='background: #AEF1AE'>.asInstanceOf[List[QuizInStats]],
-</span>96 <span style=''></span><span style='background: #AEF1AE'>              )
-</span>97 <span style=''></span><span style='background: #AEF1AE'>          ).toList</span><span style=''>
-</span>98 <span style=''>        </span><span style='background: #F0ADAD'>case (jsonArray: JsArray, QuizListLabel)</span><span style=''> =&gt;
-</span>99 <span style=''>          </span><span style='background: #F0ADAD'>jsonArray.value.map(
-</span>100 <span style=''></span><span style='background: #F0ADAD'>            quizInStats =&gt;
-</span>101 <span style=''></span><span style='background: #F0ADAD'>              QuizInStats(
-</span>102 <span style=''></span><span style='background: #F0ADAD'>                quizId = UUID.fromString((quizInStats \ QuizIdLabel).as[String]),
-</span>103 <span style=''></span><span style='background: #F0ADAD'>                totalSeen = (quizInStats \ TotalSeenLabel).as[Int],
-</span>104 <span style=''></span><span style='background: #F0ADAD'>                totalRightAnswers = (quizInStats \ TotalRightAnswersLabel).as[Int],
-</span>105 <span style=''></span><span style='background: #F0ADAD'>                averageTimeAnswer = (quizInStats \ AverageTimeAnswerLabel).as[Double]
-</span>106 <span style=''></span><span style='background: #F0ADAD'>              )
-</span>107 <span style=''></span><span style='background: #F0ADAD'>          ).toList</span><span style=''>
-</span>108 <span style=''>        </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>List()</span><span style=''>
+</span>66 <span style=''>
+</span>67 <span style=''>    </span><span style='background: #AEF1AE'>override def deserialize</span><span style=''>(string: String): Try[PlayerStats] =
+</span>68 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>69 <span style=''></span><span style='background: #AEF1AE'>        // Check if string is empty
+</span>70 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- Try(if (string.isEmpty) throw IllegalArgumentException())
+</span>71 <span style=''></span><span style='background: #AEF1AE'>        // Check if json file is parsable
+</span>72 <span style=''></span><span style='background: #AEF1AE'>        jsonObject &lt;- Try(Json.parse(string).as[JsObject])
+</span>73 <span style=''></span><span style='background: #AEF1AE'>      } yield {
+</span>74 <span style=''></span><span style='background: #AEF1AE'>        deserializeObjectOfPlayerStats(jsonObject, PlayerStatsLabel).asInstanceOf[PlayerStats]
+</span>75 <span style=''></span><span style='background: #AEF1AE'>      }</span><span style=''>
+</span>76 <span style=''>
+</span>77 <span style=''>    // Deserialize an object based on his type
+</span>78 <span style=''>    </span><span style='background: #AEF1AE'>private def deserializeObjectOfPlayerStats</span><span style=''>(jsonValue: JsValue, label: String): PlayerStats | List[CourseInStats] | List[QuizInStats] =
+</span>79 <span style=''>      (jsonValue, label) match
+</span>80 <span style=''>        </span><span style='background: #AEF1AE'>case (jsonObject: JsObject, PlayerStatsLabel)</span><span style=''> =&gt;
+</span>81 <span style=''>          PlayerStats(
+</span>82 <span style=''>            totalScore = </span><span style='background: #AEF1AE'>(jsonObject \ TotalScoreLabel).as[Int]</span><span style=''>,
+</span>83 <span style=''>            totalAnsweredQuestions = </span><span style='background: #AEF1AE'>(jsonObject \ TotalAnsweredQuestionsLabel).as[Int]</span><span style=''>,
+</span>84 <span style=''>            totalCorrectAnswers = </span><span style='background: #AEF1AE'>(jsonObject \ TotalCorrectAnswersLabel).as[Int]</span><span style=''>,
+</span>85 <span style=''>            totalAnswerPrecision = </span><span style='background: #AEF1AE'>(jsonObject \ TotalAnswerPrecisionLabel).as[Int]</span><span style=''>,
+</span>86 <span style=''>            totalAverageTimeAnswer = </span><span style='background: #AEF1AE'>(jsonObject \ TotalAverageTimeAnswerLabel).as[Double]</span><span style=''>,
+</span>87 <span style=''>            courseInStatsList = </span><span style='background: #AEF1AE'>deserializeObjectOfPlayerStats((jsonObject \ SavedCourseListLabel).as[JsArray], SavedCourseListLabel)</span><span style=''>.asInstanceOf[List[CourseInStats]]
+</span>88 <span style=''>          )
+</span>89 <span style=''>        </span><span style='background: #AEF1AE'>case (jsonArray: JsArray, SavedCourseListLabel)</span><span style=''> =&gt;
+</span>90 <span style=''>          </span><span style='background: #AEF1AE'>jsonArray.value.map(
+</span>91 <span style=''></span><span style='background: #AEF1AE'>            courseInStats =&gt;
+</span>92 <span style=''></span><span style='background: #AEF1AE'>              CourseInStats(
+</span>93 <span style=''></span><span style='background: #AEF1AE'>                course = </span><span style='background: #F0ADAD'>Course(
+</span>94 <span style=''></span><span style='background: #F0ADAD'>                  courseId = deserializeCourseIdentifier((courseInStats \ CourseIdentifierLabel).as[JsObject])
+</span>95 <span style=''></span><span style='background: #F0ADAD'>                )</span><span style='background: #AEF1AE'>,
+</span>96 <span style=''></span><span style='background: #AEF1AE'>                quizInStatsList = </span><span style='background: #F0ADAD'>deserializeObjectOfPlayerStats((courseInStats \ QuizListLabel).as[JsArray], QuizListLabel)</span><span style='background: #AEF1AE'>.asInstanceOf[List[QuizInStats]],
+</span>97 <span style=''></span><span style='background: #AEF1AE'>              )
+</span>98 <span style=''></span><span style='background: #AEF1AE'>          ).toList</span><span style=''>
+</span>99 <span style=''>        </span><span style='background: #F0ADAD'>case (jsonArray: JsArray, QuizListLabel)</span><span style=''> =&gt;
+</span>100 <span style=''>          </span><span style='background: #F0ADAD'>jsonArray.value.map(
+</span>101 <span style=''></span><span style='background: #F0ADAD'>            quizInStats =&gt;
+</span>102 <span style=''></span><span style='background: #F0ADAD'>              QuizInStats(
+</span>103 <span style=''></span><span style='background: #F0ADAD'>                quizId = UUID.fromString((quizInStats \ QuizIdLabel).as[String]),
+</span>104 <span style=''></span><span style='background: #F0ADAD'>                totalSeen = (quizInStats \ TotalSeenLabel).as[Int],
+</span>105 <span style=''></span><span style='background: #F0ADAD'>                totalScore = (quizInStats\ TotalScoreLabel).as[Int],
+</span>106 <span style=''></span><span style='background: #F0ADAD'>                totalRightAnswers = (quizInStats \ TotalRightAnswersLabel).as[Int],
+</span>107 <span style=''></span><span style='background: #F0ADAD'>                averageTimeAnswer = (quizInStats \ AverageTimeAnswerLabel).as[Double]
+</span>108 <span style=''></span><span style='background: #F0ADAD'>              )
+</span>109 <span style=''></span><span style='background: #F0ADAD'>          ).toList</span><span style=''>
+</span>110 <span style=''>        </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>List()</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -147,7 +149,7 @@
           23
         </td>
         <td>
-          837
+          884
         </td>
         <td>
           629
@@ -171,7 +173,7 @@
           23
         </td>
         <td>
-          836
+          883
         </td>
         <td>
           660
@@ -195,7 +197,7 @@
           28
         </td>
         <td>
-          839
+          886
         </td>
         <td>
           798
@@ -219,7 +221,7 @@
           29
         </td>
         <td>
-          838
+          885
         </td>
         <td>
           865
@@ -243,7 +245,7 @@
           32
         </td>
         <td>
-          880
+          929
         </td>
         <td>
           957
@@ -267,7 +269,7 @@
           34
         </td>
         <td>
-          856
+          903
         </td>
         <td>
           1053
@@ -291,7 +293,7 @@
           35
         </td>
         <td>
-          855
+          902
         </td>
         <td>
           1096
@@ -324,7 +326,7 @@
           36
         </td>
         <td>
-          854
+          901
         </td>
         <td>
           1118
@@ -355,31 +357,7 @@
           37
         </td>
         <td>
-          841
-        </td>
-        <td>
-          1137
-          -
-          1188
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          -&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          TotalScoreLabel -&gt; JsNumber(playerStats.totalScore)
-        </td>
-      </tr><tr>
-        <td>
-          37
-        </td>
-        <td>
-          840
+          887
         </td>
         <td>
           1165
@@ -400,34 +378,34 @@
         </td>
       </tr><tr>
         <td>
-          38
+          37
         </td>
         <td>
-          842
+          888
         </td>
         <td>
-          1244
+          1137
           -
-          1278
+          1188
         </td>
         <td>
           Apply
         </td>
         <td>
-          int2bigDecimal
+          -&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          playerStats.totalAnsweredQuestions
+          TotalScoreLabel -&gt; JsNumber(playerStats.totalScore)
         </td>
       </tr><tr>
         <td>
           38
         </td>
         <td>
-          843
+          890
         </td>
         <td>
           1204
@@ -448,34 +426,34 @@
         </td>
       </tr><tr>
         <td>
-          39
+          38
         </td>
         <td>
-          845
+          889
         </td>
         <td>
-          1295
+          1244
           -
-          1364
+          1278
         </td>
         <td>
           Apply
         </td>
         <td>
-          -&gt;
+          int2bigDecimal
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          TotalCorrectAnswersLabel -&gt; JsNumber(playerStats.totalCorrectAnswers)
+          playerStats.totalAnsweredQuestions
         </td>
       </tr><tr>
         <td>
           39
         </td>
         <td>
-          844
+          891
         </td>
         <td>
           1332
@@ -496,10 +474,34 @@
         </td>
       </tr><tr>
         <td>
+          39
+        </td>
+        <td>
+          892
+        </td>
+        <td>
+          1295
+          -
+          1364
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          -&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TotalCorrectAnswersLabel -&gt; JsNumber(playerStats.totalCorrectAnswers)
+        </td>
+      </tr><tr>
+        <td>
           40
         </td>
         <td>
-          846
+          893
         </td>
         <td>
           1418
@@ -523,7 +525,7 @@
           40
         </td>
         <td>
-          847
+          894
         </td>
         <td>
           1380
@@ -547,31 +549,7 @@
           41
         </td>
         <td>
-          848
-        </td>
-        <td>
-          1507
-          -
-          1541
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          double2bigDecimal
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          playerStats.totalAverageTimeAnswer
-        </td>
-      </tr><tr>
-        <td>
-          41
-        </td>
-        <td>
-          849
+          896
         </td>
         <td>
           1467
@@ -592,10 +570,58 @@
         </td>
       </tr><tr>
         <td>
+          41
+        </td>
+        <td>
+          895
+        </td>
+        <td>
+          1507
+          -
+          1541
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          double2bigDecimal
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          playerStats.totalAverageTimeAnswer
+        </td>
+      </tr><tr>
+        <td>
           42
         </td>
         <td>
-          851
+          899
+        </td>
+        <td>
+          1582
+          -
+          1654
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          JsArray(playerStats.courseInStatsList.map(serializeObjectOfPlayerStats))
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          898
         </td>
         <td>
           1590
@@ -619,7 +645,7 @@
           42
         </td>
         <td>
-          853
+          900
         </td>
         <td>
           1558
@@ -643,7 +669,7 @@
           42
         </td>
         <td>
-          850
+          897
         </td>
         <td>
           1624
@@ -664,34 +690,10 @@
         </td>
       </tr><tr>
         <td>
-          42
-        </td>
-        <td>
-          852
-        </td>
-        <td>
-          1582
-          -
-          1654
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          JsArray(playerStats.courseInStatsList.map(serializeObjectOfPlayerStats))
-        </td>
-      </tr><tr>
-        <td>
           45
         </td>
         <td>
-          866
+          913
         </td>
         <td>
           1689
@@ -715,7 +717,7 @@
           46
         </td>
         <td>
-          865
+          912
         </td>
         <td>
           1753
@@ -744,7 +746,7 @@
           47
         </td>
         <td>
-          864
+          911
         </td>
         <td>
           1775
@@ -771,7 +773,31 @@
           48
         </td>
         <td>
-          857
+          905
+        </td>
+        <td>
+          1819
+          -
+          1878
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          serializeObjectOfPlayerStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          serializeObjectOfPlayerStats(courseInStats.course.courseId)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          904
         </td>
         <td>
           1848
@@ -795,7 +821,7 @@
           48
         </td>
         <td>
-          859
+          906
         </td>
         <td>
           1794
@@ -816,58 +842,34 @@
         </td>
       </tr><tr>
         <td>
-          48
+          49
         </td>
         <td>
-          858
+          908
         </td>
         <td>
-          1819
+          1919
           -
-          1878
+          1982
         </td>
         <td>
           Apply
         </td>
         <td>
-          serializeObjectOfPlayerStats
+          map
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          serializeObjectOfPlayerStats(courseInStats.course.courseId)
+          courseInStats.quizInStatsList.map(serializeObjectOfPlayerStats)
         </td>
       </tr><tr>
         <td>
           49
         </td>
         <td>
-          863
-        </td>
-        <td>
-          1894
-          -
-          1983
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          -&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          QuizListLabel -&gt; JsArray(courseInStats.quizInStatsList.map(serializeObjectOfPlayerStats))
-        </td>
-      </tr><tr>
-        <td>
-          49
-        </td>
-        <td>
-          860
+          907
         </td>
         <td>
           1953
@@ -891,7 +893,31 @@
           49
         </td>
         <td>
-          862
+          910
+        </td>
+        <td>
+          1894
+          -
+          1983
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          -&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          QuizListLabel -&gt; JsArray(courseInStats.quizInStatsList.map(serializeObjectOfPlayerStats))
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          909
         </td>
         <td>
           1911
@@ -912,34 +938,10 @@
         </td>
       </tr><tr>
         <td>
-          49
-        </td>
-        <td>
-          861
-        </td>
-        <td>
-          1919
-          -
-          1982
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          map
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseInStats.quizInStatsList.map(serializeObjectOfPlayerStats)
-        </td>
-      </tr><tr>
-        <td>
           52
         </td>
         <td>
-          877
+          926
         </td>
         <td>
           2018
@@ -963,12 +965,12 @@
           53
         </td>
         <td>
-          876
+          925
         </td>
         <td>
           2076
           -
-          2422
+          2489
         </td>
         <td>
           Apply
@@ -984,6 +986,7 @@
             Seq(
               QuizIdLabel -&gt; JsString(quizInStats.quizId.toString),
               TotalSeenLabel -&gt; JsNumber(quizInStats.totalSeen),
+              TotalScoreLabel -&gt; JsNumber(quizInStats.totalScore),
               TotalRightAnswersLabel -&gt; JsNumber(quizInStats.totalRightAnswers),
               AverageTimeAnswerLabel -&gt; JsNumber(quizInStats.averageTimeAnswer)
             )
@@ -994,12 +997,12 @@
           54
         </td>
         <td>
-          875
+          924
         </td>
         <td>
           2098
           -
-          2410
+          2477
         </td>
         <td>
           Apply
@@ -1014,6 +1017,7 @@
           Seq(
               QuizIdLabel -&gt; JsString(quizInStats.quizId.toString),
               TotalSeenLabel -&gt; JsNumber(quizInStats.totalSeen),
+              TotalScoreLabel -&gt; JsNumber(quizInStats.totalScore),
               TotalRightAnswersLabel -&gt; JsNumber(quizInStats.totalRightAnswers),
               AverageTimeAnswerLabel -&gt; JsNumber(quizInStats.averageTimeAnswer)
             )
@@ -1023,31 +1027,7 @@
           55
         </td>
         <td>
-          868
-        </td>
-        <td>
-          2117
-          -
-          2169
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          -&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          QuizIdLabel -&gt; JsString(quizInStats.quizId.toString)
-        </td>
-      </tr><tr>
-        <td>
-          55
-        </td>
-        <td>
-          867
+          914
         </td>
         <td>
           2141
@@ -1068,34 +1048,34 @@
         </td>
       </tr><tr>
         <td>
-          56
+          55
         </td>
         <td>
-          869
+          915
         </td>
         <td>
-          2212
+          2117
           -
-          2233
+          2169
         </td>
         <td>
           Apply
         </td>
         <td>
-          int2bigDecimal
+          -&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          quizInStats.totalSeen
+          QuizIdLabel -&gt; JsString(quizInStats.quizId.toString)
         </td>
       </tr><tr>
         <td>
           56
         </td>
         <td>
-          870
+          917
         </td>
         <td>
           2185
@@ -1116,15 +1096,39 @@
         </td>
       </tr><tr>
         <td>
+          56
+        </td>
+        <td>
+          916
+        </td>
+        <td>
+          2212
+          -
+          2233
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          int2bigDecimal
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInStats.totalSeen
+        </td>
+      </tr><tr>
+        <td>
           57
         </td>
         <td>
-          872
+          919
         </td>
         <td>
           2250
           -
-          2315
+          2301
         </td>
         <td>
           Apply
@@ -1136,19 +1140,43 @@
           
         </td>
         <td style="background: #F0ADAD">
-          TotalRightAnswersLabel -&gt; JsNumber(quizInStats.totalRightAnswers)
+          TotalScoreLabel -&gt; JsNumber(quizInStats.totalScore)
         </td>
       </tr><tr>
         <td>
           57
         </td>
         <td>
-          871
+          918
         </td>
         <td>
-          2285
+          2278
           -
-          2314
+          2300
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          int2bigDecimal
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInStats.totalScore
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          920
+        </td>
+        <td>
+          2352
+          -
+          2381
         </td>
         <td>
           Apply
@@ -1167,36 +1195,36 @@
           58
         </td>
         <td>
-          873
+          921
         </td>
         <td>
-          2366
+          2317
           -
-          2395
+          2382
         </td>
         <td>
           Apply
         </td>
         <td>
-          double2bigDecimal
+          -&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          quizInStats.averageTimeAnswer
+          TotalRightAnswersLabel -&gt; JsNumber(quizInStats.totalRightAnswers)
         </td>
       </tr><tr>
         <td>
-          58
+          59
         </td>
         <td>
-          874
+          923
         </td>
         <td>
-          2331
+          2398
           -
-          2396
+          2463
         </td>
         <td>
           Apply
@@ -1212,15 +1240,39 @@
         </td>
       </tr><tr>
         <td>
-          61
+          59
         </td>
         <td>
-          879
+          922
         </td>
         <td>
-          2431
+          2433
           -
-          2470
+          2462
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          double2bigDecimal
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInStats.averageTimeAnswer
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          928
+        </td>
+        <td>
+          2498
+          -
+          2537
         </td>
         <td>
           Block
@@ -1236,15 +1288,15 @@
         </td>
       </tr><tr>
         <td>
-          62
+          63
         </td>
         <td>
-          878
+          927
         </td>
         <td>
-          2484
+          2551
           -
-          2527
+          2594
         </td>
         <td>
           Apply
@@ -1260,15 +1312,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          66
         </td>
         <td>
-          887
+          936
         </td>
         <td>
-          2534
+          2601
           -
-          2558
+          2625
         </td>
         <td>
           DefDef
@@ -1284,15 +1336,15 @@
         </td>
       </tr><tr>
         <td>
-          66
+          67
         </td>
         <td>
-          886
+          935
         </td>
         <td>
-          2601
+          2668
           -
-          2933
+          3000
         </td>
         <td>
           Apply
@@ -1315,39 +1367,15 @@
         </td>
       </tr><tr>
         <td>
-          68
+          69
         </td>
         <td>
-          881
+          934
         </td>
         <td>
-          2656
+          2718
           -
-          2713
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          Try(if (string.isEmpty) throw IllegalArgumentException())
-        </td>
-      </tr><tr>
-        <td>
-          68
-        </td>
-        <td>
-          885
-        </td>
-        <td>
-          2651
-          -
-          2652
+          2719
         </td>
         <td>
           Block
@@ -1363,15 +1391,39 @@
         </td>
       </tr><tr>
         <td>
-          70
+          69
         </td>
         <td>
-          882
+          930
         </td>
         <td>
-          2778
+          2723
           -
-          2814
+          2780
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(if (string.isEmpty) throw IllegalArgumentException())
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          931
+        </td>
+        <td>
+          2845
+          -
+          2881
         </td>
         <td>
           Apply
@@ -1387,15 +1439,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          71
         </td>
         <td>
-          884
+          933
         </td>
         <td>
-          2764
+          2831
           -
-          2933
+          3000
         </td>
         <td>
           Apply
@@ -1414,15 +1466,15 @@
         </td>
       </tr><tr>
         <td>
-          72
+          73
         </td>
         <td>
-          883
+          932
         </td>
         <td>
-          2839
+          2906
           -
-          2899
+          2966
         </td>
         <td>
           Apply
@@ -1438,15 +1490,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          77
         </td>
         <td>
-          938
+          990
         </td>
         <td>
-          2986
+          3053
           -
-          3028
+          3095
         </td>
         <td>
           DefDef
@@ -1462,15 +1514,15 @@
         </td>
       </tr><tr>
         <td>
-          78
+          79
         </td>
         <td>
-          907
+          956
         </td>
         <td>
-          3160
+          3227
           -
-          3205
+          3272
         </td>
         <td>
           Block
@@ -1486,39 +1538,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          81
         </td>
         <td>
-          890
+          938
         </td>
         <td>
-          3257
+          3325
           -
-          3295
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          as
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          (jsonObject \ TotalScoreLabel).as[Int]
-        </td>
-      </tr><tr>
-        <td>
-          80
-        </td>
-        <td>
-          889
-        </td>
-        <td>
-          3258
-          -
-          3286
+          3353
         </td>
         <td>
           Apply
@@ -1534,39 +1562,15 @@
         </td>
       </tr><tr>
         <td>
-          80
-        </td>
-        <td>
-          888
-        </td>
-        <td>
-          3258
-          -
-          3268
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          jsValueToJsLookup
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          jsonObject
-        </td>
-      </tr><tr>
-        <td>
           81
         </td>
         <td>
-          891
+          937
         </td>
         <td>
+          3325
+          -
           3335
-          -
-          3345
         </td>
         <td>
           Apply
@@ -1585,12 +1589,12 @@
           81
         </td>
         <td>
-          893
+          939
         </td>
         <td>
-          3334
+          3324
           -
-          3384
+          3362
         </td>
         <td>
           Apply
@@ -1602,19 +1606,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          (jsonObject \ TotalAnsweredQuestionsLabel).as[Int]
+          (jsonObject \ TotalScoreLabel).as[Int]
         </td>
       </tr><tr>
         <td>
-          81
+          82
         </td>
         <td>
-          892
+          941
         </td>
         <td>
-          3335
+          3402
           -
-          3375
+          3442
         </td>
         <td>
           Apply
@@ -1633,12 +1637,36 @@
           82
         </td>
         <td>
-          896
+          940
         </td>
         <td>
-          3420
+          3402
           -
-          3467
+          3412
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          jsValueToJsLookup
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          jsonObject
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          942
+        </td>
+        <td>
+          3401
+          -
+          3451
         </td>
         <td>
           Apply
@@ -1650,19 +1678,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          (jsonObject \ TotalCorrectAnswersLabel).as[Int]
+          (jsonObject \ TotalAnsweredQuestionsLabel).as[Int]
         </td>
       </tr><tr>
         <td>
-          82
+          83
         </td>
         <td>
-          895
+          944
         </td>
         <td>
-          3421
+          3488
           -
-          3458
+          3525
         </td>
         <td>
           Apply
@@ -1678,15 +1706,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          83
         </td>
         <td>
-          894
+          943
         </td>
         <td>
-          3421
+          3488
           -
-          3431
+          3498
         </td>
         <td>
           Apply
@@ -1705,12 +1733,12 @@
           83
         </td>
         <td>
-          899
+          945
         </td>
         <td>
-          3504
+          3487
           -
-          3552
+          3534
         </td>
         <td>
           Apply
@@ -1722,19 +1750,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          (jsonObject \ TotalAnswerPrecisionLabel).as[Int]
+          (jsonObject \ TotalCorrectAnswersLabel).as[Int]
         </td>
       </tr><tr>
         <td>
-          83
+          84
         </td>
         <td>
-          898
+          947
         </td>
         <td>
-          3505
+          3572
           -
-          3543
+          3610
         </td>
         <td>
           Apply
@@ -1750,15 +1778,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          84
         </td>
         <td>
-          897
+          946
         </td>
         <td>
-          3505
+          3572
           -
-          3515
+          3582
         </td>
         <td>
           Apply
@@ -1777,12 +1805,12 @@
           84
         </td>
         <td>
-          902
+          948
         </td>
         <td>
-          3591
+          3571
           -
-          3644
+          3619
         </td>
         <td>
           Apply
@@ -1794,19 +1822,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          (jsonObject \ TotalAverageTimeAnswerLabel).as[Double]
+          (jsonObject \ TotalAnswerPrecisionLabel).as[Int]
         </td>
       </tr><tr>
         <td>
-          84
+          85
         </td>
         <td>
-          901
+          950
         </td>
         <td>
-          3592
+          3659
           -
-          3632
+          3699
         </td>
         <td>
           Apply
@@ -1822,15 +1850,15 @@
         </td>
       </tr><tr>
         <td>
-          84
+          85
         </td>
         <td>
-          900
+          949
         </td>
         <td>
-          3592
+          3659
           -
-          3602
+          3669
         </td>
         <td>
           Apply
@@ -1849,12 +1877,12 @@
           85
         </td>
         <td>
-          905
+          951
         </td>
         <td>
-          3709
+          3658
           -
-          3756
+          3711
         </td>
         <td>
           Apply
@@ -1866,19 +1894,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          (jsonObject \ SavedCourseListLabel).as[JsArray]
+          (jsonObject \ TotalAverageTimeAnswerLabel).as[Double]
         </td>
       </tr><tr>
         <td>
-          85
+          86
         </td>
         <td>
-          904
+          953
         </td>
         <td>
-          3710
+          3777
           -
-          3743
+          3810
         </td>
         <td>
           Apply
@@ -1894,39 +1922,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          86
         </td>
         <td>
-          903
+          955
         </td>
         <td>
-          3710
+          3745
           -
-          3720
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          jsValueToJsLookup
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          jsonObject
-        </td>
-      </tr><tr>
-        <td>
-          85
-        </td>
-        <td>
-          906
-        </td>
-        <td>
-          3678
-          -
-          3779
+          3846
         </td>
         <td>
           Apply
@@ -1942,15 +1946,63 @@
         </td>
       </tr><tr>
         <td>
-          87
+          86
         </td>
         <td>
-          919
+          952
         </td>
         <td>
-          3834
+          3777
           -
-          3881
+          3787
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          jsValueToJsLookup
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          jsonObject
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          954
+        </td>
+        <td>
+          3776
+          -
+          3823
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          as
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          (jsonObject \ SavedCourseListLabel).as[JsArray]
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          968
+        </td>
+        <td>
+          3901
+          -
+          3948
         </td>
         <td>
           Block
@@ -1966,15 +2018,15 @@
         </td>
       </tr><tr>
         <td>
-          88
+          89
         </td>
         <td>
-          917
+          966
         </td>
         <td>
-          3895
+          3962
           -
-          4322
+          4389
         </td>
         <td>
           Apply
@@ -1998,15 +2050,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          92
         </td>
         <td>
-          912
+          961
         </td>
         <td>
-          3999
+          4066
           -
-          4135
+          4202
         </td>
         <td>
           Apply
@@ -2024,63 +2076,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          93
         </td>
         <td>
-          908
+          959
         </td>
         <td>
-          4065
+          4131
           -
-          4078
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          jsValueToJsLookup
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseInStats
-        </td>
-      </tr><tr>
-        <td>
-          92
-        </td>
-        <td>
-          911
-        </td>
-        <td>
-          4036
-          -
-          4117
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          deserializeCourseIdentifier
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          deserializeCourseIdentifier((courseInStats \ CourseIdentifierLabel).as[JsObject])
-        </td>
-      </tr><tr>
-        <td>
-          92
-        </td>
-        <td>
-          910
-        </td>
-        <td>
-          4064
-          -
-          4116
+          4183
         </td>
         <td>
           Apply
@@ -2096,15 +2100,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          93
         </td>
         <td>
-          909
+          958
         </td>
         <td>
-          4065
+          4132
           -
-          4102
+          4169
         </td>
         <td>
           Apply
@@ -2120,39 +2124,39 @@
         </td>
       </tr><tr>
         <td>
-          94
+          93
         </td>
         <td>
-          914
+          960
         </td>
         <td>
-          4203
+          4103
           -
-          4232
+          4184
         </td>
         <td>
           Apply
         </td>
         <td>
-          \
+          deserializeCourseIdentifier
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          courseInStats \ QuizListLabel
+          deserializeCourseIdentifier((courseInStats \ CourseIdentifierLabel).as[JsObject])
         </td>
       </tr><tr>
         <td>
-          94
+          93
         </td>
         <td>
-          913
+          957
         </td>
         <td>
-          4203
+          4132
           -
-          4216
+          4145
         </td>
         <td>
           Apply
@@ -2168,15 +2172,39 @@
         </td>
       </tr><tr>
         <td>
-          94
+          95
         </td>
         <td>
-          916
+          962
         </td>
         <td>
-          4171
+          4270
           -
-          4261
+          4283
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          jsValueToJsLookup
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseInStats
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          965
+        </td>
+        <td>
+          4238
+          -
+          4328
         </td>
         <td>
           Apply
@@ -2192,15 +2220,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          95
         </td>
         <td>
-          915
+          964
         </td>
         <td>
-          4202
+          4269
           -
-          4245
+          4312
         </td>
         <td>
           Apply
@@ -2216,15 +2244,39 @@
         </td>
       </tr><tr>
         <td>
-          96
+          95
         </td>
         <td>
-          918
+          963
         </td>
         <td>
-          3895
+          4270
           -
-          4329
+          4299
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          \
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseInStats \ QuizListLabel
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          967
+        </td>
+        <td>
+          3962
+          -
+          4396
         </td>
         <td>
           Select
@@ -2248,15 +2300,15 @@
         </td>
       </tr><tr>
         <td>
-          97
+          98
         </td>
         <td>
-          935
+          987
         </td>
         <td>
-          4338
+          4405
           -
-          4378
+          4445
         </td>
         <td>
           Block
@@ -2272,15 +2324,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          99
         </td>
         <td>
-          933
+          985
         </td>
         <td>
-          4392
+          4459
           -
-          4814
+          4950
         </td>
         <td>
           Apply
@@ -2297,6 +2349,7 @@
               QuizInStats(
                 quizId = UUID.fromString((quizInStats \ QuizIdLabel).as[String]),
                 totalSeen = (quizInStats \ TotalSeenLabel).as[Int],
+                totalScore = (quizInStats\ TotalScoreLabel).as[Int],
                 totalRightAnswers = (quizInStats \ TotalRightAnswersLabel).as[Int],
                 averageTimeAnswer = (quizInStats \ AverageTimeAnswerLabel).as[Double]
               )
@@ -2304,63 +2357,15 @@
         </td>
       </tr><tr>
         <td>
-          101
+          102
         </td>
         <td>
-          923
+          971
         </td>
         <td>
-          4492
+          4575
           -
-          4547
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          fromString
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          UUID.fromString((quizInStats \ QuizIdLabel).as[String])
-        </td>
-      </tr><tr>
-        <td>
-          101
-        </td>
-        <td>
-          920
-        </td>
-        <td>
-          4509
-          -
-          4520
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          jsValueToJsLookup
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizInStats
-        </td>
-      </tr><tr>
-        <td>
-          101
-        </td>
-        <td>
-          922
-        </td>
-        <td>
-          4508
-          -
-          4546
+          4613
         </td>
         <td>
           Apply
@@ -2376,15 +2381,15 @@
         </td>
       </tr><tr>
         <td>
-          101
+          102
         </td>
         <td>
-          921
+          970
         </td>
         <td>
-          4509
+          4576
           -
-          4534
+          4601
         </td>
         <td>
           Apply
@@ -2403,36 +2408,60 @@
           102
         </td>
         <td>
-          926
+          969
         </td>
         <td>
-          4577
+          4576
           -
-          4615
+          4587
         </td>
         <td>
           Apply
         </td>
         <td>
-          as
+          jsValueToJsLookup
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          (quizInStats \ TotalSeenLabel).as[Int]
+          quizInStats
         </td>
       </tr><tr>
         <td>
           102
         </td>
         <td>
-          925
+          972
         </td>
         <td>
-          4578
+          4559
           -
-          4606
+          4614
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          fromString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          UUID.fromString((quizInStats \ QuizIdLabel).as[String])
+        </td>
+      </tr><tr>
+        <td>
+          103
+        </td>
+        <td>
+          974
+        </td>
+        <td>
+          4645
+          -
+          4673
         </td>
         <td>
           Apply
@@ -2448,15 +2477,15 @@
         </td>
       </tr><tr>
         <td>
-          102
+          103
         </td>
         <td>
-          924
+          973
         </td>
         <td>
-          4578
+          4645
           -
-          4589
+          4656
         </td>
         <td>
           Apply
@@ -2475,12 +2504,12 @@
           103
         </td>
         <td>
-          929
+          975
         </td>
         <td>
-          4653
+          4644
           -
-          4699
+          4682
         </td>
         <td>
           Apply
@@ -2492,19 +2521,91 @@
           
         </td>
         <td style="background: #F0ADAD">
-          (quizInStats \ TotalRightAnswersLabel).as[Int]
+          (quizInStats \ TotalSeenLabel).as[Int]
         </td>
       </tr><tr>
         <td>
-          103
+          104
         </td>
         <td>
-          928
+          977
         </td>
         <td>
-          4654
+          4714
           -
-          4690
+          4742
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          \
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInStats\ TotalScoreLabel
+        </td>
+      </tr><tr>
+        <td>
+          104
+        </td>
+        <td>
+          976
+        </td>
+        <td>
+          4714
+          -
+          4725
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          jsValueToJsLookup
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInStats
+        </td>
+      </tr><tr>
+        <td>
+          104
+        </td>
+        <td>
+          978
+        </td>
+        <td>
+          4713
+          -
+          4751
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          as
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          (quizInStats\ TotalScoreLabel).as[Int]
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          980
+        </td>
+        <td>
+          4790
+          -
+          4826
         </td>
         <td>
           Apply
@@ -2520,15 +2621,15 @@
         </td>
       </tr><tr>
         <td>
-          103
+          105
         </td>
         <td>
-          927
+          979
         </td>
         <td>
-          4654
+          4790
           -
-          4665
+          4801
         </td>
         <td>
           Apply
@@ -2544,15 +2645,15 @@
         </td>
       </tr><tr>
         <td>
-          104
+          105
         </td>
         <td>
-          932
+          981
         </td>
         <td>
-          4737
+          4789
           -
-          4786
+          4835
         </td>
         <td>
           Apply
@@ -2564,19 +2665,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          (quizInStats \ AverageTimeAnswerLabel).as[Double]
+          (quizInStats \ TotalRightAnswersLabel).as[Int]
         </td>
       </tr><tr>
         <td>
-          104
+          106
         </td>
         <td>
-          931
+          983
         </td>
         <td>
-          4738
+          4874
           -
-          4774
+          4910
         </td>
         <td>
           Apply
@@ -2592,15 +2693,15 @@
         </td>
       </tr><tr>
         <td>
-          104
+          106
         </td>
         <td>
-          930
+          982
         </td>
         <td>
-          4738
+          4874
           -
-          4749
+          4885
         </td>
         <td>
           Apply
@@ -2619,12 +2720,36 @@
           106
         </td>
         <td>
-          934
+          984
         </td>
         <td>
-          4392
+          4873
           -
-          4821
+          4922
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          as
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          (quizInStats \ AverageTimeAnswerLabel).as[Double]
+        </td>
+      </tr><tr>
+        <td>
+          108
+        </td>
+        <td>
+          986
+        </td>
+        <td>
+          4459
+          -
+          4957
         </td>
         <td>
           Select
@@ -2641,6 +2766,7 @@
               QuizInStats(
                 quizId = UUID.fromString((quizInStats \ QuizIdLabel).as[String]),
                 totalSeen = (quizInStats \ TotalSeenLabel).as[Int],
+                totalScore = (quizInStats\ TotalScoreLabel).as[Int],
                 totalRightAnswers = (quizInStats \ TotalRightAnswersLabel).as[Int],
                 averageTimeAnswer = (quizInStats \ AverageTimeAnswerLabel).as[Double]
               )
@@ -2648,15 +2774,15 @@
         </td>
       </tr><tr>
         <td>
-          107
+          109
         </td>
         <td>
-          937
+          989
         </td>
         <td>
-          4830
+          4966
           -
-          4836
+          4972
         </td>
         <td>
           Block
@@ -2672,15 +2798,15 @@
         </td>
       </tr><tr>
         <td>
-          107
+          109
         </td>
         <td>
-          936
+          988
         </td>
         <td>
-          4840
+          4976
           -
-          4846
+          4982
         </td>
         <td>
           Apply

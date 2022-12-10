@@ -55,18 +55,20 @@
 </span>31 <span style=''>    </span><span style='background: #F0ADAD'>case CurrentReviewUpdate(updateParameter)</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>updateParameter.isDefined</span><span style=''> then
 </span>32 <span style=''>      </span><span style='background: #F0ADAD'>updateParameter.get.quizAnsweredList foreach (quizAnswered =&gt;
 </span>33 <span style=''></span><span style='background: #F0ADAD'>        println(quizAnswered.quizInGame.quiz.question);
-</span>34 <span style=''></span><span style='background: #F0ADAD'>        println(s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;);
-</span>35 <span style=''></span><span style='background: #F0ADAD'>        quizAnswered.quizInGame.answers
-</span>36 <span style=''></span><span style='background: #F0ADAD'>          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
-</span>37 <span style=''></span><span style='background: #F0ADAD'>          .foreach(answerQuiz =&gt;
-</span>38 <span style=''></span><span style='background: #F0ADAD'>            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
-</span>39 <span style=''></span><span style='background: #F0ADAD'>          );</span><span style=''>
-</span>40 <span style=''>      )
-</span>41 <span style=''>    </span><span style='background: #F0ADAD'>case TotalPointsUpdate(updateParameter)</span><span style=''> =&gt;
-</span>42 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Punti totali: &quot;+updateParameter.get)</span><span style=''>
-</span>43 <span style=''>    </span><span style='background: #F0ADAD'>case TotalCorrectAnswersUpdate(updateParameter)</span><span style=''> =&gt;
-</span>44 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Risposte giuste totali: &quot; + updateParameter.get)</span><span style=''>
-</span>45 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
+</span>34 <span style=''></span><span style='background: #F0ADAD'>        println(s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
+</span>35 <span style=''></span><span style='background: #F0ADAD'>          s&quot;- (Tempo: ${quizAnswered.timeToAnswer}) &quot; +
+</span>36 <span style=''></span><span style='background: #F0ADAD'>          s&quot;- ${quizAnswered.quizInGame.course.courseId.courseName}&quot;);
+</span>37 <span style=''></span><span style='background: #F0ADAD'>        quizAnswered.quizInGame.answers
+</span>38 <span style=''></span><span style='background: #F0ADAD'>          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
+</span>39 <span style=''></span><span style='background: #F0ADAD'>          .foreach(answerQuiz =&gt;
+</span>40 <span style=''></span><span style='background: #F0ADAD'>            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
+</span>41 <span style=''></span><span style='background: #F0ADAD'>          );</span><span style=''>
+</span>42 <span style=''>      )
+</span>43 <span style=''>    </span><span style='background: #F0ADAD'>case TotalPointsUpdate(updateParameter)</span><span style=''> =&gt;
+</span>44 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Punti totali: &quot;+updateParameter.get)</span><span style=''>
+</span>45 <span style=''>    </span><span style='background: #F0ADAD'>case TotalCorrectAnswersUpdate(updateParameter)</span><span style=''> =&gt;
+</span>46 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Risposte giuste totali: &quot; + updateParameter.get)</span><span style=''>
+</span>47 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -84,7 +86,7 @@
           20
         </td>
         <td>
-          2235
+          2264
         </td>
         <td>
           525
@@ -110,7 +112,7 @@
           21
         </td>
         <td>
-          2234
+          2263
         </td>
         <td>
           534
@@ -134,7 +136,7 @@
           26
         </td>
         <td>
-          2269
+          2302
         </td>
         <td>
           583
@@ -158,7 +160,7 @@
           27
         </td>
         <td>
-          2238
+          2267
         </td>
         <td>
           658
@@ -182,7 +184,7 @@
           28
         </td>
         <td>
-          2236
+          2265
         </td>
         <td>
           686
@@ -206,7 +208,7 @@
           29
         </td>
         <td>
-          2237
+          2266
         </td>
         <td>
           740
@@ -230,31 +232,7 @@
           30
         </td>
         <td>
-          2239
-        </td>
-        <td>
-          814
-          -
-          839
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          isDefined
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          updateParameter.isDefined
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          2259
+          2292
         </td>
         <td>
           766
@@ -275,72 +253,34 @@
         </td>
       </tr><tr>
         <td>
-          31
+          30
         </td>
         <td>
-          2257
+          2268
         </td>
         <td>
-          851
+          814
           -
-          1438
+          839
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          foreach
+          isDefined
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          updateParameter.get.quizAnsweredList foreach (quizAnswered =&gt;
-        println(quizAnswered.quizInGame.quiz.question);
-        println(s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;);
-        quizAnswered.quizInGame.answers
-          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
-          .foreach(answerQuiz =&gt;
-            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
-          );
+          updateParameter.isDefined
         </td>
       </tr><tr>
         <td>
           31
         </td>
         <td>
-          2258
-        </td>
-        <td>
-          851
-          -
-          1438
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          updateParameter.get.quizAnsweredList foreach (quizAnswered =&gt;
-        println(quizAnswered.quizInGame.quiz.question);
-        println(s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;);
-        quizAnswered.quizInGame.answers
-          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
-          .foreach(answerQuiz =&gt;
-            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
-          );
-        </td>
-      </tr><tr>
-        <td>
-          31
-        </td>
-        <td>
-          2240
+          2269
         </td>
         <td>
           851
@@ -361,10 +301,76 @@
         </td>
       </tr><tr>
         <td>
+          31
+        </td>
+        <td>
+          2290
+        </td>
+        <td>
+          851
+          -
+          1532
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get.quizAnsweredList foreach (quizAnswered =&gt;
+        println(quizAnswered.quizInGame.quiz.question);
+        println(s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
+          s&quot;- (Tempo: ${quizAnswered.timeToAnswer}) &quot; +
+          s&quot;- ${quizAnswered.quizInGame.course.courseId.courseName}&quot;);
+        quizAnswered.quizInGame.answers
+          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
+          .foreach(answerQuiz =&gt;
+            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
+          );
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          2291
+        </td>
+        <td>
+          851
+          -
+          1532
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get.quizAnsweredList foreach (quizAnswered =&gt;
+        println(quizAnswered.quizInGame.quiz.question);
+        println(s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
+          s&quot;- (Tempo: ${quizAnswered.timeToAnswer}) &quot; +
+          s&quot;- ${quizAnswered.quizInGame.course.courseId.courseName}&quot;);
+        quizAnswered.quizInGame.answers
+          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
+          .foreach(answerQuiz =&gt;
+            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
+          );
+        </td>
+      </tr><tr>
+        <td>
           32
         </td>
         <td>
-          2241
+          2270
         </td>
         <td>
           921
@@ -388,36 +394,12 @@
           33
         </td>
         <td>
-          2242
-        </td>
-        <td>
-          1041
-          -
-          1080
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          courseId
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizAnswered.quizInGame.course.courseId
-        </td>
-      </tr><tr>
-        <td>
-          33
-        </td>
-        <td>
-          2245
+          2278
         </td>
         <td>
           977
           -
-          1094
+          1188
         </td>
         <td>
           Apply
@@ -429,19 +411,21 @@
           
         </td>
         <td style="background: #F0ADAD">
-          println(s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;)
+          println(s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
+          s&quot;- (Tempo: ${quizAnswered.timeToAnswer}) &quot; +
+          s&quot;- ${quizAnswered.quizInGame.course.courseId.courseName}&quot;)
         </td>
       </tr><tr>
         <td>
           33
         </td>
         <td>
-          2244
+          2271
         </td>
         <td>
           985
           -
-          1093
+          1060
         </td>
         <td>
           Apply
@@ -453,19 +437,94 @@
           
         </td>
         <td style="background: #F0ADAD">
-          s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;
+          s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot;
         </td>
       </tr><tr>
         <td>
           33
         </td>
         <td>
-          2243
+          2277
         </td>
         <td>
-          1041
+          985
           -
-          1091
+          1187
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
+          s&quot;- (Tempo: ${quizAnswered.timeToAnswer}) &quot; +
+          s&quot;- ${quizAnswered.quizInGame.course.courseId.courseName}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          2273
+        </td>
+        <td>
+          985
+          -
+          1116
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
+          s&quot;- (Tempo: ${quizAnswered.timeToAnswer}) &quot;
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          2272
+        </td>
+        <td>
+          1073
+          -
+          1116
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;- (Tempo: ${quizAnswered.timeToAnswer}) &quot;
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2275
+        </td>
+        <td>
+          1135
+          -
+          1185
         </td>
         <td>
           Select
@@ -484,12 +543,60 @@
           35
         </td>
         <td>
-          2248
+          2274
         </td>
         <td>
-          1241
+          1135
           -
-          1277
+          1174
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizAnswered.quizInGame.course.courseId
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2276
+        </td>
+        <td>
+          1129
+          -
+          1187
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;- ${quizAnswered.quizInGame.course.courseId.courseName}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          2281
+        </td>
+        <td>
+          1335
+          -
+          1371
         </td>
         <td>
           Apply
@@ -505,15 +612,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          37
         </td>
         <td>
-          2247
+          2280
         </td>
         <td>
-          1241
+          1335
           -
-          1270
+          1364
         </td>
         <td>
           Select
@@ -529,15 +636,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          37
         </td>
         <td>
-          2250
+          2283
         </td>
         <td>
-          1104
+          1198
           -
-          1290
+          1384
         </td>
         <td>
           Apply
@@ -554,15 +661,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          37
         </td>
         <td>
-          2246
+          2279
         </td>
         <td>
-          1200
+          1294
           -
-          1235
+          1329
         </td>
         <td>
           Select
@@ -578,15 +685,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          37
         </td>
         <td>
-          2249
+          2282
         </td>
         <td>
-          1283
+          1377
           -
-          1288
+          1382
         </td>
         <td>
           Literal
@@ -602,15 +709,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          38
         </td>
         <td>
-          2256
+          2289
         </td>
         <td>
-          1104
+          1198
           -
-          1437
+          1531
         </td>
         <td>
           Apply
@@ -630,15 +737,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          39
         </td>
         <td>
-          2251
+          2284
         </td>
         <td>
-          1344
+          1438
           -
-          1365
+          1459
         </td>
         <td>
           Apply
@@ -654,15 +761,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          39
         </td>
         <td>
-          2254
+          2287
         </td>
         <td>
-          1344
+          1438
           -
-          1423
+          1517
         </td>
         <td>
           Apply
@@ -678,15 +785,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          39
         </td>
         <td>
-          2253
+          2286
         </td>
         <td>
-          1412
+          1506
           -
-          1423
+          1517
         </td>
         <td>
           Literal
@@ -702,39 +809,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          39
         </td>
         <td>
-          2252
+          2288
         </td>
         <td>
-          1396
+          1430
           -
-          1406
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          &quot;CORRETTA&quot;
-        </td>
-      </tr><tr>
-        <td>
-          37
-        </td>
-        <td>
-          2255
-        </td>
-        <td>
-          1336
-          -
-          1425
+          1519
         </td>
         <td>
           Apply
@@ -750,15 +833,39 @@
         </td>
       </tr><tr>
         <td>
-          40
+          39
         </td>
         <td>
-          2263
+          2285
         </td>
         <td>
-          1451
-          -
           1490
+          -
+          1500
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;CORRETTA&quot;
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          2296
+        </td>
+        <td>
+          1545
+          -
+          1584
         </td>
         <td>
           Block
@@ -774,15 +881,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          43
         </td>
         <td>
-          2260
+          2293
         </td>
         <td>
-          1525
+          1619
           -
-          1544
+          1638
         </td>
         <td>
           Select
@@ -798,15 +905,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          43
         </td>
         <td>
-          2262
+          2295
         </td>
         <td>
-          1500
+          1594
           -
-          1545
+          1639
         </td>
         <td>
           Apply
@@ -822,15 +929,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          43
         </td>
         <td>
-          2261
+          2294
         </td>
         <td>
-          1508
+          1602
           -
-          1544
+          1638
         </td>
         <td>
           Apply
@@ -846,15 +953,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          44
         </td>
         <td>
-          2267
+          2300
         </td>
         <td>
-          1550
+          1644
           -
-          1597
+          1691
         </td>
         <td>
           Block
@@ -870,15 +977,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          45
         </td>
         <td>
-          2266
+          2299
         </td>
         <td>
-          1607
+          1701
           -
-          1664
+          1758
         </td>
         <td>
           Apply
@@ -894,15 +1001,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          45
         </td>
         <td>
-          2265
+          2298
         </td>
         <td>
-          1615
+          1709
           -
-          1663
+          1757
         </td>
         <td>
           Apply
@@ -918,15 +1025,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          45
         </td>
         <td>
-          2264
+          2297
         </td>
         <td>
-          1644
+          1738
           -
-          1663
+          1757
         </td>
         <td>
           Select
@@ -942,15 +1049,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          46
         </td>
         <td>
-          2268
+          2301
         </td>
         <td>
-          1669
+          1763
           -
-          1675
+          1769
         </td>
         <td>
           Block

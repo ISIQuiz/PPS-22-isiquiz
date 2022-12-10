@@ -25,23 +25,24 @@
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model
 </span>2 <span style=''>
 </span>3 <span style=''>import model.Answer.Answer
-</span>4 <span style=''>
-</span>5 <span style=''>/** A quiz answered is a quiz in game, accompanied with an optional answer that the player gave */
-</span>6 <span style=''>case class QuizAnswered(quizInGame: QuizInGame, answerPlayer: Option[Answer])
-</span>7 <span style=''>
-</span>8 <span style=''>/** A review is list of quiz answered by the player during a game */
-</span>9 <span style=''>case class Review(var quizAnsweredList: List[QuizAnswered] = </span><span style='background: #AEF1AE'>Nil</span><span style=''>):
-</span>10 <span style=''>  </span><span style='background: #AEF1AE'>def addQuizAnswered</span><span style=''>(quizAnswered: QuizAnswered): Unit = quizAnsweredList = </span><span style='background: #AEF1AE'>quizAnsweredList :+ quizAnswered</span><span style=''>
-</span>11 <span style=''>
-</span>12 <span style=''>  </span><span style='background: #AEF1AE'>def numberQuizAnswered</span><span style=''>: Int = </span><span style='background: #AEF1AE'>quizAnsweredList.length</span><span style=''>
-</span>13 <span style=''>
-</span>14 <span style=''>  </span><span style='background: #AEF1AE'>def totalCorrectAnswers</span><span style=''>: Int = </span><span style='background: #AEF1AE'>quizAnsweredList.count(quizAnswered =&gt;
-</span>15 <span style=''></span><span style='background: #AEF1AE'>    if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get.isCorrect else false)</span><span style=''>
-</span>16 <span style=''>
-</span>17 <span style=''>  </span><span style='background: #AEF1AE'>def totalPoints</span><span style=''>: Int = </span><span style='background: #AEF1AE'>quizAnsweredList.foldLeft(0)((acc, quizAnswered) =&gt; quizAnswered.answerPlayer match
-</span>18 <span style=''></span><span style='background: #AEF1AE'>    case Some(ans) if ans.isCorrect =&gt; acc + quizAnswered.quizInGame.quiz.maxScore
-</span>19 <span style=''></span><span style='background: #AEF1AE'>    case _ =&gt; acc
-</span>20 <span style=''></span><span style='background: #AEF1AE'>  )</span><span style=''>
+</span>4 <span style=''>import model.stats.PlayerStats.PlayerStats
+</span>5 <span style=''>
+</span>6 <span style=''>/** A quiz answered is a quiz in game, accompanied with an optional answer that the player gave */
+</span>7 <span style=''>case class QuizAnswered(quizInGame: QuizInGame, answerPlayer: Option[Answer], var score: Int = 0, var timeToAnswer: Double = 0)
+</span>8 <span style=''>
+</span>9 <span style=''>/** A review is list of quiz answered by the player during a game */
+</span>10 <span style=''>case class Review(var quizAnsweredList: List[QuizAnswered] = </span><span style='background: #AEF1AE'>Nil</span><span style=''>):
+</span>11 <span style=''>  </span><span style='background: #AEF1AE'>def addQuizAnswered</span><span style=''>(quizAnswered: QuizAnswered): Unit = quizAnsweredList = </span><span style='background: #AEF1AE'>quizAnsweredList :+ quizAnswered</span><span style=''>
+</span>12 <span style=''>
+</span>13 <span style=''>  </span><span style='background: #AEF1AE'>def numberQuizAnswered</span><span style=''>: Int = </span><span style='background: #AEF1AE'>quizAnsweredList.length</span><span style=''>
+</span>14 <span style=''>/*
+</span>15 <span style=''>  def totalCorrectAnswers: Int = quizAnsweredList.count(quizAnswered =&gt;
+</span>16 <span style=''>    if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get.isCorrect else false)
+</span>17 <span style=''>
+</span>18 <span style=''>  def totalPoints: Int = quizAnsweredList.foldLeft(0)((acc, quizAnswered) =&gt; quizAnswered.answerPlayer match
+</span>19 <span style=''>    case Some(ans) if ans.isCorrect =&gt; acc + quizAnswered.quizInGame.quiz.maxScore
+</span>20 <span style=''>    case _ =&gt; acc
+</span>21 <span style=''>  )*/
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -56,15 +57,63 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          8
+          6
         </td>
         <td>
-          532
+          531
         </td>
         <td>
-          359
+          316
           -
-          359
+          316
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          6
+        </td>
+        <td>
+          530
+        </td>
+        <td>
+          286
+          -
+          286
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          9
+        </td>
+        <td>
+          537
+        </td>
+        <td>
+          453
+          -
+          453
         </td>
         <td>
           DefDef
@@ -80,15 +129,15 @@
         </td>
       </tr><tr>
         <td>
-          8
+          9
         </td>
         <td>
-          531
+          536
         </td>
         <td>
-          359
+          453
           -
-          362
+          456
         </td>
         <td>
           Ident
@@ -104,15 +153,15 @@
         </td>
       </tr><tr>
         <td>
-          9
+          10
         </td>
         <td>
-          517
+          532
         </td>
         <td>
-          443
+          537
           -
-          475
+          569
         </td>
         <td>
           Apply
@@ -128,15 +177,15 @@
         </td>
       </tr><tr>
         <td>
-          9
+          10
         </td>
         <td>
-          518
+          533
         </td>
         <td>
-          368
+          462
           -
-          387
+          481
         </td>
         <td>
           DefDef
@@ -152,15 +201,15 @@
         </td>
       </tr><tr>
         <td>
-          11
+          12
         </td>
         <td>
-          519
-        </td>
-        <td>
-          511
-          -
           534
+        </td>
+        <td>
+          605
+          -
+          628
         </td>
         <td>
           Select
@@ -176,15 +225,15 @@
         </td>
       </tr><tr>
         <td>
-          11
+          12
         </td>
         <td>
-          520
+          535
         </td>
         <td>
-          481
+          575
           -
-          503
+          597
         </td>
         <td>
           DefDef
@@ -197,250 +246,6 @@
         </td>
         <td style="background: #AEF1AE">
           def numberQuizAnswered
-        </td>
-      </tr><tr>
-        <td>
-          13
-        </td>
-        <td>
-          525
-        </td>
-        <td>
-          571
-          -
-          710
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          count
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quizAnsweredList.count(quizAnswered =&gt;
-    if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get.isCorrect else false)
-        </td>
-      </tr><tr>
-        <td>
-          13
-        </td>
-        <td>
-          526
-        </td>
-        <td>
-          540
-          -
-          563
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          totalCorrectAnswers
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          def totalCorrectAnswers
-        </td>
-      </tr><tr>
-        <td>
-          14
-        </td>
-        <td>
-          523
-        </td>
-        <td>
-          659
-          -
-          698
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          isCorrect
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quizAnswered.answerPlayer.get.isCorrect
-        </td>
-      </tr><tr>
-        <td>
-          14
-        </td>
-        <td>
-          522
-        </td>
-        <td>
-          659
-          -
-          688
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          get
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quizAnswered.answerPlayer.get
-        </td>
-      </tr><tr>
-        <td>
-          14
-        </td>
-        <td>
-          521
-        </td>
-        <td>
-          618
-          -
-          653
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          isDefined
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quizAnswered.answerPlayer.isDefined
-        </td>
-      </tr><tr>
-        <td>
-          14
-        </td>
-        <td>
-          524
-        </td>
-        <td>
-          704
-          -
-          709
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          false
-        </td>
-      </tr><tr>
-        <td>
-          16
-        </td>
-        <td>
-          530
-        </td>
-        <td>
-          716
-          -
-          731
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          totalPoints
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          def totalPoints
-        </td>
-      </tr><tr>
-        <td>
-          16
-        </td>
-        <td>
-          529
-        </td>
-        <td>
-          739
-          -
-          930
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          foldLeft
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quizAnsweredList.foldLeft(0)((acc, quizAnswered) =&gt; quizAnswered.answerPlayer match
-    case Some(ans) if ans.isCorrect =&gt; acc + quizAnswered.quizInGame.quiz.maxScore
-    case _ =&gt; acc
-  )
-        </td>
-      </tr><tr>
-        <td>
-          17
-        </td>
-        <td>
-          527
-        </td>
-        <td>
-          828
-          -
-          859
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          case Some(ans) if ans.isCorrect
-        </td>
-      </tr><tr>
-        <td>
-          18
-        </td>
-        <td>
-          528
-        </td>
-        <td>
-          912
-          -
-          918
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          case _
         </td>
       </tr>
     </table>

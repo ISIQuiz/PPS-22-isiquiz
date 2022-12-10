@@ -34,24 +34,25 @@
 </span>10 <span style=''>
 </span>11 <span style=''>/** Companion object of review menu controller containing all the actions can be sent */
 </span>12 <span style=''>object ReviewMenuController extends BackAction :
-</span>13 <span style=''>  /** action to end the game in the controller of the review of a game */
-</span>14 <span style=''>  case object End extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>15 <span style=''>  
-</span>16 <span style=''>/** Controls the behavior of the review page */
-</span>17 <span style=''>class ReviewMenuController(var gameStage: GameStage) extends PageController :
+</span>13 <span style=''>  case object End extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>14 <span style=''>/** Controls the behavior of the review page */
+</span>15 <span style=''>class ReviewMenuController(var gameStage: GameStage) extends PageController :
+</span>16 <span style=''>
+</span>17 <span style=''>  import ReviewMenuController.*
 </span>18 <span style=''>
-</span>19 <span style=''>  import ReviewMenuController.*
-</span>20 <span style=''>
-</span>21 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
-</span>22 <span style=''>    </span><span style='background: #F0ADAD'>case End</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(MainMenuAction)</span><span style=''>
-</span>23 <span style=''>
-</span>24 <span style=''>
-</span>25 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>26 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
-</span>27 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CurrentReviewUpdate(Option(gameStage.review)))</span><span style=''>
-</span>28 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(TotalPointsUpdate(Option(gameStage.review.totalPoints)))</span><span style=''>
-</span>29 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(TotalCorrectAnswersUpdate(Option(gameStage.review.totalCorrectAnswers)))</span><span style=''>
+</span>19 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
+</span>20 <span style=''>    </span><span style='background: #F0ADAD'>case End</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(MainMenuAction)</span><span style=''>
+</span>21 <span style=''>
+</span>22 <span style=''>
+</span>23 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
+</span>24 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
+</span>25 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CurrentReviewUpdate(Option(gameStage.review)))</span><span style=''>
+</span>26 <span style=''>    //sendUpdate(TotalPointsUpdate(Option(gameStage.review.totalPoints)))
+</span>27 <span style=''>    //sendUpdate(TotalCorrectAnswersUpdate(Option(gameStage.review.totalCorrectAnswers)))
+</span>28 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(TotalPointsUpdate(Option(gameStage.playerStatsInGame.totalScore)))</span><span style=''>
+</span>29 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(TotalCorrectAnswersUpdate(Option(gameStage.playerStatsInGame.totalCorrectAnswers)))</span><span style=''>
 </span>30 <span style=''>
+</span>31 <span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -66,15 +67,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          13
+          12
         </td>
         <td>
-          266
+          268
         </td>
         <td>
-          559
+          484
           -
-          578
+          503
         </td>
         <td>
           Apply
@@ -90,15 +91,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          18
         </td>
         <td>
-          269
+          271
         </td>
         <td>
-          751
+          672
           -
-          770
+          691
         </td>
         <td>
           DefDef
@@ -114,15 +115,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          19
         </td>
         <td>
-          268
+          270
         </td>
         <td>
-          819
+          740
           -
-          827
+          748
         </td>
         <td>
           Block
@@ -138,15 +139,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          19
         </td>
         <td>
-          267
+          269
         </td>
         <td>
-          831
+          752
           -
-          867
+          788
         </td>
         <td>
           Apply
@@ -162,15 +163,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          22
         </td>
         <td>
           279
         </td>
         <td>
-          875
+          796
           -
-          901
+          822
         </td>
         <td>
           DefDef
@@ -186,15 +187,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          23
         </td>
         <td>
-          270
+          272
         </td>
         <td>
-          917
+          838
           -
-          942
+          863
         </td>
         <td>
           Apply
@@ -210,39 +211,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          24
         </td>
         <td>
-          271
+          274
         </td>
         <td>
-          979
+          869
           -
-          1003
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option(gameStage.review)
-        </td>
-      </tr><tr>
-        <td>
-          26
-        </td>
-        <td>
-          272
-        </td>
-        <td>
-          948
-          -
-          1005
+          926
         </td>
         <td>
           Apply
@@ -258,15 +235,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          24
         </td>
         <td>
-          274
+          273
         </td>
         <td>
-          1040
+          900
           -
-          1076
+          924
         </td>
         <td>
           Apply
@@ -278,31 +255,31 @@
           
         </td>
         <td style="background: #F0ADAD">
-          Option(gameStage.review.totalPoints)
+          Option(gameStage.review)
         </td>
       </tr><tr>
         <td>
           27
         </td>
         <td>
-          273
+          276
         </td>
         <td>
-          1047
+          1098
           -
-          1075
+          1175
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          totalPoints
+          sendUpdate
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          gameStage.review.totalPoints
+          sendUpdate(TotalPointsUpdate(Option(gameStage.playerStatsInGame.totalScore)))
         </td>
       </tr><tr>
         <td>
@@ -312,33 +289,9 @@
           275
         </td>
         <td>
-          1011
+          1127
           -
-          1078
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendUpdate
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendUpdate(TotalPointsUpdate(Option(gameStage.review.totalPoints)))
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          277
-        </td>
-        <td>
-          1121
-          -
-          1165
+          1173
         </td>
         <td>
           Apply
@@ -350,31 +303,31 @@
           
         </td>
         <td style="background: #F0ADAD">
-          Option(gameStage.review.totalCorrectAnswers)
+          Option(gameStage.playerStatsInGame.totalScore)
         </td>
       </tr><tr>
         <td>
           28
         </td>
         <td>
-          276
+          277
         </td>
         <td>
-          1128
+          1218
           -
-          1164
+          1273
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          totalCorrectAnswers
+          apply
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          gameStage.review.totalCorrectAnswers
+          Option(gameStage.playerStatsInGame.totalCorrectAnswers)
         </td>
       </tr><tr>
         <td>
@@ -384,9 +337,9 @@
           278
         </td>
         <td>
-          1084
+          1181
           -
-          1167
+          1275
         </td>
         <td>
           Apply
@@ -398,7 +351,7 @@
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(TotalCorrectAnswersUpdate(Option(gameStage.review.totalCorrectAnswers)))
+          sendUpdate(TotalCorrectAnswersUpdate(Option(gameStage.playerStatsInGame.totalCorrectAnswers)))
         </td>
       </tr>
     </table>
