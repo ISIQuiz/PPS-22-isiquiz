@@ -28,5 +28,5 @@ class GameStage(var coursesInGame: List[SavedCourse] = List(), var quizInGame: Q
   def currentQuizNumber:Int = review.numberQuizAnswered+1
 
   def maxQuizzesReached: Boolean = gameSettings match
-    case StandardGameSettings(_, maxQuizzes, _) => review.numberQuizAnswered >= maxQuizzes
+    case StandardGameSettings(_, maxQuizzes) => review.numberQuizAnswered >= maxQuizzes
     case _ => false

@@ -39,6 +39,7 @@ object AppController extends Controller:
   case class ReviewMenuAction(override val actionParameter: Option[GameStage]) extends Action(actionParameter)
   case class CustomMenuAction[T](override val actionParameter: Option[T]) extends Action(actionParameter)
   case class StandardGameAction[T](override val actionParameter: Option[T]) extends Action(actionParameter)
+  case class BlitzGameAction[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
   override def handle[T](action: Action[T]): Unit = action match
     case MainMenuAction => currentPage_(new MainMenuController, ViewFactory.create(MainMenuAction))
@@ -46,6 +47,7 @@ object AppController extends Controller:
     case StatisticsMenuAction => currentPage_(new StatisticsMenuController, ViewFactory.create(StatisticsMenuAction))
     case SettingsMenuAction => currentPage_(new SettingsMenuController, ViewFactory.create(SettingsMenuAction))
     case StandardGameAction(actionParameter) => currentPage_(StandardGameController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(StandardGameAction(Option.empty)))
+    case BlitzGameAction(actionParameter) => currentPage_(BlitzGameController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(BlitzGameAction(Option.empty)))
     case AddCourseMenuAction => currentPage_(new AddCourseMenuController, ViewFactory.create(AddCourseMenuAction))
     case AddQuizMenuAction => currentPage_(new AddQuizMenuController, ViewFactory.create(AddQuizMenuAction))
     case EditCourseMenuAction => currentPage_(new EditCourseMenuController, ViewFactory.create(EditCourseMenuAction))
