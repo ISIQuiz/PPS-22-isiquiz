@@ -5,7 +5,7 @@ import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
 import view.View
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, CurrentGameUpdate, TimeExpiredUpdate, TimerUpdate}
+import view.StandardGameMenuView.{AnswerFeedbackUpdate, CurrentGameUpdate, DefaultUpdate, QuizScoreUpdate, TimeExpiredUpdate, TimerUpdate}
 import model.Answer.Answer
 import model.GameStage
 import model.Review
@@ -41,6 +41,7 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
   val gameStage: GameStage = game
   val timer: Timer = Timer.apply(gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime)
   var currentAnswer: Option[Answer] = None
+  var currentScore: Int = 0
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)
@@ -54,7 +55,11 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
       sendUpdate(TimeExpiredUpdate)
     else
       sendUpdate(CurrentGameUpdate(Option(gameStage)))
-      if !timer.isStopped then sendUpdate(TimerUpdate(Option(timer)))
+      if !timer.isStopped then
+        sendUpdate(TimerUpdate(Option(timer)))
+        currentScore = updateScore(timer.getRemainingTime.toInt, timer.maxTime, gameStage.quizInGame.quiz.maxScore) // update score
+        sendUpdate(QuizScoreUpdate(Option(currentScore)))
+
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
     timer.stopTimer()
@@ -68,6 +73,7 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
     currentAnswer match
       case Some(ans) => gameStage.addReviewQuizAnswer(ans)
       case _ => gameStage.addReviewQuizNotAnswered
+      // add playerstats
     if gameStage.maxQuizzesReached then endGame()
     currentAnswer = None
     timer.startTimer()
@@ -92,6 +98,14 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
     val wrongAnswers = randomNumberGenerator(3, allWrongAnswers.size).map(allWrongAnswers)
 
     scala.util.Random.shuffle(correctAnswers ::: wrongAnswers)
+
+  def updateScore(timeRemaining: Int, maxTime: Long, maxScore: Int): Int = {
+    val coeff: Double = maxScore.toDouble / (maxTime / 1000).toDouble
+    val score = (coeff * timeRemaining).toInt
+    /*println("ms: " + maxScore + "  |  mt: " + maxTime + "  |  c: " + coeff + "  |  tr" + timeRemaining)
+    println(score)*/
+    if (score >= maxScore) score else score + 1
+  }
 
   override def endGame(): Unit = AppController.handle(ReviewMenuAction(Option(gameStage)))
   def randomNumberGenerator(quantity: Int, range: Int): List[Int] = scala.util.Random.shuffle(0 until range).take(quantity).toList

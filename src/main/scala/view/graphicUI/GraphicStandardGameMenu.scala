@@ -12,12 +12,12 @@ import javafx.scene.control.{Button, Label, ProgressBar}
 import javafx.stage.Stage
 import model.GameStage
 import model.settings.StandardGameSettings
-import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, CurrentGameUpdate, TimeExpiredUpdate, TimerUpdate}
+import view.StandardGameMenuView.{AnswerFeedbackUpdate, CurrentGameUpdate, DefaultUpdate, QuizScoreUpdate, TimeExpiredUpdate, TimerUpdate}
 
 object GraphicStandardGameMenu
 
 /** Standard Game menu graphic interface */
-class GraphicStandardGameMenu(stage: Stage) extends GraphicView :
+class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
 
   @FXML
   var backButton: Button = _
@@ -93,9 +93,10 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView :
     case CurrentGameUpdate(updateParameter) =>
       Platform.runLater(() => {
         val gameStage: GameStage = updateParameter.get
+        //maxScore = gameStage.quizInGame.quiz.maxScore
         courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
         quizNumberLabel.setText(s"${gameStage.currentQuizNumber}/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}")
-        pointsLabel.setText(gameStage.quizInGame.quiz.maxScore.toString + " punti")
+        //pointsLabel.setText(actualScore.toString + " punti")
         quizLabel.setText(gameStage.quizInGame.quiz.question)
         firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
         secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
@@ -114,9 +115,22 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView :
       Platform.runLater(() => {
         timeRemainingLabel.setText(s"${timer.getRemainingTime.toInt}")
         timeProgressBar.setProgress(timer.getCompletionPercentage)
+        /*actualScore = updateScore(
+          timer.getRemainingTime.toInt,
+          timer.maxTime,
+          maxScore
+        )*/
+        //pointsLabel.setText(actualScore + " punti")
       })
+    case QuizScoreUpdate(updateParameter) =>
+      Platform.runLater(() => {
+        val score: Int = updateParameter.get
+        pointsLabel.setText(score + " punti")
+      })
+
     case TimeExpiredUpdate =>
       disableButton(answerButtons)
+
 
   def resetAnswerButton(buttons: List[Button]): Unit =
     buttons.foreach(button =>
