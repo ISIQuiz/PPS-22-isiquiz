@@ -3,7 +3,7 @@ package model
 import model.Answer.Answer
 
 /** A quiz answered is a quiz in game, accompanied with an optional answer that the player gave */
-case class QuizAnswered(quizInGame: QuizInGame, answer: Option[Answer])
+case class QuizAnswered(quizInGame: QuizInGame, answerPlayer: Option[Answer])
 
 /** A review is list of quiz answered by the player during a game */
 case class Review(var quizAnsweredList: List[QuizAnswered] = Nil):
@@ -12,9 +12,9 @@ case class Review(var quizAnsweredList: List[QuizAnswered] = Nil):
   def numberQuizAnswered: Int = quizAnsweredList.length
 
   def totalCorrectAnswers: Int = quizAnsweredList.count(quizAnswered =>
-    if quizAnswered.answer.isDefined then quizAnswered.answer.get.isCorrect else false)
+    if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get.isCorrect else false)
 
-  def totalPoints: Int = quizAnsweredList.foldLeft(0)((acc, quizAnswered) => quizAnswered.answer match
+  def totalPoints: Int = quizAnsweredList.foldLeft(0)((acc, quizAnswered) => quizAnswered.answerPlayer match
     case Some(ans) if ans.isCorrect => acc + quizAnswered.quizInGame.quiz.maxScore
     case _ => acc
   )
