@@ -1,0 +1,970 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          controller/GameController.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package controller
+</span>2 <span style=''>
+</span>3 <span style=''>import controller.AppController.ReviewMenuAction
+</span>4 <span style=''>import model.Answer.Answer
+</span>5 <span style=''>import model.Quiz.Quiz
+</span>6 <span style=''>import model.stats.PlayerStats
+</span>7 <span style=''>import model.{GameStage, QuizInGame}
+</span>8 <span style=''>import model.SavedCourse.SavedCourse
+</span>9 <span style=''>import utils.storage.ExportHandler
+</span>10 <span style=''>
+</span>11 <span style=''>trait GameController:
+</span>12 <span style=''>
+</span>13 <span style=''>  def nextQuiz(): Unit
+</span>14 <span style=''>
+</span>15 <span style=''>  </span><span style='background: #F0ADAD'>def chooseQuiz</span><span style=''>(course: SavedCourse): Quiz = </span><span style='background: #F0ADAD'>course.quizList(randomNumberGenerator(1, course.quizList.size).head)</span><span style=''>
+</span>16 <span style=''>
+</span>17 <span style=''>  </span><span style='background: #F0ADAD'>def chooseAnswers</span><span style=''>(quiz: Quiz): List[Answer] =
+</span>18 <span style=''>    val allCorrectAnswers = </span><span style='background: #F0ADAD'>quiz.answerList.filter(answer =&gt; answer.isCorrect)</span><span style=''>
+</span>19 <span style=''>    val allWrongAnswers = </span><span style='background: #F0ADAD'>quiz.answerList.filter(answer =&gt; !answer.isCorrect)</span><span style=''>
+</span>20 <span style=''>
+</span>21 <span style=''>    val correctAnswers = </span><span style='background: #F0ADAD'>randomNumberGenerator(1, allCorrectAnswers.size).map(allCorrectAnswers)</span><span style=''>
+</span>22 <span style=''>    val wrongAnswers = </span><span style='background: #F0ADAD'>randomNumberGenerator(3, allWrongAnswers.size).map(allWrongAnswers)</span><span style=''>
+</span>23 <span style=''>
+</span>24 <span style=''>    </span><span style='background: #F0ADAD'>scala.util.Random.shuffle(correctAnswers ::: wrongAnswers)</span><span style=''>
+</span>25 <span style=''>
+</span>26 <span style=''>
+</span>27 <span style=''>  </span><span style='background: #F0ADAD'>def extractQuizInGame</span><span style=''>(gameStage: GameStage): QuizInGame =
+</span>28 <span style=''>    val selectedCourse = </span><span style='background: #F0ADAD'>gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)</span><span style=''>
+</span>29 <span style=''>    val selectedQuiz = </span><span style='background: #F0ADAD'>chooseQuiz(selectedCourse)</span><span style=''>
+</span>30 <span style=''>    val selectedAnswers = </span><span style='background: #F0ADAD'>chooseAnswers(selectedQuiz)</span><span style=''>
+</span>31 <span style=''>    val quizInGame = QuizInGame(selectedCourse, selectedQuiz, selectedAnswers)
+</span>32 <span style=''>    quizInGame
+</span>33 <span style=''>
+</span>34 <span style=''>  </span><span style='background: #F0ADAD'>def endGame</span><span style=''>(gameStage: GameStage): Unit =
+</span>35 <span style=''>    // Update session player stats and export to personal stats
+</span>36 <span style=''>    </span><span style='background: #F0ADAD'>AppController.changePlayerStats(PlayerStats.mergePlayerStats(AppController.session.playerStats, gameStage.playerStatsInGame))</span><span style=''>
+</span>37 <span style=''>    </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(AppController.session.playerStats)</span><span style=''>
+</span>38 <span style=''>    </span><span style='background: #F0ADAD'>AppController.handle(ReviewMenuAction(Option(gameStage)))</span><span style=''>
+</span>39 <span style=''>
+</span>40 <span style=''>  </span><span style='background: #F0ADAD'>def randomNumberGenerator</span><span style=''>(quantity: Int, range: Int): List[Int] = </span><span style='background: #F0ADAD'>scala.util.Random.shuffle(0 until range).take(quantity).toList</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          295
+        </td>
+        <td>
+          369
+          -
+          415
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          randomNumberGenerator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          randomNumberGenerator(1, course.quizList.size)
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          298
+        </td>
+        <td>
+          309
+          -
+          323
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          chooseQuiz
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          def chooseQuiz
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          294
+        </td>
+        <td>
+          394
+          -
+          414
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          course.quizList.size
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          297
+        </td>
+        <td>
+          353
+          -
+          421
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          course.quizList(randomNumberGenerator(1, course.quizList.size).head)
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          296
+        </td>
+        <td>
+          369
+          -
+          420
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          head
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          randomNumberGenerator(1, course.quizList.size).head
+        </td>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          309
+        </td>
+        <td>
+          425
+          -
+          442
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          chooseAnswers
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          def chooseAnswers
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          299
+        </td>
+        <td>
+          499
+          -
+          549
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          filter
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quiz.answerList.filter(answer =&gt; answer.isCorrect)
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          300
+        </td>
+        <td>
+          576
+          -
+          627
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          filter
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quiz.answerList.filter(answer =&gt; !answer.isCorrect)
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          301
+        </td>
+        <td>
+          679
+          -
+          701
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          allCorrectAnswers.size
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          303
+        </td>
+        <td>
+          654
+          -
+          725
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          randomNumberGenerator(1, allCorrectAnswers.size).map(allCorrectAnswers)
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          302
+        </td>
+        <td>
+          654
+          -
+          702
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          randomNumberGenerator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          randomNumberGenerator(1, allCorrectAnswers.size)
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          304
+        </td>
+        <td>
+          774
+          -
+          794
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          allWrongAnswers.size
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          306
+        </td>
+        <td>
+          749
+          -
+          816
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          randomNumberGenerator(3, allWrongAnswers.size).map(allWrongAnswers)
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          305
+        </td>
+        <td>
+          749
+          -
+          795
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          randomNumberGenerator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          randomNumberGenerator(3, allWrongAnswers.size)
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          307
+        </td>
+        <td>
+          848
+          -
+          879
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          :::
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          correctAnswers ::: wrongAnswers
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          308
+        </td>
+        <td>
+          822
+          -
+          880
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          shuffle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.util.Random.shuffle(correctAnswers ::: wrongAnswers)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          316
+        </td>
+        <td>
+          885
+          -
+          906
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          extractQuizInGame
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          def extractQuizInGame
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          313
+        </td>
+        <td>
+          968
+          -
+          1052
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          310
+        </td>
+        <td>
+          1017
+          -
+          1045
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.coursesInGame.size
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          312
+        </td>
+        <td>
+          992
+          -
+          1051
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          head
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          randomNumberGenerator(1, gameStage.coursesInGame.size).head
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          311
+        </td>
+        <td>
+          992
+          -
+          1046
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          randomNumberGenerator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          randomNumberGenerator(1, gameStage.coursesInGame.size)
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          314
+        </td>
+        <td>
+          1076
+          -
+          1102
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          chooseQuiz
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          chooseQuiz(selectedCourse)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          315
+        </td>
+        <td>
+          1129
+          -
+          1156
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          chooseAnswers
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          chooseAnswers(selectedQuiz)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          324
+        </td>
+        <td>
+          1254
+          -
+          1265
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          endGame
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          def endGame
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          319
+        </td>
+        <td>
+          1364
+          -
+          1489
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          changePlayerStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.changePlayerStats(PlayerStats.mergePlayerStats(AppController.session.playerStats, gameStage.playerStatsInGame))
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          318
+        </td>
+        <td>
+          1396
+          -
+          1488
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          mergePlayerStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          PlayerStats.mergePlayerStats(AppController.session.playerStats, gameStage.playerStatsInGame)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          317
+        </td>
+        <td>
+          1425
+          -
+          1446
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          321
+        </td>
+        <td>
+          1494
+          -
+          1572
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          exportDataToPersonalDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ExportHandler.exportDataToPersonalDirectory(AppController.session.playerStats)
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          320
+        </td>
+        <td>
+          1538
+          -
+          1559
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          322
+        </td>
+        <td>
+          1615
+          -
+          1632
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(gameStage)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          323
+        </td>
+        <td>
+          1577
+          -
+          1634
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.handle(ReviewMenuAction(Option(gameStage)))
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          325
+        </td>
+        <td>
+          1730
+          -
+          1731
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          intWrapper
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          0
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          328
+        </td>
+        <td>
+          1704
+          -
+          1759
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          take
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.util.Random.shuffle(0 until range).take(quantity)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          327
+        </td>
+        <td>
+          1704
+          -
+          1744
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          shuffle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.util.Random.shuffle(0 until range)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          330
+        </td>
+        <td>
+          1638
+          -
+          1663
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          randomNumberGenerator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          def randomNumberGenerator
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          326
+        </td>
+        <td>
+          1730
+          -
+          1743
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          until
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          0 until range
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          329
+        </td>
+        <td>
+          1704
+          -
+          1766
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.util.Random.shuffle(0 until range).take(quantity).toList
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

@@ -39,7 +39,7 @@
 </span>15 <span style=''>import utils.{TerminalInput, TerminalInputImpl}
 </span>16 <span style=''>import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCustomMenu, TerminalEditCourseMenu, TerminalEditQuizMenu, TerminalMainMenu, TerminalReviewMenu, TerminalSelectMenu, TerminalSettingsMenu, TerminalStandardGameMenu, TerminalStatisticsMenu}
 </span>17 <span style=''>import view.graphicUI.GraphicMainMenu.*
-</span>18 <span style=''>import view.graphicUI.{GraphicAddCourseMenu, GraphicAddQuizMenu, GraphicCustomMenu, GraphicDefaultMenu, GraphicEditCourseMenu, GraphicEditQuizMenu, GraphicMainMenu, GraphicReviewMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu, GraphicStatisticsMenu}
+</span>18 <span style=''>import view.graphicUI.{GraphicAddCourseMenu, GraphicAddQuizMenu, GraphicBlitzGameMenu, GraphicCustomMenu, GraphicDefaultMenu, GraphicEditCourseMenu, GraphicEditQuizMenu, GraphicMainMenu, GraphicReviewMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu, GraphicStatisticsMenu}
 </span>19 <span style=''>import view.updates.ViewUpdate
 </span>20 <span style=''>
 </span>21 <span style=''>import scala.io.StdIn.readLine
@@ -110,31 +110,34 @@
 </span>86 <span style=''>      </span><span style='background: #F0ADAD'>case StandardGameAction(_)</span><span style=''> =&gt; _currentGUIType match
 </span>87 <span style=''>        </span><span style='background: #F0ADAD'>case Terminal</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>TerminalStandardGameMenu()</span><span style=''>
 </span>88 <span style=''>        </span><span style='background: #F0ADAD'>case ScalaFX</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>GraphicStandardGameMenu(_stage)</span><span style=''>
-</span>89 <span style=''>
-</span>90 <span style=''>  /** PageView should include all behaviours common between different pages views */
-</span>91 <span style=''>  trait PageView:
-</span>92 <span style=''>    def updateUI[T](update: ViewUpdate[Any]): Unit
-</span>93 <span style=''>
-</span>94 <span style=''>  trait GraphicView extends PageView
-</span>95 <span style=''>
-</span>96 <span style=''>  trait TerminalView extends PageView:
-</span>97 <span style=''>    /**
-</span>98 <span style=''>     * Map between input and actions of the controllers
-</span>99 <span style=''>     */
-</span>100 <span style=''>    val actionsMap: mutable.Map[String, Action[Any]]
-</span>101 <span style=''>    </span><span style='background: #F0ADAD'>def inputReader</span><span style=''>(): String = </span><span style='background: #F0ADAD'>readLine</span><span style=''>
-</span>102 <span style=''>    var terminalInput: TerminalInput = TerminalInputImpl()
-</span>103 <span style=''>
-</span>104 <span style=''>    </span><span style='background: #F0ADAD'>def handleInput</span><span style=''>(): Unit =
-</span>105 <span style=''>      val input: Future[String] = </span><span style='background: #F0ADAD'>Future(readLine())</span><span style=''>
-</span>106 <span style=''>      </span><span style='background: #F0ADAD'>input.onComplete(_ match
-</span>107 <span style=''></span><span style='background: #F0ADAD'>        case Success(result) =&gt;
-</span>108 <span style=''></span><span style='background: #F0ADAD'>          Platform.runLater(() =&gt; sendEvent(actionsMap(result)));
-</span>109 <span style=''></span><span style='background: #F0ADAD'>          handleInput()
-</span>110 <span style=''></span><span style='background: #F0ADAD'>        case Failure(_) =&gt;
-</span>111 <span style=''></span><span style='background: #F0ADAD'>          handleInput()
-</span>112 <span style=''></span><span style='background: #F0ADAD'>      )</span><span style=''>
-</span>113 <span style=''>    </span><span style='background: #F0ADAD'>handleInput()</span><span style=''>
+</span>89 <span style=''>      </span><span style='background: #F0ADAD'>case BlitzGameAction(_)</span><span style=''> =&gt; _currentGUIType match
+</span>90 <span style=''>        </span><span style='background: #F0ADAD'>case Terminal</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>???</span><span style=''>
+</span>91 <span style=''>        </span><span style='background: #F0ADAD'>case ScalaFX</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>GraphicBlitzGameMenu(_stage)</span><span style=''>
+</span>92 <span style=''>
+</span>93 <span style=''>  /** PageView should include all behaviours common between different pages views */
+</span>94 <span style=''>  trait PageView:
+</span>95 <span style=''>    def updateUI[T](update: ViewUpdate[Any]): Unit
+</span>96 <span style=''>
+</span>97 <span style=''>  trait GraphicView extends PageView
+</span>98 <span style=''>
+</span>99 <span style=''>  trait TerminalView extends PageView:
+</span>100 <span style=''>    /**
+</span>101 <span style=''>     * Map between input and actions of the controllers
+</span>102 <span style=''>     */
+</span>103 <span style=''>    val actionsMap: mutable.Map[String, Action[Any]]
+</span>104 <span style=''>    </span><span style='background: #F0ADAD'>def inputReader</span><span style=''>(): String = </span><span style='background: #F0ADAD'>readLine</span><span style=''>
+</span>105 <span style=''>    var terminalInput: TerminalInput = TerminalInputImpl()
+</span>106 <span style=''>
+</span>107 <span style=''>    </span><span style='background: #F0ADAD'>def handleInput</span><span style=''>(): Unit =
+</span>108 <span style=''>      val input: Future[String] = </span><span style='background: #F0ADAD'>Future(readLine())</span><span style=''>
+</span>109 <span style=''>      </span><span style='background: #F0ADAD'>input.onComplete(_ match
+</span>110 <span style=''></span><span style='background: #F0ADAD'>        case Success(result) =&gt;
+</span>111 <span style=''></span><span style='background: #F0ADAD'>          Platform.runLater(() =&gt; sendEvent(actionsMap(result)));
+</span>112 <span style=''></span><span style='background: #F0ADAD'>          handleInput()
+</span>113 <span style=''></span><span style='background: #F0ADAD'>        case Failure(_) =&gt;
+</span>114 <span style=''></span><span style='background: #F0ADAD'>          handleInput()
+</span>115 <span style=''></span><span style='background: #F0ADAD'>      )</span><span style=''>
+</span>116 <span style=''>    </span><span style='background: #F0ADAD'>handleInput()</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -152,12 +155,12 @@
           34
         </td>
         <td>
-          1183
+          1243
         </td>
         <td>
-          1530
+          1552
           -
-          1544
+          1566
         </td>
         <td>
           Apply
@@ -176,12 +179,12 @@
           35
         </td>
         <td>
-          1184
+          1244
         </td>
         <td>
-          1568
+          1590
           -
-          1584
+          1606
         </td>
         <td>
           Apply
@@ -200,12 +203,12 @@
           36
         </td>
         <td>
-          1185
+          1245
         </td>
         <td>
-          1618
+          1640
           -
-          1624
+          1646
         </td>
         <td>
           Apply
@@ -224,12 +227,12 @@
           37
         </td>
         <td>
-          1186
+          1246
         </td>
         <td>
-          1627
+          1649
           -
-          1651
+          1673
         </td>
         <td>
           Apply
@@ -248,12 +251,12 @@
           38
         </td>
         <td>
-          1187
+          1247
         </td>
         <td>
-          1654
+          1676
           -
-          1678
+          1700
         </td>
         <td>
           Apply
@@ -272,12 +275,12 @@
           39
         </td>
         <td>
-          1188
+          1248
         </td>
         <td>
-          1681
+          1703
           -
-          1702
+          1724
         </td>
         <td>
           Apply
@@ -296,12 +299,12 @@
           40
         </td>
         <td>
-          1189
+          1249
         </td>
         <td>
-          1734
+          1756
           -
-          1748
+          1770
         </td>
         <td>
           Apply
@@ -320,12 +323,12 @@
           40
         </td>
         <td>
-          1190
+          1250
         </td>
         <td>
-          1705
+          1727
           -
-          1748
+          1770
         </td>
         <td>
           Apply
@@ -344,12 +347,12 @@
           41
         </td>
         <td>
-          1195
+          1255
         </td>
         <td>
-          1751
+          1773
           -
-          1848
+          1870
         </td>
         <td>
           Apply
@@ -368,12 +371,12 @@
           41
         </td>
         <td>
-          1192
+          1252
         </td>
         <td>
-          1751
+          1773
           -
-          1766
+          1788
         </td>
         <td>
           Apply
@@ -392,12 +395,12 @@
           41
         </td>
         <td>
-          1194
+          1254
         </td>
         <td>
-          1771
+          1793
           -
-          1847
+          1869
         </td>
         <td>
           Apply
@@ -416,12 +419,12 @@
           41
         </td>
         <td>
-          1191
+          1251
         </td>
         <td>
-          1751
+          1773
           -
-          1757
+          1779
         </td>
         <td>
           Apply
@@ -440,12 +443,12 @@
           41
         </td>
         <td>
-          1193
+          1253
         </td>
         <td>
-          1781
+          1803
           -
-          1846
+          1868
         </td>
         <td>
           Apply
@@ -464,36 +467,12 @@
           42
         </td>
         <td>
-          1196
+          1257
         </td>
         <td>
-          1852
+          1874
           -
-          1863
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          root
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          _scene.root
-        </td>
-      </tr><tr>
-        <td>
-          42
-        </td>
-        <td>
-          1197
-        </td>
-        <td>
-          1852
-          -
-          1882
+          1904
         </td>
         <td>
           Apply
@@ -509,15 +488,39 @@
         </td>
       </tr><tr>
         <td>
+          42
+        </td>
+        <td>
+          1256
+        </td>
+        <td>
+          1874
+          -
+          1885
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          root
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          _scene.root
+        </td>
+      </tr><tr>
+        <td>
           44
         </td>
         <td>
-          1198
+          1258
         </td>
         <td>
-          1930
+          1952
           -
-          1958
+          1980
         </td>
         <td>
           Apply
@@ -536,12 +539,12 @@
           44
         </td>
         <td>
-          1199
+          1259
         </td>
         <td>
-          1886
+          1908
           -
-          1899
+          1921
         </td>
         <td>
           DefDef
@@ -560,12 +563,12 @@
           54
         </td>
         <td>
-          1266
+          1332
         </td>
         <td>
-          2105
+          2127
           -
-          2115
+          2137
         </td>
         <td>
           DefDef
@@ -584,12 +587,12 @@
           55
         </td>
         <td>
-          1205
+          1265
         </td>
         <td>
-          2165
+          2187
           -
-          2184
+          2206
         </td>
         <td>
           Block
@@ -608,12 +611,12 @@
           56
         </td>
         <td>
-          1201
+          1261
         </td>
         <td>
-          2218
+          2240
           -
-          2231
+          2253
         </td>
         <td>
           Block
@@ -632,12 +635,12 @@
           56
         </td>
         <td>
-          1200
+          1260
         </td>
         <td>
-          2235
+          2257
           -
-          2253
+          2275
         </td>
         <td>
           Apply
@@ -656,12 +659,12 @@
           57
         </td>
         <td>
-          1204
+          1264
         </td>
         <td>
-          2262
+          2284
           -
-          2274
+          2296
         </td>
         <td>
           Block
@@ -680,12 +683,12 @@
           57
         </td>
         <td>
-          1203
+          1263
         </td>
         <td>
-          2278
+          2300
           -
-          2301
+          2323
         </td>
         <td>
           Apply
@@ -704,12 +707,12 @@
           57
         </td>
         <td>
-          1202
+          1262
         </td>
         <td>
-          2294
+          2316
           -
-          2300
+          2322
         </td>
         <td>
           Apply
@@ -728,12 +731,12 @@
           58
         </td>
         <td>
-          1211
+          1271
         </td>
         <td>
-          2308
+          2330
           -
-          2329
+          2351
         </td>
         <td>
           Block
@@ -752,12 +755,12 @@
           59
         </td>
         <td>
-          1207
+          1267
         </td>
         <td>
-          2363
+          2385
           -
-          2376
+          2398
         </td>
         <td>
           Block
@@ -776,12 +779,12 @@
           59
         </td>
         <td>
-          1206
+          1266
         </td>
         <td>
-          2380
+          2402
           -
-          2400
+          2422
         </td>
         <td>
           Apply
@@ -800,12 +803,12 @@
           60
         </td>
         <td>
-          1210
+          1270
         </td>
         <td>
-          2409
+          2431
           -
-          2421
+          2443
         </td>
         <td>
           Block
@@ -824,12 +827,12 @@
           60
         </td>
         <td>
-          1209
+          1269
         </td>
         <td>
-          2425
+          2447
           -
-          2450
+          2472
         </td>
         <td>
           Apply
@@ -848,12 +851,12 @@
           60
         </td>
         <td>
-          1208
+          1268
         </td>
         <td>
-          2443
+          2465
           -
-          2449
+          2471
         </td>
         <td>
           Apply
@@ -872,12 +875,12 @@
           61
         </td>
         <td>
-          1217
+          1277
         </td>
         <td>
-          2457
+          2479
           -
-          2482
+          2504
         </td>
         <td>
           Block
@@ -896,12 +899,12 @@
           62
         </td>
         <td>
-          1213
+          1273
         </td>
         <td>
-          2516
+          2538
           -
-          2529
+          2551
         </td>
         <td>
           Block
@@ -920,12 +923,12 @@
           62
         </td>
         <td>
-          1212
+          1272
         </td>
         <td>
-          2533
+          2555
           -
-          2557
+          2579
         </td>
         <td>
           Apply
@@ -944,36 +947,12 @@
           63
         </td>
         <td>
-          1214
+          1276
         </td>
         <td>
-          2604
+          2588
           -
-          2610
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sfxStage2jfx
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          _stage
-        </td>
-      </tr><tr>
-        <td>
-          63
-        </td>
-        <td>
-          1216
-        </td>
-        <td>
-          2566
-          -
-          2578
+          2600
         </td>
         <td>
           Block
@@ -992,12 +971,12 @@
           63
         </td>
         <td>
-          1215
+          1275
         </td>
         <td>
-          2582
+          2604
           -
-          2611
+          2633
         </td>
         <td>
           Apply
@@ -1013,15 +992,39 @@
         </td>
       </tr><tr>
         <td>
+          63
+        </td>
+        <td>
+          1274
+        </td>
+        <td>
+          2626
+          -
+          2632
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sfxStage2jfx
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          _stage
+        </td>
+      </tr><tr>
+        <td>
           64
         </td>
         <td>
-          1223
+          1283
         </td>
         <td>
-          2618
+          2640
           -
-          2641
+          2663
         </td>
         <td>
           Block
@@ -1040,12 +1043,12 @@
           65
         </td>
         <td>
-          1219
+          1279
         </td>
         <td>
-          2675
+          2697
           -
-          2688
+          2710
         </td>
         <td>
           Block
@@ -1064,12 +1067,12 @@
           65
         </td>
         <td>
-          1218
+          1278
         </td>
         <td>
-          2692
-          -
           2714
+          -
+          2736
         </td>
         <td>
           Apply
@@ -1088,12 +1091,12 @@
           66
         </td>
         <td>
-          1222
+          1282
         </td>
         <td>
-          2723
+          2745
           -
-          2735
+          2757
         </td>
         <td>
           Block
@@ -1112,12 +1115,12 @@
           66
         </td>
         <td>
-          1221
+          1281
         </td>
         <td>
-          2739
+          2761
           -
-          2766
+          2788
         </td>
         <td>
           Apply
@@ -1136,12 +1139,12 @@
           66
         </td>
         <td>
-          1220
+          1280
         </td>
         <td>
-          2759
+          2781
           -
-          2765
+          2787
         </td>
         <td>
           Apply
@@ -1160,12 +1163,12 @@
           67
         </td>
         <td>
-          1229
+          1289
         </td>
         <td>
-          2773
+          2795
           -
-          2797
+          2819
         </td>
         <td>
           Block
@@ -1184,12 +1187,12 @@
           68
         </td>
         <td>
-          1225
+          1285
         </td>
         <td>
-          2831
+          2853
           -
-          2844
+          2866
         </td>
         <td>
           Block
@@ -1208,12 +1211,12 @@
           68
         </td>
         <td>
-          1224
+          1284
         </td>
         <td>
-          2848
+          2870
           -
-          2871
+          2893
         </td>
         <td>
           Apply
@@ -1232,12 +1235,12 @@
           69
         </td>
         <td>
-          1228
+          1288
         </td>
         <td>
-          2880
+          2902
           -
-          2892
+          2914
         </td>
         <td>
           Block
@@ -1256,12 +1259,12 @@
           69
         </td>
         <td>
-          1227
+          1287
         </td>
         <td>
-          2896
+          2918
           -
-          2924
+          2946
         </td>
         <td>
           Apply
@@ -1280,12 +1283,12 @@
           69
         </td>
         <td>
-          1226
+          1286
         </td>
         <td>
-          2917
+          2939
           -
-          2923
+          2945
         </td>
         <td>
           Apply
@@ -1304,12 +1307,12 @@
           70
         </td>
         <td>
-          1235
+          1295
         </td>
         <td>
-          2931
-          -
           2953
+          -
+          2975
         </td>
         <td>
           Block
@@ -1328,12 +1331,12 @@
           71
         </td>
         <td>
-          1231
+          1291
         </td>
         <td>
-          2987
+          3009
           -
-          3000
+          3022
         </td>
         <td>
           Block
@@ -1352,12 +1355,12 @@
           71
         </td>
         <td>
-          1230
+          1290
         </td>
         <td>
-          3004
+          3026
           -
-          3025
+          3047
         </td>
         <td>
           Apply
@@ -1376,12 +1379,12 @@
           72
         </td>
         <td>
-          1234
+          1294
         </td>
         <td>
-          3034
+          3056
           -
-          3046
+          3068
         </td>
         <td>
           Block
@@ -1400,12 +1403,12 @@
           72
         </td>
         <td>
-          1233
+          1293
         </td>
         <td>
-          3050
+          3072
           -
-          3076
+          3098
         </td>
         <td>
           Apply
@@ -1424,12 +1427,12 @@
           72
         </td>
         <td>
-          1232
+          1292
         </td>
         <td>
-          3069
+          3091
           -
-          3075
+          3097
         </td>
         <td>
           Apply
@@ -1448,12 +1451,12 @@
           73
         </td>
         <td>
-          1241
+          1301
         </td>
         <td>
-          3083
+          3105
           -
-          3108
+          3130
         </td>
         <td>
           Block
@@ -1472,12 +1475,12 @@
           74
         </td>
         <td>
-          1237
+          1297
         </td>
         <td>
-          3142
+          3164
           -
-          3155
+          3177
         </td>
         <td>
           Block
@@ -1496,12 +1499,12 @@
           74
         </td>
         <td>
-          1236
+          1296
         </td>
         <td>
-          3159
+          3181
           -
-          3183
+          3205
         </td>
         <td>
           Apply
@@ -1520,12 +1523,12 @@
           75
         </td>
         <td>
-          1240
+          1300
         </td>
         <td>
-          3192
+          3214
           -
-          3204
+          3226
         </td>
         <td>
           Block
@@ -1544,12 +1547,12 @@
           75
         </td>
         <td>
-          1239
+          1299
         </td>
         <td>
-          3208
+          3230
           -
-          3237
+          3259
         </td>
         <td>
           Apply
@@ -1568,12 +1571,12 @@
           75
         </td>
         <td>
-          1238
+          1298
         </td>
         <td>
-          3230
+          3252
           -
-          3236
+          3258
         </td>
         <td>
           Apply
@@ -1592,12 +1595,12 @@
           76
         </td>
         <td>
-          1247
+          1307
         </td>
         <td>
-          3244
+          3266
           -
-          3267
+          3289
         </td>
         <td>
           Block
@@ -1616,12 +1619,12 @@
           77
         </td>
         <td>
-          1243
+          1303
         </td>
         <td>
-          3301
+          3323
           -
-          3314
+          3336
         </td>
         <td>
           Block
@@ -1640,12 +1643,12 @@
           77
         </td>
         <td>
-          1242
+          1302
         </td>
         <td>
-          3318
-          -
           3340
+          -
+          3362
         </td>
         <td>
           Apply
@@ -1664,12 +1667,12 @@
           78
         </td>
         <td>
-          1246
+          1306
         </td>
         <td>
-          3349
+          3371
           -
-          3361
+          3383
         </td>
         <td>
           Block
@@ -1688,12 +1691,12 @@
           78
         </td>
         <td>
-          1245
+          1305
         </td>
         <td>
-          3365
+          3387
           -
-          3392
+          3414
         </td>
         <td>
           Apply
@@ -1712,12 +1715,12 @@
           78
         </td>
         <td>
-          1244
+          1304
         </td>
         <td>
-          3385
+          3407
           -
-          3391
+          3413
         </td>
         <td>
           Apply
@@ -1736,12 +1739,12 @@
           79
         </td>
         <td>
-          1253
+          1313
         </td>
         <td>
-          3399
+          3421
           -
-          3423
+          3445
         </td>
         <td>
           Block
@@ -1760,12 +1763,12 @@
           80
         </td>
         <td>
-          1249
+          1309
         </td>
         <td>
-          3457
+          3479
           -
-          3470
+          3492
         </td>
         <td>
           Block
@@ -1784,12 +1787,12 @@
           80
         </td>
         <td>
-          1248
+          1308
         </td>
         <td>
-          3474
+          3496
           -
-          3494
+          3516
         </td>
         <td>
           Apply
@@ -1808,12 +1811,12 @@
           81
         </td>
         <td>
-          1252
+          1312
         </td>
         <td>
-          3503
+          3525
           -
-          3515
+          3537
         </td>
         <td>
           Block
@@ -1832,12 +1835,12 @@
           81
         </td>
         <td>
-          1251
+          1311
         </td>
         <td>
-          3519
+          3541
           -
-          3544
+          3566
         </td>
         <td>
           Apply
@@ -1856,12 +1859,12 @@
           81
         </td>
         <td>
-          1250
+          1310
         </td>
         <td>
-          3537
+          3559
           -
-          3543
+          3565
         </td>
         <td>
           Apply
@@ -1880,12 +1883,12 @@
           82
         </td>
         <td>
-          1259
+          1319
         </td>
         <td>
-          3551
+          3573
           -
-          3575
+          3597
         </td>
         <td>
           Block
@@ -1904,12 +1907,12 @@
           83
         </td>
         <td>
-          1255
+          1315
         </td>
         <td>
-          3609
+          3631
           -
-          3622
+          3644
         </td>
         <td>
           Block
@@ -1928,12 +1931,12 @@
           83
         </td>
         <td>
-          1254
+          1314
         </td>
         <td>
-          3626
+          3648
           -
-          3646
+          3668
         </td>
         <td>
           Apply
@@ -1952,12 +1955,12 @@
           84
         </td>
         <td>
-          1258
+          1318
         </td>
         <td>
-          3655
+          3677
           -
-          3667
+          3689
         </td>
         <td>
           Block
@@ -1976,12 +1979,12 @@
           84
         </td>
         <td>
-          1257
+          1317
         </td>
         <td>
-          3671
+          3693
           -
-          3696
+          3718
         </td>
         <td>
           Apply
@@ -2000,12 +2003,12 @@
           84
         </td>
         <td>
-          1256
+          1316
         </td>
         <td>
-          3689
+          3711
           -
-          3695
+          3717
         </td>
         <td>
           Apply
@@ -2024,12 +2027,12 @@
           85
         </td>
         <td>
-          1265
+          1325
         </td>
         <td>
-          3703
+          3725
           -
-          3729
+          3751
         </td>
         <td>
           Block
@@ -2048,12 +2051,12 @@
           86
         </td>
         <td>
-          1261
+          1321
         </td>
         <td>
-          3763
+          3785
           -
-          3776
+          3798
         </td>
         <td>
           Block
@@ -2072,12 +2075,12 @@
           86
         </td>
         <td>
-          1260
+          1320
         </td>
         <td>
-          3780
+          3802
           -
-          3806
+          3828
         </td>
         <td>
           Apply
@@ -2096,12 +2099,12 @@
           87
         </td>
         <td>
-          1264
+          1324
         </td>
         <td>
-          3815
+          3837
           -
-          3827
+          3849
         </td>
         <td>
           Block
@@ -2120,12 +2123,12 @@
           87
         </td>
         <td>
-          1263
+          1323
         </td>
         <td>
-          3831
+          3853
           -
-          3862
+          3884
         </td>
         <td>
           Apply
@@ -2144,12 +2147,12 @@
           87
         </td>
         <td>
-          1262
+          1322
         </td>
         <td>
-          3855
+          3877
           -
-          3861
+          3883
         </td>
         <td>
           Apply
@@ -2165,15 +2168,159 @@
         </td>
       </tr><tr>
         <td>
-          100
+          88
         </td>
         <td>
-          1267
+          1331
         </td>
         <td>
-          4253
+          3891
           -
-          4261
+          3914
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case BlitzGameAction(_)
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          1327
+        </td>
+        <td>
+          3948
+          -
+          3961
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Terminal
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          1326
+        </td>
+        <td>
+          3965
+          -
+          3968
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          ???
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ???
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          1330
+        </td>
+        <td>
+          3977
+          -
+          3989
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case ScalaFX
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          1329
+        </td>
+        <td>
+          3993
+          -
+          4021
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GraphicBlitzGameMenu(_stage)
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          1328
+        </td>
+        <td>
+          4014
+          -
+          4020
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sfxStage2jfx
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          _stage
+        </td>
+      </tr><tr>
+        <td>
+          103
+        </td>
+        <td>
+          1333
+        </td>
+        <td>
+          4412
+          -
+          4420
         </td>
         <td>
           Apply
@@ -2189,15 +2336,15 @@
         </td>
       </tr><tr>
         <td>
-          100
+          103
         </td>
         <td>
-          1268
+          1334
         </td>
         <td>
-          4225
+          4384
           -
-          4240
+          4399
         </td>
         <td>
           DefDef
@@ -2213,15 +2360,15 @@
         </td>
       </tr><tr>
         <td>
-          103
+          106
         </td>
         <td>
-          1271
+          1337
         </td>
         <td>
-          4326
+          4485
           -
-          4341
+          4500
         </td>
         <td>
           DefDef
@@ -2237,15 +2384,15 @@
         </td>
       </tr><tr>
         <td>
-          104
+          107
         </td>
         <td>
-          1269
+          1335
         </td>
         <td>
-          4386
+          4545
           -
-          4404
+          4563
         </td>
         <td>
           Apply
@@ -2261,15 +2408,15 @@
         </td>
       </tr><tr>
         <td>
-          105
+          108
         </td>
         <td>
-          1270
+          1336
         </td>
         <td>
-          4411
+          4570
           -
-          4616
+          4775
         </td>
         <td>
           Apply
@@ -2291,15 +2438,15 @@
         </td>
       </tr><tr>
         <td>
-          112
+          115
         </td>
         <td>
-          1272
+          1338
         </td>
         <td>
-          4621
+          4780
           -
-          4634
+          4793
         </td>
         <td>
           Apply

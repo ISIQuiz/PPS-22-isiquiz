@@ -128,7 +128,7 @@
           32
         </td>
         <td>
-          798
+          855
         </td>
         <td>
           756
@@ -152,7 +152,7 @@
           33
         </td>
         <td>
-          797
+          854
         </td>
         <td>
           838
@@ -182,7 +182,7 @@
           34
         </td>
         <td>
-          796
+          853
         </td>
         <td>
           854
@@ -210,7 +210,7 @@
           35
         </td>
         <td>
-          793
+          850
         </td>
         <td>
           867
@@ -234,7 +234,7 @@
           36
         </td>
         <td>
-          794
+          851
         </td>
         <td>
           933
@@ -258,7 +258,7 @@
           37
         </td>
         <td>
-          795
+          852
         </td>
         <td>
           999
@@ -282,7 +282,7 @@
           46
         </td>
         <td>
-          808
+          865
         </td>
         <td>
           1215
@@ -306,31 +306,7 @@
           48
         </td>
         <td>
-          801
-        </td>
-        <td>
-          1330
-          -
-          1371
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          as
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          (jsonObject \ CourseNameLabel).as[String]
-        </td>
-      </tr><tr>
-        <td>
-          48
-        </td>
-        <td>
-          800
+          857
         </td>
         <td>
           1331
@@ -354,7 +330,7 @@
           48
         </td>
         <td>
-          799
+          856
         </td>
         <td>
           1331
@@ -375,15 +351,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          48
         </td>
         <td>
-          804
+          858
         </td>
         <td>
-          1392
+          1330
           -
-          1433
+          1371
         </td>
         <td>
           Apply
@@ -395,14 +371,14 @@
           
         </td>
         <td style="background: #AEF1AE">
-          (jsonObject \ DegreeNameLabel).as[String]
+          (jsonObject \ CourseNameLabel).as[String]
         </td>
       </tr><tr>
         <td>
           49
         </td>
         <td>
-          803
+          860
         </td>
         <td>
           1393
@@ -426,7 +402,7 @@
           49
         </td>
         <td>
-          802
+          859
         </td>
         <td>
           1393
@@ -447,10 +423,58 @@
         </td>
       </tr><tr>
         <td>
+          49
+        </td>
+        <td>
+          861
+        </td>
+        <td>
+          1392
+          -
+          1433
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          as
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          (jsonObject \ DegreeNameLabel).as[String]
+        </td>
+      </tr><tr>
+        <td>
           50
         </td>
         <td>
-          806
+          864
+        </td>
+        <td>
+          1458
+          -
+          1503
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          as
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          (jsonObject \ UniversityNameLabel).as[String]
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          863
         </td>
         <td>
           1459
@@ -474,7 +498,7 @@
           50
         </td>
         <td>
-          805
+          862
         </td>
         <td>
           1459
@@ -495,34 +519,10 @@
         </td>
       </tr><tr>
         <td>
-          50
-        </td>
-        <td>
-          807
-        </td>
-        <td>
-          1458
-          -
-          1503
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          as
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          (jsonObject \ UniversityNameLabel).as[String]
-        </td>
-      </tr><tr>
-        <td>
           64
         </td>
         <td>
-          828
+          885
         </td>
         <td>
           1958
@@ -546,31 +546,44 @@
           65
         </td>
         <td>
-          810
+          882
         </td>
         <td>
           2066
           -
-          2085
+          2703
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          fields
+          map
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          secondObject.fields
+          secondObject.fields.map {
+      case (secondKey, secondValue) =&gt;
+        val maybeExistingValue = firstObject.value.get(secondKey)
+        // if exist two value with same key do merge
+        val newValue = (maybeExistingValue, secondValue) match {
+          case (Some(f: JsObject), s: JsObject) =&gt; merge(f, s) // merge JsObjects
+          case (Some(f: JsArray), s: JsArray) =&gt; JsArray(f.value.zip(s.value).map { // merge every JsObjects of JsArray
+            case (f: JsObject, s: JsObject) =&gt; merge(f, s)
+            case _ =&gt; JsObject.empty
+          })
+          case _ =&gt; secondValue
+        }
+        secondKey -&gt; newValue
+    }
         </td>
       </tr><tr>
         <td>
           65
         </td>
         <td>
-          809
+          866
         </td>
         <td>
           2044
@@ -594,7 +607,7 @@
           65
         </td>
         <td>
-          826
+          883
         </td>
         <td>
           2044
@@ -631,44 +644,31 @@
           65
         </td>
         <td>
-          825
+          867
         </td>
         <td>
           2066
           -
-          2703
+          2085
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          map
+          fields
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          secondObject.fields.map {
-      case (secondKey, secondValue) =&gt;
-        val maybeExistingValue = firstObject.value.get(secondKey)
-        // if exist two value with same key do merge
-        val newValue = (maybeExistingValue, secondValue) match {
-          case (Some(f: JsObject), s: JsObject) =&gt; merge(f, s) // merge JsObjects
-          case (Some(f: JsArray), s: JsArray) =&gt; JsArray(f.value.zip(s.value).map { // merge every JsObjects of JsArray
-            case (f: JsObject, s: JsObject) =&gt; merge(f, s)
-            case _ =&gt; JsObject.empty
-          })
-          case _ =&gt; secondValue
-        }
-        secondKey -&gt; newValue
-    }
+          secondObject.fields
         </td>
       </tr><tr>
         <td>
           66
         </td>
         <td>
-          824
+          881
         </td>
         <td>
           2098
@@ -692,7 +692,7 @@
           67
         </td>
         <td>
-          812
+          869
         </td>
         <td>
           2164
@@ -716,7 +716,7 @@
           67
         </td>
         <td>
-          811
+          868
         </td>
         <td>
           2164
@@ -740,31 +740,7 @@
           70
         </td>
         <td>
-          813
-        </td>
-        <td>
-          2366
-          -
-          2377
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          merge
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          merge(f, s)
-        </td>
-      </tr><tr>
-        <td>
-          70
-        </td>
-        <td>
-          814
+          871
         </td>
         <td>
           2325
@@ -785,34 +761,34 @@
         </td>
       </tr><tr>
         <td>
-          71
+          70
         </td>
         <td>
-          821
+          870
         </td>
         <td>
-          2407
+          2366
           -
-          2442
+          2377
         </td>
         <td>
-          Block
+          Apply
         </td>
         <td>
-          &lt;none&gt;
+          merge
         </td>
         <td>
           
         </td>
-        <td style="background: #AEF1AE">
-          case (Some(f: JsArray), s: JsArray)
+        <td style="background: #F0ADAD">
+          merge(f, s)
         </td>
       </tr><tr>
         <td>
           71
         </td>
         <td>
-          815
+          872
         </td>
         <td>
           2454
@@ -836,7 +812,31 @@
           71
         </td>
         <td>
-          820
+          878
+        </td>
+        <td>
+          2407
+          -
+          2442
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case (Some(f: JsArray), s: JsArray)
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          877
         </td>
         <td>
           2454
@@ -863,31 +863,7 @@
           72
         </td>
         <td>
-          817
-        </td>
-        <td>
-          2529
-          -
-          2560
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case (f: JsObject, s: JsObject)
-        </td>
-      </tr><tr>
-        <td>
-          72
-        </td>
-        <td>
-          816
+          873
         </td>
         <td>
           2564
@@ -908,15 +884,15 @@
         </td>
       </tr><tr>
         <td>
-          73
+          72
         </td>
         <td>
-          819
+          874
         </td>
         <td>
-          2588
+          2529
           -
-          2594
+          2560
         </td>
         <td>
           Block
@@ -928,14 +904,14 @@
           
         </td>
         <td style="background: #F0ADAD">
-          case _
+          case (f: JsObject, s: JsObject)
         </td>
       </tr><tr>
         <td>
           73
         </td>
         <td>
-          818
+          875
         </td>
         <td>
           2598
@@ -956,10 +932,34 @@
         </td>
       </tr><tr>
         <td>
+          73
+        </td>
+        <td>
+          876
+        </td>
+        <td>
+          2588
+          -
+          2594
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case _
+        </td>
+      </tr><tr>
+        <td>
           75
         </td>
         <td>
-          822
+          879
         </td>
         <td>
           2636
@@ -983,7 +983,7 @@
           77
         </td>
         <td>
-          823
+          880
         </td>
         <td>
           2676
@@ -1007,7 +1007,7 @@
           79
         </td>
         <td>
-          827
+          884
         </td>
         <td>
           2708
@@ -1031,7 +1031,7 @@
           87
         </td>
         <td>
-          830
+          887
         </td>
         <td>
           2883
@@ -1055,7 +1055,7 @@
           88
         </td>
         <td>
-          829
+          886
         </td>
         <td>
           2930

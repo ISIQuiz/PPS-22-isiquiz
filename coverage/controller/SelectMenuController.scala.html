@@ -44,36 +44,38 @@
 </span>20 <span style=''>object SelectMenuController extends BackAction:
 </span>21 <span style=''>
 </span>22 <span style=''>  case object Start extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>23 <span style=''>  case object Custom extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>24 <span style=''>  case class Selection[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
-</span>25 <span style=''>
-</span>26 <span style=''>/** Defines the logic of the select page */
-</span>27 <span style=''>class SelectMenuController extends PageController:
-</span>28 <span style=''>
-</span>29 <span style=''>  import SelectMenuController.*
-</span>30 <span style=''>
-</span>31 <span style=''>  var gameStage = </span><span style='background: #F0ADAD'>GameStage()</span><span style=''>
-</span>32 <span style=''>
-</span>33 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
-</span>34 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(AppController.MainMenuAction)</span><span style=''>
-</span>35 <span style=''>    </span><span style='background: #F0ADAD'>case Start</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(AppController.StandardGameAction(Option(gameStage)))</span><span style=''>
-</span>36 <span style=''>    </span><span style='background: #F0ADAD'>case Custom</span><span style=''> =&gt;  </span><span style='background: #F0ADAD'>AppController.handle(AppController.CustomMenuAction(Option(gameStage)))</span><span style=''>
-</span>37 <span style=''>    </span><span style='background: #F0ADAD'>case Selection(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>modifySelectedCourses(actionParameter)</span><span style=''>
-</span>38 <span style=''>
-</span>39 <span style=''>  // Get session from application controller
-</span>40 <span style=''>  </span><span style='background: #F0ADAD'>def getSession</span><span style=''>: Session = </span><span style='background: #F0ADAD'>AppController.session</span><span style=''>
-</span>41 <span style=''>
-</span>42 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>43 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
-</span>44 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CourseUpdate(Option(getSession.savedCourses.map(course =&gt; (course,gameStage.coursesInGame.contains(course))))))</span><span style=''>
-</span>45 <span style=''>
-</span>46 <span style=''>  </span><span style='background: #F0ADAD'>private def modifySelectedCourses</span><span style=''>[T](courseIndex: Option[T]): Unit =
-</span>47 <span style=''>    val selectedCourse = </span><span style='background: #F0ADAD'>getSession.savedCourses(courseIndex.get.asInstanceOf[Int])</span><span style=''>
-</span>48 <span style=''>
-</span>49 <span style=''>    if </span><span style='background: #F0ADAD'>gameStage.coursesInGame.contains(selectedCourse)</span><span style=''> then
-</span>50 <span style=''>      </span><span style='background: #F0ADAD'>gameStage.coursesInGame = gameStage.coursesInGame.diff(List(selectedCourse))</span><span style=''>
-</span>51 <span style=''>    else
-</span>52 <span style=''>      </span><span style='background: #F0ADAD'>gameStage.coursesInGame = gameStage.coursesInGame ::: List(selectedCourse)</span><span style=''>
+</span>23 <span style=''>  case object Blitz extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>24 <span style=''>  case object Custom extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>25 <span style=''>  case class Selection[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>26 <span style=''>
+</span>27 <span style=''>/** Defines the logic of the select page */
+</span>28 <span style=''>class SelectMenuController extends PageController:
+</span>29 <span style=''>
+</span>30 <span style=''>  import SelectMenuController.*
+</span>31 <span style=''>
+</span>32 <span style=''>  var gameStage = </span><span style='background: #F0ADAD'>GameStage()</span><span style=''>
+</span>33 <span style=''>
+</span>34 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
+</span>35 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(AppController.MainMenuAction)</span><span style=''>
+</span>36 <span style=''>    </span><span style='background: #F0ADAD'>case Start</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(AppController.StandardGameAction(Option(gameStage)))</span><span style=''>
+</span>37 <span style=''>    </span><span style='background: #F0ADAD'>case Blitz</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(AppController.BlitzGameAction(Option(gameStage)))</span><span style=''>
+</span>38 <span style=''>    </span><span style='background: #F0ADAD'>case Custom</span><span style=''> =&gt;  </span><span style='background: #F0ADAD'>AppController.handle(AppController.CustomMenuAction(Option(gameStage)))</span><span style=''>
+</span>39 <span style=''>    </span><span style='background: #F0ADAD'>case Selection(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>modifySelectedCourses(actionParameter)</span><span style=''>
+</span>40 <span style=''>
+</span>41 <span style=''>  // Get session from application controller
+</span>42 <span style=''>  </span><span style='background: #F0ADAD'>def getSession</span><span style=''>: Session = </span><span style='background: #F0ADAD'>AppController.session</span><span style=''>
+</span>43 <span style=''>
+</span>44 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
+</span>45 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
+</span>46 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CourseUpdate(Option(getSession.savedCourses.map(course =&gt; (course,gameStage.coursesInGame.contains(course))))))</span><span style=''>
+</span>47 <span style=''>
+</span>48 <span style=''>  </span><span style='background: #F0ADAD'>private def modifySelectedCourses</span><span style=''>[T](courseIndex: Option[T]): Unit =
+</span>49 <span style=''>    val selectedCourse = </span><span style='background: #F0ADAD'>getSession.savedCourses(courseIndex.get.asInstanceOf[Int])</span><span style=''>
+</span>50 <span style=''>
+</span>51 <span style=''>    if </span><span style='background: #F0ADAD'>gameStage.coursesInGame.contains(selectedCourse)</span><span style=''> then
+</span>52 <span style=''>      </span><span style='background: #F0ADAD'>gameStage.coursesInGame = gameStage.coursesInGame.diff(List(selectedCourse))</span><span style=''>
+</span>53 <span style=''>    else
+</span>54 <span style=''>      </span><span style='background: #F0ADAD'>gameStage.coursesInGame = gameStage.coursesInGame ::: List(selectedCourse)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -91,7 +93,7 @@
           21
         </td>
         <td>
-          266
+          358
         </td>
         <td>
           820
@@ -115,12 +117,12 @@
           22
         </td>
         <td>
-          267
+          359
         </td>
         <td>
-          869
+          868
           -
-          888
+          887
         </td>
         <td>
           Apply
@@ -139,12 +141,36 @@
           23
         </td>
         <td>
-          268
+          360
         </td>
         <td>
-          964
+          917
           -
-          987
+          936
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ParameterlessAction
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          361
+        </td>
+        <td>
+          1012
+          -
+          1035
         </td>
         <td>
           Apply
@@ -160,15 +186,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          31
         </td>
         <td>
-          271
+          364
         </td>
         <td>
-          1136
+          1184
           -
-          1145
+          1193
         </td>
         <td>
           Select
@@ -184,15 +210,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          31
         </td>
         <td>
-          274
+          367
         </td>
         <td>
-          1136
+          1184
           -
-          1147
+          1195
         </td>
         <td>
           Apply
@@ -208,15 +234,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          31
         </td>
         <td>
-          270
+          363
         </td>
         <td>
-          1136
+          1184
           -
-          1145
+          1193
         </td>
         <td>
           Select
@@ -232,15 +258,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          31
         </td>
         <td>
-          273
+          366
         </td>
         <td>
-          1136
+          1184
           -
-          1145
+          1193
         </td>
         <td>
           Select
@@ -256,39 +282,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          31
         </td>
         <td>
-          272
+          362
         </td>
         <td>
-          1136
+          1184
           -
-          1145
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          $lessinit$greater$default$4
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          GameStage
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          269
-        </td>
-        <td>
-          1136
-          -
-          1145
+          1193
         </td>
         <td>
           Select
@@ -304,15 +306,39 @@
         </td>
       </tr><tr>
         <td>
-          32
+          31
         </td>
         <td>
-          285
+          365
         </td>
         <td>
-          1151
+          1184
           -
-          1170
+          1193
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          GameStage
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          381
+        </td>
+        <td>
+          1199
+          -
+          1218
         </td>
         <td>
           DefDef
@@ -328,15 +354,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          34
         </td>
         <td>
-          276
+          369
         </td>
         <td>
-          1218
+          1266
           -
-          1227
+          1275
         </td>
         <td>
           Block
@@ -352,15 +378,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          34
         </td>
         <td>
-          275
+          368
         </td>
         <td>
-          1231
+          1279
           -
-          1281
+          1329
         </td>
         <td>
           Apply
@@ -376,15 +402,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          35
         </td>
         <td>
-          277
+          370
         </td>
         <td>
-          1354
+          1402
           -
-          1371
+          1419
         </td>
         <td>
           Apply
@@ -400,15 +426,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          35
         </td>
         <td>
-          279
+          372
         </td>
         <td>
-          1286
+          1334
           -
-          1296
+          1344
         </td>
         <td>
           Block
@@ -424,15 +450,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          35
         </td>
         <td>
-          278
+          371
         </td>
         <td>
-          1300
+          1348
           -
-          1373
+          1421
         </td>
         <td>
           Apply
@@ -448,15 +474,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          36
         </td>
         <td>
-          280
+          373
         </td>
         <td>
-          1446
+          1491
           -
-          1463
+          1508
         </td>
         <td>
           Apply
@@ -472,15 +498,87 @@
         </td>
       </tr><tr>
         <td>
-          35
+          36
         </td>
         <td>
-          282
+          375
         </td>
         <td>
-          1378
+          1426
           -
-          1389
+          1436
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Blitz
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          374
+        </td>
+        <td>
+          1440
+          -
+          1510
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          handle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.handle(AppController.BlitzGameAction(Option(gameStage)))
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          376
+        </td>
+        <td>
+          1583
+          -
+          1600
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(gameStage)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          378
+        </td>
+        <td>
+          1515
+          -
+          1526
         </td>
         <td>
           Block
@@ -496,15 +594,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          37
         </td>
         <td>
-          281
+          377
         </td>
         <td>
-          1394
+          1531
           -
-          1465
+          1602
         </td>
         <td>
           Apply
@@ -520,15 +618,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          38
         </td>
         <td>
-          283
+          379
         </td>
         <td>
-          1505
+          1642
           -
-          1543
+          1680
         </td>
         <td>
           Apply
@@ -544,15 +642,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          38
         </td>
         <td>
-          284
+          380
         </td>
         <td>
-          1470
+          1607
           -
-          1501
+          1638
         </td>
         <td>
           Block
@@ -568,15 +666,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          41
         </td>
         <td>
-          286
+          382
         </td>
         <td>
-          1618
+          1755
           -
-          1639
+          1776
         </td>
         <td>
           Select
@@ -592,15 +690,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          41
         </td>
         <td>
-          287
+          383
         </td>
         <td>
-          1592
+          1729
           -
-          1606
+          1743
         </td>
         <td>
           DefDef
@@ -616,15 +714,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          43
         </td>
         <td>
-          294
+          390
         </td>
         <td>
-          1643
+          1780
           -
-          1669
+          1806
         </td>
         <td>
           DefDef
@@ -640,15 +738,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          44
         </td>
         <td>
-          288
+          384
         </td>
         <td>
-          1684
+          1821
           -
-          1709
+          1846
         </td>
         <td>
           Apply
@@ -664,15 +762,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          45
         </td>
         <td>
-          289
+          385
         </td>
         <td>
-          1745
+          1882
           -
-          1755
+          1892
         </td>
         <td>
           Select
@@ -688,15 +786,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          45
         </td>
         <td>
-          292
+          388
         </td>
         <td>
-          1738
+          1875
           -
-          1834
+          1971
         </td>
         <td>
           Apply
@@ -712,15 +810,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          45
         </td>
         <td>
-          291
+          387
         </td>
         <td>
-          1745
+          1882
           -
-          1833
+          1970
         </td>
         <td>
           Apply
@@ -736,15 +834,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          45
         </td>
         <td>
-          290
+          386
         </td>
         <td>
-          1791
+          1928
           -
-          1831
+          1968
         </td>
         <td>
           Apply
@@ -760,15 +858,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          45
         </td>
         <td>
-          293
+          389
         </td>
         <td>
-          1714
+          1851
           -
-          1836
+          1973
         </td>
         <td>
           Apply
@@ -784,15 +882,15 @@
         </td>
       </tr><tr>
         <td>
-          45
+          47
         </td>
         <td>
-          305
+          401
         </td>
         <td>
-          1840
+          1977
           -
-          1873
+          2010
         </td>
         <td>
           DefDef
@@ -808,15 +906,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          48
         </td>
         <td>
-          295
+          391
         </td>
         <td>
-          1934
+          2071
           -
-          1944
+          2081
         </td>
         <td>
           Select
@@ -832,15 +930,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          48
         </td>
         <td>
-          297
+          393
         </td>
         <td>
-          1934
+          2071
           -
-          1992
+          2129
         </td>
         <td>
           Apply
@@ -856,15 +954,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          48
         </td>
         <td>
-          296
+          392
         </td>
         <td>
-          1958
+          2095
           -
-          1973
+          2110
         </td>
         <td>
           Select
@@ -880,15 +978,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          50
         </td>
         <td>
-          298
+          394
         </td>
         <td>
-          2001
+          2138
           -
-          2049
+          2186
         </td>
         <td>
           Apply
@@ -904,15 +1002,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          51
         </td>
         <td>
-          301
+          397
         </td>
         <td>
-          2061
+          2198
           -
-          2137
+          2274
         </td>
         <td>
           Assign
@@ -928,15 +1026,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          51
         </td>
         <td>
-          300
+          396
         </td>
         <td>
-          2087
+          2224
           -
-          2137
+          2274
         </td>
         <td>
           Apply
@@ -952,15 +1050,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          51
         </td>
         <td>
-          299
+          395
         </td>
         <td>
-          2116
+          2253
           -
-          2136
+          2273
         </td>
         <td>
           Apply
@@ -976,15 +1074,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          53
         </td>
         <td>
-          304
+          400
         </td>
         <td>
-          2153
+          2290
           -
-          2227
+          2364
         </td>
         <td>
           Assign
@@ -1000,15 +1098,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          53
         </td>
         <td>
-          303
+          399
         </td>
         <td>
-          2179
+          2316
           -
-          2227
+          2364
         </td>
         <td>
           Apply
@@ -1024,15 +1122,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          53
         </td>
         <td>
-          302
+          398
         </td>
         <td>
-          2207
+          2344
           -
-          2227
+          2364
         </td>
         <td>
           Apply

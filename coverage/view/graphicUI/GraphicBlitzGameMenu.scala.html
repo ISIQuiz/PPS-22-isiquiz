@@ -1,0 +1,1271 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          view/graphicUI/GraphicBlitzGameMenu.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package view.graphicUI
+</span>2 <span style=''>
+</span>3 <span style=''>import controller.BlitzGameController.{Back, NextQuiz, SelectAnswer}
+</span>4 <span style=''>import controller.{AppController, BlitzGameController}
+</span>5 <span style=''>import javafx.application.Platform
+</span>6 <span style=''>import javafx.fxml.FXML
+</span>7 <span style=''>import javafx.scene.control.{Button, Label, ProgressBar}
+</span>8 <span style=''>import javafx.stage.Stage
+</span>9 <span style=''>import model.GameStage
+</span>10 <span style=''>import model.settings.StandardGameSettings
+</span>11 <span style=''>import utils.GUILoader.loadGUI
+</span>12 <span style=''>import utils.{GUILoader, Timer}
+</span>13 <span style=''>import view.StandardGameMenuView.*
+</span>14 <span style=''>import view.View.{GraphicView, sendEvent}
+</span>15 <span style=''>import view.updates.ViewUpdate
+</span>16 <span style=''>
+</span>17 <span style=''>object GraphicBlitzGameMenu
+</span>18 <span style=''>
+</span>19 <span style=''>/** Standard Game menu graphic interface */
+</span>20 <span style=''>class GraphicBlitzGameMenu(stage: Stage) extends GraphicView:
+</span>21 <span style=''>
+</span>22 <span style=''>  @FXML
+</span>23 <span style=''>  var backButton: Button = _
+</span>24 <span style=''>
+</span>25 <span style=''>  @FXML
+</span>26 <span style=''>  var courseLabel: Label = _
+</span>27 <span style=''>
+</span>28 <span style=''>  @FXML
+</span>29 <span style=''>  var timeRemainingLabel: Label = _
+</span>30 <span style=''>
+</span>31 <span style=''>  @FXML
+</span>32 <span style=''>  var pointsLabel: Label = _
+</span>33 <span style=''>
+</span>34 <span style=''>  @FXML
+</span>35 <span style=''>  var timeProgressBar: ProgressBar = _
+</span>36 <span style=''>
+</span>37 <span style=''>  @FXML
+</span>38 <span style=''>  var quizLabel: Label = _
+</span>39 <span style=''>
+</span>40 <span style=''>  @FXML
+</span>41 <span style=''>  var firstAnswerButton: Button = _
+</span>42 <span style=''>
+</span>43 <span style=''>  @FXML
+</span>44 <span style=''>  var secondAnswerButton: Button = _
+</span>45 <span style=''>
+</span>46 <span style=''>  @FXML
+</span>47 <span style=''>  var thirdAnswerButton: Button = _
+</span>48 <span style=''>
+</span>49 <span style=''>  @FXML
+</span>50 <span style=''>  var fourthAnswerButton: Button = _
+</span>51 <span style=''>
+</span>52 <span style=''>  @FXML
+</span>53 <span style=''>  var nextButton: Button = _
+</span>54 <span style=''>
+</span>55 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>56 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
+</span>57 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
+</span>58 <span style=''>
+</span>59 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>60 <span style=''></span><span style='background: #F0ADAD'>  def firstAnswerButtonClicked</span><span style=''>(): Unit =
+</span>61 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(0)))</span><span style=''>
+</span>62 <span style=''>
+</span>63 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>64 <span style=''></span><span style='background: #F0ADAD'>  def secondAnswerButtonClicked</span><span style=''>(): Unit =
+</span>65 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(1)))</span><span style=''>
+</span>66 <span style=''>
+</span>67 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>68 <span style=''></span><span style='background: #F0ADAD'>  def thirdAnswerButtonClicked</span><span style=''>(): Unit =
+</span>69 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(2)))</span><span style=''>
+</span>70 <span style=''>
+</span>71 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>72 <span style=''></span><span style='background: #F0ADAD'>  def fourthAnswerButtonClicked</span><span style=''>(): Unit =
+</span>73 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(3)))</span><span style=''>
+</span>74 <span style=''>
+</span>75 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>76 <span style=''></span><span style='background: #F0ADAD'>  def nextButtonClicked</span><span style=''>(): Unit =
+</span>77 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(NextQuiz)</span><span style=''>
+</span>78 <span style=''>
+</span>79 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;blitz_game.fxml&quot;)</span><span style=''>
+</span>80 <span style=''>
+</span>81 <span style=''>  val answerButtons: List[Button] = </span><span style='background: #F0ADAD'>List(firstAnswerButton, secondAnswerButton, thirdAnswerButton, fourthAnswerButton)</span><span style=''>
+</span>82 <span style=''>
+</span>83 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>84 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt; {}
+</span>85 <span style=''>    </span><span style='background: #F0ADAD'>case CurrentGameUpdate(updateParameter)</span><span style=''> =&gt;
+</span>86 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
+</span>87 <span style=''></span><span style='background: #F0ADAD'>        val gameStage: GameStage = updateParameter.get
+</span>88 <span style=''></span><span style='background: #F0ADAD'>        courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
+</span>89 <span style=''></span><span style='background: #F0ADAD'>        quizLabel.setText(gameStage.quizInGame.quiz.question)
+</span>90 <span style=''></span><span style='background: #F0ADAD'>        firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
+</span>91 <span style=''></span><span style='background: #F0ADAD'>        secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
+</span>92 <span style=''></span><span style='background: #F0ADAD'>        thirdAnswerButton.setText(gameStage.quizInGame.answers(2).text)
+</span>93 <span style=''></span><span style='background: #F0ADAD'>        fourthAnswerButton.setText(gameStage.quizInGame.answers(3).text)
+</span>94 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
+</span>95 <span style=''>    </span><span style='background: #F0ADAD'>case TimerUpdate(updateParameter)</span><span style=''> =&gt;
+</span>96 <span style=''>      val timer: Timer = </span><span style='background: #F0ADAD'>updateParameter.get</span><span style=''>
+</span>97 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
+</span>98 <span style=''></span><span style='background: #F0ADAD'>        timeRemainingLabel.setText(s&quot;${timer.getRemainingTime.toInt}&quot;)
+</span>99 <span style=''></span><span style='background: #F0ADAD'>        timeProgressBar.setProgress(timer.getCompletionPercentage)
+</span>100 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
+</span>101 <span style=''>    </span><span style='background: #F0ADAD'>case QuizScoreUpdate(updateParameter)</span><span style=''> =&gt;
+</span>102 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
+</span>103 <span style=''></span><span style='background: #F0ADAD'>        val score: Int = updateParameter.get
+</span>104 <span style=''></span><span style='background: #F0ADAD'>        pointsLabel.setText(score + &quot; punti&quot;)
+</span>105 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1470
+        </td>
+        <td>
+          1129
+          -
+          1158
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          backButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def backButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          1469
+        </td>
+        <td>
+          1173
+          -
+          1188
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Back)
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          1473
+        </td>
+        <td>
+          1192
+          -
+          1228
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          firstAnswerButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def firstAnswerButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          1472
+        </td>
+        <td>
+          1243
+          -
+          1277
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(SelectAnswer(Option(0)))
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          1471
+        </td>
+        <td>
+          1266
+          -
+          1275
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(0)
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1476
+        </td>
+        <td>
+          1281
+          -
+          1318
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          secondAnswerButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def secondAnswerButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          1474
+        </td>
+        <td>
+          1356
+          -
+          1365
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(1)
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          1475
+        </td>
+        <td>
+          1333
+          -
+          1367
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(SelectAnswer(Option(1)))
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          1479
+        </td>
+        <td>
+          1371
+          -
+          1407
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          thirdAnswerButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def thirdAnswerButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1478
+        </td>
+        <td>
+          1422
+          -
+          1456
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(SelectAnswer(Option(2)))
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1477
+        </td>
+        <td>
+          1445
+          -
+          1454
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(2)
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          1482
+        </td>
+        <td>
+          1460
+          -
+          1497
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          fourthAnswerButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def fourthAnswerButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          1481
+        </td>
+        <td>
+          1512
+          -
+          1546
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(SelectAnswer(Option(3)))
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          1480
+        </td>
+        <td>
+          1535
+          -
+          1544
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(3)
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1484
+        </td>
+        <td>
+          1550
+          -
+          1579
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          nextButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def nextButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          1483
+        </td>
+        <td>
+          1594
+          -
+          1613
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(NextQuiz)
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          1485
+        </td>
+        <td>
+          1617
+          -
+          1656
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          loadGUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          loadGUI(stage, this, &quot;blitz_game.fxml&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          1486
+        </td>
+        <td>
+          1694
+          -
+          1776
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          List(firstAnswerButton, secondAnswerButton, thirdAnswerButton, fourthAnswerButton)
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          1514
+        </td>
+        <td>
+          1780
+          -
+          1801
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def updateUI
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          1487
+        </td>
+        <td>
+          1855
+          -
+          1873
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case DefaultUpdate
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          1501
+        </td>
+        <td>
+          1884
+          -
+          1923
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case CurrentGameUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          1500
+        </td>
+        <td>
+          1933
+          -
+          2451
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          runLater
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Platform.runLater(() =&gt; {
+        val gameStage: GameStage = updateParameter.get
+        courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
+        quizLabel.setText(gameStage.quizInGame.quiz.question)
+        firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
+        secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
+        thirdAnswerButton.setText(gameStage.quizInGame.answers(2).text)
+        fourthAnswerButton.setText(gameStage.quizInGame.answers(3).text)
+      })
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          1488
+        </td>
+        <td>
+          1994
+          -
+          2013
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          1490
+        </td>
+        <td>
+          2022
+          -
+          2090
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          1489
+        </td>
+        <td>
+          2042
+          -
+          2078
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.quizInGame.course.courseId
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          1491
+        </td>
+        <td>
+          2099
+          -
+          2152
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizLabel.setText(gameStage.quizInGame.quiz.question)
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          1492
+        </td>
+        <td>
+          2187
+          -
+          2218
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.quizInGame.answers(0)
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          1493
+        </td>
+        <td>
+          2161
+          -
+          2224
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          1494
+        </td>
+        <td>
+          2260
+          -
+          2291
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.quizInGame.answers(1)
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          1495
+        </td>
+        <td>
+          2233
+          -
+          2297
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          1497
+        </td>
+        <td>
+          2306
+          -
+          2369
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          thirdAnswerButton.setText(gameStage.quizInGame.answers(2).text)
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          1496
+        </td>
+        <td>
+          2332
+          -
+          2363
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.quizInGame.answers(2)
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          1499
+        </td>
+        <td>
+          2378
+          -
+          2442
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          fourthAnswerButton.setText(gameStage.quizInGame.answers(3).text)
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          1498
+        </td>
+        <td>
+          2405
+          -
+          2436
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.quizInGame.answers(3)
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          1509
+        </td>
+        <td>
+          2456
+          -
+          2489
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case TimerUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          1502
+        </td>
+        <td>
+          2518
+          -
+          2537
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          1508
+        </td>
+        <td>
+          2544
+          -
+          2716
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          runLater
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Platform.runLater(() =&gt; {
+        timeRemainingLabel.setText(s&quot;${timer.getRemainingTime.toInt}&quot;)
+        timeProgressBar.setProgress(timer.getCompletionPercentage)
+      })
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          1503
+        </td>
+        <td>
+          2609
+          -
+          2631
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          getRemainingTime
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          timer.getRemainingTime
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          1505
+        </td>
+        <td>
+          2578
+          -
+          2640
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          timeRemainingLabel.setText(s&quot;${timer.getRemainingTime.toInt}&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          1504
+        </td>
+        <td>
+          2605
+          -
+          2639
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;${timer.getRemainingTime.toInt}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          98
+        </td>
+        <td>
+          1506
+        </td>
+        <td>
+          2677
+          -
+          2706
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          getCompletionPercentage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          timer.getCompletionPercentage
+        </td>
+      </tr><tr>
+        <td>
+          98
+        </td>
+        <td>
+          1507
+        </td>
+        <td>
+          2649
+          -
+          2707
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setProgress
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          timeProgressBar.setProgress(timer.getCompletionPercentage)
+        </td>
+      </tr><tr>
+        <td>
+          100
+        </td>
+        <td>
+          1513
+        </td>
+        <td>
+          2721
+          -
+          2758
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case QuizScoreUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          101
+        </td>
+        <td>
+          1512
+        </td>
+        <td>
+          2768
+          -
+          2893
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          runLater
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Platform.runLater(() =&gt; {
+        val score: Int = updateParameter.get
+        pointsLabel.setText(score + &quot; punti&quot;)
+      })
+        </td>
+      </tr><tr>
+        <td>
+          102
+        </td>
+        <td>
+          1510
+        </td>
+        <td>
+          2819
+          -
+          2838
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          103
+        </td>
+        <td>
+          1511
+        </td>
+        <td>
+          2847
+          -
+          2884
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          pointsLabel.setText(score + &quot; punti&quot;)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>
