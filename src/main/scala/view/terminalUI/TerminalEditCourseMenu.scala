@@ -27,9 +27,9 @@ class TerminalEditCourseMenu extends TerminalView:
     case DefaultUpdate =>
       println("Menu modifica corso:\n1) Menu principale")
       println("Modifica Corso")
-    case CourseUpdate(updateParameter) =>
+    case CourseListUpdate(updateParameter) =>
       courseList = updateParameter.get
-    case AskCourseUpdate =>
+    case AskCourseSelectUpdate =>
       println("Seleziona il corso da modificare")
       courseList.map(course => course.courseId.courseName).zipWithIndex.foreach { case (e, i) => println(i + "] " + e) }
       val courseIndex = readLine.toInt

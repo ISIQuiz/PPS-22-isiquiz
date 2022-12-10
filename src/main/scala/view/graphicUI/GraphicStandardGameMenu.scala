@@ -93,10 +93,8 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
     case CurrentGameUpdate(updateParameter) =>
       Platform.runLater(() => {
         val gameStage: GameStage = updateParameter.get
-        //maxScore = gameStage.quizInGame.quiz.maxScore
         courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
         quizNumberLabel.setText(s"${gameStage.currentQuizNumber}/${gameStage.gameSettings.asInstanceOf[StandardGameSettings].maxQuizzes}")
-        //pointsLabel.setText(actualScore.toString + " punti")
         quizLabel.setText(gameStage.quizInGame.quiz.question)
         firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
         secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
@@ -115,12 +113,6 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
       Platform.runLater(() => {
         timeRemainingLabel.setText(s"${timer.getRemainingTime.toInt}")
         timeProgressBar.setProgress(timer.getCompletionPercentage)
-        /*actualScore = updateScore(
-          timer.getRemainingTime.toInt,
-          timer.maxTime,
-          maxScore
-        )*/
-        //pointsLabel.setText(actualScore + " punti")
       })
     case QuizScoreUpdate(updateParameter) =>
       Platform.runLater(() => {

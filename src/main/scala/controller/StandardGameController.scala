@@ -22,9 +22,9 @@ import scala.concurrent.duration.Duration
 
 /** Companion object of standard game controller */
 object StandardGameController extends BackAction :
-
+  /** action to select an answer in the controller of a standard game */
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
-
+  /** action to go to the next quiz in the controller of a standard game */
   case object NextQuiz extends ParameterlessAction
 
   def apply(game: GameStage): StandardGameController =
@@ -64,10 +64,13 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
   def selectAnswer[T](actionParameter: Option[T]): Unit =
     timer.stopTimer()
     if actionParameter.isDefined && !timer.isExpired then
-      val selectedAnswerIndex: Int = actionParameter.get.asInstanceOf[Int]
-      val answerSelected: Answer = gameStage.quizInGame.answers(selectedAnswerIndex)
-      currentAnswer = Some(answerSelected)
-      sendUpdate(AnswerFeedbackUpdate(Option((selectedAnswerIndex, answerSelected.isCorrect))))
+      actionParameter match
+        case Some(selectedAnswerIndex:Int) =>
+          currentAnswer = Some(gameStage.quizInGame.answers(selectedAnswerIndex))
+        case Some(selectedAnswer: Answer) =>
+          currentAnswer = Some(selectedAnswer)
+        case _ => throw IllegalArgumentException()
+      sendUpdate(AnswerFeedbackUpdate(Option((gameStage.quizInGame.answers.indexOf(currentAnswer.get), currentAnswer.get.isCorrect))))
 
   override def nextQuiz(): QuizInGame =
     currentAnswer match
@@ -102,8 +105,6 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
   def updateScore(timeRemaining: Int, maxTime: Long, maxScore: Int): Int = {
     val coeff: Double = maxScore.toDouble / (maxTime / 1000).toDouble
     val score = (coeff * timeRemaining).toInt
-    /*println("ms: " + maxScore + "  |  mt: " + maxTime + "  |  c: " + coeff + "  |  tr" + timeRemaining)
-    println(score)*/
     if (score >= maxScore) score else score + 1
   }
 
