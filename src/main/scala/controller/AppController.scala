@@ -5,8 +5,8 @@ import controller.actions.{Action, ParameterlessAction}
 import javafx.stage.Stage
 import model.GameStage
 import model.stats.PlayerStats.{PlayerStats, removeUnusedStats}
-import model.{SavedCourse, Session}
 import utils.storage.ExportHandler
+import model.SavedCourse.SavedCourse
 import utils.storage.ImportHandler.importSessionFromPersonalDirectory
 import view.View
 import view.View.{PageView, TerminalView, ViewFactory}
@@ -21,13 +21,15 @@ object AppController extends Controller:
   private var _currentPage: Page[PageController, PageView] = Page[PageController, PageView](new MainMenuController, ViewFactory.create(MainMenuAction))
   def currentPage: Page[PageController, PageView] = _currentPage
   def currentPage_(pageController: PageController, pageView: PageView): Unit = _currentPage = Page[PageController, PageView](pageController, pageView)
-
+  
+  import model.Session.*
   // Init var session with a default saved course list
   private var _session: Session = Session()
   def session: Session = _session
+  
+  import model.Session
   def changeSavedCourses(savedCourses: List[SavedCourse]): Unit = _session = Session.changeSavedCourses(session, savedCourses)
   def changePlayerStats(playerStats: PlayerStats): Unit = _session = Session.changePlayerStats(session, playerStats)
-
 
   case object MainMenuAction extends ParameterlessAction
   case object SelectMenuAction extends ParameterlessAction
@@ -40,6 +42,7 @@ object AppController extends Controller:
   case class ReviewMenuAction(override val actionParameter: Option[GameStage]) extends Action(actionParameter)
   case class CustomMenuAction[T](override val actionParameter: Option[T]) extends Action(actionParameter)
   case class StandardGameAction[T](override val actionParameter: Option[T]) extends Action(actionParameter)
+  case class BlitzGameAction[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
   override def handle[T](action: Action[T]): Unit = action match
     case MainMenuAction => currentPage_(new MainMenuController, ViewFactory.create(MainMenuAction))
@@ -47,6 +50,7 @@ object AppController extends Controller:
     case StatisticsMenuAction => currentPage_(new StatisticsMenuController, ViewFactory.create(StatisticsMenuAction))
     case SettingsMenuAction => currentPage_(new SettingsMenuController, ViewFactory.create(SettingsMenuAction))
     case StandardGameAction(actionParameter) => currentPage_(StandardGameController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(StandardGameAction(Option.empty)))
+    case BlitzGameAction(actionParameter) => currentPage_(BlitzGameController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(BlitzGameAction(Option.empty)))
     case AddCourseMenuAction => currentPage_(new AddCourseMenuController, ViewFactory.create(AddCourseMenuAction))
     case AddQuizMenuAction => currentPage_(new AddQuizMenuController, ViewFactory.create(AddQuizMenuAction))
     case EditCourseMenuAction => currentPage_(new EditCourseMenuController, ViewFactory.create(EditCourseMenuAction))

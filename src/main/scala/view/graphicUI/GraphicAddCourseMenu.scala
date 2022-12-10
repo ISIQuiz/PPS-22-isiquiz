@@ -10,8 +10,8 @@ import utils.GUILoader
 import utils.GUILoader.loadGUI
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
-import model.SavedCourse.SavedCourseImpl
-import model.CourseIdentifier.CourseIdentifierImpl
+import model.SavedCourse.SavedCourse
+import model.CourseIdentifier.CourseIdentifier
 import model.Quiz.Quiz
 
 object GraphicAddCourseMenu
@@ -41,8 +41,8 @@ class GraphicAddCourseMenu(stage: Stage) extends GraphicView:
   @FXML
   def addCourseButtonClicked(): Unit =
     if checkInputs then
-      val course = SavedCourseImpl(
-        courseId = CourseIdentifierImpl(
+      val course = SavedCourse(
+        courseId = CourseIdentifier(
           courseName = courseNameTextField.getText,
           degreeName = degreeNameTextField.getText,
           universityName = universityNameTextField.getText

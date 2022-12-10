@@ -3,7 +3,8 @@ package view.terminalUI
 import controller.SelectMenuController
 import controller.SelectMenuController.*
 import controller.actions.{Action, ParameterlessAction}
-import model.{SavedCourse, Session}
+import model.Session
+import model.SavedCourse.*
 import view.View.TerminalView
 import view.updates.{ViewUpdate}
 import view.SelectMenuView.*

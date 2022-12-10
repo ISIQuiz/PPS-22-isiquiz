@@ -7,6 +7,7 @@ import view.{SelectMenuView, View}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import controller.{AppController, PageController}
 import model.{GameStage, QuizInGame, Session}
+import model.Session.Session
 import model.GameStage.*
 import view.SelectMenuView.*
 
@@ -19,6 +20,7 @@ import scala.concurrent.duration.Duration
 object SelectMenuController extends BackAction:
 
   case object Start extends ParameterlessAction
+  case object Blitz extends ParameterlessAction
   case object Custom extends ParameterlessAction
   case class Selection[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
@@ -32,6 +34,7 @@ class SelectMenuController extends PageController:
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(AppController.MainMenuAction)
     case Start => AppController.handle(AppController.StandardGameAction(Option(gameStage)))
+    case Blitz => AppController.handle(AppController.BlitzGameAction(Option(gameStage)))
     case Custom =>  AppController.handle(AppController.CustomMenuAction(Option(gameStage)))
     case Selection(actionParameter) => modifySelectedCourses(actionParameter)
 

@@ -1,13 +1,18 @@
-package model
 
-import model.Answer.Answer
+import model.Answer.*
 import model.Quiz.Quiz
+import model.QuizInGame
+import model.QuizAnswered
+import model.Course 
+import model.Review
+import model.GameStage
+import model.SavedCourse.SavedCourse
+import model.CourseIdentifier.CourseIdentifier
 import model.Review.*
 import model.settings.StandardGameSettings
 import model.stats.PlayerStats
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-
 
 class GameStageTest extends AnyFunSuite with Matchers:
 
@@ -20,9 +25,8 @@ class GameStageTest extends AnyFunSuite with Matchers:
   review.addQuizAnswered(quizAnswered2)
 
   val gameStage = GameStage()
-  println(gameStage.toString)
 
-  test("New quizInGame test") {
+  test("Creation quizInGame") {
     quizInGame.quiz.question shouldEqual "question"
     quizInGame.quiz.answerList.head.text shouldEqual "ans"
     quizInGame.quiz.maxScore shouldEqual 10
@@ -30,7 +34,7 @@ class GameStageTest extends AnyFunSuite with Matchers:
     quizInGame.course.courseId.courseName shouldEqual "courseName"
   }
 
-  test("New gameStage test") {
+  test("Creation gameStage") {
     gameStage.coursesInGame shouldEqual Nil
     gameStage.quizInGame shouldEqual null
     gameStage.quizInGamePresent shouldEqual false
@@ -39,8 +43,7 @@ class GameStageTest extends AnyFunSuite with Matchers:
     gameStage.gameSettings shouldEqual StandardGameSettings()
   }
 
-
-  test("Add quizInGame in GameStage test") {
+  test("Add quizInGame in GameStage") {
     gameStage.quizInGame_(quizInGame)
     gameStage.quizInGamePresent shouldEqual true
     gameStage.addReviewQuizNotAnswered()
@@ -62,6 +65,5 @@ class GameStageTest extends AnyFunSuite with Matchers:
     gameStage.playerStatsInGame.totalAnsweredQuestions shouldEqual 1 // 1 risposta data
     gameStage.playerStatsInGame.totalCorrectAnswers shouldEqual 1 // 1 risposta corretta
     gameStage.playerStatsInGame.totalAnswerPrecision shouldEqual 100 // 100% precisione
-    gameStage.playerStatsInGame.totalAverageTimeAnswer shouldEqual 10 // 10sec tempo di risposta 
+    gameStage.playerStatsInGame.totalAverageTimeAnswer shouldEqual 10 // 10sec tempo di risposta
   }
-

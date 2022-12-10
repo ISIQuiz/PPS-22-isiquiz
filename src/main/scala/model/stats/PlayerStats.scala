@@ -8,14 +8,6 @@ import scala.util.Try
 /** Object for PlayerStats model */
 object PlayerStats:
 
-  // Case class for player stats
-  case class PlayerStats(totalScore: Int,
-                         totalAnsweredQuestions: Int,
-                         totalCorrectAnswers: Int,
-                         totalAnswerPrecision: Int,
-                         totalAverageTimeAnswer: Double,
-                         courseInStatsList: List[CourseInStats])
-
   /**
    * Create a new [[PlayerStats]]
    *
@@ -27,18 +19,12 @@ object PlayerStats:
    * @param courseInStatsList      the list of course in stats
    * @return a [[PlayerStats]]
    */
-  def apply(totalScore: Int = initStats.totalScore,
-            totalAnsweredQuestions: Int = initStats.totalAnsweredQuestions,
-            totalCorrectAnswers: Int = initStats.totalCorrectAnswers,
-            totalAnswerPrecision: Int = initStats.totalAnswerPrecision,
-            totalAverageTimeAnswer: Double = initStats.totalAverageTimeAnswer,
-            courseInStatsList: List[CourseInStats] = initStats.courseInStatsList) =
-    PlayerStats(totalScore,
-      totalAnsweredQuestions,
-      totalCorrectAnswers,
-      totalAnswerPrecision,
-      totalAverageTimeAnswer,
-      courseInStatsList)
+  case class PlayerStats(totalScore: Int = initStats.totalScore,
+                         totalAnsweredQuestions: Int = initStats.totalAnsweredQuestions,
+                         totalCorrectAnswers: Int = initStats.totalCorrectAnswers,
+                         totalAnswerPrecision: Int = initStats.totalAnswerPrecision,
+                         totalAverageTimeAnswer: Double = initStats.totalAverageTimeAnswer,
+                         courseInStatsList: List[CourseInStats] = initStats.courseInStatsList)
 
   /**
    * Change total score in player stats
@@ -80,7 +66,6 @@ object PlayerStats:
   def changeTotalAnswerPrecision(playerStats: PlayerStats, totalAnswerPrecision: Int): PlayerStats =
     PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, totalAnswerPrecision, playerStats.totalAverageTimeAnswer, playerStats.courseInStatsList)
 
-
   /**
    * Change total average time to answer
    *
@@ -91,7 +76,6 @@ object PlayerStats:
   def changeTotalAverageTimeAnswer(playerStats: PlayerStats, totalAverageTimeAnswer: Double): PlayerStats =
     PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, totalAverageTimeAnswer, playerStats.courseInStatsList)
 
-
   /**
    * Change course in stats list
    *
@@ -101,7 +85,6 @@ object PlayerStats:
    */
   def changeCourseInStatsList(playerStats: PlayerStats, courseInStatsList: List[CourseInStats]): PlayerStats =
     PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, playerStats.totalAverageTimeAnswer, courseInStatsList)
-
 
   /**
    * Update [[PlayerStats]] with all the values that can be derived
@@ -141,7 +124,6 @@ object PlayerStats:
       playerStats.courseInStatsList.appended(newCourseInStats)
 
     updatePlayerStats(newCourseInStatsList)
-
 
   /**
    * Merge two [[PlayerStats]] in a new one

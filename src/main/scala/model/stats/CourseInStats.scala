@@ -18,7 +18,6 @@ object CourseInStats:
    */
   def apply(course: Course, quizInStatsList: List[QuizInStats]) = CourseInStats(course, quizInStatsList)
 
-
   /**
    * Change course in course in stats
    * @param courseInStats
@@ -36,6 +35,3 @@ object CourseInStats:
    */
   def changeQuizInStatsList(courseInStats: CourseInStats,quizInStatsList: List[QuizInStats]): CourseInStats = courseInStats match
     case CourseInStats(course, _) => CourseInStats(course, quizInStatsList)
-
-
-

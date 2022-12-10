@@ -1,11 +1,11 @@
 package utils.parser
 
 import model.SavedCourse
-import model.stats.PlayerStats
+import model.stats.PlayerStats.PlayerStats
 import org.scalatest.funsuite.AnyFunSuite
 import utils.storage.DefaultDataList.defaultCourseList
 import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
-
+import model.SavedCourse.*
 import scala.util.{Failure, Success}
 
 class JsonParserTest extends AnyFunSuite:

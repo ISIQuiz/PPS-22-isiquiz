@@ -2,9 +2,10 @@ package view.terminalUI
 
 import controller.EditCourseMenuController
 import controller.EditCourseMenuController.*
+import model.CourseIdentifier.CourseIdentifier
+import model.Quiz.Quiz
 import controller.actions.Action
-import model.SavedCourse
-import model.SavedCourse.SavedCourseImpl
+import model.SavedCourse.SavedCourse
 import view.EditCourseMenuView.*
 import view.View.*
 import view.updates.ViewUpdate
@@ -46,10 +47,9 @@ class TerminalEditCourseMenu extends TerminalView:
       if "s" == readLine.toLowerCase then
         println("inserisci descrizione del corso:")
         descriptionIns = Some(readLine)
-      import model.CourseIdentifier.CourseIdentifierImpl
-      import model.Quiz.Quiz
-      val course = SavedCourseImpl(
-        courseId = CourseIdentifierImpl(
+
+      val course = SavedCourse(
+        courseId = CourseIdentifier(
           courseName = courseNameIns,
           degreeName = degreeNameIns,
           universityName = universityNameIns
@@ -57,10 +57,8 @@ class TerminalEditCourseMenu extends TerminalView:
         description = descriptionIns,
         quizList = Nil
       )
-      import controller.EditCourseMenuController.EditCourseAction
       sendEvent(EditCourseAction(Option(course)))
     case CoursePrintUpdate(course) =>
-      import model.SavedCourse
       println(course.get)
     case CourseEditedUpdate =>
       println("Corso Modificato!")
