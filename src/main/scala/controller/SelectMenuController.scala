@@ -15,7 +15,7 @@ import scala.collection.mutable.ListBuffer
 import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
-/** Companion object of select menu controller */
+/** Companion object of select menu controller containing all the actions can be sent to it */
 object SelectMenuController extends BackAction:
 
   case object Start extends ParameterlessAction
