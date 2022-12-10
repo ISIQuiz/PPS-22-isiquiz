@@ -1,7 +1,7 @@
 package view.graphicUI
 
 import com.sun.javafx.scene.control.IntegerField
-import controller.AddQuizMenuController.{AddCourseAction, Back}
+import controller.AddQuizMenuController.{SelectCourseAction, Back}
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -24,9 +24,10 @@ import scala.collection.mutable.ListBuffer
 
 object GraphicAddQuizMenu
 
-/** Default menu graphic interface  */
+/** add quiz menu graphic interface  */
 class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
 
+  val toggleGroup: ToggleGroup = ToggleGroup()
 
   @FXML
   var coursesScrollPane: ScrollPane = _
@@ -39,8 +40,6 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
 
   @FXML
   var scoreIntegerField: IntegerField = _
-
-  val toggleGroup = ToggleGroup()
 
   @FXML
   var answersVBox: VBox = _
@@ -84,7 +83,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
   loadGUI(stage, this, "add_quiz_menu.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
-    case CourseUpdate(updateParameter) =>
+    case CourseListUpdate(updateParameter) =>
       Platform.runLater { () =>
         coursesVBox.getChildren.clear()
         updateParameter.get.foreach(savedCourse =>
@@ -92,7 +91,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
           radioButton.setToggleGroup(toggleGroup);
           radioButton.getStyleClass.add("label-dark");
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
-            sendEvent(AddCourseAction(Option(savedCourse)))
+            sendEvent(SelectCourseAction(Option(savedCourse)))
           );
           coursesVBox.getChildren.addAll(radioButton)
         )

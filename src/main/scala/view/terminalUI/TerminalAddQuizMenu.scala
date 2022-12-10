@@ -15,7 +15,7 @@ import scala.io.StdIn.readLine
 
 object TerminalAddQuizMenu
 
-/** Add quiz terminal interface  */
+/** Add quiz menu terminal interface  */
 class TerminalAddQuizMenu extends TerminalView:
 
   var courseList:List[SavedCourse] = Nil
@@ -28,14 +28,14 @@ class TerminalAddQuizMenu extends TerminalView:
     case DefaultUpdate =>
       println("Menu aggiunta quiz:\n1) Menu principale")
       println("Aggiunta quiz:")
-    case CourseUpdate(updateParameter) =>
+    case CourseListUpdate(updateParameter) =>
       courseList = updateParameter.get
-    case AskCourseUpdate =>
+    case AskCourseSelectUpdate =>
       println("Seleziona il corso al quale aggiungere la domanda")
       courseList.map(course=>course.courseId.courseName).zipWithIndex.foreach{ case (e, i) => println(i+"] "+e) }
       val courseIndex = readLine.toInt
-      import controller.AddQuizMenuController.AddCourseAction
-      sendEvent(AddCourseAction(courseList.lift(courseIndex)))
+      import controller.AddQuizMenuController.SelectCourseAction
+      sendEvent(SelectCourseAction(courseList.lift(courseIndex)))
     case AskQuizUpdate =>
       println("Inserisci domanda:")
       val question = readLine

@@ -14,7 +14,7 @@ import scala.concurrent.duration.Duration
 
 /** Companion object of add course menu controller */
 object AddCourseMenuController extends BackAction:
-
+  /** action to add a course in the add course controller */
   case class AddCourseAction(override val actionParameter: Option[SavedCourse]) extends Action(actionParameter)
 
 /** Defines the logic of the add course page */
