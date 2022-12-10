@@ -1,7 +1,8 @@
 package model.stats
 
 import model.stats.CourseInStats
-import model.{Course, CourseIdentifier}
+import model.Course
+import model.CourseIdentifier.*
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 

@@ -1,6 +1,7 @@
 package model.stats
 
-import model.{Course, CourseIdentifier}
+import model.Course
+import model.CourseIdentifier.*
 import model.stats.CourseInStats.CourseInStats
 import model.stats.PlayerStats.initStats
 import org.scalatest.funsuite.AnyFunSuite

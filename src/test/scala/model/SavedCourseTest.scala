@@ -2,9 +2,10 @@ package model
 
 import model.Answer.Answer
 import model.Quiz.*
+import model.SavedCourse.*
+import model.CourseIdentifier.*
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-
 import java.util.UUID
 
 class SavedCourseTest extends AnyFunSuite with Matchers:
@@ -50,6 +51,8 @@ class SavedCourseTest extends AnyFunSuite with Matchers:
     savedCourse.courseId.universityName shouldEqual "Università di Bologna"
   }
 
+  import model.SavedCourse
+
   test("Change course identifier") {
     val courseIdChanged = CourseIdentifier("PCD", "Laurea Triennale", "UniBo")
     val savedCourseChanged = SavedCourse.changeCourseIdentifier(savedCourse, courseIdChanged)
@@ -70,6 +73,8 @@ class SavedCourseTest extends AnyFunSuite with Matchers:
     val savedCourseChanged = SavedCourse.changeQuizList(savedCourse, quizListChanged)
     savedCourseChanged.quizList.size shouldEqual 2
   }
+
+  import model.CourseIdentifier
 
   test("Change id Course Name") {
     val courseIdChanged = CourseIdentifier.changeCourseName(savedCourse.courseId, "Sistemi Operativi")

@@ -1,5 +1,6 @@
 package model
 
+import model.CourseIdentifier.CourseIdentifier
 import model.Course.*
 import org.scalatest.funsuite.AnyFunSuite
 
