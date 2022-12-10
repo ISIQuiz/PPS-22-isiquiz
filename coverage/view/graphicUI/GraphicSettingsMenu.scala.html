@@ -79,81 +79,78 @@
 </span>55 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
 </span>56 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
 </span>57 <span style=''>
-</span>58 <span style=''>
-</span>59 <span style=''>  </span><span style='background: #F0ADAD'>private def showDialogAlert</span><span style=''>(alertType: AlertType, title: String, headerText: String, path: String = &quot;&quot;): Unit =
-</span>60 <span style=''>    </span><span style='background: #F0ADAD'>alert.setAlertType(alertType)</span><span style=''>
-</span>61 <span style=''>    </span><span style='background: #F0ADAD'>alert.setTitle(title)</span><span style=''>
-</span>62 <span style=''>    </span><span style='background: #F0ADAD'>alert.setHeaderText(headerText + &quot;\n&quot; + path)</span><span style=''>
-</span>63 <span style=''>    </span><span style='background: #F0ADAD'>alert.show()</span><span style=''>
-</span>64 <span style=''>
-</span>65 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>66 <span style=''></span><span style='background: #F0ADAD'>  def importButtonClicked</span><span style=''>(): Unit =
-</span>67 <span style=''>    val extensionFilter: ExtensionFilter = </span><span style='background: #F0ADAD'>ExtensionFilter(&quot;JSON file&quot;, &quot;*.json&quot;)</span><span style=''>
-</span>68 <span style=''>    val fileChooser: FileChooser = </span><span style='background: #F0ADAD'>FileChooser()</span><span style=''>
-</span>69 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.getExtensionFilters.add(extensionFilter)</span><span style=''>
-</span>70 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.setTitle(&quot;Importa i corsi&quot;)</span><span style=''>
-</span>71 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.setInitialDirectory(File(CurrentDirectoryPath))</span><span style=''>
-</span>72 <span style=''>    val selectedFile = </span><span style='background: #F0ADAD'>fileChooser.showOpenDialog(stage)</span><span style=''>
-</span>73 <span style=''>    if (selectedFile != null)
-</span>74 <span style=''>      </span><span style='background: #F0ADAD'>ImportHandler.importSavedCourseListFromFile(AppController.session, selectedFile.getPath) match
-</span>75 <span style=''></span><span style='background: #F0ADAD'>        case Success(savedCourseList) =&gt;
-</span>76 <span style=''></span><span style='background: #F0ADAD'>          AppController.changeSavedCourses(savedCourseList)
-</span>77 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
-</span>78 <span style=''></span><span style='background: #F0ADAD'>            AlertType.INFORMATION,
-</span>79 <span style=''></span><span style='background: #F0ADAD'>            &quot;Importazione&quot;,
-</span>80 <span style=''></span><span style='background: #F0ADAD'>            &quot;Importazione avvenuta con successo!&quot;,
-</span>81 <span style=''></span><span style='background: #F0ADAD'>            selectedFile.getPath
-</span>82 <span style=''></span><span style='background: #F0ADAD'>          )
-</span>83 <span style=''></span><span style='background: #F0ADAD'>        case Failure(f) =&gt;
-</span>84 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
-</span>85 <span style=''></span><span style='background: #F0ADAD'>            AlertType.ERROR,
-</span>86 <span style=''></span><span style='background: #F0ADAD'>            &quot;Importazione&quot;,
-</span>87 <span style=''></span><span style='background: #F0ADAD'>            &quot;Errore! File non valido!&quot;
-</span>88 <span style=''></span><span style='background: #F0ADAD'>          )</span><span style=''>
-</span>89 <span style=''>
-</span>90 <span style=''>
-</span>91 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>92 <span style=''></span><span style='background: #F0ADAD'>  def exportButtonClicked</span><span style=''>(): Unit =
-</span>93 <span style=''>    val directoryChooser: DirectoryChooser = </span><span style='background: #F0ADAD'>DirectoryChooser()</span><span style=''>
-</span>94 <span style=''>    </span><span style='background: #F0ADAD'>directoryChooser.setTitle(&quot;Esporta i corsi&quot;)</span><span style=''>
-</span>95 <span style=''>    </span><span style='background: #F0ADAD'>directoryChooser.setInitialDirectory(File(HomeDirectoryPath))</span><span style=''>
-</span>96 <span style=''>    val selectedDirectory = </span><span style='background: #F0ADAD'>directoryChooser.showDialog(stage)</span><span style=''>
-</span>97 <span style=''>    if (selectedDirectory != null)
-</span>98 <span style=''>      </span><span style='background: #F0ADAD'>ExportHandler.exportSavedCoursesToPath(AppController.session.savedCourses, selectedDirectory.toString) match
-</span>99 <span style=''></span><span style='background: #F0ADAD'>        case Success(path) =&gt;
-</span>100 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
-</span>101 <span style=''></span><span style='background: #F0ADAD'>            AlertType.INFORMATION,
-</span>102 <span style=''></span><span style='background: #F0ADAD'>            &quot;Esportazione&quot;,
-</span>103 <span style=''></span><span style='background: #F0ADAD'>            &quot;Esportazione avvenuta con successo!&quot;,
-</span>104 <span style=''></span><span style='background: #F0ADAD'>            path
-</span>105 <span style=''></span><span style='background: #F0ADAD'>          )
-</span>106 <span style=''></span><span style='background: #F0ADAD'>        case Failure(f) =&gt;
-</span>107 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
-</span>108 <span style=''></span><span style='background: #F0ADAD'>            AlertType.ERROR,
-</span>109 <span style=''></span><span style='background: #F0ADAD'>            &quot;Esportazione&quot;,
-</span>110 <span style=''></span><span style='background: #F0ADAD'>            &quot;Errore! File non valido!&quot;
-</span>111 <span style=''></span><span style='background: #F0ADAD'>          )</span><span style=''>
-</span>112 <span style=''>
-</span>113 <span style=''>
-</span>114 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>115 <span style=''></span><span style='background: #F0ADAD'>  def addCourseButtonClicked</span><span style=''>(): Unit =
-</span>116 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(AddCourse)</span><span style=''>
-</span>117 <span style=''>
-</span>118 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>119 <span style=''></span><span style='background: #F0ADAD'>  def addQuizButtonClicked</span><span style=''>(): Unit =
-</span>120 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(AddQuiz)</span><span style=''>
-</span>121 <span style=''>
-</span>122 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>123 <span style=''></span><span style='background: #F0ADAD'>  def editCourseButtonClicked</span><span style=''>(): Unit =
-</span>124 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(EditCourse)</span><span style=''>
-</span>125 <span style=''>
-</span>126 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>127 <span style=''></span><span style='background: #F0ADAD'>  def editQuizButtonClicked</span><span style=''>(): Unit =
-</span>128 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(EditQuiz)</span><span style=''>
-</span>129 <span style=''>
-</span>130 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;settings_menu.fxml&quot;)</span><span style=''>
-</span>131 <span style=''>
-</span>132 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = {}
+</span>58 <span style=''>  </span><span style='background: #F0ADAD'>private def showDialogAlert</span><span style=''>(alertType: AlertType, title: String, headerText: String, path: String = &quot;&quot;): Unit =
+</span>59 <span style=''>    </span><span style='background: #F0ADAD'>alert.setAlertType(alertType)</span><span style=''>
+</span>60 <span style=''>    </span><span style='background: #F0ADAD'>alert.setTitle(title)</span><span style=''>
+</span>61 <span style=''>    </span><span style='background: #F0ADAD'>alert.setHeaderText(headerText + &quot;\n&quot; + path)</span><span style=''>
+</span>62 <span style=''>    </span><span style='background: #F0ADAD'>alert.show()</span><span style=''>
+</span>63 <span style=''>
+</span>64 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>65 <span style=''></span><span style='background: #F0ADAD'>  def importButtonClicked</span><span style=''>(): Unit =
+</span>66 <span style=''>    val extensionFilter: ExtensionFilter = </span><span style='background: #F0ADAD'>ExtensionFilter(&quot;JSON file&quot;, &quot;*.json&quot;)</span><span style=''>
+</span>67 <span style=''>    val fileChooser: FileChooser = </span><span style='background: #F0ADAD'>FileChooser()</span><span style=''>
+</span>68 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.getExtensionFilters.add(extensionFilter)</span><span style=''>
+</span>69 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.setTitle(&quot;Importa i corsi&quot;)</span><span style=''>
+</span>70 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.setInitialDirectory(File(CurrentDirectoryPath))</span><span style=''>
+</span>71 <span style=''>    val selectedFile = </span><span style='background: #F0ADAD'>fileChooser.showOpenDialog(stage)</span><span style=''>
+</span>72 <span style=''>    if (selectedFile != null)
+</span>73 <span style=''>      </span><span style='background: #F0ADAD'>ImportHandler.importSavedCourseListFromFile(AppController.session, selectedFile.getPath) match
+</span>74 <span style=''></span><span style='background: #F0ADAD'>        case Success(savedCourseList) =&gt;
+</span>75 <span style=''></span><span style='background: #F0ADAD'>          AppController.changeSavedCourses(savedCourseList)
+</span>76 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
+</span>77 <span style=''></span><span style='background: #F0ADAD'>            AlertType.INFORMATION,
+</span>78 <span style=''></span><span style='background: #F0ADAD'>            &quot;Importazione&quot;,
+</span>79 <span style=''></span><span style='background: #F0ADAD'>            &quot;Importazione avvenuta con successo!&quot;,
+</span>80 <span style=''></span><span style='background: #F0ADAD'>            selectedFile.getPath
+</span>81 <span style=''></span><span style='background: #F0ADAD'>          )
+</span>82 <span style=''></span><span style='background: #F0ADAD'>        case Failure(f) =&gt;
+</span>83 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
+</span>84 <span style=''></span><span style='background: #F0ADAD'>            AlertType.ERROR,
+</span>85 <span style=''></span><span style='background: #F0ADAD'>            &quot;Importazione&quot;,
+</span>86 <span style=''></span><span style='background: #F0ADAD'>            &quot;Errore! File non valido!&quot;
+</span>87 <span style=''></span><span style='background: #F0ADAD'>          )</span><span style=''>
+</span>88 <span style=''>
+</span>89 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>90 <span style=''></span><span style='background: #F0ADAD'>  def exportButtonClicked</span><span style=''>(): Unit =
+</span>91 <span style=''>    val directoryChooser: DirectoryChooser = </span><span style='background: #F0ADAD'>DirectoryChooser()</span><span style=''>
+</span>92 <span style=''>    </span><span style='background: #F0ADAD'>directoryChooser.setTitle(&quot;Esporta i corsi&quot;)</span><span style=''>
+</span>93 <span style=''>    </span><span style='background: #F0ADAD'>directoryChooser.setInitialDirectory(File(HomeDirectoryPath))</span><span style=''>
+</span>94 <span style=''>    val selectedDirectory = </span><span style='background: #F0ADAD'>directoryChooser.showDialog(stage)</span><span style=''>
+</span>95 <span style=''>    if (selectedDirectory != null)
+</span>96 <span style=''>      </span><span style='background: #F0ADAD'>ExportHandler.exportSavedCoursesToPath(AppController.session.savedCourses, selectedDirectory.toString) match
+</span>97 <span style=''></span><span style='background: #F0ADAD'>        case Success(path) =&gt;
+</span>98 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
+</span>99 <span style=''></span><span style='background: #F0ADAD'>            AlertType.INFORMATION,
+</span>100 <span style=''></span><span style='background: #F0ADAD'>            &quot;Esportazione&quot;,
+</span>101 <span style=''></span><span style='background: #F0ADAD'>            &quot;Esportazione avvenuta con successo!&quot;,
+</span>102 <span style=''></span><span style='background: #F0ADAD'>            path
+</span>103 <span style=''></span><span style='background: #F0ADAD'>          )
+</span>104 <span style=''></span><span style='background: #F0ADAD'>        case Failure(f) =&gt;
+</span>105 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
+</span>106 <span style=''></span><span style='background: #F0ADAD'>            AlertType.ERROR,
+</span>107 <span style=''></span><span style='background: #F0ADAD'>            &quot;Esportazione&quot;,
+</span>108 <span style=''></span><span style='background: #F0ADAD'>            &quot;Errore! File non valido!&quot;
+</span>109 <span style=''></span><span style='background: #F0ADAD'>          )</span><span style=''>
+</span>110 <span style=''>
+</span>111 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>112 <span style=''></span><span style='background: #F0ADAD'>  def addCourseButtonClicked</span><span style=''>(): Unit =
+</span>113 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(AddCourse)</span><span style=''>
+</span>114 <span style=''>
+</span>115 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>116 <span style=''></span><span style='background: #F0ADAD'>  def addQuizButtonClicked</span><span style=''>(): Unit =
+</span>117 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(AddQuiz)</span><span style=''>
+</span>118 <span style=''>
+</span>119 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>120 <span style=''></span><span style='background: #F0ADAD'>  def editCourseButtonClicked</span><span style=''>(): Unit =
+</span>121 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(EditCourse)</span><span style=''>
+</span>122 <span style=''>
+</span>123 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>124 <span style=''></span><span style='background: #F0ADAD'>  def editQuizButtonClicked</span><span style=''>(): Unit =
+</span>125 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(EditQuiz)</span><span style=''>
+</span>126 <span style=''>
+</span>127 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;settings_menu.fxml&quot;)</span><span style=''>
+</span>128 <span style=''>
+</span>129 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = {}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -171,7 +168,7 @@
           24
         </td>
         <td>
-          1767
+          1641
         </td>
         <td>
           817
@@ -195,7 +192,7 @@
           54
         </td>
         <td>
-          1769
+          1643
         </td>
         <td>
           1214
@@ -220,7 +217,7 @@
           55
         </td>
         <td>
-          1768
+          1642
         </td>
         <td>
           1258
@@ -241,15 +238,39 @@
         </td>
       </tr><tr>
         <td>
-          58
+          57
         </td>
         <td>
-          1777
+          1650
         </td>
         <td>
-          1378
+          1277
           -
-          1378
+          1304
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          showDialogAlert
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          private def showDialogAlert
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          1651
+        </td>
+        <td>
+          1377
+          -
+          1377
         </td>
         <td>
           DefDef
@@ -268,36 +289,12 @@
           58
         </td>
         <td>
-          1776
+          1644
         </td>
         <td>
-          1278
+          1393
           -
-          1305
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          showDialogAlert
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          private def showDialogAlert
-        </td>
-      </tr><tr>
-        <td>
-          59
-        </td>
-        <td>
-          1770
-        </td>
-        <td>
-          1394
-          -
-          1423
+          1422
         </td>
         <td>
           Apply
@@ -313,15 +310,15 @@
         </td>
       </tr><tr>
         <td>
-          60
+          59
         </td>
         <td>
-          1771
+          1645
         </td>
         <td>
-          1428
+          1427
           -
-          1449
+          1448
         </td>
         <td>
           Apply
@@ -337,15 +334,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          60
         </td>
         <td>
-          1773
+          1647
         </td>
         <td>
-          1474
+          1473
           -
-          1498
+          1497
         </td>
         <td>
           Apply
@@ -361,15 +358,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          60
         </td>
         <td>
-          1772
+          1646
         </td>
         <td>
-          1474
+          1473
           -
-          1491
+          1490
         </td>
         <td>
           Apply
@@ -385,15 +382,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          60
         </td>
         <td>
-          1774
+          1648
         </td>
         <td>
-          1454
+          1453
           -
-          1499
+          1498
         </td>
         <td>
           Apply
@@ -409,15 +406,15 @@
         </td>
       </tr><tr>
         <td>
-          62
+          61
         </td>
         <td>
-          1775
+          1649
         </td>
         <td>
-          1504
+          1503
           -
-          1516
+          1515
         </td>
         <td>
           Apply
@@ -433,15 +430,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          64
         </td>
         <td>
-          1797
+          1671
         </td>
         <td>
-          1520
+          1519
           -
-          1551
+          1550
         </td>
         <td>
           DefDef
@@ -458,15 +455,15 @@
         </td>
       </tr><tr>
         <td>
-          66
+          65
         </td>
         <td>
-          1778
+          1652
         </td>
         <td>
-          1605
+          1604
           -
-          1643
+          1642
         </td>
         <td>
           Apply
@@ -482,15 +479,15 @@
         </td>
       </tr><tr>
         <td>
-          67
+          66
         </td>
         <td>
-          1779
+          1653
         </td>
         <td>
-          1679
+          1678
           -
-          1692
+          1691
         </td>
         <td>
           Apply
@@ -506,15 +503,15 @@
         </td>
       </tr><tr>
         <td>
-          68
+          67
         </td>
         <td>
-          1781
+          1655
         </td>
         <td>
-          1697
+          1696
           -
-          1749
+          1748
         </td>
         <td>
           Apply
@@ -530,15 +527,15 @@
         </td>
       </tr><tr>
         <td>
-          68
+          67
         </td>
         <td>
-          1780
+          1654
         </td>
         <td>
-          1697
+          1696
           -
-          1728
+          1727
         </td>
         <td>
           Apply
@@ -554,15 +551,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          68
         </td>
         <td>
-          1782
+          1656
         </td>
         <td>
-          1754
+          1753
           -
-          1793
+          1792
         </td>
         <td>
           Apply
@@ -578,15 +575,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          69
         </td>
         <td>
-          1784
+          1658
         </td>
         <td>
-          1798
+          1797
           -
-          1857
+          1856
         </td>
         <td>
           Apply
@@ -602,15 +599,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          69
         </td>
         <td>
-          1783
+          1657
         </td>
         <td>
-          1830
+          1829
           -
-          1856
+          1855
         </td>
         <td>
           Apply
@@ -626,15 +623,15 @@
         </td>
       </tr><tr>
         <td>
-          71
+          70
         </td>
         <td>
-          1785
+          1659
         </td>
         <td>
-          1881
+          1880
           -
-          1914
+          1913
         </td>
         <td>
           Apply
@@ -650,15 +647,15 @@
         </td>
       </tr><tr>
         <td>
-          73
+          72
         </td>
         <td>
-          1788
+          1662
         </td>
         <td>
-          1951
+          1950
           -
-          2039
+          2038
         </td>
         <td>
           Apply
@@ -674,15 +671,15 @@
         </td>
       </tr><tr>
         <td>
-          73
+          72
         </td>
         <td>
-          1787
+          1661
         </td>
         <td>
-          2018
+          2017
           -
-          2038
+          2037
         </td>
         <td>
           Apply
@@ -698,15 +695,15 @@
         </td>
       </tr><tr>
         <td>
-          73
+          72
         </td>
         <td>
-          1796
+          1670
         </td>
         <td>
-          1951
+          1950
           -
-          2494
+          2493
         </td>
         <td>
           Match
@@ -736,15 +733,15 @@
         </td>
       </tr><tr>
         <td>
-          73
+          72
         </td>
         <td>
-          1786
+          1660
         </td>
         <td>
-          1995
+          1994
           -
-          2016
+          2015
         </td>
         <td>
           Select
@@ -760,15 +757,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          73
         </td>
         <td>
-          1792
+          1666
         </td>
         <td>
-          2054
+          2053
           -
-          2083
+          2082
         </td>
         <td>
           Block
@@ -784,15 +781,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          74
         </td>
         <td>
-          1789
+          1663
         </td>
         <td>
-          2097
+          2096
           -
-          2146
+          2145
         </td>
         <td>
           Apply
@@ -808,15 +805,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          75
         </td>
         <td>
-          1791
+          1665
         </td>
         <td>
-          2157
+          2156
           -
-          2332
+          2331
         </td>
         <td>
           Apply
@@ -837,15 +834,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          79
         </td>
         <td>
-          1790
+          1664
         </td>
         <td>
-          2300
+          2299
           -
-          2320
+          2319
         </td>
         <td>
           Apply
@@ -861,15 +858,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          81
         </td>
         <td>
-          1795
+          1669
         </td>
         <td>
-          2341
+          2340
           -
-          2356
+          2355
         </td>
         <td>
           Block
@@ -885,39 +882,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          82
         </td>
         <td>
-          1793
+          1668
         </td>
         <td>
-          2370
+          2369
           -
-          2385
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          showDialogAlert$default$4
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          showDialogAlert
-        </td>
-      </tr><tr>
-        <td>
-          83
-        </td>
-        <td>
-          1794
-        </td>
-        <td>
-          2370
-          -
-          2494
+          2493
         </td>
         <td>
           Apply
@@ -937,15 +910,39 @@
         </td>
       </tr><tr>
         <td>
-          91
+          82
         </td>
         <td>
-          1813
+          1667
         </td>
         <td>
-          2499
+          2369
           -
-          2530
+          2384
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          showDialogAlert$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          showDialogAlert
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          1687
+        </td>
+        <td>
+          2497
+          -
+          2528
         </td>
         <td>
           DefDef
@@ -962,15 +959,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          90
         </td>
         <td>
-          1798
+          1672
         </td>
         <td>
-          2586
+          2584
           -
-          2604
+          2602
         </td>
         <td>
           Apply
@@ -986,15 +983,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          91
         </td>
         <td>
-          1799
+          1673
         </td>
         <td>
-          2609
+          2607
           -
-          2653
+          2651
         </td>
         <td>
           Apply
@@ -1010,39 +1007,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          92
         </td>
         <td>
-          1801
+          1674
         </td>
         <td>
-          2658
+          2693
           -
-          2719
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          setInitialDirectory
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          directoryChooser.setInitialDirectory(File(HomeDirectoryPath))
-        </td>
-      </tr><tr>
-        <td>
-          94
-        </td>
-        <td>
-          1800
-        </td>
-        <td>
-          2695
-          -
-          2718
+          2716
         </td>
         <td>
           Apply
@@ -1058,15 +1031,39 @@
         </td>
       </tr><tr>
         <td>
-          95
+          92
         </td>
         <td>
-          1802
+          1675
         </td>
         <td>
-          2748
+          2656
           -
-          2782
+          2717
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setInitialDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          directoryChooser.setInitialDirectory(File(HomeDirectoryPath))
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          1676
+        </td>
+        <td>
+          2746
+          -
+          2780
         </td>
         <td>
           Apply
@@ -1082,15 +1079,15 @@
         </td>
       </tr><tr>
         <td>
-          97
+          95
         </td>
         <td>
-          1806
+          1680
         </td>
         <td>
-          2824
+          2822
           -
-          2926
+          2924
         </td>
         <td>
           Apply
@@ -1106,63 +1103,15 @@
         </td>
       </tr><tr>
         <td>
-          97
+          95
         </td>
         <td>
-          1805
+          1677
         </td>
         <td>
-          2899
+          2861
           -
-          2925
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          toString
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          selectedDirectory.toString
-        </td>
-      </tr><tr>
-        <td>
-          97
-        </td>
-        <td>
-          1804
-        </td>
-        <td>
-          2863
-          -
-          2897
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          savedCourses
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session.savedCourses
-        </td>
-      </tr><tr>
-        <td>
-          97
-        </td>
-        <td>
-          1803
-        </td>
-        <td>
-          2863
-          -
-          2884
+          2882
         </td>
         <td>
           Select
@@ -1178,15 +1127,15 @@
         </td>
       </tr><tr>
         <td>
-          97
+          95
         </td>
         <td>
-          1812
+          1686
         </td>
         <td>
-          2824
+          2822
           -
-          3294
+          3292
         </td>
         <td>
           Match
@@ -1215,15 +1164,63 @@
         </td>
       </tr><tr>
         <td>
-          98
+          95
         </td>
         <td>
-          1808
+          1679
         </td>
         <td>
-          2941
+          2897
           -
-          2959
+          2923
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          selectedDirectory.toString
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          1678
+        </td>
+        <td>
+          2861
+          -
+          2895
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          savedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session.savedCourses
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          1682
+        </td>
+        <td>
+          2939
+          -
+          2957
         </td>
         <td>
           Block
@@ -1239,15 +1236,15 @@
         </td>
       </tr><tr>
         <td>
-          99
+          97
         </td>
         <td>
-          1807
+          1681
         </td>
         <td>
-          2973
+          2971
           -
-          3132
+          3130
         </td>
         <td>
           Apply
@@ -1268,15 +1265,15 @@
         </td>
       </tr><tr>
         <td>
-          105
+          103
         </td>
         <td>
-          1811
+          1685
         </td>
         <td>
-          3141
+          3139
           -
-          3156
+          3154
         </td>
         <td>
           Block
@@ -1292,15 +1289,39 @@
         </td>
       </tr><tr>
         <td>
-          106
+          104
         </td>
         <td>
-          1810
+          1683
         </td>
         <td>
-          3170
+          3168
           -
-          3294
+          3183
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          showDialogAlert$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          showDialogAlert
+        </td>
+      </tr><tr>
+        <td>
+          104
+        </td>
+        <td>
+          1684
+        </td>
+        <td>
+          3168
+          -
+          3292
         </td>
         <td>
           Apply
@@ -1320,39 +1341,15 @@
         </td>
       </tr><tr>
         <td>
-          106
+          111
         </td>
         <td>
-          1809
+          1689
         </td>
         <td>
-          3170
+          3296
           -
-          3185
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          showDialogAlert$default$4
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          showDialogAlert
-        </td>
-      </tr><tr>
-        <td>
-          114
-        </td>
-        <td>
-          1815
-        </td>
-        <td>
-          3299
-          -
-          3333
+          3330
         </td>
         <td>
           DefDef
@@ -1369,15 +1366,15 @@
         </td>
       </tr><tr>
         <td>
-          115
+          112
         </td>
         <td>
-          1814
+          1688
         </td>
         <td>
-          3348
+          3345
           -
-          3368
+          3365
         </td>
         <td>
           Apply
@@ -1393,15 +1390,15 @@
         </td>
       </tr><tr>
         <td>
-          118
+          115
         </td>
         <td>
-          1817
+          1691
         </td>
         <td>
-          3372
+          3369
           -
-          3404
+          3401
         </td>
         <td>
           DefDef
@@ -1418,15 +1415,15 @@
         </td>
       </tr><tr>
         <td>
-          119
+          116
         </td>
         <td>
-          1816
+          1690
         </td>
         <td>
-          3419
+          3416
           -
-          3437
+          3434
         </td>
         <td>
           Apply
@@ -1442,15 +1439,15 @@
         </td>
       </tr><tr>
         <td>
-          122
+          119
         </td>
         <td>
-          1819
+          1693
         </td>
         <td>
-          3441
+          3438
           -
-          3476
+          3473
         </td>
         <td>
           DefDef
@@ -1467,15 +1464,15 @@
         </td>
       </tr><tr>
         <td>
-          123
+          120
         </td>
         <td>
-          1818
+          1692
         </td>
         <td>
-          3491
+          3488
           -
-          3512
+          3509
         </td>
         <td>
           Apply
@@ -1491,15 +1488,15 @@
         </td>
       </tr><tr>
         <td>
-          126
+          123
         </td>
         <td>
-          1821
+          1695
         </td>
         <td>
-          3516
+          3513
           -
-          3549
+          3546
         </td>
         <td>
           DefDef
@@ -1516,15 +1513,15 @@
         </td>
       </tr><tr>
         <td>
-          127
+          124
         </td>
         <td>
-          1820
+          1694
         </td>
         <td>
-          3564
+          3561
           -
-          3583
+          3580
         </td>
         <td>
           Apply
@@ -1540,15 +1537,15 @@
         </td>
       </tr><tr>
         <td>
-          129
+          126
         </td>
         <td>
-          1822
+          1696
         </td>
         <td>
-          3587
+          3584
           -
-          3629
+          3626
         </td>
         <td>
           Apply
@@ -1564,15 +1561,15 @@
         </td>
       </tr><tr>
         <td>
-          131
+          128
         </td>
         <td>
-          1823
+          1697
         </td>
         <td>
-          3633
+          3630
           -
-          3654
+          3651
         </td>
         <td>
           DefDef

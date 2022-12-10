@@ -24,88 +24,88 @@
           <div class="tab-pane active" id="codegrid">
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package view.graphicUI
 </span>2 <span style=''>
-</span>3 <span style=''>import com.sun.javafx.scene.control.IntegerField
-</span>4 <span style=''>import controller.EditQuizMenuController.*
-</span>5 <span style=''>import javafx.application.Platform
-</span>6 <span style=''>import javafx.fxml.FXML
-</span>7 <span style=''>import javafx.scene.control.*
-</span>8 <span style=''>import javafx.scene.layout.*
-</span>9 <span style=''>import javafx.scene.input.MouseEvent
-</span>10 <span style=''>import javafx.stage.Stage
-</span>11 <span style=''>import model.Answer.Answer
-</span>12 <span style=''>import scalafx.geometry.Insets
-</span>13 <span style=''>import model.CourseIdentifier.CourseIdentifierImpl
-</span>14 <span style=''>import model.Quiz.Quiz
-</span>15 <span style=''>import model.SavedCourse.SavedCourseImpl
-</span>16 <span style=''>import utils.GUILoader
-</span>17 <span style=''>import utils.GUILoader.loadGUI
-</span>18 <span style=''>import view.EditQuizMenuView.*
-</span>19 <span style=''>import view.View.{GraphicView, sendEvent}
-</span>20 <span style=''>import view.updates.ViewUpdate
-</span>21 <span style=''>
-</span>22 <span style=''>import scala.collection.mutable.ListBuffer
-</span>23 <span style=''>
-</span>24 <span style=''>object GraphicEditQuizMenu
-</span>25 <span style=''>
-</span>26 <span style=''>/** Default menu graphic interface  */
-</span>27 <span style=''>class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
-</span>28 <span style=''>
+</span>3 <span style=''>import controller.EditQuizMenuController.*
+</span>4 <span style=''>import javafx.application.Platform
+</span>5 <span style=''>import javafx.fxml.FXML
+</span>6 <span style=''>import javafx.scene.control.*
+</span>7 <span style=''>import javafx.scene.layout.*
+</span>8 <span style=''>import javafx.scene.input.MouseEvent
+</span>9 <span style=''>import javafx.stage.Stage
+</span>10 <span style=''>import model.Answer.Answer
+</span>11 <span style=''>import scalafx.geometry.Insets
+</span>12 <span style=''>import model.CourseIdentifier.CourseIdentifierImpl
+</span>13 <span style=''>import model.Quiz.Quiz
+</span>14 <span style=''>import model.SavedCourse.SavedCourseImpl
+</span>15 <span style=''>import utils.GUILoader
+</span>16 <span style=''>import utils.GUILoader.loadGUI
+</span>17 <span style=''>import view.EditQuizMenuView.*
+</span>18 <span style=''>import view.View.{GraphicView, sendEvent}
+</span>19 <span style=''>import view.updates.ViewUpdate
+</span>20 <span style=''>
+</span>21 <span style=''>import scala.collection.mutable.ListBuffer
+</span>22 <span style=''>
+</span>23 <span style=''>object GraphicEditQuizMenu
+</span>24 <span style=''>
+</span>25 <span style=''>/** Default menu graphic interface  */
+</span>26 <span style=''>class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
+</span>27 <span style=''>
+</span>28 <span style=''>  val toggleCourseGroup: ToggleGroup = </span><span style='background: #F0ADAD'>ToggleGroup()</span><span style=''>
 </span>29 <span style=''>
-</span>30 <span style=''>  val toggleCourseGroup: ToggleGroup = </span><span style='background: #F0ADAD'>ToggleGroup()</span><span style=''>
+</span>30 <span style=''>  val toggleQuizGroup: ToggleGroup = </span><span style='background: #F0ADAD'>ToggleGroup()</span><span style=''>
 </span>31 <span style=''>
-</span>32 <span style=''>  val toggleQuizGroup: ToggleGroup = </span><span style='background: #F0ADAD'>ToggleGroup()</span><span style=''>
-</span>33 <span style=''>
-</span>34 <span style=''>  @FXML
-</span>35 <span style=''>  var coursesVBox: VBox = _
-</span>36 <span style=''>  @FXML
-</span>37 <span style=''>  var quizVBox: VBox = _
-</span>38 <span style=''>
-</span>39 <span style=''>  @FXML
-</span>40 <span style=''>  var questionTextField: TextField = _
-</span>41 <span style=''>
-</span>42 <span style=''>  @FXML
-</span>43 <span style=''>  var imagePathTextField: TextField = _
-</span>44 <span style=''>
-</span>45 <span style=''>  @FXML
-</span>46 <span style=''>  var scoreIntegerField: IntegerField = _
-</span>47 <span style=''>
-</span>48 <span style=''>  @FXML
-</span>49 <span style=''>  var answersVBox: VBox = _
-</span>50 <span style=''>
-</span>51 <span style=''>  @FXML
-</span>52 <span style=''>  var feedbackLabel: Label = _
-</span>53 <span style=''>
-</span>54 <span style=''>
-</span>55 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>56 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
-</span>57 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
-</span>58 <span style=''>
-</span>59 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>60 <span style=''></span><span style='background: #F0ADAD'>  def addAnswerButtonClicked</span><span style=''>(): Unit =
-</span>61 <span style=''>    </span><span style='background: #F0ADAD'>addAnswerGUI(None)</span><span style=''>
-</span>62 <span style=''>
-</span>63 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>64 <span style=''></span><span style='background: #F0ADAD'>  def removeAnswerButtonClicked</span><span style=''>(): Unit =
-</span>65 <span style=''>    if </span><span style='background: #F0ADAD'>answersVBox.getChildren.size()</span><span style=''>&gt;1 then </span><span style='background: #F0ADAD'>answersVBox.getChildren.remove(answersVBox.getChildren.size()-1)</span><span style=''>
-</span>66 <span style=''>
-</span>67 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>68 <span style=''></span><span style='background: #F0ADAD'>  def editQuizButtonClicked</span><span style=''>(): Unit =
-</span>69 <span style=''>    if </span><span style='background: #F0ADAD'>checkInputs</span><span style=''> then
-</span>70 <span style=''>      </span><span style='background: #F0ADAD'>val answerList: ListBuffer[Answer] = ListBuffer()
-</span>71 <span style=''></span><span style='background: #F0ADAD'>      answersVBox.getChildren.forEach(hBox =&gt;
-</span>72 <span style=''></span><span style='background: #F0ADAD'>        val answerTextField = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(1).asInstanceOf[TextField]
-</span>73 <span style=''></span><span style='background: #F0ADAD'>        val answerCorrectCheckBox: CheckBox = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(3).asInstanceOf[CheckBox]
-</span>74 <span style=''></span><span style='background: #F0ADAD'>          answerList += Answer(answerTextField.getText, answerCorrectCheckBox.isSelected)
-</span>75 <span style=''></span><span style='background: #F0ADAD'>      )
-</span>76 <span style=''></span><span style='background: #F0ADAD'>      val quiz = Quiz(question = questionTextField.getText, answerList = answerList.toList, maxScore = scoreIntegerField.getValue, imagePath = imagePathTextField.getText match
-</span>77 <span style=''></span><span style='background: #F0ADAD'>        case &quot;&quot; =&gt; None
-</span>78 <span style=''></span><span style='background: #F0ADAD'>        case text =&gt; Some(text)
-</span>79 <span style=''></span><span style='background: #F0ADAD'>      )
-</span>80 <span style=''></span><span style='background: #F0ADAD'>      import controller.EditQuizMenuController.EditQuizAction
-</span>81 <span style=''></span><span style='background: #F0ADAD'>      sendEvent(EditQuizAction(Option(quiz)))</span><span style=''>
-</span>82 <span style=''>    else
-</span>83 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(&quot;Configurazione Invalida&quot;)</span><span style=''>
-</span>84 <span style=''>
+</span>32 <span style=''>  @FXML
+</span>33 <span style=''>  var coursesVBox: VBox = _
+</span>34 <span style=''>
+</span>35 <span style=''>  @FXML
+</span>36 <span style=''>  var quizVBox: VBox = _
+</span>37 <span style=''>
+</span>38 <span style=''>  @FXML
+</span>39 <span style=''>  var questionTextField: TextField = _
+</span>40 <span style=''>
+</span>41 <span style=''>  @FXML
+</span>42 <span style=''>  var imagePathTextField: TextField = _
+</span>43 <span style=''>
+</span>44 <span style=''>  @FXML
+</span>45 <span style=''>  var scoreIntegerField: TextField = _
+</span>46 <span style=''>
+</span>47 <span style=''>  @FXML
+</span>48 <span style=''>  var answersVBox: VBox = _
+</span>49 <span style=''>
+</span>50 <span style=''>  @FXML
+</span>51 <span style=''>  var answerTextField: TextField = _
+</span>52 <span style=''>
+</span>53 <span style=''>  @FXML
+</span>54 <span style=''>  var feedbackLabel: Label = _
+</span>55 <span style=''>
+</span>56 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>57 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
+</span>58 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
+</span>59 <span style=''>
+</span>60 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>61 <span style=''></span><span style='background: #F0ADAD'>  def addAnswerButtonClicked</span><span style=''>(): Unit =
+</span>62 <span style=''>    </span><span style='background: #F0ADAD'>addAnswerGUI(None)</span><span style=''>
+</span>63 <span style=''>
+</span>64 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>65 <span style=''></span><span style='background: #F0ADAD'>  def removeAnswerButtonClicked</span><span style=''>(): Unit =
+</span>66 <span style=''>    if </span><span style='background: #F0ADAD'>answersVBox.getChildren.size()</span><span style=''>&gt;1 then </span><span style='background: #F0ADAD'>answersVBox.getChildren.remove(answersVBox.getChildren.size()-1)</span><span style=''>
+</span>67 <span style=''>
+</span>68 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>69 <span style=''></span><span style='background: #F0ADAD'>  def editQuizButtonClicked</span><span style=''>(): Unit =
+</span>70 <span style=''>    if </span><span style='background: #F0ADAD'>checkInputs</span><span style=''> then
+</span>71 <span style=''>      </span><span style='background: #F0ADAD'>val answerList: ListBuffer[Answer] = ListBuffer()
+</span>72 <span style=''></span><span style='background: #F0ADAD'>      answersVBox.getChildren.forEach(hBox =&gt;
+</span>73 <span style=''></span><span style='background: #F0ADAD'>        val answerTextField = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(1).asInstanceOf[TextField]
+</span>74 <span style=''></span><span style='background: #F0ADAD'>        val answerCorrectCheckBox: CheckBox = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(3).asInstanceOf[CheckBox]
+</span>75 <span style=''></span><span style='background: #F0ADAD'>          answerList += Answer(answerTextField.getText, answerCorrectCheckBox.isSelected)
+</span>76 <span style=''></span><span style='background: #F0ADAD'>      )
+</span>77 <span style=''></span><span style='background: #F0ADAD'>      val quiz = Quiz(question = questionTextField.getText, answerList = answerList.toList, maxScore = scoreIntegerField.getText.toInt, imagePath = imagePathTextField.getText match
+</span>78 <span style=''></span><span style='background: #F0ADAD'>        case &quot;&quot; =&gt; None
+</span>79 <span style=''></span><span style='background: #F0ADAD'>        case text =&gt; Some(text)
+</span>80 <span style=''></span><span style='background: #F0ADAD'>      )
+</span>81 <span style=''></span><span style='background: #F0ADAD'>      import controller.EditQuizMenuController.EditQuizAction
+</span>82 <span style=''></span><span style='background: #F0ADAD'>      sendEvent(EditQuizAction(Option(quiz)))</span><span style=''>
+</span>83 <span style=''>    else
+</span>84 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(&quot;Configurazione Invalida&quot;)</span><span style=''>
 </span>85 <span style=''>
 </span>86 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;edit_quiz_menu.fxml&quot;)</span><span style=''>
 </span>87 <span style=''>
@@ -134,7 +134,7 @@
 </span>110 <span style=''></span><span style='background: #F0ADAD'>          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
 </span>111 <span style=''></span><span style='background: #F0ADAD'>            questionTextField.setText(quiz.question);
 </span>112 <span style=''></span><span style='background: #F0ADAD'>            imagePathTextField.setText(if quiz.imagePath.isDefined then quiz.imagePath.get else &quot;&quot;);
-</span>113 <span style=''></span><span style='background: #F0ADAD'>            scoreIntegerField.setValue(quiz.maxScore);
+</span>113 <span style=''></span><span style='background: #F0ADAD'>            scoreIntegerField.setText(quiz.maxScore.toString);
 </span>114 <span style=''></span><span style='background: #F0ADAD'>            clearAllAnswers();
 </span>115 <span style=''></span><span style='background: #F0ADAD'>            quiz.answerList.foreach(ans =&gt; addAnswerGUI(Option(ans)));
 </span>116 <span style=''></span><span style='background: #F0ADAD'>            sendEvent(SelectQuizAction(Option(quiz)));
@@ -143,11 +143,11 @@
 </span>119 <span style=''></span><span style='background: #F0ADAD'>        )
 </span>120 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
 </span>121 <span style=''>    </span><span style='background: #F0ADAD'>case QuizEditedUpdate</span><span style=''> =&gt;
-</span>122 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(&quot;Quiz Modificato!!!&quot;)</span><span style=''>
+</span>122 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(&quot;Quiz Modificato&quot;)</span><span style=''>
 </span>123 <span style=''>      </span><span style='background: #F0ADAD'>quizVBox.getChildren.clear()</span><span style=''>
 </span>124 <span style=''>      </span><span style='background: #F0ADAD'>questionTextField.clear()</span><span style=''>
 </span>125 <span style=''>      </span><span style='background: #F0ADAD'>imagePathTextField.clear()</span><span style=''>
-</span>126 <span style=''>      </span><span style='background: #F0ADAD'>scoreIntegerField.setValue(10)</span><span style=''>
+</span>126 <span style=''>      </span><span style='background: #F0ADAD'>scoreIntegerField.setText(&quot;10&quot;)</span><span style=''>
 </span>127 <span style=''>      </span><span style='background: #F0ADAD'>clearAllAnswers()</span><span style=''>
 </span>128 <span style=''>      </span><span style='background: #F0ADAD'>addAnswerGUI(None)</span><span style=''>
 </span>129 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
@@ -166,13 +166,15 @@
 </span>142 <span style=''></span><span style='background: #F0ADAD'>      answerBox.setPadding(Insets.apply(10, 0, 0, 10))
 </span>143 <span style=''></span><span style='background: #F0ADAD'>      val textField: TextField = TextField(if opAnswer.nonEmpty then opAnswer.get.text else &quot;&quot;)
 </span>144 <span style=''></span><span style='background: #F0ADAD'>      textField.setId(&quot;answerTextField&quot; + idNum)
-</span>145 <span style=''></span><span style='background: #F0ADAD'>      textField.setPrefWidth(650.0)
+</span>145 <span style=''></span><span style='background: #F0ADAD'>      textField.getStyleClass.add(&quot;text-field-extra-large&quot;)
 </span>146 <span style=''></span><span style='background: #F0ADAD'>      val checkBox = CheckBox()
 </span>147 <span style=''></span><span style='background: #F0ADAD'>      checkBox.setSelected(if opAnswer.nonEmpty then opAnswer.get.isCorrect else false)
 </span>148 <span style=''></span><span style='background: #F0ADAD'>      checkBox.setId(&quot;answerCorrectCheckBox&quot; + idNum)
-</span>149 <span style=''></span><span style='background: #F0ADAD'>      answerBox.getChildren.addAll(Label(&quot;Risposta &quot;), textField, Label(&quot; Corretta &quot;), checkBox)
-</span>150 <span style=''></span><span style='background: #F0ADAD'>      answersVBox.getChildren.addAll(answerBox)
-</span>151 <span style=''></span><span style='background: #F0ADAD'>  }</span><span style=''>
+</span>149 <span style=''></span><span style='background: #F0ADAD'>      checkBox.setText(&quot;corretta&quot;)
+</span>150 <span style=''></span><span style='background: #F0ADAD'>      checkBox.getStyleClass.add(&quot;checkbox-dark&quot;)
+</span>151 <span style=''></span><span style='background: #F0ADAD'>      answerBox.getChildren.addAll(textField, checkBox)
+</span>152 <span style=''></span><span style='background: #F0ADAD'>      answersVBox.getChildren.addAll(answerBox)
+</span>153 <span style=''></span><span style='background: #F0ADAD'>  }</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -187,15 +189,39 @@
         <th>Code</th>
       </tr><tr>
         <td>
+          27
+        </td>
+        <td>
+          1423
+        </td>
+        <td>
+          792
+          -
+          805
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ToggleGroup()
+        </td>
+      </tr><tr>
+        <td>
           29
         </td>
         <td>
-          1488
+          1424
         </td>
         <td>
-          842
+          844
           -
-          855
+          857
         </td>
         <td>
           Apply
@@ -211,39 +237,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          56
         </td>
         <td>
-          1489
+          1426
         </td>
         <td>
-          894
+          1200
           -
-          907
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ToggleGroup()
-        </td>
-      </tr><tr>
-        <td>
-          55
-        </td>
-        <td>
-          1491
-        </td>
-        <td>
-          1207
-          -
-          1236
+          1229
         </td>
         <td>
           DefDef
@@ -260,15 +262,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          57
         </td>
         <td>
-          1490
+          1425
         </td>
         <td>
-          1251
+          1244
           -
-          1266
+          1259
         </td>
         <td>
           Apply
@@ -284,15 +286,15 @@
         </td>
       </tr><tr>
         <td>
-          59
+          60
         </td>
         <td>
-          1493
+          1428
         </td>
         <td>
-          1270
+          1263
           -
-          1304
+          1297
         </td>
         <td>
           DefDef
@@ -309,15 +311,15 @@
         </td>
       </tr><tr>
         <td>
-          60
+          61
         </td>
         <td>
-          1492
+          1427
         </td>
         <td>
-          1319
+          1312
           -
-          1337
+          1330
         </td>
         <td>
           Apply
@@ -333,15 +335,15 @@
         </td>
       </tr><tr>
         <td>
-          63
+          64
         </td>
         <td>
-          1501
+          1436
         </td>
         <td>
-          1341
+          1334
           -
-          1378
+          1371
         </td>
         <td>
           DefDef
@@ -358,39 +360,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          65
         </td>
         <td>
-          1500
+          1429
         </td>
         <td>
-          1434
+          1389
           -
-          1498
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          answersVBox.getChildren.remove(answersVBox.getChildren.size()-1)
-        </td>
-      </tr><tr>
-        <td>
-          64
-        </td>
-        <td>
-          1494
-        </td>
-        <td>
-          1396
-          -
-          1419
+          1412
         </td>
         <td>
           Apply
@@ -406,15 +384,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          65
         </td>
         <td>
-          1497
+          1432
         </td>
         <td>
-          1465
+          1458
           -
-          1488
+          1481
         </td>
         <td>
           Apply
@@ -430,15 +408,15 @@
         </td>
       </tr><tr>
         <td>
-          64
-        </td>
-        <td>
-          1499
+          65
         </td>
         <td>
           1434
+        </td>
+        <td>
+          1427
           -
-          1498
+          1491
         </td>
         <td>
           Apply
@@ -454,15 +432,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          65
         </td>
         <td>
-          1496
+          1431
         </td>
         <td>
-          1434
+          1427
           -
-          1457
+          1450
         </td>
         <td>
           Apply
@@ -478,15 +456,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          65
         </td>
         <td>
-          1495
+          1430
         </td>
         <td>
-          1396
+          1389
           -
-          1426
+          1419
         </td>
         <td>
           Apply
@@ -502,15 +480,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          65
         </td>
         <td>
-          1498
+          1433
         </td>
         <td>
-          1465
+          1458
           -
-          1495
+          1488
         </td>
         <td>
           Apply
@@ -526,15 +504,39 @@
         </td>
       </tr><tr>
         <td>
-          67
+          65
         </td>
         <td>
-          1525
+          1435
         </td>
         <td>
-          1502
+          1427
           -
-          1535
+          1491
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren.remove(answersVBox.getChildren.size()-1)
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1462
+        </td>
+        <td>
+          1495
+          -
+          1528
         </td>
         <td>
           DefDef
@@ -551,15 +553,15 @@
         </td>
       </tr><tr>
         <td>
-          68
+          69
         </td>
         <td>
-          1502
+          1437
         </td>
         <td>
-          1553
+          1546
           -
-          1564
+          1557
         </td>
         <td>
           Select
@@ -575,15 +577,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          70
         </td>
         <td>
-          1503
+          1438
         </td>
         <td>
-          1613
+          1606
           -
-          1625
+          1618
         </td>
         <td>
           Apply
@@ -599,15 +601,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          70
         </td>
         <td>
-          1522
+          1459
         </td>
         <td>
-          1576
+          1569
           -
-          2350
+          2348
         </td>
         <td>
           Block
@@ -625,7 +627,7 @@
         val answerCorrectCheckBox: CheckBox = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(3).asInstanceOf[CheckBox]
           answerList += Answer(answerTextField.getText, answerCorrectCheckBox.isSelected)
       )
-      val quiz = Quiz(question = questionTextField.getText, answerList = answerList.toList, maxScore = scoreIntegerField.getValue, imagePath = imagePathTextField.getText match
+      val quiz = Quiz(question = questionTextField.getText, answerList = answerList.toList, maxScore = scoreIntegerField.getText.toInt, imagePath = imagePathTextField.getText match
         case &quot;&quot; =&gt; None
         case text =&gt; Some(text)
       )
@@ -634,15 +636,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          71
         </td>
         <td>
-          1512
+          1447
         </td>
         <td>
-          1632
+          1625
           -
-          2002
+          1995
         </td>
         <td>
           Apply
@@ -662,15 +664,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          71
         </td>
         <td>
-          1504
+          1439
         </td>
         <td>
-          1632
+          1625
           -
-          1655
+          1648
         </td>
         <td>
           Apply
@@ -686,15 +688,15 @@
         </td>
       </tr><tr>
         <td>
-          71
+          72
         </td>
         <td>
-          1506
+          1441
         </td>
         <td>
-          1702
+          1695
           -
-          1756
+          1749
         </td>
         <td>
           Apply
@@ -710,15 +712,15 @@
         </td>
       </tr><tr>
         <td>
-          71
+          72
         </td>
         <td>
-          1505
+          1440
         </td>
         <td>
-          1702
+          1695
           -
-          1749
+          1742
         </td>
         <td>
           Apply
@@ -734,15 +736,15 @@
         </td>
       </tr><tr>
         <td>
-          72
+          73
         </td>
         <td>
-          1508
+          1443
         </td>
         <td>
-          1827
+          1820
           -
-          1881
+          1874
         </td>
         <td>
           Apply
@@ -758,15 +760,15 @@
         </td>
       </tr><tr>
         <td>
-          72
+          73
         </td>
         <td>
-          1507
+          1442
         </td>
         <td>
-          1827
+          1820
           -
-          1874
+          1867
         </td>
         <td>
           Apply
@@ -782,63 +784,15 @@
         </td>
       </tr><tr>
         <td>
-          73
+          74
         </td>
         <td>
-          1510
+          1446
         </td>
         <td>
-          1961
+          1908
           -
-          1993
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          isSelected
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          answerCorrectCheckBox.isSelected
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1509
-        </td>
-        <td>
-          1936
-          -
-          1959
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getText
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          answerTextField.getText
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1511
-        </td>
-        <td>
-          1915
-          -
-          1994
+          1987
         </td>
         <td>
           Apply
@@ -854,15 +808,63 @@
         </td>
       </tr><tr>
         <td>
-          75
+          74
         </td>
         <td>
-          1519
+          1445
         </td>
         <td>
-          2020
+          1954
           -
-          2024
+          1986
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          isSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answerCorrectCheckBox.isSelected
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          1444
+        </td>
+        <td>
+          1929
+          -
+          1952
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answerTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          1456
+        </td>
+        <td>
+          2013
+          -
+          2017
         </td>
         <td>
           Select
@@ -878,39 +880,39 @@
         </td>
       </tr><tr>
         <td>
-          75
+          76
         </td>
         <td>
-          1515
+          1450
         </td>
         <td>
-          2106
+          2099
           -
-          2132
+          2124
         </td>
         <td>
           Apply
         </td>
         <td>
-          getValue
+          getText
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          scoreIntegerField.getValue
+          scoreIntegerField.getText
         </td>
       </tr><tr>
         <td>
-          75
+          76
         </td>
         <td>
-          1514
+          1449
         </td>
         <td>
-          2076
+          2069
           -
-          2093
+          2086
         </td>
         <td>
           Select
@@ -926,15 +928,39 @@
         </td>
       </tr><tr>
         <td>
-          75
+          76
         </td>
         <td>
-          1513
+          1452
         </td>
         <td>
-          2036
+          2099
           -
-          2061
+          2130
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toInt
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scoreIntegerField.getText.toInt
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          1448
+        </td>
+        <td>
+          2029
+          -
+          2054
         </td>
         <td>
           Apply
@@ -950,15 +976,39 @@
         </td>
       </tr><tr>
         <td>
-          75
+          76
         </td>
         <td>
-          1516
+          1451
         </td>
         <td>
-          2146
+          2099
           -
-          2172
+          2124
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          augmentString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scoreIntegerField.getText
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          1453
+        </td>
+        <td>
+          2144
+          -
+          2170
         </td>
         <td>
           Apply
@@ -974,15 +1024,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          77
         </td>
         <td>
-          1517
+          1454
         </td>
         <td>
-          2187
+          2185
           -
-          2194
+          2192
         </td>
         <td>
           Block
@@ -998,15 +1048,15 @@
         </td>
       </tr><tr>
         <td>
-          77
+          78
         </td>
         <td>
-          1518
+          1455
         </td>
         <td>
-          2211
+          2209
           -
-          2220
+          2218
         </td>
         <td>
           Block
@@ -1022,15 +1072,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          81
         </td>
         <td>
-          1521
+          1458
         </td>
         <td>
-          2311
+          2309
           -
-          2350
+          2348
         </td>
         <td>
           Apply
@@ -1046,15 +1096,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          81
         </td>
         <td>
-          1520
+          1457
         </td>
         <td>
-          2336
+          2334
           -
-          2348
+          2346
         </td>
         <td>
           Apply
@@ -1070,15 +1120,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          83
         </td>
         <td>
-          1524
+          1461
         </td>
         <td>
-          2366
+          2364
           -
-          2414
+          2412
         </td>
         <td>
           Block
@@ -1094,15 +1144,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          83
         </td>
         <td>
-          1523
+          1460
         </td>
         <td>
-          2366
+          2364
           -
-          2414
+          2412
         </td>
         <td>
           Apply
@@ -1121,12 +1171,12 @@
           85
         </td>
         <td>
-          1526
+          1463
         </td>
         <td>
-          2419
+          2416
           -
-          2462
+          2459
         </td>
         <td>
           Apply
@@ -1145,12 +1195,12 @@
           87
         </td>
         <td>
-          1585
+          1522
         </td>
         <td>
-          2466
+          2463
           -
-          2487
+          2484
         </td>
         <td>
           DefDef
@@ -1169,12 +1219,12 @@
           88
         </td>
         <td>
-          1548
+          1485
         </td>
         <td>
-          2541
+          2538
           -
-          2579
+          2576
         </td>
         <td>
           Block
@@ -1193,12 +1243,12 @@
           89
         </td>
         <td>
-          1547
+          1484
         </td>
         <td>
-          2589
+          2586
           -
-          3195
+          3192
         </td>
         <td>
           Apply
@@ -1229,12 +1279,12 @@
           90
         </td>
         <td>
-          1528
+          1465
         </td>
         <td>
-          2623
+          2620
           -
-          2654
+          2651
         </td>
         <td>
           Apply
@@ -1253,12 +1303,12 @@
           90
         </td>
         <td>
-          1527
+          1464
         </td>
         <td>
-          2623
+          2620
           -
-          2646
+          2643
         </td>
         <td>
           Apply
@@ -1277,12 +1327,12 @@
           91
         </td>
         <td>
-          1530
+          1467
         </td>
         <td>
-          2663
+          2660
           -
-          2694
+          2691
         </td>
         <td>
           Apply
@@ -1301,12 +1351,12 @@
           91
         </td>
         <td>
-          1529
+          1466
         </td>
         <td>
-          2663
+          2660
           -
-          2686
+          2683
         </td>
         <td>
           Apply
@@ -1325,12 +1375,12 @@
           92
         </td>
         <td>
-          1546
+          1483
         </td>
         <td>
-          2703
+          2700
           -
-          3187
+          3184
         </td>
         <td>
           Apply
@@ -1357,12 +1407,12 @@
           92
         </td>
         <td>
-          1531
+          1468
         </td>
         <td>
-          2703
+          2700
           -
-          2722
+          2719
         </td>
         <td>
           Select
@@ -1381,108 +1431,12 @@
           93
         </td>
         <td>
-          1536
+          1474
         </td>
         <td>
-          2786
+          2771
           -
-          2859
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          s
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          s&quot;${savedCourse.courseId.courseName} (${savedCourse.quizList.size} quiz)&quot;
-        </td>
-      </tr><tr>
-        <td>
-          93
-        </td>
-        <td>
-          1533
-        </td>
-        <td>
-          2790
-          -
-          2821
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          courseName
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          savedCourse.courseId.courseName
-        </td>
-      </tr><tr>
-        <td>
-          93
-        </td>
-        <td>
-          1532
-        </td>
-        <td>
-          2790
-          -
-          2810
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          courseId
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          savedCourse.courseId
-        </td>
-      </tr><tr>
-        <td>
-          93
-        </td>
-        <td>
-          1535
-        </td>
-        <td>
-          2826
-          -
-          2851
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          size
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          savedCourse.quizList.size
-        </td>
-      </tr><tr>
-        <td>
-          93
-        </td>
-        <td>
-          1537
-        </td>
-        <td>
-          2774
-          -
-          2860
+          2857
         </td>
         <td>
           Apply
@@ -1501,12 +1455,108 @@
           93
         </td>
         <td>
-          1534
+          1470
         </td>
         <td>
-          2826
+          2787
           -
-          2846
+          2818
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          savedCourse.courseId.courseName
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          1473
+        </td>
+        <td>
+          2783
+          -
+          2856
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;${savedCourse.courseId.courseName} (${savedCourse.quizList.size} quiz)&quot;
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          1472
+        </td>
+        <td>
+          2823
+          -
+          2848
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          savedCourse.quizList.size
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          1469
+        </td>
+        <td>
+          2787
+          -
+          2807
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          savedCourse.courseId
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          1471
+        </td>
+        <td>
+          2823
+          -
+          2843
         </td>
         <td>
           Select
@@ -1525,12 +1575,12 @@
           94
         </td>
         <td>
-          1538
+          1475
         </td>
         <td>
-          2872
+          2869
           -
-          2917
+          2914
         </td>
         <td>
           Apply
@@ -1549,12 +1599,12 @@
           95
         </td>
         <td>
-          1539
+          1476
         </td>
         <td>
-          2929
+          2926
           -
-          2954
+          2951
         </td>
         <td>
           Apply
@@ -1573,12 +1623,12 @@
           95
         </td>
         <td>
-          1540
+          1477
         </td>
         <td>
-          2929
+          2926
           -
-          2972
+          2969
         </td>
         <td>
           Apply
@@ -1597,12 +1647,12 @@
           96
         </td>
         <td>
-          1543
+          1480
         </td>
         <td>
-          2984
+          2981
           -
-          3122
+          3119
         </td>
         <td>
           Apply
@@ -1623,12 +1673,12 @@
           97
         </td>
         <td>
-          1542
+          1479
         </td>
         <td>
-          3059
+          3056
           -
-          3109
+          3106
         </td>
         <td>
           Apply
@@ -1647,12 +1697,12 @@
           97
         </td>
         <td>
-          1541
+          1478
         </td>
         <td>
-          3088
+          3085
           -
-          3107
+          3104
         </td>
         <td>
           Apply
@@ -1671,12 +1721,12 @@
           99
         </td>
         <td>
-          1545
+          1482
         </td>
         <td>
-          3134
+          3131
           -
-          3177
+          3174
         </td>
         <td>
           Apply
@@ -1695,12 +1745,12 @@
           99
         </td>
         <td>
-          1544
+          1481
         </td>
         <td>
-          3134
+          3131
           -
-          3157
+          3154
         </td>
         <td>
           Apply
@@ -1719,12 +1769,12 @@
           102
         </td>
         <td>
-          1574
+          1511
         </td>
         <td>
-          3200
+          3197
           -
-          3236
+          3233
         </td>
         <td>
           Block
@@ -1743,12 +1793,12 @@
           103
         </td>
         <td>
-          1573
+          1510
         </td>
         <td>
-          3246
+          3243
           -
-          4040
+          4045
         </td>
         <td>
           Apply
@@ -1769,7 +1819,7 @@
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
             questionTextField.setText(quiz.question);
             imagePathTextField.setText(if quiz.imagePath.isDefined then quiz.imagePath.get else &quot;&quot;);
-            scoreIntegerField.setValue(quiz.maxScore);
+            scoreIntegerField.setText(quiz.maxScore.toString);
             clearAllAnswers();
             quiz.answerList.foreach(ans =&gt; addAnswerGUI(Option(ans)));
             sendEvent(SelectQuizAction(Option(quiz)));
@@ -1783,12 +1833,12 @@
           104
         </td>
         <td>
-          1550
+          1487
         </td>
         <td>
-          3280
+          3277
           -
-          3308
+          3305
         </td>
         <td>
           Apply
@@ -1807,12 +1857,12 @@
           104
         </td>
         <td>
-          1549
+          1486
         </td>
         <td>
-          3280
+          3277
           -
-          3300
+          3297
         </td>
         <td>
           Apply
@@ -1831,12 +1881,12 @@
           105
         </td>
         <td>
-          1572
+          1509
         </td>
         <td>
-          3317
+          3314
           -
-          4032
+          4037
         </td>
         <td>
           Apply
@@ -1855,7 +1905,7 @@
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
             questionTextField.setText(quiz.question);
             imagePathTextField.setText(if quiz.imagePath.isDefined then quiz.imagePath.get else &quot;&quot;);
-            scoreIntegerField.setValue(quiz.maxScore);
+            scoreIntegerField.setText(quiz.maxScore.toString);
             clearAllAnswers();
             quiz.answerList.foreach(ans =&gt; addAnswerGUI(Option(ans)));
             sendEvent(SelectQuizAction(Option(quiz)));
@@ -1868,12 +1918,12 @@
           105
         </td>
         <td>
-          1551
+          1488
         </td>
         <td>
-          3317
+          3314
           -
-          3336
+          3333
         </td>
         <td>
           Select
@@ -1892,12 +1942,12 @@
           106
         </td>
         <td>
-          1552
+          1489
         </td>
         <td>
-          3381
+          3378
           -
-          3407
+          3404
         </td>
         <td>
           Apply
@@ -1916,12 +1966,12 @@
           107
         </td>
         <td>
-          1553
+          1490
         </td>
         <td>
-          3419
+          3416
           -
-          3462
+          3459
         </td>
         <td>
           Apply
@@ -1940,36 +1990,12 @@
           108
         </td>
         <td>
-          1554
+          1492
         </td>
         <td>
-          3474
+          3471
           -
-          3499
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getStyleClass
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          radioButton.getStyleClass
-        </td>
-      </tr><tr>
-        <td>
-          108
-        </td>
-        <td>
-          1555
-        </td>
-        <td>
-          3474
-          -
-          3517
+          3514
         </td>
         <td>
           Apply
@@ -1985,15 +2011,39 @@
         </td>
       </tr><tr>
         <td>
+          108
+        </td>
+        <td>
+          1491
+        </td>
+        <td>
+          3471
+          -
+          3496
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getStyleClass
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.getStyleClass
+        </td>
+      </tr><tr>
+        <td>
           109
         </td>
         <td>
-          1569
+          1506
         </td>
         <td>
-          3529
+          3526
           -
-          3970
+          3975
         </td>
         <td>
           Apply
@@ -2008,7 +2058,7 @@
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
             questionTextField.setText(quiz.question);
             imagePathTextField.setText(if quiz.imagePath.isDefined then quiz.imagePath.get else &quot;&quot;);
-            scoreIntegerField.setValue(quiz.maxScore);
+            scoreIntegerField.setText(quiz.maxScore.toString);
             clearAllAnswers();
             quiz.answerList.foreach(ans =&gt; addAnswerGUI(Option(ans)));
             sendEvent(SelectQuizAction(Option(quiz)));
@@ -2019,12 +2069,12 @@
           110
         </td>
         <td>
-          1556
+          1493
         </td>
         <td>
-          3604
+          3601
           -
-          3644
+          3641
         </td>
         <td>
           Apply
@@ -2043,36 +2093,12 @@
           111
         </td>
         <td>
-          1560
+          1494
         </td>
         <td>
-          3742
+          3685
           -
-          3744
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          &quot;&quot;
-        </td>
-      </tr><tr>
-        <td>
-          111
-        </td>
-        <td>
-          1557
-        </td>
-        <td>
-          3688
-          -
-          3712
+          3709
         </td>
         <td>
           Select
@@ -2091,12 +2117,36 @@
           111
         </td>
         <td>
-          1559
+          1497
         </td>
         <td>
-          3718
+          3739
           -
-          3736
+          3741
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;&quot;
+        </td>
+      </tr><tr>
+        <td>
+          111
+        </td>
+        <td>
+          1496
+        </td>
+        <td>
+          3715
+          -
+          3733
         </td>
         <td>
           Block
@@ -2115,12 +2165,12 @@
           111
         </td>
         <td>
-          1558
+          1495
         </td>
         <td>
-          3718
+          3715
           -
-          3736
+          3733
         </td>
         <td>
           Select
@@ -2139,12 +2189,12 @@
           111
         </td>
         <td>
-          1561
+          1498
         </td>
         <td>
-          3658
+          3655
           -
-          3745
+          3742
         </td>
         <td>
           Apply
@@ -2163,36 +2213,36 @@
           112
         </td>
         <td>
-          1562
+          1499
         </td>
         <td>
-          3759
+          3756
           -
-          3800
+          3805
         </td>
         <td>
           Apply
         </td>
         <td>
-          setValue
+          setText
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          scoreIntegerField.setValue(quiz.maxScore)
+          scoreIntegerField.setText(quiz.maxScore.toString)
         </td>
       </tr><tr>
         <td>
           113
         </td>
         <td>
-          1563
+          1500
         </td>
         <td>
-          3814
+          3819
           -
-          3831
+          3836
         </td>
         <td>
           Apply
@@ -2211,12 +2261,36 @@
           114
         </td>
         <td>
-          1566
+          1501
         </td>
         <td>
-          3845
+          3894
           -
-          3902
+          3905
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(ans)
+        </td>
+      </tr><tr>
+        <td>
+          114
+        </td>
+        <td>
+          1503
+        </td>
+        <td>
+          3850
+          -
+          3907
         </td>
         <td>
           Apply
@@ -2235,12 +2309,12 @@
           114
         </td>
         <td>
-          1565
+          1502
         </td>
         <td>
-          3876
+          3881
           -
-          3901
+          3906
         </td>
         <td>
           Apply
@@ -2256,39 +2330,15 @@
         </td>
       </tr><tr>
         <td>
-          114
-        </td>
-        <td>
-          1564
-        </td>
-        <td>
-          3889
-          -
-          3900
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option(ans)
-        </td>
-      </tr><tr>
-        <td>
           115
         </td>
         <td>
-          1568
+          1505
         </td>
         <td>
-          3916
+          3921
           -
-          3957
+          3962
         </td>
         <td>
           Apply
@@ -2307,12 +2357,12 @@
           115
         </td>
         <td>
-          1567
+          1504
         </td>
         <td>
-          3943
+          3948
           -
-          3955
+          3960
         </td>
         <td>
           Apply
@@ -2331,12 +2381,12 @@
           117
         </td>
         <td>
-          1571
+          1508
         </td>
         <td>
-          3982
+          3987
           -
-          4022
+          4027
         </td>
         <td>
           Apply
@@ -2355,12 +2405,12 @@
           117
         </td>
         <td>
-          1570
+          1507
         </td>
         <td>
-          3982
+          3987
           -
-          4002
+          4007
         </td>
         <td>
           Apply
@@ -2379,12 +2429,12 @@
           120
         </td>
         <td>
-          1583
+          1520
         </td>
         <td>
-          4045
+          4050
           -
-          4066
+          4071
         </td>
         <td>
           Block
@@ -2403,12 +2453,12 @@
           121
         </td>
         <td>
-          1575
+          1512
         </td>
         <td>
-          4076
+          4081
           -
-          4119
+          4121
         </td>
         <td>
           Apply
@@ -2420,19 +2470,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          feedbackLabel.setText(&quot;Quiz Modificato!!!&quot;)
+          feedbackLabel.setText(&quot;Quiz Modificato&quot;)
         </td>
       </tr><tr>
         <td>
           122
         </td>
         <td>
-          1577
+          1514
         </td>
         <td>
-          4126
+          4128
           -
-          4154
+          4156
         </td>
         <td>
           Apply
@@ -2451,12 +2501,12 @@
           122
         </td>
         <td>
-          1576
+          1513
         </td>
         <td>
-          4126
+          4128
           -
-          4146
+          4148
         </td>
         <td>
           Apply
@@ -2475,12 +2525,12 @@
           123
         </td>
         <td>
-          1578
+          1515
         </td>
         <td>
-          4161
+          4163
           -
-          4186
+          4188
         </td>
         <td>
           Apply
@@ -2499,12 +2549,12 @@
           124
         </td>
         <td>
-          1579
+          1516
         </td>
         <td>
-          4193
+          4195
           -
-          4219
+          4221
         </td>
         <td>
           Apply
@@ -2523,36 +2573,36 @@
           125
         </td>
         <td>
-          1580
+          1517
         </td>
         <td>
-          4226
+          4228
           -
-          4256
+          4259
         </td>
         <td>
           Apply
         </td>
         <td>
-          setValue
+          setText
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          scoreIntegerField.setValue(10)
+          scoreIntegerField.setText(&quot;10&quot;)
         </td>
       </tr><tr>
         <td>
           126
         </td>
         <td>
-          1581
+          1518
         </td>
         <td>
-          4263
+          4266
           -
-          4280
+          4283
         </td>
         <td>
           Apply
@@ -2571,12 +2621,12 @@
           127
         </td>
         <td>
-          1582
+          1519
         </td>
         <td>
-          4287
+          4290
           -
-          4305
+          4308
         </td>
         <td>
           Apply
@@ -2595,12 +2645,12 @@
           128
         </td>
         <td>
-          1584
+          1521
         </td>
         <td>
-          4310
+          4313
           -
-          4316
+          4319
         </td>
         <td>
           Block
@@ -2619,12 +2669,12 @@
           130
         </td>
         <td>
-          1595
+          1532
         </td>
         <td>
-          4326
+          4329
           -
-          4349
+          4352
         </td>
         <td>
           DefDef
@@ -2643,156 +2693,12 @@
           131
         </td>
         <td>
-          1587
+          1528
         </td>
         <td>
-          4365
+          4406
           -
-          4390
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          augmentString
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          questionTextField.getText
-        </td>
-      </tr><tr>
-        <td>
-          131
-        </td>
-        <td>
-          1590
-        </td>
-        <td>
-          4441
-          -
-          4453
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          isSelected
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          _.isSelected
-        </td>
-      </tr><tr>
-        <td>
-          131
-        </td>
-        <td>
-          1593
-        </td>
-        <td>
-          4494
-          -
-          4506
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          isSelected
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          _.isSelected
-        </td>
-      </tr><tr>
-        <td>
-          131
-        </td>
-        <td>
-          1592
-        </td>
-        <td>
-          4458
-          -
-          4484
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getToggles
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          toggleQuizGroup.getToggles
-        </td>
-      </tr><tr>
-        <td>
-          131
-        </td>
-        <td>
-          1586
-        </td>
-        <td>
-          4365
-          -
-          4390
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getText
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          questionTextField.getText
-        </td>
-      </tr><tr>
-        <td>
-          131
-        </td>
-        <td>
-          1589
-        </td>
-        <td>
-          4403
-          -
-          4431
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getToggles
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          toggleCourseGroup.getToggles
-        </td>
-      </tr><tr>
-        <td>
-          131
-        </td>
-        <td>
-          1591
-        </td>
-        <td>
-          4403
-          -
-          4454
+          4457
         </td>
         <td>
           Apply
@@ -2811,12 +2717,156 @@
           131
         </td>
         <td>
-          1594
+          1527
         </td>
         <td>
-          4458
+          4444
           -
-          4507
+          4456
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          isSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          _.isSelected
+        </td>
+      </tr><tr>
+        <td>
+          131
+        </td>
+        <td>
+          1530
+        </td>
+        <td>
+          4497
+          -
+          4509
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          isSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          _.isSelected
+        </td>
+      </tr><tr>
+        <td>
+          131
+        </td>
+        <td>
+          1524
+        </td>
+        <td>
+          4368
+          -
+          4393
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          augmentString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          questionTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          131
+        </td>
+        <td>
+          1523
+        </td>
+        <td>
+          4368
+          -
+          4393
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          questionTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          131
+        </td>
+        <td>
+          1526
+        </td>
+        <td>
+          4406
+          -
+          4434
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getToggles
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          toggleCourseGroup.getToggles
+        </td>
+      </tr><tr>
+        <td>
+          131
+        </td>
+        <td>
+          1529
+        </td>
+        <td>
+          4461
+          -
+          4487
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getToggles
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          toggleQuizGroup.getToggles
+        </td>
+      </tr><tr>
+        <td>
+          131
+        </td>
+        <td>
+          1531
+        </td>
+        <td>
+          4461
+          -
+          4510
         </td>
         <td>
           Apply
@@ -2835,12 +2885,12 @@
           131
         </td>
         <td>
-          1588
+          1525
         </td>
         <td>
-          4365
+          4368
           -
-          4399
+          4402
         </td>
         <td>
           Select
@@ -2859,12 +2909,12 @@
           133
         </td>
         <td>
-          1600
+          1537
         </td>
         <td>
-          4511
+          4514
           -
-          4538
+          4541
         </td>
         <td>
           DefDef
@@ -2883,36 +2933,12 @@
           134
         </td>
         <td>
-          1596
+          1536
         </td>
         <td>
-          4559
+          4600
           -
-          4582
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getChildren
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          answersVBox.getChildren
-        </td>
-      </tr><tr>
-        <td>
-          134
-        </td>
-        <td>
-          1599
-        </td>
-        <td>
-          4597
-          -
-          4630
+          4633
         </td>
         <td>
           Apply
@@ -2931,12 +2957,12 @@
           134
         </td>
         <td>
-          1598
+          1533
         </td>
         <td>
-          4597
+          4562
           -
-          4620
+          4585
         </td>
         <td>
           Apply
@@ -2955,12 +2981,36 @@
           134
         </td>
         <td>
-          1597
+          1535
         </td>
         <td>
-          4559
+          4600
           -
-          4589
+          4623
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answersVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          134
+        </td>
+        <td>
+          1534
+        </td>
+        <td>
+          4562
+          -
+          4592
         </td>
         <td>
           Apply
@@ -2979,12 +3029,12 @@
           136
         </td>
         <td>
-          1631
+          1570
         </td>
         <td>
-          4634
+          4637
           -
-          4658
+          4661
         </td>
         <td>
           DefDef
@@ -3003,12 +3053,12 @@
           137
         </td>
         <td>
-          1630
+          1569
         </td>
         <td>
-          4697
+          4700
           -
-          5422
+          5493
         </td>
         <td>
           Apply
@@ -3027,11 +3077,13 @@
       answerBox.setPadding(Insets.apply(10, 0, 0, 10))
       val textField: TextField = TextField(if opAnswer.nonEmpty then opAnswer.get.text else &quot;&quot;)
       textField.setId(&quot;answerTextField&quot; + idNum)
-      textField.setPrefWidth(650.0)
+      textField.getStyleClass.add(&quot;text-field-extra-large&quot;)
       val checkBox = CheckBox()
       checkBox.setSelected(if opAnswer.nonEmpty then opAnswer.get.isCorrect else false)
       checkBox.setId(&quot;answerCorrectCheckBox&quot; + idNum)
-      answerBox.getChildren.addAll(Label(&quot;Risposta &quot;), textField, Label(&quot; Corretta &quot;), checkBox)
+      checkBox.setText(&quot;corretta&quot;)
+      checkBox.getStyleClass.add(&quot;checkbox-dark&quot;)
+      answerBox.getChildren.addAll(textField, checkBox)
       answersVBox.getChildren.addAll(answerBox)
   }
         </td>
@@ -3040,12 +3092,12 @@
           138
         </td>
         <td>
-          1602
+          1539
         </td>
         <td>
-          4741
+          4744
           -
-          4771
+          4774
         </td>
         <td>
           Apply
@@ -3064,12 +3116,12 @@
           138
         </td>
         <td>
-          1601
+          1538
         </td>
         <td>
-          4741
+          4744
           -
-          4764
+          4767
         </td>
         <td>
           Apply
@@ -3088,12 +3140,12 @@
           139
         </td>
         <td>
-          1603
+          1540
         </td>
         <td>
-          4800
+          4803
           -
-          4806
+          4809
         </td>
         <td>
           Apply
@@ -3112,12 +3164,12 @@
           140
         </td>
         <td>
-          1604
+          1541
         </td>
         <td>
-          4813
+          4816
           -
-          4863
+          4866
         </td>
         <td>
           Apply
@@ -3136,12 +3188,12 @@
           141
         </td>
         <td>
-          1605
+          1542
         </td>
         <td>
-          4891
+          4894
           -
-          4917
+          4920
         </td>
         <td>
           Apply
@@ -3160,12 +3212,12 @@
           141
         </td>
         <td>
-          1607
+          1544
         </td>
         <td>
-          4870
+          4873
           -
-          4918
+          4921
         </td>
         <td>
           Apply
@@ -3184,12 +3236,12 @@
           141
         </td>
         <td>
-          1606
+          1543
         </td>
         <td>
-          4891
+          4894
           -
-          4917
+          4920
         </td>
         <td>
           Apply
@@ -3208,12 +3260,12 @@
           142
         </td>
         <td>
-          1608
+          1545
         </td>
         <td>
-          4965
+          4968
           -
-          4982
+          4985
         </td>
         <td>
           Select
@@ -3232,12 +3284,12 @@
           142
         </td>
         <td>
-          1611
+          1548
         </td>
         <td>
-          5011
+          5014
           -
-          5013
+          5016
         </td>
         <td>
           Literal
@@ -3256,12 +3308,12 @@
           142
         </td>
         <td>
-          1610
+          1547
         </td>
         <td>
-          4988
+          4991
           -
-          5005
+          5008
         </td>
         <td>
           Select
@@ -3280,12 +3332,12 @@
           142
         </td>
         <td>
-          1609
+          1546
         </td>
         <td>
-          4988
+          4991
           -
-          5000
+          5003
         </td>
         <td>
           Select
@@ -3304,12 +3356,12 @@
           142
         </td>
         <td>
-          1612
+          1549
         </td>
         <td>
-          4952
+          4955
           -
-          5014
+          5017
         </td>
         <td>
           Apply
@@ -3328,12 +3380,12 @@
           143
         </td>
         <td>
-          1614
+          1551
         </td>
         <td>
-          5021
+          5024
           -
-          5063
+          5066
         </td>
         <td>
           Apply
@@ -3352,12 +3404,12 @@
           143
         </td>
         <td>
-          1613
+          1550
         </td>
         <td>
-          5037
+          5040
           -
-          5062
+          5065
         </td>
         <td>
           Apply
@@ -3376,36 +3428,60 @@
           144
         </td>
         <td>
-          1615
+          1553
         </td>
         <td>
-          5070
+          5073
           -
-          5099
+          5126
         </td>
         <td>
           Apply
         </td>
         <td>
-          setPrefWidth
+          add
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          textField.setPrefWidth(650.0)
+          textField.getStyleClass.add(&quot;text-field-extra-large&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          144
+        </td>
+        <td>
+          1552
+        </td>
+        <td>
+          5073
+          -
+          5096
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getStyleClass
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          textField.getStyleClass
         </td>
       </tr><tr>
         <td>
           145
         </td>
         <td>
-          1616
+          1554
         </td>
         <td>
-          5121
+          5148
           -
-          5131
+          5158
         </td>
         <td>
           Apply
@@ -3424,60 +3500,12 @@
           146
         </td>
         <td>
-          1620
+          1557
         </td>
         <td>
-          5213
+          5212
           -
-          5218
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          false
-        </td>
-      </tr><tr>
-        <td>
-          146
-        </td>
-        <td>
-          1617
-        </td>
-        <td>
-          5162
-          -
-          5179
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          nonEmpty
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          opAnswer.nonEmpty
-        </td>
-      </tr><tr>
-        <td>
-          146
-        </td>
-        <td>
-          1619
-        </td>
-        <td>
-          5185
-          -
-          5207
+          5234
         </td>
         <td>
           Select
@@ -3496,12 +3524,36 @@
           146
         </td>
         <td>
-          1618
+          1559
         </td>
         <td>
-          5185
+          5165
           -
-          5197
+          5246
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkBox.setSelected(if opAnswer.nonEmpty then opAnswer.get.isCorrect else false)
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          1556
+        </td>
+        <td>
+          5212
+          -
+          5224
         </td>
         <td>
           Select
@@ -3520,60 +3572,60 @@
           146
         </td>
         <td>
-          1621
+          1555
         </td>
         <td>
-          5138
+          5189
           -
-          5219
+          5206
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          setSelected
+          nonEmpty
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          checkBox.setSelected(if opAnswer.nonEmpty then opAnswer.get.isCorrect else false)
+          opAnswer.nonEmpty
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          1558
+        </td>
+        <td>
+          5240
+          -
+          5245
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          false
         </td>
       </tr><tr>
         <td>
           147
         </td>
         <td>
-          1623
+          1560
         </td>
         <td>
-          5226
+          5268
           -
-          5273
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          setId
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          checkBox.setId(&quot;answerCorrectCheckBox&quot; + idNum)
-        </td>
-      </tr><tr>
-        <td>
-          147
-        </td>
-        <td>
-          1622
-        </td>
-        <td>
-          5241
-          -
-          5272
+          5299
         </td>
         <td>
           Apply
@@ -3589,63 +3641,135 @@
         </td>
       </tr><tr>
         <td>
-          148
+          147
         </td>
         <td>
-          1626
+          1561
         </td>
         <td>
-          5340
+          5253
           -
-          5359
+          5300
         </td>
         <td>
           Apply
         </td>
         <td>
-          &lt;init&gt;
+          setId
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          Label(&quot; Corretta &quot;)
+          checkBox.setId(&quot;answerCorrectCheckBox&quot; + idNum)
         </td>
       </tr><tr>
         <td>
           148
         </td>
         <td>
-          1625
+          1562
         </td>
         <td>
-          5309
+          5307
           -
-          5327
+          5335
         </td>
         <td>
           Apply
         </td>
         <td>
-          &lt;init&gt;
+          setText
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          Label(&quot;Risposta &quot;)
+          checkBox.setText(&quot;corretta&quot;)
         </td>
       </tr><tr>
         <td>
-          148
+          149
         </td>
         <td>
-          1624
+          1563
         </td>
         <td>
-          5280
+          5342
           -
-          5301
+          5364
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getStyleClass
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkBox.getStyleClass
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          1564
+        </td>
+        <td>
+          5342
+          -
+          5385
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          add
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkBox.getStyleClass.add(&quot;checkbox-dark&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          1566
+        </td>
+        <td>
+          5392
+          -
+          5441
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addAll
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          answerBox.getChildren.addAll(textField, checkBox)
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          1565
+        </td>
+        <td>
+          5392
+          -
+          5413
         </td>
         <td>
           Apply
@@ -3661,39 +3785,15 @@
         </td>
       </tr><tr>
         <td>
-          148
+          151
         </td>
         <td>
-          1627
+          1568
         </td>
         <td>
-          5280
+          5448
           -
-          5370
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          addAll
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          answerBox.getChildren.addAll(Label(&quot;Risposta &quot;), textField, Label(&quot; Corretta &quot;), checkBox)
-        </td>
-      </tr><tr>
-        <td>
-          149
-        </td>
-        <td>
-          1629
-        </td>
-        <td>
-          5377
-          -
-          5418
+          5489
         </td>
         <td>
           Apply
@@ -3709,15 +3809,15 @@
         </td>
       </tr><tr>
         <td>
-          149
+          151
         </td>
         <td>
-          1628
+          1567
         </td>
         <td>
-          5377
+          5448
           -
-          5400
+          5471
         </td>
         <td>
           Apply

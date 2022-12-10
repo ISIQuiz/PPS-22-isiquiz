@@ -29,110 +29,81 @@
 </span>5 <span style=''>import controller.actions.{Action, BackAction, ParameterlessAction}
 </span>6 <span style=''>import view.View
 </span>7 <span style=''>import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-</span>8 <span style=''>import view.StandardGameMenuView.{AnswerFeedbackUpdate, CurrentGameUpdate, DefaultUpdate, QuizScoreUpdate, TimeExpiredUpdate, TimerUpdate}
+</span>8 <span style=''>import view.StandardGameMenuView.{AnswerFeedbackUpdate, DefaultUpdate, NewQuizUpdate, TimeExpiredUpdate, TimerUpdate}
 </span>9 <span style=''>import model.Answer.Answer
 </span>10 <span style=''>import model.GameStage
-</span>11 <span style=''>import model.Review
-</span>12 <span style=''>import model.QuizAnswered
-</span>13 <span style=''>import model.{QuizInGame, SavedCourse}
-</span>14 <span style=''>import model.Quiz.Quiz
-</span>15 <span style=''>import model.settings.StandardGameSettings
-</span>16 <span style=''>import utils.{TerminalInput, TerminalInputImpl, Timer}
-</span>17 <span style=''>import view.terminalUI.TerminalStandardGameMenu
-</span>18 <span style=''>
-</span>19 <span style=''>import scala.collection.mutable.ListBuffer
-</span>20 <span style=''>import scala.concurrent.{Await, Promise}
-</span>21 <span style=''>import scala.concurrent.duration.Duration
-</span>22 <span style=''>
-</span>23 <span style=''>/** Companion object of standard game controller */
-</span>24 <span style=''>object StandardGameController extends BackAction :
-</span>25 <span style=''>
-</span>26 <span style=''>  case class SelectAnswer[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
-</span>27 <span style=''>
-</span>28 <span style=''>  case object NextQuiz extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>29 <span style=''>
-</span>30 <span style=''>  </span><span style='background: #F0ADAD'>def apply</span><span style=''>(game: GameStage): StandardGameController =
-</span>31 <span style=''>    val standardGameController = </span><span style='background: #F0ADAD'>new StandardGameController(game)</span><span style=''>
-</span>32 <span style=''>    </span><span style='background: #F0ADAD'>standardGameController.extractQuizInGame()</span><span style=''>
-</span>33 <span style=''>    </span><span style='background: #F0ADAD'>standardGameController.timer.startTimer()</span><span style=''>
-</span>34 <span style=''>    standardGameController
+</span>11 <span style=''>import model.{QuizInGame, SavedCourse}
+</span>12 <span style=''>import model.Quiz.Quiz
+</span>13 <span style=''>import model.settings.StandardGameSettings
+</span>14 <span style=''>import utils.{TerminalInput, TerminalInputImpl, Timer}
+</span>15 <span style=''>import view.terminalUI.TerminalStandardGameMenu
+</span>16 <span style=''>
+</span>17 <span style=''>import scala.collection.mutable.ListBuffer
+</span>18 <span style=''>import scala.concurrent.{Await, Promise}
+</span>19 <span style=''>import scala.concurrent.duration.Duration
+</span>20 <span style=''>
+</span>21 <span style=''>/** Companion object of standard game controller */
+</span>22 <span style=''>object StandardGameController extends BackAction:
+</span>23 <span style=''>
+</span>24 <span style=''>  case class SelectAnswer[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>25 <span style=''>  case object NextQuiz extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>26 <span style=''>
+</span>27 <span style=''>  </span><span style='background: #F0ADAD'>def apply</span><span style=''>(game: GameStage): StandardGameController =
+</span>28 <span style=''>    val standardGameController = </span><span style='background: #F0ADAD'>new StandardGameController(game)</span><span style=''>
+</span>29 <span style=''>    </span><span style='background: #F0ADAD'>standardGameController.nextQuiz()</span><span style=''>
+</span>30 <span style=''>    </span><span style='background: #F0ADAD'>standardGameController.timer.startTimer()</span><span style=''>
+</span>31 <span style=''>    standardGameController
+</span>32 <span style=''>
+</span>33 <span style=''>/** Defines the logic of the select page */
+</span>34 <span style=''>class StandardGameController(val game: GameStage) extends PageController, GameController:
 </span>35 <span style=''>
-</span>36 <span style=''>/** Defines the logic of the select page */
-</span>37 <span style=''>class StandardGameController(val game: GameStage) extends PageController, GameController :
-</span>38 <span style=''>
-</span>39 <span style=''>  import StandardGameController.*
+</span>36 <span style=''>  import StandardGameController.*
+</span>37 <span style=''>
+</span>38 <span style=''>  val gameStage: GameStage = game
+</span>39 <span style=''>  val timer: Timer = </span><span style='background: #F0ADAD'>Timer.apply(gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime)</span><span style=''>
 </span>40 <span style=''>
-</span>41 <span style=''>  val gameStage: GameStage = game
-</span>42 <span style=''>  val timer: Timer = </span><span style='background: #F0ADAD'>Timer.apply(gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime)</span><span style=''>
-</span>43 <span style=''>  var currentAnswer: Option[Answer] = None
-</span>44 <span style=''>  var currentScore: Int = 0
+</span>41 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
+</span>42 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(MainMenuAction)</span><span style=''>
+</span>43 <span style=''>    </span><span style='background: #F0ADAD'>case SelectAnswer(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>selectAnswer(actionParameter)</span><span style=''>
+</span>44 <span style=''>    </span><span style='background: #F0ADAD'>case NextQuiz</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>nextQuiz()</span><span style=''>
 </span>45 <span style=''>
-</span>46 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
-</span>47 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(MainMenuAction)</span><span style=''>
-</span>48 <span style=''>    </span><span style='background: #F0ADAD'>case SelectAnswer(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>selectAnswer(actionParameter)</span><span style=''>
-</span>49 <span style=''>    </span><span style='background: #F0ADAD'>case NextQuiz</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>nextQuiz()</span><span style=''>
-</span>50 <span style=''>
-</span>51 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>52 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
-</span>53 <span style=''>    if </span><span style='background: #F0ADAD'>timer.isExpired</span><span style=''> then
-</span>54 <span style=''>      </span><span style='background: #F0ADAD'>timer.stopTimer()
-</span>55 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(TimeExpiredUpdate)</span><span style=''>
-</span>56 <span style=''>    else
-</span>57 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(CurrentGameUpdate(Option(gameStage)))
-</span>58 <span style=''></span><span style='background: #F0ADAD'>      if !timer.isStopped then
-</span>59 <span style=''></span><span style='background: #F0ADAD'>        sendUpdate(TimerUpdate(Option(timer)))
-</span>60 <span style=''></span><span style='background: #F0ADAD'>        currentScore = updateScore(timer.getRemainingTime.toInt, timer.maxTime, gameStage.quizInGame.quiz.maxScore) // update score
-</span>61 <span style=''></span><span style='background: #F0ADAD'>        sendUpdate(QuizScoreUpdate(Option(currentScore)))</span><span style=''>
-</span>62 <span style=''>
-</span>63 <span style=''>
-</span>64 <span style=''>  </span><span style='background: #F0ADAD'>def selectAnswer</span><span style=''>[T](actionParameter: Option[T]): Unit =
-</span>65 <span style=''>    </span><span style='background: #F0ADAD'>timer.stopTimer()</span><span style=''>
-</span>66 <span style=''>    if </span><span style='background: #F0ADAD'>actionParameter.isDefined</span><span style=''> &amp;&amp; !</span><span style='background: #F0ADAD'>timer.isExpired</span><span style=''> then
-</span>67 <span style=''>      </span><span style='background: #F0ADAD'>val selectedAnswerIndex: Int = actionParameter.get.asInstanceOf[Int]
-</span>68 <span style=''></span><span style='background: #F0ADAD'>      val answerSelected: Answer = gameStage.quizInGame.answers(selectedAnswerIndex)
-</span>69 <span style=''></span><span style='background: #F0ADAD'>      currentAnswer = Some(answerSelected)
-</span>70 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(AnswerFeedbackUpdate(Option((selectedAnswerIndex, answerSelected.isCorrect))))</span><span style=''>
-</span>71 <span style=''>
-</span>72 <span style=''>  </span><span style='background: #F0ADAD'>override def nextQuiz</span><span style=''>(): QuizInGame =
-</span>73 <span style=''>    currentAnswer match
-</span>74 <span style=''>      </span><span style='background: #F0ADAD'>case Some(ans)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>gameStage.addReviewQuizAnswer(ans)</span><span style=''>
-</span>75 <span style=''>      </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>gameStage.addReviewQuizNotAnswered</span><span style=''>
-</span>76 <span style=''>      // add playerstats
-</span>77 <span style=''>    if </span><span style='background: #F0ADAD'>gameStage.maxQuizzesReached</span><span style=''> then </span><span style='background: #F0ADAD'>endGame()</span><span style=''>
-</span>78 <span style=''>    currentAnswer = None
-</span>79 <span style=''>    </span><span style='background: #F0ADAD'>timer.startTimer()</span><span style=''>
-</span>80 <span style=''>    </span><span style='background: #F0ADAD'>extractQuizInGame()</span><span style=''>
+</span>46 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
+</span>47 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
+</span>48 <span style=''>    if </span><span style='background: #F0ADAD'>timer.isExpired</span><span style=''> then
+</span>49 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(TimeExpiredUpdate)</span><span style=''>
+</span>50 <span style=''>    else
+</span>51 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(NewQuizUpdate(Option(gameStage)))
+</span>52 <span style=''></span><span style='background: #F0ADAD'>      if !timer.isStopped then sendUpdate(TimerUpdate(Option(timer)))</span><span style=''>
+</span>53 <span style=''>
+</span>54 <span style=''>  </span><span style='background: #F0ADAD'>def selectAnswer</span><span style=''>[T](actionParameter: Option[T]): Unit =
+</span>55 <span style=''>    </span><span style='background: #F0ADAD'>timer.stopTimer()</span><span style=''>
+</span>56 <span style=''>    if </span><span style='background: #F0ADAD'>actionParameter.isDefined</span><span style=''> then
+</span>57 <span style=''>      </span><span style='background: #F0ADAD'>val selectedAnswerIndex: Int = actionParameter.get.asInstanceOf[Int]
+</span>58 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(AnswerFeedbackUpdate(Option((selectedAnswerIndex, gameStage.quizInGame.answers(selectedAnswerIndex).isCorrect))))</span><span style=''>
+</span>59 <span style=''>
+</span>60 <span style=''>  </span><span style='background: #F0ADAD'>override def nextQuiz</span><span style=''>(): QuizInGame =
+</span>61 <span style=''>    val selectedCourse = </span><span style='background: #F0ADAD'>gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)</span><span style=''>
+</span>62 <span style=''>    val selectedQuiz = </span><span style='background: #F0ADAD'>chooseQuiz(selectedCourse)</span><span style=''>
+</span>63 <span style=''>    val selectedAnswers = </span><span style='background: #F0ADAD'>chooseAnswers(selectedQuiz)</span><span style=''>
+</span>64 <span style=''>    val quizInGame = QuizInGame.apply(selectedCourse, selectedQuiz, selectedAnswers)
+</span>65 <span style=''>    </span><span style='background: #F0ADAD'>gameStage.quizInGame_(quizInGame)</span><span style=''>
+</span>66 <span style=''>    </span><span style='background: #F0ADAD'>timer.startTimer()</span><span style=''>
+</span>67 <span style=''>    quizInGame
+</span>68 <span style=''>
+</span>69 <span style=''>  </span><span style='background: #F0ADAD'>override def chooseQuiz</span><span style=''>(course: SavedCourse): Quiz = </span><span style='background: #F0ADAD'>course.quizList(randomNumberGenerator(1, course.quizList.size).head)</span><span style=''>
+</span>70 <span style=''>
+</span>71 <span style=''>  </span><span style='background: #F0ADAD'>override def chooseAnswers</span><span style=''>(quiz: Quiz): List[Answer] =
+</span>72 <span style=''>    val allCorrectAnswers = </span><span style='background: #F0ADAD'>quiz.answerList.filter(answer =&gt; answer.isCorrect)</span><span style=''>
+</span>73 <span style=''>    val allWrongAnswers = </span><span style='background: #F0ADAD'>quiz.answerList.filter(answer =&gt; !answer.isCorrect)</span><span style=''>
+</span>74 <span style=''>
+</span>75 <span style=''>    val correctAnswers = </span><span style='background: #F0ADAD'>randomNumberGenerator(1, allCorrectAnswers.size).map(allCorrectAnswers)</span><span style=''>
+</span>76 <span style=''>    val wrongAnswers = </span><span style='background: #F0ADAD'>randomNumberGenerator(3, allWrongAnswers.size).map(allWrongAnswers)</span><span style=''>
+</span>77 <span style=''>
+</span>78 <span style=''>    </span><span style='background: #F0ADAD'>scala.util.Random.shuffle(correctAnswers ::: wrongAnswers)</span><span style=''>
+</span>79 <span style=''>
+</span>80 <span style=''>  </span><span style='background: #F0ADAD'>override def endQuiz</span><span style=''>(): Unit = </span><span style='background: #F0ADAD'>???</span><span style=''>
 </span>81 <span style=''>
-</span>82 <span style=''>
-</span>83 <span style=''>  </span><span style='background: #F0ADAD'>def extractQuizInGame</span><span style=''>(): QuizInGame =
-</span>84 <span style=''>    val selectedCourse = </span><span style='background: #F0ADAD'>gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)</span><span style=''>
-</span>85 <span style=''>    val selectedQuiz = </span><span style='background: #F0ADAD'>chooseQuiz(selectedCourse)</span><span style=''>
-</span>86 <span style=''>    val selectedAnswers = </span><span style='background: #F0ADAD'>chooseAnswers(selectedQuiz)</span><span style=''>
-</span>87 <span style=''>    val quizInGame = QuizInGame(selectedCourse, selectedQuiz, selectedAnswers)
-</span>88 <span style=''>    </span><span style='background: #F0ADAD'>gameStage.quizInGame_(quizInGame)</span><span style=''>
-</span>89 <span style=''>    quizInGame
-</span>90 <span style=''>
-</span>91 <span style=''>  </span><span style='background: #F0ADAD'>override def chooseQuiz</span><span style=''>(course: SavedCourse): Quiz = </span><span style='background: #F0ADAD'>course.quizList(randomNumberGenerator(1, course.quizList.size).head)</span><span style=''>
-</span>92 <span style=''>
-</span>93 <span style=''>  </span><span style='background: #F0ADAD'>override def chooseAnswers</span><span style=''>(quiz: Quiz): List[Answer] =
-</span>94 <span style=''>    val allCorrectAnswers = </span><span style='background: #F0ADAD'>quiz.answerList.filter(answer =&gt; answer.isCorrect)</span><span style=''>
-</span>95 <span style=''>    val allWrongAnswers = </span><span style='background: #F0ADAD'>quiz.answerList.filter(answer =&gt; !answer.isCorrect)</span><span style=''>
-</span>96 <span style=''>
-</span>97 <span style=''>    val correctAnswers = </span><span style='background: #F0ADAD'>randomNumberGenerator(1, allCorrectAnswers.size).map(allCorrectAnswers)</span><span style=''>
-</span>98 <span style=''>    val wrongAnswers = </span><span style='background: #F0ADAD'>randomNumberGenerator(3, allWrongAnswers.size).map(allWrongAnswers)</span><span style=''>
-</span>99 <span style=''>
-</span>100 <span style=''>    </span><span style='background: #F0ADAD'>scala.util.Random.shuffle(correctAnswers ::: wrongAnswers)</span><span style=''>
-</span>101 <span style=''>
-</span>102 <span style=''>  </span><span style='background: #F0ADAD'>def updateScore</span><span style=''>(timeRemaining: Int, maxTime: Long, maxScore: Int): Int = {
-</span>103 <span style=''>    val coeff: Double = maxScore.toDouble / (maxTime / 1000).toDouble
-</span>104 <span style=''>    val score = (coeff * timeRemaining).toInt
-</span>105 <span style=''>    /*println(&quot;ms: &quot; + maxScore + &quot;  |  mt: &quot; + maxTime + &quot;  |  c: &quot; + coeff + &quot;  |  tr&quot; + timeRemaining)
-</span>106 <span style=''>    println(score)*/
-</span>107 <span style=''>    if (score &gt;= maxScore) </span><span style='background: #F0ADAD'>score</span><span style=''> else </span><span style='background: #F0ADAD'>score + 1</span><span style=''>
-</span>108 <span style=''>  }
-</span>109 <span style=''>
-</span>110 <span style=''>  </span><span style='background: #F0ADAD'>override def endGame</span><span style=''>(): Unit = </span><span style='background: #F0ADAD'>AppController.handle(ReviewMenuAction(Option(gameStage)))</span><span style=''>
-</span>111 <span style=''>  </span><span style='background: #F0ADAD'>def randomNumberGenerator</span><span style=''>(quantity: Int, range: Int): List[Int] = </span><span style='background: #F0ADAD'>scala.util.Random.shuffle(0 until range).take(quantity).toList</span><span style=''>
+</span>82 <span style=''>  </span><span style='background: #F0ADAD'>def randomNumberGenerator</span><span style=''>(quantity: Int, range: Int): List[Int] = </span><span style='background: #F0ADAD'>scala.util.Random.shuffle(0 until range).take(quantity).toList</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -147,15 +118,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          25
+          23
         </td>
         <td>
-          340
+          315
         </td>
         <td>
-          1000
+          932
           -
-          1023
+          955
         </td>
         <td>
           Apply
@@ -171,15 +142,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          24
         </td>
         <td>
-          341
+          316
         </td>
         <td>
-          1056
+          987
           -
-          1075
+          1006
         </td>
         <td>
           Apply
@@ -195,15 +166,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          26
         </td>
         <td>
-          345
+          320
         </td>
         <td>
-          1079
+          1010
           -
-          1088
+          1019
         </td>
         <td>
           DefDef
@@ -219,15 +190,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          27
         </td>
         <td>
-          342
+          317
         </td>
         <td>
-          1165
+          1096
           -
-          1197
+          1128
         </td>
         <td>
           Apply
@@ -243,39 +214,39 @@
         </td>
       </tr><tr>
         <td>
-          31
+          28
         </td>
         <td>
-          343
+          318
         </td>
         <td>
-          1202
+          1133
           -
-          1244
+          1166
         </td>
         <td>
           Apply
         </td>
         <td>
-          extractQuizInGame
+          nextQuiz
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          standardGameController.extractQuizInGame()
+          standardGameController.nextQuiz()
         </td>
       </tr><tr>
         <td>
-          32
+          29
         </td>
         <td>
-          344
+          319
         </td>
         <td>
-          1249
+          1171
           -
-          1290
+          1212
         </td>
         <td>
           Apply
@@ -291,39 +262,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          38
         </td>
         <td>
-          346
+          322
         </td>
         <td>
-          1557
+          1466
           -
-          1626
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          int2long
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime
-        </td>
-      </tr><tr>
-        <td>
-          41
-        </td>
-        <td>
-          347
-        </td>
-        <td>
-          1545
-          -
-          1627
+          1548
         </td>
         <td>
           Apply
@@ -339,15 +286,39 @@
         </td>
       </tr><tr>
         <td>
-          45
+          38
         </td>
         <td>
-          354
+          321
         </td>
         <td>
-          1702
+          1478
           -
-          1721
+          1547
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          int2long
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.gameSettings.asInstanceOf[StandardGameSettings].quizMaxTime
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          329
+        </td>
+        <td>
+          1552
+          -
+          1571
         </td>
         <td>
           DefDef
@@ -363,15 +334,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          41
         </td>
         <td>
-          349
+          324
         </td>
         <td>
-          1769
+          1619
           -
-          1778
+          1628
         </td>
         <td>
           Block
@@ -387,15 +358,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          41
         </td>
         <td>
-          348
+          323
         </td>
         <td>
-          1782
+          1632
           -
-          1818
+          1668
         </td>
         <td>
           Apply
@@ -411,39 +382,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          42
         </td>
         <td>
-          351
+          325
         </td>
         <td>
-          1823
+          1711
           -
-          1857
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case SelectAnswer(actionParameter)
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          350
-        </td>
-        <td>
-          1861
-          -
-          1890
+          1740
         </td>
         <td>
           Apply
@@ -459,39 +406,39 @@
         </td>
       </tr><tr>
         <td>
-          48
+          42
         </td>
         <td>
-          352
+          326
         </td>
         <td>
-          1912
+          1673
           -
-          1922
+          1707
         </td>
         <td>
-          Apply
+          Block
         </td>
         <td>
-          nextQuiz
+          &lt;none&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          nextQuiz()
+          case SelectAnswer(actionParameter)
         </td>
       </tr><tr>
         <td>
-          48
+          43
         </td>
         <td>
-          353
+          328
         </td>
         <td>
-          1895
+          1745
           -
-          1908
+          1758
         </td>
         <td>
           Block
@@ -507,15 +454,39 @@
         </td>
       </tr><tr>
         <td>
-          50
+          43
         </td>
         <td>
-          371
+          327
         </td>
         <td>
-          1926
+          1762
           -
-          1952
+          1772
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          nextQuiz
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          nextQuiz()
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          341
+        </td>
+        <td>
+          1776
+          -
+          1802
         </td>
         <td>
           DefDef
@@ -531,15 +502,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          46
         </td>
         <td>
-          355
+          330
         </td>
         <td>
-          1967
+          1817
           -
-          1992
+          1842
         </td>
         <td>
           Apply
@@ -555,15 +526,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          47
         </td>
         <td>
-          356
+          331
         </td>
         <td>
-          2000
+          1850
           -
-          2015
+          1865
         </td>
         <td>
           Select
@@ -579,39 +550,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          48
         </td>
         <td>
-          357
+          333
         </td>
         <td>
-          2027
+          1877
           -
-          2044
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          stopTimer
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          timer.stopTimer()
-        </td>
-      </tr><tr>
-        <td>
-          53
-        </td>
-        <td>
-          359
-        </td>
-        <td>
-          2027
-          -
-          2080
+          1906
         </td>
         <td>
           Block
@@ -623,20 +570,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          timer.stopTimer()
-      sendUpdate(TimeExpiredUpdate)
+          sendUpdate(TimeExpiredUpdate)
         </td>
       </tr><tr>
         <td>
-          54
+          48
         </td>
         <td>
-          358
+          332
         </td>
         <td>
-          2051
+          1877
           -
-          2080
+          1906
         </td>
         <td>
           Apply
@@ -652,15 +598,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          50
         </td>
         <td>
-          370
+          340
         </td>
         <td>
-          2096
+          1922
           -
-          2412
+          2036
         </td>
         <td>
           Block
@@ -672,47 +618,20 @@
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(CurrentGameUpdate(Option(gameStage)))
-      if !timer.isStopped then
-        sendUpdate(TimerUpdate(Option(timer)))
-        currentScore = updateScore(timer.getRemainingTime.toInt, timer.maxTime, gameStage.quizInGame.quiz.maxScore) // update score
-        sendUpdate(QuizScoreUpdate(Option(currentScore)))
+          sendUpdate(NewQuizUpdate(Option(gameStage)))
+      if !timer.isStopped then sendUpdate(TimerUpdate(Option(timer)))
         </td>
       </tr><tr>
         <td>
-          56
+          50
         </td>
         <td>
-          361
+          334
         </td>
         <td>
-          2096
+          1947
           -
-          2144
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendUpdate
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendUpdate(CurrentGameUpdate(Option(gameStage)))
-        </td>
-      </tr><tr>
-        <td>
-          56
-        </td>
-        <td>
-          360
-        </td>
-        <td>
-          2125
-          -
-          2142
+          1964
         </td>
         <td>
           Apply
@@ -728,39 +647,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          50
         </td>
         <td>
-          362
+          335
         </td>
         <td>
-          2155
+          1922
           -
-          2170
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          isStopped
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          timer.isStopped
-        </td>
-      </tr><tr>
-        <td>
-          58
-        </td>
-        <td>
-          364
-        </td>
-        <td>
-          2184
-          -
-          2222
+          1966
         </td>
         <td>
           Apply
@@ -772,45 +667,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(TimerUpdate(Option(timer)))
+          sendUpdate(NewQuizUpdate(Option(gameStage)))
         </td>
       </tr><tr>
         <td>
-          58
+          51
         </td>
         <td>
-          369
+          337
         </td>
         <td>
-          2184
+          2021
           -
-          2412
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendUpdate(TimerUpdate(Option(timer)))
-        currentScore = updateScore(timer.getRemainingTime.toInt, timer.maxTime, gameStage.quizInGame.quiz.maxScore) // update score
-        sendUpdate(QuizScoreUpdate(Option(currentScore)))
-        </td>
-      </tr><tr>
-        <td>
-          58
-        </td>
-        <td>
-          363
-        </td>
-        <td>
-          2207
-          -
-          2220
+          2034
         </td>
         <td>
           Apply
@@ -826,87 +695,63 @@
         </td>
       </tr><tr>
         <td>
-          59
+          51
         </td>
         <td>
-          366
+          336
         </td>
         <td>
-          2246
+          1977
           -
-          2338
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          updateScore
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          updateScore(timer.getRemainingTime.toInt, timer.maxTime, gameStage.quizInGame.quiz.maxScore)
-        </td>
-      </tr><tr>
-        <td>
-          59
-        </td>
-        <td>
-          365
-        </td>
-        <td>
-          2258
-          -
-          2280
+          1992
         </td>
         <td>
           Select
         </td>
         <td>
-          getRemainingTime
+          isStopped
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          timer.getRemainingTime
+          timer.isStopped
         </td>
       </tr><tr>
         <td>
-          60
+          51
         </td>
         <td>
-          367
+          339
         </td>
         <td>
-          2390
+          1998
           -
-          2410
+          2036
         </td>
         <td>
-          Apply
+          Block
         </td>
         <td>
-          apply
+          &lt;none&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          Option(currentScore)
+          sendUpdate(TimerUpdate(Option(timer)))
         </td>
       </tr><tr>
         <td>
-          60
+          51
         </td>
         <td>
-          368
+          338
         </td>
         <td>
-          2363
+          1998
           -
-          2412
+          2036
         </td>
         <td>
           Apply
@@ -918,19 +763,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(QuizScoreUpdate(Option(currentScore)))
+          sendUpdate(TimerUpdate(Option(timer)))
         </td>
       </tr><tr>
         <td>
-          63
+          53
         </td>
         <td>
-          380
+          349
         </td>
         <td>
-          2417
+          2040
           -
-          2433
+          2056
         </td>
         <td>
           DefDef
@@ -946,15 +791,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          54
         </td>
         <td>
-          372
+          342
         </td>
         <td>
-          2477
+          2100
           -
-          2494
+          2117
         </td>
         <td>
           Apply
@@ -970,15 +815,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          55
         </td>
         <td>
-          373
+          343
         </td>
         <td>
-          2502
+          2125
           -
-          2527
+          2150
         </td>
         <td>
           Select
@@ -994,39 +839,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          56
         </td>
         <td>
-          374
+          348
         </td>
         <td>
-          2532
+          2162
           -
-          2547
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          isExpired
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          timer.isExpired
-        </td>
-      </tr><tr>
-        <td>
-          66
-        </td>
-        <td>
-          379
-        </td>
-        <td>
-          2559
-          -
-          2851
+          2361
         </td>
         <td>
           Block
@@ -1039,21 +860,19 @@
         </td>
         <td style="background: #F0ADAD">
           val selectedAnswerIndex: Int = actionParameter.get.asInstanceOf[Int]
-      val answerSelected: Answer = gameStage.quizInGame.answers(selectedAnswerIndex)
-      currentAnswer = Some(answerSelected)
-      sendUpdate(AnswerFeedbackUpdate(Option((selectedAnswerIndex, answerSelected.isCorrect))))
+      sendUpdate(AnswerFeedbackUpdate(Option((selectedAnswerIndex, gameStage.quizInGame.answers(selectedAnswerIndex).isCorrect))))
         </td>
       </tr><tr>
         <td>
-          66
+          56
         </td>
         <td>
-          375
+          344
         </td>
         <td>
-          2590
+          2193
           -
-          2609
+          2212
         </td>
         <td>
           Select
@@ -1069,15 +888,39 @@
         </td>
       </tr><tr>
         <td>
-          67
+          57
         </td>
         <td>
-          376
+          346
         </td>
         <td>
-          2663
+          2269
           -
-          2712
+          2359
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option((selectedAnswerIndex, gameStage.quizInGame.answers(selectedAnswerIndex).isCorrect))
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          345
+        </td>
+        <td>
+          2298
+          -
+          2347
         </td>
         <td>
           Apply
@@ -1093,15 +936,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          57
         </td>
         <td>
-          378
+          347
         </td>
         <td>
-          2762
+          2237
           -
-          2851
+          2361
         </td>
         <td>
           Apply
@@ -1113,43 +956,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(AnswerFeedbackUpdate(Option((selectedAnswerIndex, answerSelected.isCorrect))))
+          sendUpdate(AnswerFeedbackUpdate(Option((selectedAnswerIndex, gameStage.quizInGame.answers(selectedAnswerIndex).isCorrect))))
         </td>
       </tr><tr>
         <td>
-          69
+          59
         </td>
         <td>
-          377
+          358
         </td>
         <td>
-          2794
+          2365
           -
-          2849
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option((selectedAnswerIndex, answerSelected.isCorrect))
-        </td>
-      </tr><tr>
-        <td>
-          71
-        </td>
-        <td>
-          390
-        </td>
-        <td>
-          2855
-          -
-          2876
+          2386
         </td>
         <td>
           DefDef
@@ -1165,303 +984,15 @@
         </td>
       </tr><tr>
         <td>
-          73
+          60
         </td>
         <td>
-          382
+          352
         </td>
         <td>
-          2923
+          2452
           -
-          2937
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case Some(ans)
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          381
-        </td>
-        <td>
-          2941
-          -
-          2975
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          addReviewQuizAnswer
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          gameStage.addReviewQuizAnswer(ans)
-        </td>
-      </tr><tr>
-        <td>
-          74
-        </td>
-        <td>
-          384
-        </td>
-        <td>
-          2982
-          -
-          2988
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case _
-        </td>
-      </tr><tr>
-        <td>
-          74
-        </td>
-        <td>
-          383
-        </td>
-        <td>
-          2992
-          -
-          3026
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          addReviewQuizNotAnswered
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          gameStage.addReviewQuizNotAnswered
-        </td>
-      </tr><tr>
-        <td>
-          76
-        </td>
-        <td>
-          385
-        </td>
-        <td>
-          3059
-          -
-          3086
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          maxQuizzesReached
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          gameStage.maxQuizzesReached
-        </td>
-      </tr><tr>
-        <td>
-          76
-        </td>
-        <td>
-          387
-        </td>
-        <td>
-          3092
-          -
-          3101
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          endGame()
-        </td>
-      </tr><tr>
-        <td>
-          76
-        </td>
-        <td>
-          386
-        </td>
-        <td>
-          3092
-          -
-          3101
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          endGame
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          endGame()
-        </td>
-      </tr><tr>
-        <td>
-          78
-        </td>
-        <td>
-          388
-        </td>
-        <td>
-          3131
-          -
-          3149
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          startTimer
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          timer.startTimer()
-        </td>
-      </tr><tr>
-        <td>
-          79
-        </td>
-        <td>
-          389
-        </td>
-        <td>
-          3154
-          -
-          3173
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          extractQuizInGame
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          extractQuizInGame()
-        </td>
-      </tr><tr>
-        <td>
-          82
-        </td>
-        <td>
-          398
-        </td>
-        <td>
-          3178
-          -
-          3199
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          extractQuizInGame
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          def extractQuizInGame
-        </td>
-      </tr><tr>
-        <td>
-          83
-        </td>
-        <td>
-          391
-        </td>
-        <td>
-          3290
-          -
-          3318
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          size
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          gameStage.coursesInGame.size
-        </td>
-      </tr><tr>
-        <td>
-          83
-        </td>
-        <td>
-          394
-        </td>
-        <td>
-          3241
-          -
-          3325
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)
-        </td>
-      </tr><tr>
-        <td>
-          83
-        </td>
-        <td>
-          393
-        </td>
-        <td>
-          3265
-          -
-          3324
+          2511
         </td>
         <td>
           Select
@@ -1477,15 +1008,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          60
         </td>
         <td>
-          392
+          351
         </td>
         <td>
-          3265
+          2452
           -
-          3319
+          2506
         </td>
         <td>
           Apply
@@ -1501,15 +1032,63 @@
         </td>
       </tr><tr>
         <td>
-          84
+          60
         </td>
         <td>
-          395
+          350
         </td>
         <td>
-          3349
+          2477
           -
-          3375
+          2505
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.coursesInGame.size
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          353
+        </td>
+        <td>
+          2428
+          -
+          2512
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.coursesInGame(randomNumberGenerator(1, gameStage.coursesInGame.size).head)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          354
+        </td>
+        <td>
+          2536
+          -
+          2562
         </td>
         <td>
           Apply
@@ -1525,15 +1104,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          62
         </td>
         <td>
-          396
+          355
         </td>
         <td>
-          3402
+          2589
           -
-          3429
+          2616
         </td>
         <td>
           Apply
@@ -1549,15 +1128,15 @@
         </td>
       </tr><tr>
         <td>
-          87
+          64
         </td>
         <td>
-          397
+          356
         </td>
         <td>
-          3513
+          2706
           -
-          3546
+          2739
         </td>
         <td>
           Apply
@@ -1573,159 +1152,39 @@
         </td>
       </tr><tr>
         <td>
-          90
+          65
         </td>
         <td>
-          400
+          357
         </td>
         <td>
-          3659
+          2744
           -
-          3674
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          quizList
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          course.quizList
-        </td>
-      </tr><tr>
-        <td>
-          90
-        </td>
-        <td>
-          403
-        </td>
-        <td>
-          3634
-          -
-          3685
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          head
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          randomNumberGenerator(1, course.quizList.size).head
-        </td>
-      </tr><tr>
-        <td>
-          90
-        </td>
-        <td>
-          405
-        </td>
-        <td>
-          3565
-          -
-          3588
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          chooseQuiz
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          override def chooseQuiz
-        </td>
-      </tr><tr>
-        <td>
-          90
-        </td>
-        <td>
-          399
-        </td>
-        <td>
-          3618
-          -
-          3633
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          quizList
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          course.quizList
-        </td>
-      </tr><tr>
-        <td>
-          90
-        </td>
-        <td>
-          402
-        </td>
-        <td>
-          3634
-          -
-          3680
+          2762
         </td>
         <td>
           Apply
         </td>
         <td>
-          randomNumberGenerator
+          startTimer
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          randomNumberGenerator(1, course.quizList.size)
+          timer.startTimer()
         </td>
       </tr><tr>
         <td>
-          90
+          68
         </td>
         <td>
-          401
+          364
         </td>
         <td>
-          3659
+          2834
           -
-          3679
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          size
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          course.quizList.size
-        </td>
-      </tr><tr>
-        <td>
-          90
-        </td>
-        <td>
-          404
-        </td>
-        <td>
-          3618
-          -
-          3686
+          2902
         </td>
         <td>
           Apply
@@ -1741,15 +1200,159 @@
         </td>
       </tr><tr>
         <td>
-          92
+          68
         </td>
         <td>
-          416
+          361
         </td>
         <td>
-          3690
+          2875
           -
-          3716
+          2895
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          course.quizList.size
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          360
+        </td>
+        <td>
+          2875
+          -
+          2890
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          quizList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          course.quizList
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          363
+        </td>
+        <td>
+          2850
+          -
+          2901
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          head
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          randomNumberGenerator(1, course.quizList.size).head
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          359
+        </td>
+        <td>
+          2834
+          -
+          2849
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          quizList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          course.quizList
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          362
+        </td>
+        <td>
+          2850
+          -
+          2896
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          randomNumberGenerator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          randomNumberGenerator(1, course.quizList.size)
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          365
+        </td>
+        <td>
+          2781
+          -
+          2804
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          chooseQuiz
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def chooseQuiz
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          376
+        </td>
+        <td>
+          2906
+          -
+          2932
         </td>
         <td>
           DefDef
@@ -1765,15 +1368,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          71
         </td>
         <td>
-          406
+          366
         </td>
         <td>
-          3773
+          2989
           -
-          3823
+          3039
         </td>
         <td>
           Apply
@@ -1789,15 +1392,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          72
         </td>
         <td>
-          407
+          367
         </td>
         <td>
-          3850
+          3066
           -
-          3901
+          3117
         </td>
         <td>
           Apply
@@ -1813,63 +1416,15 @@
         </td>
       </tr><tr>
         <td>
-          96
+          74
         </td>
         <td>
-          409
+          370
         </td>
         <td>
-          3928
+          3144
           -
-          3976
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          randomNumberGenerator
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          randomNumberGenerator(1, allCorrectAnswers.size)
-        </td>
-      </tr><tr>
-        <td>
-          96
-        </td>
-        <td>
-          408
-        </td>
-        <td>
-          3953
-          -
-          3975
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          size
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          allCorrectAnswers.size
-        </td>
-      </tr><tr>
-        <td>
-          96
-        </td>
-        <td>
-          410
-        </td>
-        <td>
-          3928
-          -
-          3999
+          3215
         </td>
         <td>
           Apply
@@ -1885,15 +1440,15 @@
         </td>
       </tr><tr>
         <td>
-          97
+          74
         </td>
         <td>
-          412
+          369
         </td>
         <td>
-          4023
+          3144
           -
-          4069
+          3192
         </td>
         <td>
           Apply
@@ -1905,19 +1460,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          randomNumberGenerator(3, allWrongAnswers.size)
+          randomNumberGenerator(1, allCorrectAnswers.size)
         </td>
       </tr><tr>
         <td>
-          97
+          74
         </td>
         <td>
-          411
+          368
         </td>
         <td>
-          4048
+          3169
           -
-          4068
+          3191
         </td>
         <td>
           Select
@@ -1929,19 +1484,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          allWrongAnswers.size
+          allCorrectAnswers.size
         </td>
       </tr><tr>
         <td>
-          97
+          75
         </td>
         <td>
-          413
+          373
         </td>
         <td>
-          4023
+          3239
           -
-          4090
+          3306
         </td>
         <td>
           Apply
@@ -1957,15 +1512,63 @@
         </td>
       </tr><tr>
         <td>
-          99
+          75
         </td>
         <td>
-          415
+          372
         </td>
         <td>
-          4096
+          3239
           -
-          4154
+          3285
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          randomNumberGenerator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          randomNumberGenerator(3, allWrongAnswers.size)
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          371
+        </td>
+        <td>
+          3264
+          -
+          3284
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          allWrongAnswers.size
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          375
+        </td>
+        <td>
+          3312
+          -
+          3370
         </td>
         <td>
           Apply
@@ -1981,15 +1584,15 @@
         </td>
       </tr><tr>
         <td>
-          99
+          77
         </td>
         <td>
-          414
+          374
         </td>
         <td>
-          4122
+          3338
           -
-          4153
+          3369
         </td>
         <td>
           Apply
@@ -2005,231 +1608,63 @@
         </td>
       </tr><tr>
         <td>
-          101
+          79
         </td>
         <td>
-          419
+          378
         </td>
         <td>
-          4158
+          3374
           -
-          4173
+          3394
         </td>
         <td>
           DefDef
         </td>
         <td>
-          updateScore
+          endQuiz
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          def updateScore
+          override def endQuiz
         </td>
       </tr><tr>
         <td>
-          106
+          79
         </td>
         <td>
-          418
+          377
         </td>
         <td>
-          4514
+          3405
           -
-          4523
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          +
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          score + 1
-        </td>
-      </tr><tr>
-        <td>
-          106
-        </td>
-        <td>
-          417
-        </td>
-        <td>
-          4503
-          -
-          4508
+          3408
         </td>
         <td>
           Ident
         </td>
         <td>
-          score
+          ???
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          score
+          ???
         </td>
       </tr><tr>
         <td>
-          109
+          81
         </td>
         <td>
-          421
+          382
         </td>
         <td>
-          4562
+          3478
           -
-          4619
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          handle
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.handle(ReviewMenuAction(Option(gameStage)))
-        </td>
-      </tr><tr>
-        <td>
-          109
-        </td>
-        <td>
-          420
-        </td>
-        <td>
-          4600
-          -
-          4617
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option(gameStage)
-        </td>
-      </tr><tr>
-        <td>
-          109
-        </td>
-        <td>
-          422
-        </td>
-        <td>
-          4531
-          -
-          4551
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          endGame
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          override def endGame
-        </td>
-      </tr><tr>
-        <td>
-          110
-        </td>
-        <td>
-          424
-        </td>
-        <td>
-          4714
-          -
-          4727
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          until
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          0 until range
-        </td>
-      </tr><tr>
-        <td>
-          110
-        </td>
-        <td>
-          427
-        </td>
-        <td>
-          4688
-          -
-          4750
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          toList
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          scala.util.Random.shuffle(0 until range).take(quantity).toList
-        </td>
-      </tr><tr>
-        <td>
-          110
-        </td>
-        <td>
-          423
-        </td>
-        <td>
-          4714
-          -
-          4715
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          intWrapper
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          0
-        </td>
-      </tr><tr>
-        <td>
-          110
-        </td>
-        <td>
-          426
-        </td>
-        <td>
-          4688
-          -
-          4743
+          3533
         </td>
         <td>
           Apply
@@ -2245,15 +1680,63 @@
         </td>
       </tr><tr>
         <td>
-          110
+          81
         </td>
         <td>
-          428
+          379
         </td>
         <td>
-          4622
+          3504
           -
-          4647
+          3505
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          intWrapper
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          0
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          381
+        </td>
+        <td>
+          3478
+          -
+          3518
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          shuffle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          scala.util.Random.shuffle(0 until range)
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          384
+        </td>
+        <td>
+          3412
+          -
+          3437
         </td>
         <td>
           DefDef
@@ -2269,27 +1752,51 @@
         </td>
       </tr><tr>
         <td>
-          110
+          81
         </td>
         <td>
-          425
+          383
         </td>
         <td>
-          4688
+          3478
           -
-          4728
+          3540
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          shuffle
+          toList
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          scala.util.Random.shuffle(0 until range)
+          scala.util.Random.shuffle(0 until range).take(quantity).toList
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          380
+        </td>
+        <td>
+          3504
+          -
+          3517
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          until
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          0 until range
         </td>
       </tr>
     </table>
