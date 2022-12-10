@@ -30,10 +30,30 @@
 </span>6 <span style=''>import model.Answer.*
 </span>7 <span style=''>import model.settings.{GameSettings, StandardGameSettings}
 </span>8 <span style=''>
-</span>9 <span style=''>case class QuizInGame(course: Course, quiz: Quiz, answers: List[Answer])
-</span>10 <span style=''>
-</span>11 <span style=''>class GameStage(var coursesInGame: List[SavedCourse] = </span><span style='background: #F0ADAD'>List()</span><span style=''>, var quizInGame: QuizInGame = null, var gameSettings: GameSettings = </span><span style='background: #F0ADAD'>StandardGameSettings</span><span style=''>()):
-</span>12 <span style=''>  </span><span style='background: #F0ADAD'>def quizInGame_</span><span style=''>(_quizInGame: QuizInGame) = quizInGame = _quizInGame
+</span>9 <span style=''>/** a quiz to play with a sub list of answers to play and the relative course */
+</span>10 <span style=''>case class QuizInGame(course: Course, quiz: Quiz, answers: List[Answer])
+</span>11 <span style=''>
+</span>12 <span style=''>/**
+</span>13 <span style=''> * Holds the list of the full-courses selected, a QuizInGame current, a Review of the quizzes played, and some settings
+</span>14 <span style=''> * @param coursesInGame a list of the curses selected to play in this game, sublist of all courses
+</span>15 <span style=''> * @param quizInGame    a quiz to play, with a sub list of answers selected and the relative course
+</span>16 <span style=''> * @param review a list of quizzes played
+</span>17 <span style=''> * @param gameSettings  settings like maximum number question, time
+</span>18 <span style=''> */
+</span>19 <span style=''>class GameStage(var coursesInGame: List[SavedCourse] = </span><span style='background: #AEF1AE'>List()</span><span style=''>, var quizInGame: QuizInGame = null, var review: Review = </span><span style='background: #AEF1AE'>Review</span><span style=''>(), var gameSettings: GameSettings = </span><span style='background: #AEF1AE'>StandardGameSettings</span><span style=''>()):
+</span>20 <span style=''>  </span><span style='background: #AEF1AE'>def quizInGame_</span><span style=''>(_quizInGame: QuizInGame) = quizInGame = _quizInGame
+</span>21 <span style=''>
+</span>22 <span style=''>  </span><span style='background: #AEF1AE'>def quizInGamePresent</span><span style=''>:Boolean = quizInGame.isInstanceOf[QuizInGame]
+</span>23 <span style=''>
+</span>24 <span style=''>  </span><span style='background: #AEF1AE'>def addReviewQuizNotAnswered</span><span style=''> = </span><span style='background: #AEF1AE'>review.addQuizAnswered(QuizAnswered(quizInGame, None))</span><span style=''>
+</span>25 <span style=''>
+</span>26 <span style=''>  </span><span style='background: #AEF1AE'>def addReviewQuizAnswer</span><span style=''>(answer: Answer) = </span><span style='background: #AEF1AE'>review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer)))</span><span style=''>
+</span>27 <span style=''>
+</span>28 <span style=''>  </span><span style='background: #AEF1AE'>def currentQuizNumber</span><span style=''>:Int = </span><span style='background: #AEF1AE'>review.numberQuizAnswered</span><span style=''>+1
+</span>29 <span style=''>
+</span>30 <span style=''>  </span><span style='background: #AEF1AE'>def maxQuizzesReached</span><span style=''>: Boolean = gameSettings match
+</span>31 <span style=''>    </span><span style='background: #AEF1AE'>case StandardGameSettings(_, maxQuizzes, _)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>review.numberQuizAnswered</span><span style=''> &gt;= maxQuizzes
+</span>32 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; false
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -48,18 +68,18 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          10
+          18
         </td>
         <td>
-          424
+          478
         </td>
         <td>
-          414
+          893
           -
-          434
+          893
         </td>
         <td>
-          Select
+          DefDef
         </td>
         <td>
           $lessinit$greater$default$2
@@ -67,20 +87,92 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          481
+        </td>
+        <td>
+          963
+          -
+          983
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
           StandardGameSettings
         </td>
       </tr><tr>
         <td>
-          10
+          18
         </td>
         <td>
-          421
+          480
         </td>
         <td>
-          338
+          920
           -
-          338
+          920
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          483
+        </td>
+        <td>
+          963
+          -
+          983
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StandardGameSettings
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          477
+        </td>
+        <td>
+          856
+          -
+          856
         </td>
         <td>
           DefDef
@@ -91,20 +183,68 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           
         </td>
       </tr><tr>
         <td>
-          10
+          18
         </td>
         <td>
-          420
+          479
         </td>
         <td>
-          338
+          920
           -
-          344
+          926
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Review
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          482
+        </td>
+        <td>
+          963
+          -
+          983
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StandardGameSettings
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          476
+        </td>
+        <td>
+          856
+          -
+          862
         </td>
         <td>
           Apply
@@ -115,116 +255,44 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           List()
         </td>
       </tr><tr>
         <td>
-          10
+          18
         </td>
         <td>
-          423
+          484
         </td>
         <td>
-          414
+          963
           -
-          434
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          $lessinit$greater$default$1
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          StandardGameSettings
-        </td>
-      </tr><tr>
-        <td>
-          10
-        </td>
-        <td>
-          426
-        </td>
-        <td>
-          414
-          -
-          414
+          963
         </td>
         <td>
           DefDef
         </td>
         <td>
-          $lessinit$greater$default$3
+          $lessinit$greater$default$4
         </td>
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
-          
-        </td>
-      </tr><tr>
-        <td>
-          10
-        </td>
-        <td>
-          422
-        </td>
-        <td>
-          375
-          -
-          375
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          $lessinit$greater$default$2
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           
         </td>
       </tr><tr>
         <td>
-          10
+          19
         </td>
         <td>
-          425
+          463
         </td>
         <td>
-          414
+          990
           -
-          434
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          $lessinit$greater$default$3
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          StandardGameSettings
-        </td>
-      </tr><tr>
-        <td>
-          11
-        </td>
-        <td>
-          419
-        </td>
-        <td>
-          441
-          -
-          456
+          1005
         </td>
         <td>
           DefDef
@@ -235,8 +303,296 @@
         <td>
           
         </td>
-        <td style="background: #F0ADAD">
+        <td style="background: #AEF1AE">
           def quizInGame_
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          464
+        </td>
+        <td>
+          1061
+          -
+          1082
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          quizInGamePresent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def quizInGamePresent
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          465
+        </td>
+        <td>
+          1163
+          -
+          1217
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addQuizAnswered
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          review.addQuizAnswered(QuizAnswered(quizInGame, None))
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          466
+        </td>
+        <td>
+          1132
+          -
+          1160
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          addReviewQuizNotAnswered
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def addReviewQuizNotAnswered
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          469
+        </td>
+        <td>
+          1221
+          -
+          1244
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          addReviewQuizAnswer
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def addReviewQuizAnswer
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          468
+        </td>
+        <td>
+          1263
+          -
+          1327
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addQuizAnswered
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer)))
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          467
+        </td>
+        <td>
+          1311
+          -
+          1325
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Option(answer)
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          471
+        </td>
+        <td>
+          1331
+          -
+          1352
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          currentQuizNumber
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def currentQuizNumber
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          470
+        </td>
+        <td>
+          1359
+          -
+          1384
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          numberQuizAnswered
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          review.numberQuizAnswered
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          475
+        </td>
+        <td>
+          1390
+          -
+          1411
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          maxQuizzesReached
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def maxQuizzesReached
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          472
+        </td>
+        <td>
+          1493
+          -
+          1518
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          numberQuizAnswered
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          review.numberQuizAnswered
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          473
+        </td>
+        <td>
+          1446
+          -
+          1489
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          case StandardGameSettings(_, maxQuizzes, _)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          474
+        </td>
+        <td>
+          1537
+          -
+          1543
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case _
         </td>
       </tr>
     </table>

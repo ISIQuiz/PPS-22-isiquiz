@@ -60,7 +60,7 @@
 </span>36 <span style=''>  case object AddQuizMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
 </span>37 <span style=''>  case object EditCourseMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
 </span>38 <span style=''>  case object EditQuizMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>39 <span style=''>  case object ReviewMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>39 <span style=''>  case class ReviewMenuAction(override val actionParameter: Option[GameStage]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
 </span>40 <span style=''>  case class CustomMenuAction[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
 </span>41 <span style=''>  case class StandardGameAction[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
 </span>42 <span style=''>
@@ -74,18 +74,19 @@
 </span>50 <span style=''>    </span><span style='background: #F0ADAD'>case AddQuizMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new AddQuizMenuController, ViewFactory.create(AddQuizMenuAction))</span><span style=''>
 </span>51 <span style=''>    </span><span style='background: #F0ADAD'>case EditCourseMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new EditCourseMenuController, ViewFactory.create(EditCourseMenuAction))</span><span style=''>
 </span>52 <span style=''>    </span><span style='background: #F0ADAD'>case EditQuizMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new EditQuizMenuController, ViewFactory.create(EditQuizMenuAction))</span><span style=''>
-</span>53 <span style=''>    </span><span style='background: #F0ADAD'>case CustomMenuAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new CustomMenuController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(CustomMenuAction(Option.empty)))</span><span style=''>
-</span>54 <span style=''>    </span><span style='background: #F0ADAD'>case action: Action[T]</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage.pageController.handle(action)</span><span style=''>
-</span>55 <span style=''>    </span><span style='background: #F0ADAD'>case null</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>throw new IllegalArgumentException</span><span style=''>
-</span>56 <span style=''>
-</span>57 <span style=''>  </span><span style='background: #F0ADAD'>def startApp</span><span style=''>(): Unit =
-</span>58 <span style=''>
-</span>59 <span style=''>    </span><span style='background: #F0ADAD'>importSessionFromPersonalDirectory(session)</span><span style=''> match
-</span>60 <span style=''>      </span><span style='background: #F0ADAD'>case Success(s)</span><span style=''> =&gt; _session = s
-</span>61 <span style=''>      </span><span style='background: #F0ADAD'>case Failure(f)</span><span style=''> =&gt; Failure(f)
-</span>62 <span style=''>
-</span>63 <span style=''>    val scheduler: ScheduledExecutorService = </span><span style='background: #F0ADAD'>Executors.newSingleThreadScheduledExecutor()</span><span style=''>
-</span>64 <span style=''>    </span><span style='background: #F0ADAD'>scheduler.scheduleAtFixedRate(() =&gt; currentPage.pageController.nextIteration(), 0, 1000/10, TimeUnit.MILLISECONDS)</span><span style=''>
+</span>53 <span style=''>    </span><span style='background: #F0ADAD'>case ReviewMenuAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new ReviewMenuController(actionParameter.get), ViewFactory.create(ReviewMenuAction(Option.empty)))</span><span style=''>
+</span>54 <span style=''>    </span><span style='background: #F0ADAD'>case CustomMenuAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new CustomMenuController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(CustomMenuAction(Option.empty)))</span><span style=''>
+</span>55 <span style=''>    </span><span style='background: #F0ADAD'>case action: Action[T]</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage.pageController.handle(action)</span><span style=''>
+</span>56 <span style=''>    </span><span style='background: #F0ADAD'>case null</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>throw new IllegalArgumentException</span><span style=''>
+</span>57 <span style=''>
+</span>58 <span style=''>  </span><span style='background: #F0ADAD'>def startApp</span><span style=''>(): Unit =
+</span>59 <span style=''>
+</span>60 <span style=''>    </span><span style='background: #F0ADAD'>importSessionFromPersonalDirectory(session)</span><span style=''> match
+</span>61 <span style=''>      </span><span style='background: #F0ADAD'>case Success(s)</span><span style=''> =&gt; _session = s
+</span>62 <span style=''>      </span><span style='background: #F0ADAD'>case Failure(f)</span><span style=''> =&gt; Failure(f)
+</span>63 <span style=''>
+</span>64 <span style=''>    val scheduler: ScheduledExecutorService = </span><span style='background: #F0ADAD'>Executors.newSingleThreadScheduledExecutor()</span><span style=''>
+</span>65 <span style=''>    </span><span style='background: #F0ADAD'>scheduler.scheduleAtFixedRate(() =&gt; currentPage.pageController.nextIteration(), 0, 1000/10, TimeUnit.MILLISECONDS)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -103,31 +104,7 @@
           19
         </td>
         <td>
-          56
-        </td>
-        <td>
-          746
-          -
-          768
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          new MainMenuController
-        </td>
-      </tr><tr>
-        <td>
-          19
-        </td>
-        <td>
-          57
+          59
         </td>
         <td>
           770
@@ -148,10 +125,34 @@
         </td>
       </tr><tr>
         <td>
-          20
+          19
         </td>
         <td>
           58
+        </td>
+        <td>
+          746
+          -
+          768
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new MainMenuController
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          60
         </td>
         <td>
           808
@@ -175,7 +176,7 @@
           21
         </td>
         <td>
-          59
+          61
         </td>
         <td>
           873
@@ -204,6 +205,30 @@
         <td>
           1112
           -
+          1119
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          apply$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Session
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          64
+        </td>
+        <td>
+          1112
+          -
           1121
         </td>
         <td>
@@ -223,7 +248,7 @@
           24
         </td>
         <td>
-          61
+          63
         </td>
         <td>
           1112
@@ -244,34 +269,10 @@
         </td>
       </tr><tr>
         <td>
-          24
-        </td>
-        <td>
-          60
-        </td>
-        <td>
-          1112
-          -
-          1119
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          apply$default$1
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Session
-        </td>
-      </tr><tr>
-        <td>
           25
         </td>
         <td>
-          63
+          65
         </td>
         <td>
           1124
@@ -295,7 +296,31 @@
           26
         </td>
         <td>
-          65
+          68
+        </td>
+        <td>
+          1158
+          -
+          1180
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeSavedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          def changeSavedCourses
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          67
         </td>
         <td>
           1233
@@ -319,7 +344,7 @@
           26
         </td>
         <td>
-          64
+          66
         </td>
         <td>
           1260
@@ -340,34 +365,34 @@
         </td>
       </tr><tr>
         <td>
-          26
+          27
         </td>
         <td>
-          66
+          71
         </td>
         <td>
-          1158
+          1285
           -
-          1180
+          1306
         </td>
         <td>
           DefDef
         </td>
         <td>
-          changeSavedCourses
+          changePlayerStats
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          def changeSavedCourses
+          def changePlayerStats
         </td>
       </tr><tr>
         <td>
           27
         </td>
         <td>
-          68
+          70
         </td>
         <td>
           1352
@@ -391,7 +416,7 @@
           27
         </td>
         <td>
-          67
+          69
         </td>
         <td>
           1378
@@ -412,34 +437,10 @@
         </td>
       </tr><tr>
         <td>
-          27
-        </td>
-        <td>
-          69
-        </td>
-        <td>
-          1285
-          -
-          1306
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          changePlayerStats
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          def changePlayerStats
-        </td>
-      </tr><tr>
-        <td>
           30
         </td>
         <td>
-          70
+          72
         </td>
         <td>
           1439
@@ -463,7 +464,7 @@
           31
         </td>
         <td>
-          71
+          73
         </td>
         <td>
           1498
@@ -487,7 +488,7 @@
           32
         </td>
         <td>
-          72
+          74
         </td>
         <td>
           1561
@@ -511,7 +512,7 @@
           33
         </td>
         <td>
-          73
+          75
         </td>
         <td>
           1622
@@ -535,7 +536,7 @@
           34
         </td>
         <td>
-          74
+          76
         </td>
         <td>
           1684
@@ -559,7 +560,7 @@
           35
         </td>
         <td>
-          75
+          77
         </td>
         <td>
           1744
@@ -583,7 +584,7 @@
           36
         </td>
         <td>
-          76
+          78
         </td>
         <td>
           1807
@@ -607,7 +608,7 @@
           37
         </td>
         <td>
-          77
+          79
         </td>
         <td>
           1868
@@ -631,12 +632,12 @@
           38
         </td>
         <td>
-          78
+          80
         </td>
         <td>
-          1927
+          1975
           -
-          1946
+          1998
         </td>
         <td>
           Apply
@@ -648,19 +649,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          ParameterlessAction
+          Action(actionParameter)
         </td>
       </tr><tr>
         <td>
           39
         </td>
         <td>
-          79
+          81
         </td>
         <td>
-          2029
+          2081
           -
-          2052
+          2104
         </td>
         <td>
           Apply
@@ -679,12 +680,12 @@
           40
         </td>
         <td>
-          80
+          82
         </td>
         <td>
-          2137
+          2189
           -
-          2160
+          2212
         </td>
         <td>
           Apply
@@ -703,12 +704,12 @@
           42
         </td>
         <td>
-          131
+          139
         </td>
         <td>
-          2164
+          2216
           -
-          2183
+          2235
         </td>
         <td>
           DefDef
@@ -730,57 +731,9 @@
           83
         </td>
         <td>
-          2254
+          2319
           -
-          2326
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          currentPage_
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          currentPage_(new MainMenuController, ViewFactory.create(MainMenuAction))
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          82
-        </td>
-        <td>
-          2291
-          -
-          2325
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          create
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ViewFactory.create(MainMenuAction)
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          81
-        </td>
-        <td>
-          2267
-          -
-          2289
+          2341
         </td>
         <td>
           Apply
@@ -799,12 +752,12 @@
           43
         </td>
         <td>
-          84
+          86
         </td>
         <td>
-          2231
+          2283
           -
-          2250
+          2302
         </td>
         <td>
           Block
@@ -820,15 +773,87 @@
         </td>
       </tr><tr>
         <td>
+          43
+        </td>
+        <td>
+          85
+        </td>
+        <td>
+          2306
+          -
+          2378
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          currentPage_
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          currentPage_(new MainMenuController, ViewFactory.create(MainMenuAction))
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          84
+        </td>
+        <td>
+          2343
+          -
+          2377
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          create
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ViewFactory.create(MainMenuAction)
+        </td>
+      </tr><tr>
+        <td>
           44
         </td>
         <td>
-          86
+          89
         </td>
         <td>
-          2395
+          2408
           -
-          2431
+          2484
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          currentPage_
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          currentPage_(new SelectMenuController, ViewFactory.create(SelectMenuAction))
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          88
+        </td>
+        <td>
+          2447
+          -
+          2483
         </td>
         <td>
           Apply
@@ -847,12 +872,12 @@
           44
         </td>
         <td>
-          85
+          87
         </td>
         <td>
-          2369
+          2421
           -
-          2393
+          2445
         </td>
         <td>
           Apply
@@ -871,12 +896,12 @@
           44
         </td>
         <td>
-          88
+          90
         </td>
         <td>
-          2331
+          2383
           -
-          2352
+          2404
         </td>
         <td>
           Block
@@ -892,63 +917,39 @@
         </td>
       </tr><tr>
         <td>
-          44
-        </td>
-        <td>
-          87
-        </td>
-        <td>
-          2356
-          -
-          2432
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          currentPage_
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          currentPage_(new SelectMenuController, ViewFactory.create(SelectMenuAction))
-        </td>
-      </tr><tr>
-        <td>
           45
         </td>
         <td>
           92
         </td>
         <td>
-          2437
+          2561
           -
-          2462
+          2601
         </td>
         <td>
-          Block
+          Apply
         </td>
         <td>
-          &lt;none&gt;
+          create
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          case StatisticsMenuAction
+          ViewFactory.create(StatisticsMenuAction)
         </td>
       </tr><tr>
         <td>
           45
         </td>
         <td>
-          89
+          91
         </td>
         <td>
-          2479
+          2531
           -
-          2507
+          2559
         </td>
         <td>
           Apply
@@ -967,12 +968,36 @@
           45
         </td>
         <td>
-          91
+          94
         </td>
         <td>
-          2466
+          2489
           -
-          2550
+          2514
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case StatisticsMenuAction
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          93
+        </td>
+        <td>
+          2518
+          -
+          2602
         </td>
         <td>
           Apply
@@ -988,87 +1013,39 @@
         </td>
       </tr><tr>
         <td>
-          45
-        </td>
-        <td>
-          90
-        </td>
-        <td>
-          2509
-          -
-          2549
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          create
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ViewFactory.create(StatisticsMenuAction)
-        </td>
-      </tr><tr>
-        <td>
           46
         </td>
         <td>
           95
         </td>
         <td>
-          2582
+          2647
           -
-          2662
+          2673
         </td>
         <td>
           Apply
         </td>
         <td>
-          currentPage_
+          &lt;init&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          currentPage_(new SettingsMenuController, ViewFactory.create(SettingsMenuAction))
+          new SettingsMenuController
         </td>
       </tr><tr>
         <td>
           46
         </td>
         <td>
-          94
+          98
         </td>
         <td>
-          2623
+          2607
           -
-          2661
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          create
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ViewFactory.create(SettingsMenuAction)
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          96
-        </td>
-        <td>
-          2555
-          -
-          2578
+          2630
         </td>
         <td>
           Block
@@ -1087,36 +1064,12 @@
           46
         </td>
         <td>
-          93
+          97
         </td>
         <td>
-          2595
+          2634
           -
-          2621
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          new SettingsMenuController
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          101
-        </td>
-        <td>
-          2711
-          -
-          2846
+          2714
         </td>
         <td>
           Apply
@@ -1128,43 +1081,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          currentPage_(StandardGameController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(StandardGameAction(Option.empty)))
+          currentPage_(new SettingsMenuController, ViewFactory.create(SettingsMenuAction))
         </td>
       </tr><tr>
         <td>
-          47
+          46
         </td>
         <td>
-          98
+          96
         </td>
         <td>
-          2724
+          2675
           -
-          2791
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          StandardGameController(actionParameter.get.asInstanceOf[GameStage])
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          100
-        </td>
-        <td>
-          2793
-          -
-          2845
+          2713
         </td>
         <td>
           Apply
@@ -1176,43 +1105,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          ViewFactory.create(StandardGameAction(Option.empty))
+          ViewFactory.create(SettingsMenuAction)
         </td>
       </tr><tr>
         <td>
           47
         </td>
         <td>
-          97
+          101
         </td>
         <td>
-          2747
+          2883
           -
-          2766
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          get
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          actionParameter.get
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          99
-        </td>
-        <td>
-          2831
-          -
-          2843
+          2895
         </td>
         <td>
           Select
@@ -1231,12 +1136,12 @@
           47
         </td>
         <td>
-          102
+          104
         </td>
         <td>
-          2667
+          2719
           -
-          2707
+          2759
         </td>
         <td>
           Block
@@ -1252,15 +1157,135 @@
         </td>
       </tr><tr>
         <td>
+          47
+        </td>
+        <td>
+          100
+        </td>
+        <td>
+          2776
+          -
+          2843
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          StandardGameController(actionParameter.get.asInstanceOf[GameStage])
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          103
+        </td>
+        <td>
+          2763
+          -
+          2898
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          currentPage_
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          currentPage_(StandardGameController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(StandardGameAction(Option.empty)))
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          99
+        </td>
+        <td>
+          2799
+          -
+          2818
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          actionParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          102
+        </td>
+        <td>
+          2845
+          -
+          2897
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          create
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ViewFactory.create(StandardGameAction(Option.empty))
+        </td>
+      </tr><tr>
+        <td>
           48
         </td>
         <td>
-          104
+          107
         </td>
         <td>
-          2921
+          2931
           -
-          2960
+          3013
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          currentPage_
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          currentPage_(new AddCourseMenuController, ViewFactory.create(AddCourseMenuAction))
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          106
+        </td>
+        <td>
+          2973
+          -
+          3012
         </td>
         <td>
           Apply
@@ -1279,36 +1304,12 @@
           48
         </td>
         <td>
-          106
+          105
         </td>
         <td>
-          2851
+          2944
           -
-          2875
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case AddCourseMenuAction
-        </td>
-      </tr><tr>
-        <td>
-          48
-        </td>
-        <td>
-          103
-        </td>
-        <td>
-          2892
-          -
-          2919
+          2971
         </td>
         <td>
           Apply
@@ -1327,36 +1328,12 @@
           48
         </td>
         <td>
-          105
+          108
         </td>
         <td>
-          2879
+          2903
           -
-          2961
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          currentPage_
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          currentPage_(new AddCourseMenuController, ViewFactory.create(AddCourseMenuAction))
-        </td>
-      </tr><tr>
-        <td>
-          49
-        </td>
-        <td>
-          110
-        </td>
-        <td>
-          2966
-          -
-          2988
+          2927
         </td>
         <td>
           Block
@@ -1368,19 +1345,43 @@
           
         </td>
         <td style="background: #F0ADAD">
-          case AddQuizMenuAction
+          case AddCourseMenuAction
         </td>
       </tr><tr>
         <td>
           49
         </td>
         <td>
-          107
+          110
         </td>
         <td>
-          3005
+          3084
           -
-          3030
+          3121
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          create
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ViewFactory.create(AddQuizMenuAction)
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          109
+        </td>
+        <td>
+          3057
+          -
+          3082
         </td>
         <td>
           Apply
@@ -1399,12 +1400,36 @@
           49
         </td>
         <td>
-          109
+          112
         </td>
         <td>
-          2992
+          3018
           -
-          3070
+          3040
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case AddQuizMenuAction
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          111
+        </td>
+        <td>
+          3044
+          -
+          3122
         </td>
         <td>
           Apply
@@ -1420,87 +1445,39 @@
         </td>
       </tr><tr>
         <td>
-          49
-        </td>
-        <td>
-          108
-        </td>
-        <td>
-          3032
-          -
-          3069
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          create
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ViewFactory.create(AddQuizMenuAction)
-        </td>
-      </tr><tr>
-        <td>
           50
         </td>
         <td>
           113
         </td>
         <td>
-          3104
+          3169
           -
-          3188
+          3197
         </td>
         <td>
           Apply
         </td>
         <td>
-          currentPage_
+          &lt;init&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          currentPage_(new EditCourseMenuController, ViewFactory.create(EditCourseMenuAction))
+          new EditCourseMenuController
         </td>
       </tr><tr>
         <td>
           50
         </td>
         <td>
-          112
+          116
         </td>
         <td>
-          3147
+          3127
           -
-          3187
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          create
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ViewFactory.create(EditCourseMenuAction)
-        </td>
-      </tr><tr>
-        <td>
-          50
-        </td>
-        <td>
-          114
-        </td>
-        <td>
-          3075
-          -
-          3100
+          3152
         </td>
         <td>
           Block
@@ -1519,36 +1496,84 @@
           50
         </td>
         <td>
-          111
+          115
         </td>
         <td>
-          3117
+          3156
           -
-          3145
+          3240
         </td>
         <td>
           Apply
         </td>
         <td>
-          &lt;init&gt;
+          currentPage_
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          new EditCourseMenuController
+          currentPage_(new EditCourseMenuController, ViewFactory.create(EditCourseMenuAction))
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          114
+        </td>
+        <td>
+          3199
+          -
+          3239
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          create
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ViewFactory.create(EditCourseMenuAction)
         </td>
       </tr><tr>
         <td>
           51
         </td>
         <td>
-          116
+          119
         </td>
         <td>
-          3261
+          3272
           -
-          3299
+          3352
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          currentPage_
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          currentPage_(new EditQuizMenuController, ViewFactory.create(EditQuizMenuAction))
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          118
+        </td>
+        <td>
+          3313
+          -
+          3351
         </td>
         <td>
           Apply
@@ -1567,36 +1592,12 @@
           51
         </td>
         <td>
-          115
+          120
         </td>
         <td>
-          3233
+          3245
           -
-          3259
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          new EditQuizMenuController
-        </td>
-      </tr><tr>
-        <td>
-          51
-        </td>
-        <td>
-          118
-        </td>
-        <td>
-          3193
-          -
-          3216
+          3268
         </td>
         <td>
           Block
@@ -1618,9 +1619,57 @@
           117
         </td>
         <td>
-          3220
+          3285
           -
-          3300
+          3311
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new EditQuizMenuController
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          122
+        </td>
+        <td>
+          3412
+          -
+          3457
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new ReviewMenuController(actionParameter.get)
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          125
+        </td>
+        <td>
+          3399
+          -
+          3510
         </td>
         <td>
           Apply
@@ -1632,19 +1681,43 @@
           
         </td>
         <td style="background: #F0ADAD">
-          currentPage_(new EditQuizMenuController, ViewFactory.create(EditQuizMenuAction))
+          currentPage_(new ReviewMenuController(actionParameter.get), ViewFactory.create(ReviewMenuAction(Option.empty)))
         </td>
       </tr><tr>
         <td>
           52
         </td>
         <td>
-          119
+          124
         </td>
         <td>
-          3385
+          3459
           -
-          3404
+          3509
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          create
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ViewFactory.create(ReviewMenuAction(Option.empty))
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          121
+        </td>
+        <td>
+          3437
+          -
+          3456
         </td>
         <td>
           Select
@@ -1663,60 +1736,12 @@
           52
         </td>
         <td>
-          122
+          123
         </td>
         <td>
-          3431
+          3495
           -
-          3481
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          create
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ViewFactory.create(CustomMenuAction(Option.empty))
-        </td>
-      </tr><tr>
-        <td>
-          52
-        </td>
-        <td>
-          124
-        </td>
-        <td>
-          3305
-          -
-          3343
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case CustomMenuAction(actionParameter)
-        </td>
-      </tr><tr>
-        <td>
-          52
-        </td>
-        <td>
-          121
-        </td>
-        <td>
-          3467
-          -
-          3479
+          3507
         </td>
         <td>
           Select
@@ -1735,12 +1760,36 @@
           52
         </td>
         <td>
-          120
+          126
         </td>
         <td>
-          3360
+          3357
           -
-          3429
+          3395
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case ReviewMenuAction(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          128
+        </td>
+        <td>
+          3570
+          -
+          3639
         </td>
         <td>
           Apply
@@ -1756,15 +1805,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          53
         </td>
         <td>
-          123
+          131
         </td>
         <td>
-          3347
+          3557
           -
-          3482
+          3692
         </td>
         <td>
           Apply
@@ -1783,36 +1832,84 @@
           53
         </td>
         <td>
-          125
+          127
         </td>
         <td>
-          3513
+          3595
           -
-          3524
+          3614
         </td>
         <td>
-          Ident
+          Select
         </td>
         <td>
-          currentPage
+          get
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          currentPage
+          actionParameter.get
         </td>
       </tr><tr>
         <td>
           53
         </td>
         <td>
-          127
+          130
         </td>
         <td>
-          3487
+          3641
           -
-          3509
+          3691
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          create
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ViewFactory.create(CustomMenuAction(Option.empty))
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          129
+        </td>
+        <td>
+          3677
+          -
+          3689
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option.empty
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          132
+        </td>
+        <td>
+          3515
+          -
+          3553
         </td>
         <td>
           Block
@@ -1824,19 +1921,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          case action: Action[T]
+          case CustomMenuAction(actionParameter)
         </td>
       </tr><tr>
         <td>
-          53
+          54
         </td>
         <td>
-          126
+          134
         </td>
         <td>
-          3513
+          3723
           -
-          3554
+          3764
         </td>
         <td>
           Apply
@@ -1855,36 +1952,36 @@
           54
         </td>
         <td>
-          128
+          133
         </td>
         <td>
-          3578
+          3723
           -
-          3606
+          3734
         </td>
         <td>
-          Apply
+          Ident
         </td>
         <td>
-          &lt;init&gt;
+          currentPage
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          new IllegalArgumentException
+          currentPage
         </td>
       </tr><tr>
         <td>
           54
         </td>
         <td>
-          130
+          135
         </td>
         <td>
-          3559
+          3697
           -
-          3568
+          3719
         </td>
         <td>
           Block
@@ -1896,19 +1993,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          case null
+          case action: Action[T]
         </td>
       </tr><tr>
         <td>
-          54
+          55
         </td>
         <td>
-          129
+          137
         </td>
         <td>
-          3572
+          3782
           -
-          3606
+          3816
         </td>
         <td>
           Apply
@@ -1924,15 +2021,63 @@
         </td>
       </tr><tr>
         <td>
-          56
+          55
         </td>
         <td>
-          140
+          136
         </td>
         <td>
-          3610
+          3788
           -
-          3622
+          3816
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new IllegalArgumentException
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          138
+        </td>
+        <td>
+          3769
+          -
+          3778
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case null
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          148
+        </td>
+        <td>
+          3820
+          -
+          3832
         </td>
         <td>
           DefDef
@@ -1948,39 +2093,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          59
         </td>
         <td>
-          133
+          140
         </td>
         <td>
-          3638
+          3883
           -
-          3681
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          importSessionFromPersonalDirectory
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          importSessionFromPersonalDirectory(session)
-        </td>
-      </tr><tr>
-        <td>
-          58
-        </td>
-        <td>
-          132
-        </td>
-        <td>
-          3673
-          -
-          3680
+          3890
         </td>
         <td>
           Ident
@@ -1999,12 +2120,36 @@
           59
         </td>
         <td>
-          134
+          141
         </td>
         <td>
-          3694
+          3848
           -
-          3709
+          3891
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          importSessionFromPersonalDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          importSessionFromPersonalDirectory(session)
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          142
+        </td>
+        <td>
+          3904
+          -
+          3919
         </td>
         <td>
           Block
@@ -2020,15 +2165,15 @@
         </td>
       </tr><tr>
         <td>
-          60
+          61
         </td>
         <td>
-          135
+          143
         </td>
         <td>
-          3732
+          3942
           -
-          3747
+          3957
         </td>
         <td>
           Block
@@ -2044,15 +2189,15 @@
         </td>
       </tr><tr>
         <td>
-          62
+          63
         </td>
         <td>
-          136
+          144
         </td>
         <td>
-          3809
+          4019
           -
-          3853
+          4063
         </td>
         <td>
           Apply
@@ -2068,15 +2213,39 @@
         </td>
       </tr><tr>
         <td>
-          63
+          64
         </td>
         <td>
-          137
+          146
         </td>
         <td>
-          3894
+          4104
           -
-          3905
+          4146
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          nextIteration
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          currentPage.pageController.nextIteration()
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          145
+        </td>
+        <td>
+          4104
+          -
+          4115
         </td>
         <td>
           Ident
@@ -2092,15 +2261,15 @@
         </td>
       </tr><tr>
         <td>
-          63
+          64
         </td>
         <td>
-          139
+          147
         </td>
         <td>
-          3858
+          4068
           -
-          3972
+          4182
         </td>
         <td>
           Apply
@@ -2113,30 +2282,6 @@
         </td>
         <td style="background: #F0ADAD">
           scheduler.scheduleAtFixedRate(() =&gt; currentPage.pageController.nextIteration(), 0, 1000/10, TimeUnit.MILLISECONDS)
-        </td>
-      </tr><tr>
-        <td>
-          63
-        </td>
-        <td>
-          138
-        </td>
-        <td>
-          3894
-          -
-          3936
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          nextIteration
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          currentPage.pageController.nextIteration()
         </td>
       </tr>
     </table>
