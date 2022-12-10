@@ -2,7 +2,7 @@
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title id="title">
-          controller/SelectMenuController.scala.html
+          view/terminalUI/TerminalReviewMenu.scala.html
         </title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
         $(document).ready(function() {$(".tablesorter").tablesorter();});
@@ -22,57 +22,51 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package controller
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package view.terminalUI
 </span>2 <span style=''>
-</span>3 <span style=''>import controller.{AppController, PageController}
-</span>4 <span style=''>import controller.AppController.*
-</span>5 <span style=''>import controller.actions.{Action, BackAction, ParameterlessAction}
-</span>6 <span style=''>import view.{SelectMenuView, View}
-</span>7 <span style=''>import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-</span>8 <span style=''>import controller.{AppController, PageController}
-</span>9 <span style=''>import model.{GameStage, QuizInGame, Session}
-</span>10 <span style=''>import model.GameStage.*
-</span>11 <span style=''>import view.SelectMenuView.*
-</span>12 <span style=''>
-</span>13 <span style=''>import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
-</span>14 <span style=''>import scala.collection.mutable.ListBuffer
-</span>15 <span style=''>import scala.concurrent.{Await, Promise}
-</span>16 <span style=''>import scala.concurrent.duration.Duration
+</span>3 <span style=''>import controller.ReviewMenuController
+</span>4 <span style=''>import controller.ReviewMenuController.End
+</span>5 <span style=''>import controller.actions.Action
+</span>6 <span style=''>import model.Answer.Answer
+</span>7 <span style=''>import model.SavedCourse
+</span>8 <span style=''>import view.ReviewMenuView.*
+</span>9 <span style=''>import view.View.*
+</span>10 <span style=''>import view.updates.ViewUpdate
+</span>11 <span style=''>
+</span>12 <span style=''>import java.util.UUID
+</span>13 <span style=''>import scala.io.StdIn.readLine
+</span>14 <span style=''>import scala.collection.mutable.Map
+</span>15 <span style=''>
+</span>16 <span style=''>object TerminalReviewMenu
 </span>17 <span style=''>
-</span>18 <span style=''>/** Companion object of select menu controller containing all the actions can be sent to it */
-</span>19 <span style=''>object SelectMenuController extends BackAction:
+</span>18 <span style=''>/** Review terminal interface  */
+</span>19 <span style=''>class TerminalReviewMenu extends TerminalView:
 </span>20 <span style=''>
-</span>21 <span style=''>  case object Start extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>22 <span style=''>  case object Custom extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>23 <span style=''>  case class Selection[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>21 <span style=''>  override val actionsMap: Map[String, Action[Any]] = </span><span style='background: #F0ADAD'>Map(
+</span>22 <span style=''></span><span style='background: #F0ADAD'>    &quot;1&quot; -&gt; End,
+</span>23 <span style=''></span><span style='background: #F0ADAD'>  )</span><span style=''>
 </span>24 <span style=''>
-</span>25 <span style=''>/** Defines the logic of the select page */
-</span>26 <span style=''>class SelectMenuController extends PageController:
-</span>27 <span style=''>
-</span>28 <span style=''>  import SelectMenuController.*
-</span>29 <span style=''>
-</span>30 <span style=''>  var gameStage = </span><span style='background: #F0ADAD'>GameStage()</span><span style=''>
-</span>31 <span style=''>
-</span>32 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
-</span>33 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(AppController.MainMenuAction)</span><span style=''>
-</span>34 <span style=''>    </span><span style='background: #F0ADAD'>case Start</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(AppController.StandardGameAction(Option(gameStage)))</span><span style=''>
-</span>35 <span style=''>    </span><span style='background: #F0ADAD'>case Custom</span><span style=''> =&gt;  </span><span style='background: #F0ADAD'>AppController.handle(AppController.CustomMenuAction(Option(gameStage)))</span><span style=''>
-</span>36 <span style=''>    </span><span style='background: #F0ADAD'>case Selection(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>modifySelectedCourses(actionParameter)</span><span style=''>
-</span>37 <span style=''>
-</span>38 <span style=''>  // Get session from application controller
-</span>39 <span style=''>  </span><span style='background: #F0ADAD'>def getSession</span><span style=''>: Session = </span><span style='background: #F0ADAD'>AppController.session</span><span style=''>
-</span>40 <span style=''>
-</span>41 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>42 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
-</span>43 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CourseUpdate(Option(getSession.savedCourses.map(course =&gt; (course,gameStage.coursesInGame.contains(course))))))</span><span style=''>
-</span>44 <span style=''>
-</span>45 <span style=''>  </span><span style='background: #F0ADAD'>private def modifySelectedCourses</span><span style=''>[T](courseIndex: Option[T]): Unit =
-</span>46 <span style=''>    val selectedCourse = </span><span style='background: #F0ADAD'>getSession.savedCourses(courseIndex.get.asInstanceOf[Int])</span><span style=''>
-</span>47 <span style=''>
-</span>48 <span style=''>    if </span><span style='background: #F0ADAD'>gameStage.coursesInGame.contains(selectedCourse)</span><span style=''> then
-</span>49 <span style=''>      </span><span style='background: #F0ADAD'>gameStage.coursesInGame = gameStage.coursesInGame.diff(List(selectedCourse))</span><span style=''>
-</span>50 <span style=''>    else
-</span>51 <span style=''>      </span><span style='background: #F0ADAD'>gameStage.coursesInGame = gameStage.coursesInGame ::: List(selectedCourse)</span><span style=''>
+</span>25 <span style=''>  var showAllAnswers = false
+</span>26 <span style=''>
+</span>27 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>28 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
+</span>29 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Menu revisione :\n1) Menu principale&quot;)</span><span style=''>
+</span>30 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Revisione:&quot;)</span><span style=''>
+</span>31 <span style=''>    </span><span style='background: #F0ADAD'>case CurrentReviewUpdate(updateParameter)</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>updateParameter.isDefined</span><span style=''> then
+</span>32 <span style=''>      </span><span style='background: #F0ADAD'>updateParameter.get.quizAnsweredList foreach (quizAnswered =&gt;
+</span>33 <span style=''></span><span style='background: #F0ADAD'>        println(quizAnswered.quizInGame.quiz.question);
+</span>34 <span style=''></span><span style='background: #F0ADAD'>        println(s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;);
+</span>35 <span style=''></span><span style='background: #F0ADAD'>        quizAnswered.quizInGame.answers
+</span>36 <span style=''></span><span style='background: #F0ADAD'>          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
+</span>37 <span style=''></span><span style='background: #F0ADAD'>          .foreach(answerQuiz =&gt;
+</span>38 <span style=''></span><span style='background: #F0ADAD'>            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
+</span>39 <span style=''></span><span style='background: #F0ADAD'>          );</span><span style=''>
+</span>40 <span style=''>      )
+</span>41 <span style=''>    </span><span style='background: #F0ADAD'>case TotalPointsUpdate(updateParameter)</span><span style=''> =&gt;
+</span>42 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Punti totali: &quot;+updateParameter.get)</span><span style=''>
+</span>43 <span style=''>    </span><span style='background: #F0ADAD'>case TotalCorrectAnswersUpdate(updateParameter)</span><span style=''> =&gt;
+</span>44 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Risposte giuste totali: &quot; + updateParameter.get)</span><span style=''>
+</span>45 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -90,228 +84,206 @@
           20
         </td>
         <td>
-          282
+          2192
         </td>
         <td>
-          791
+          525
           -
-          810
+          549
         </td>
         <td>
           Apply
         </td>
         <td>
-          &lt;init&gt;
+          apply
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          ParameterlessAction
+          Map(
+    &quot;1&quot; -&gt; End,
+  )
         </td>
       </tr><tr>
         <td>
           21
         </td>
         <td>
-          283
+          2191
         </td>
         <td>
-          840
+          534
           -
-          859
+          545
         </td>
         <td>
           Apply
         </td>
         <td>
-          &lt;init&gt;
+          -&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          ParameterlessAction
+          &quot;1&quot; -&gt; End,
         </td>
       </tr><tr>
         <td>
-          22
+          26
         </td>
         <td>
-          284
+          2226
         </td>
         <td>
-          935
+          583
           -
-          958
+          604
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          updateUI
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          override def updateUI
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          2195
+        </td>
+        <td>
+          658
+          -
+          676
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case DefaultUpdate
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          2193
+        </td>
+        <td>
+          686
+          -
+          733
         </td>
         <td>
           Apply
         </td>
         <td>
-          &lt;init&gt;
+          println
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          Action(actionParameter)
+          println(&quot;Menu revisione :\n1) Menu principale&quot;)
         </td>
       </tr><tr>
         <td>
           29
         </td>
         <td>
-          286
+          2194
         </td>
         <td>
-          1107
+          740
           -
-          1116
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          $lessinit$greater$default$2
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          GameStage
-        </td>
-      </tr><tr>
-        <td>
-          29
-        </td>
-        <td>
-          289
-        </td>
-        <td>
-          1107
-          -
-          1118
+          761
         </td>
         <td>
           Apply
         </td>
         <td>
-          &lt;init&gt;
+          println
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          GameStage()
+          println(&quot;Revisione:&quot;)
         </td>
       </tr><tr>
         <td>
-          29
+          30
         </td>
         <td>
-          285
+          2196
         </td>
         <td>
-          1107
+          814
           -
-          1116
+          839
         </td>
         <td>
           Select
         </td>
         <td>
-          $lessinit$greater$default$1
+          isDefined
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          GameStage
+          updateParameter.isDefined
         </td>
       </tr><tr>
         <td>
-          29
+          30
         </td>
         <td>
-          288
+          2216
         </td>
         <td>
-          1107
+          766
           -
-          1116
+          807
         </td>
         <td>
-          Select
+          Block
         </td>
         <td>
-          $lessinit$greater$default$4
+          &lt;none&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          GameStage
-        </td>
-      </tr><tr>
-        <td>
-          29
-        </td>
-        <td>
-          287
-        </td>
-        <td>
-          1107
-          -
-          1116
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          $lessinit$greater$default$3
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          GameStage
+          case CurrentReviewUpdate(updateParameter)
         </td>
       </tr><tr>
         <td>
           31
         </td>
         <td>
-          300
+          2215
         </td>
         <td>
-          1122
+          851
           -
-          1141
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          handle
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          override def handle
-        </td>
-      </tr><tr>
-        <td>
-          32
-        </td>
-        <td>
-          291
-        </td>
-        <td>
-          1189
-          -
-          1198
+          1438
         </td>
         <td>
           Block
@@ -323,499 +295,26 @@
           
         </td>
         <td style="background: #F0ADAD">
-          case Back
+          updateParameter.get.quizAnsweredList foreach (quizAnswered =&gt;
+        println(quizAnswered.quizInGame.quiz.question);
+        println(s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;);
+        quizAnswered.quizInGame.answers
+          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
+          .foreach(answerQuiz =&gt;
+            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
+          );
         </td>
       </tr><tr>
         <td>
-          32
+          31
         </td>
         <td>
-          290
+          2197
         </td>
         <td>
-          1202
+          851
           -
-          1252
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          handle
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.handle(AppController.MainMenuAction)
-        </td>
-      </tr><tr>
-        <td>
-          33
-        </td>
-        <td>
-          292
-        </td>
-        <td>
-          1325
-          -
-          1342
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option(gameStage)
-        </td>
-      </tr><tr>
-        <td>
-          33
-        </td>
-        <td>
-          294
-        </td>
-        <td>
-          1257
-          -
-          1267
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case Start
-        </td>
-      </tr><tr>
-        <td>
-          33
-        </td>
-        <td>
-          293
-        </td>
-        <td>
-          1271
-          -
-          1344
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          handle
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.handle(AppController.StandardGameAction(Option(gameStage)))
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          295
-        </td>
-        <td>
-          1417
-          -
-          1434
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option(gameStage)
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          297
-        </td>
-        <td>
-          1349
-          -
-          1360
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case Custom
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          296
-        </td>
-        <td>
-          1365
-          -
-          1436
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          handle
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.handle(AppController.CustomMenuAction(Option(gameStage)))
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          298
-        </td>
-        <td>
-          1476
-          -
-          1514
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          modifySelectedCourses
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          modifySelectedCourses(actionParameter)
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          299
-        </td>
-        <td>
-          1441
-          -
-          1472
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case Selection(actionParameter)
-        </td>
-      </tr><tr>
-        <td>
-          38
-        </td>
-        <td>
-          301
-        </td>
-        <td>
-          1589
-          -
-          1610
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          session
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session
-        </td>
-      </tr><tr>
-        <td>
-          38
-        </td>
-        <td>
-          302
-        </td>
-        <td>
-          1563
-          -
-          1577
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          getSession
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          def getSession
-        </td>
-      </tr><tr>
-        <td>
-          40
-        </td>
-        <td>
-          310
-        </td>
-        <td>
-          1614
-          -
-          1640
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          nextIteration
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          override def nextIteration
-        </td>
-      </tr><tr>
-        <td>
-          41
-        </td>
-        <td>
-          303
-        </td>
-        <td>
-          1655
-          -
-          1680
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendUpdate
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendUpdate(DefaultUpdate)
-        </td>
-      </tr><tr>
-        <td>
-          42
-        </td>
-        <td>
-          304
-        </td>
-        <td>
-          1716
-          -
-          1726
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          getSession
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          getSession
-        </td>
-      </tr><tr>
-        <td>
-          42
-        </td>
-        <td>
-          307
-        </td>
-        <td>
-          1716
-          -
-          1804
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          map
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          getSession.savedCourses.map(course =&gt; (course,gameStage.coursesInGame.contains(course)))
-        </td>
-      </tr><tr>
-        <td>
-          42
-        </td>
-        <td>
-          309
-        </td>
-        <td>
-          1685
-          -
-          1807
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendUpdate
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendUpdate(CourseUpdate(Option(getSession.savedCourses.map(course =&gt; (course,gameStage.coursesInGame.contains(course))))))
-        </td>
-      </tr><tr>
-        <td>
-          42
-        </td>
-        <td>
-          306
-        </td>
-        <td>
-          1762
-          -
-          1802
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          contains
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          gameStage.coursesInGame.contains(course)
-        </td>
-      </tr><tr>
-        <td>
-          42
-        </td>
-        <td>
-          308
-        </td>
-        <td>
-          1709
-          -
-          1805
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option(getSession.savedCourses.map(course =&gt; (course,gameStage.coursesInGame.contains(course))))
-        </td>
-      </tr><tr>
-        <td>
-          42
-        </td>
-        <td>
-          305
-        </td>
-        <td>
-          1716
-          -
-          1739
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          savedCourses
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          getSession.savedCourses
-        </td>
-      </tr><tr>
-        <td>
-          44
-        </td>
-        <td>
-          322
-        </td>
-        <td>
-          1811
-          -
-          1844
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          modifySelectedCourses
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          private def modifySelectedCourses
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          313
-        </td>
-        <td>
-          1929
-          -
-          1944
+          870
         </td>
         <td>
           Select
@@ -827,142 +326,173 @@
           
         </td>
         <td style="background: #F0ADAD">
-          courseIndex.get
+          updateParameter.get
         </td>
       </tr><tr>
         <td>
-          45
+          31
         </td>
         <td>
-          312
+          2214
         </td>
         <td>
-          1905
+          851
           -
-          1928
+          1438
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get.quizAnsweredList foreach (quizAnswered =&gt;
+        println(quizAnswered.quizInGame.quiz.question);
+        println(s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;);
+        quizAnswered.quizInGame.answers
+          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
+          .foreach(answerQuiz =&gt;
+            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
+          );
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          2198
+        </td>
+        <td>
+          921
+          -
+          967
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(quizAnswered.quizInGame.quiz.question)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          2200
+        </td>
+        <td>
+          1041
+          -
+          1091
         </td>
         <td>
           Select
         </td>
         <td>
-          savedCourses
+          courseName
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          getSession.savedCourses
+          quizAnswered.quizInGame.course.courseId.courseName
         </td>
       </tr><tr>
         <td>
-          45
+          33
         </td>
         <td>
-          311
+          2199
         </td>
         <td>
-          1905
+          1041
           -
-          1915
+          1080
         </td>
         <td>
           Select
         </td>
         <td>
-          getSession
+          courseId
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          getSession
+          quizAnswered.quizInGame.course.courseId
         </td>
       </tr><tr>
         <td>
-          45
+          33
         </td>
         <td>
-          314
+          2202
         </td>
         <td>
-          1905
+          977
           -
-          1963
+          1094
         </td>
         <td>
           Apply
         </td>
         <td>
-          apply
+          println
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          getSession.savedCourses(courseIndex.get.asInstanceOf[Int])
+          println(s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;)
         </td>
       </tr><tr>
         <td>
-          47
+          33
         </td>
         <td>
-          315
+          2201
         </td>
         <td>
-          1972
+          985
           -
-          2020
+          1093
         </td>
         <td>
           Apply
         </td>
         <td>
-          contains
+          s
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          gameStage.coursesInGame.contains(selectedCourse)
+          s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;
         </td>
       </tr><tr>
         <td>
-          48
+          35
         </td>
         <td>
-          316
+          2206
         </td>
         <td>
-          2087
+          1283
           -
-          2107
+          1288
         </td>
         <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          List(selectedCourse)
-        </td>
-      </tr><tr>
-        <td>
-          48
-        </td>
-        <td>
-          318
-        </td>
-        <td>
-          2032
-          -
-          2108
-        </td>
-        <td>
-          Assign
+          Literal
         </td>
         <td>
           &lt;none&gt;
@@ -971,70 +501,147 @@
           
         </td>
         <td style="background: #F0ADAD">
-          gameStage.coursesInGame = gameStage.coursesInGame.diff(List(selectedCourse))
+          false
         </td>
       </tr><tr>
         <td>
-          48
+          35
         </td>
         <td>
-          317
+          2203
         </td>
         <td>
-          2058
+          1200
           -
-          2108
+          1235
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          diff
+          isDefined
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          gameStage.coursesInGame.diff(List(selectedCourse))
+          quizAnswered.answerPlayer.isDefined
         </td>
       </tr><tr>
         <td>
-          50
+          35
         </td>
         <td>
-          319
+          2205
         </td>
         <td>
-          2178
+          1241
           -
-          2198
+          1277
         </td>
         <td>
           Apply
         </td>
         <td>
-          apply
+          ==
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          List(selectedCourse)
+          quizAnswered.answerPlayer.get == ans
         </td>
       </tr><tr>
         <td>
-          50
+          35
         </td>
         <td>
-          321
+          2204
         </td>
         <td>
-          2124
+          1241
           -
-          2198
+          1270
         </td>
         <td>
-          Assign
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizAnswered.answerPlayer.get
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2207
+        </td>
+        <td>
+          1104
+          -
+          1290
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          filter
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizAnswered.quizInGame.answers
+          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          2213
+        </td>
+        <td>
+          1104
+          -
+          1437
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizAnswered.quizInGame.answers
+          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
+          .foreach(answerQuiz =&gt;
+            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
+          )
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          2209
+        </td>
+        <td>
+          1396
+          -
+          1406
+        </td>
+        <td>
+          Literal
         </td>
         <td>
           &lt;none&gt;
@@ -1043,31 +650,319 @@
           
         </td>
         <td style="background: #F0ADAD">
-          gameStage.coursesInGame = gameStage.coursesInGame ::: List(selectedCourse)
+          &quot;CORRETTA&quot;
         </td>
       </tr><tr>
         <td>
-          50
+          37
         </td>
         <td>
-          320
+          2212
         </td>
         <td>
-          2150
+          1336
           -
-          2198
+          1425
         </td>
         <td>
           Apply
         </td>
         <td>
-          :::
+          println
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          gameStage.coursesInGame ::: List(selectedCourse)
+          println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          2211
+        </td>
+        <td>
+          1344
+          -
+          1423
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          2208
+        </td>
+        <td>
+          1344
+          -
+          1365
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;${answerQuiz.text}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          2210
+        </td>
+        <td>
+          1412
+          -
+          1423
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;SBAGLIATA&quot;
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          2220
+        </td>
+        <td>
+          1451
+          -
+          1490
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case TotalPointsUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          2218
+        </td>
+        <td>
+          1508
+          -
+          1544
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Punti totali: &quot;+updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          2217
+        </td>
+        <td>
+          1525
+          -
+          1544
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          2219
+        </td>
+        <td>
+          1500
+          -
+          1545
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Punti totali: &quot;+updateParameter.get)
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          2224
+        </td>
+        <td>
+          1550
+          -
+          1597
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case TotalCorrectAnswersUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          2221
+        </td>
+        <td>
+          1644
+          -
+          1663
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          2223
+        </td>
+        <td>
+          1607
+          -
+          1664
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Risposte giuste totali: &quot; + updateParameter.get)
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          2222
+        </td>
+        <td>
+          1615
+          -
+          1663
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Risposte giuste totali: &quot; + updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          2225
+        </td>
+        <td>
+          1669
+          -
+          1675
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case _
         </td>
       </tr>
     </table>
