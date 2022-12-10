@@ -3,9 +3,9 @@ package model
 import model.Quiz.Quiz
 import model.Answer.Answer
 import model.Review.*
+import model.CourseIdentifier.CourseIdentifier
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-
 
 class ReviewTest extends AnyFunSuite with Matchers:
 
@@ -14,9 +14,6 @@ class ReviewTest extends AnyFunSuite with Matchers:
   val quizAnswered: QuizAnswered = QuizAnswered(quizInGame,None)
 
   val review: Review = Review()
-
-  println(review.toString)
-  println(quizAnswered.toString)
 
   test("New quizAnswered test") {
     quizAnswered.answerPlayer shouldEqual None
@@ -43,5 +40,3 @@ class ReviewTest extends AnyFunSuite with Matchers:
     //review.totalPoints shouldEqual 10
 
   }
-
-

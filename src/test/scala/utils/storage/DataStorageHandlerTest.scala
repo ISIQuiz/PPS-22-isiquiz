@@ -3,7 +3,9 @@ package utils.storage
 import controller.AppController
 import model.Answer.Answer
 import model.Quiz.Quiz
-import model.{CourseIdentifier, SavedCourse, Session}
+import model.Session.Session
+import model.SavedCourse.*
+import model.CourseIdentifier.*
 import org.scalatest.funsuite.AnyFunSuite
 import utils.storage.Configuration.{HomeDirectoryPath, PlayerCoursesFilePath}
 import utils.storage.DataStorageHandler

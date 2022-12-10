@@ -3,8 +3,8 @@ package controller
 import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, BackAction, ParameterlessAction}
-import model.SavedCourse
 import utils.storage.ExportHandler
+import model.SavedCourse.SavedCourse
 import view.AddCourseMenuView.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
@@ -14,6 +14,7 @@ import scala.concurrent.duration.Duration
 
 /** Companion object of add course menu controller */
 object AddCourseMenuController extends BackAction:
+
   /** action to add a course in the add course controller */
   case class AddCourseAction(override val actionParameter: Option[SavedCourse]) extends Action(actionParameter)
 

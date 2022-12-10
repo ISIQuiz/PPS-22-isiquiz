@@ -5,7 +5,7 @@ import controller.EditQuizMenuController.*
 import controller.actions.Action
 import model.Quiz.Quiz
 import model.SavedCourse
-import model.SavedCourse.SavedCourseImpl
+import model.SavedCourse.SavedCourse
 import view.EditQuizMenuView.*
 import view.View.*
 import view.updates.ViewUpdate

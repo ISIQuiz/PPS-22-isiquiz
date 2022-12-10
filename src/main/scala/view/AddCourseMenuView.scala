@@ -1,6 +1,6 @@
 package view
 
-import model.SavedCourse
+import model.SavedCourse.SavedCourse
 import view.updates.{DefaultUpdate, ParameterlessViewUpdate, ViewUpdate}
 
 object AddCourseMenuView extends DefaultUpdate:

@@ -7,6 +7,7 @@ import view.{SelectMenuView, View}
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import controller.{AppController, PageController}
 import model.{GameStage, QuizInGame, Session}
+import model.Session.Session
 import model.GameStage.*
 import view.SelectMenuView.*
 

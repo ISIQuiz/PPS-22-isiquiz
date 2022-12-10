@@ -12,7 +12,7 @@ import javafx.stage.Stage
 import view.SelectMenuView.*
 import javafx.application.Platform
 import javafx.scene.input.MouseEvent
-import model.SavedCourse
+import model.SavedCourse.*
 
 import java.util
 import scala.collection.mutable.ListBuffer

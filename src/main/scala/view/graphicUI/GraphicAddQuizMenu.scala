@@ -11,9 +11,9 @@ import javafx.scene.layout.VBox
 import javafx.scene.layout.HBox
 import javafx.stage.Stage
 import model.Answer.Answer
-import model.CourseIdentifier.CourseIdentifierImpl
+import model.CourseIdentifier.CourseIdentifier
 import model.Quiz.Quiz
-import model.SavedCourse.SavedCourseImpl
+import model.SavedCourse.SavedCourse
 import scalafx.geometry.Insets
 import utils.GUILoader
 import utils.GUILoader.loadGUI

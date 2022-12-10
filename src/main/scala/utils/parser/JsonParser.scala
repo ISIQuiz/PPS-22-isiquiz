@@ -1,6 +1,6 @@
 package utils.parser
 
-import model.CourseIdentifier
+import model.CourseIdentifier.CourseIdentifier
 import play.api.libs.json.*
 import utils.parser.JsonLabels.{CourseNameLabel, DegreeNameLabel, UniversityNameLabel}
 
