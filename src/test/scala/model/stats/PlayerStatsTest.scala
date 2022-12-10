@@ -2,9 +2,11 @@ package model.stats
 
 import model.Course
 import model.CourseIdentifier.*
+import model.Quiz.Quiz
+import model.SavedCourse.SavedCourse
 import model.stats.CourseInStats.CourseInStats
-import model.stats.PlayerStats.PlayerStats
-import model.stats.PlayerStats.initStats
+import model.stats.PlayerStats.{initStats, mergePlayerStats, removeUnusedStats}
+import model.stats.QuizInStats.QuizInStats
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
@@ -12,7 +14,7 @@ import java.util.UUID
 
 class PlayerStatsTest extends AnyFunSuite with Matchers:
 
-  val playerStats = PlayerStats()
+  val playerStats = initStats
   val ci = CourseIdentifier("courseName", "degreeName", "universityName")
 
 
@@ -20,8 +22,7 @@ class PlayerStatsTest extends AnyFunSuite with Matchers:
     playerStats shouldEqual initStats
   }
 
-  import model.stats.PlayerStats
-  
+
   test("Test change total score") {
     val playerStatsChanged = PlayerStats.changeTotalScore(playerStats, 1)
     playerStatsChanged.totalScore shouldEqual 1
@@ -58,10 +59,12 @@ class PlayerStatsTest extends AnyFunSuite with Matchers:
   val quiz2 = QuizInStats(UUID.fromString("00000000-0000-0000-0000-000000000002"), totalSeen = 4, totalScore = 4, totalRightAnswers = 4, averageTimeAnswer = 4)
 
 
+  import model.stats.PlayerStats.PlayerStats
+
   test("Test derived stats and merge") {
     val playerStats = PlayerStats(0, 0, 0, 0, 0, List(CourseInStats(Course(ci), List(quiz1))))
     val newPlayerStats = PlayerStats(0, 0, 0, 0, 0, List(CourseInStats(Course(ci), List(quiz2))))
-    val mergedList = PlayerStats.mergePlayerStats(playerStats, newPlayerStats)
+    val mergedList = mergePlayerStats(playerStats, newPlayerStats)
     println(mergedList)
     val resultWanted = PlayerStats(6, 8, 6, 75, 3.0, List(CourseInStats(Course(ci), List(QuizInStats(UUID.fromString("00000000-0000-0000-0000-000000000002"), 8, 6, 6, 3.0)))))
     assert(mergedList.equals(resultWanted))

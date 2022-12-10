@@ -1,6 +1,7 @@
 package model.stats
 
 import model.{Course, GameStage, QuizAnswered, QuizInGame, Review, SavedCourse, Session, stats}
+import model.SavedCourse.SavedCourse
 import model.stats.CourseInStats.CourseInStats
 import model.stats.QuizInStats.QuizInStats
 import scala.util.Try
@@ -216,6 +217,7 @@ object PlayerStats:
 
   /**
    * Removes statistics that don't have a correspondent [[SavedCourse]]
+   *
    * @param savedCourseList
    * @param playerStats
    * @return an updated [[PlayerStats]]
