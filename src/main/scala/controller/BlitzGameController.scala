@@ -67,9 +67,12 @@ class BlitzGameController(val game: GameStage) extends PageController, GameContr
 
   override def nextQuiz(): Unit =
     currentAnswer match
-      case Some(ans) => gameStage.addReviewQuizAnswer(ans)
-      case _ => gameStage.addReviewQuizNotAnswered
-      // add playerstats
+      case Some(ans) =>
+        gameStage.addReviewQuizAnswer(ans, gameStage.quizInGame.quiz.maxScore, timer.getTime)
+        gameStage.addQuizToStats(ans.isCorrect, gameStage.quizInGame.quiz.maxScore, timer.getTime)
+      case _ =>
+        gameStage.addReviewQuizNotAnswered()
+        gameStage.addQuizToStats(false, 0, timer.maxTime)
     currentAnswer = None
     gameStage.quizInGame = extractQuizInGame(gameStage)
 

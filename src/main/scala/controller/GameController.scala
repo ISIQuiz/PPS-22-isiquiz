@@ -3,7 +3,9 @@ package controller
 import controller.AppController.ReviewMenuAction
 import model.Answer.Answer
 import model.Quiz.Quiz
+import model.stats.PlayerStats
 import model.{GameStage, QuizInGame, SavedCourse}
+import utils.storage.ExportHandler
 
 trait GameController:
 
@@ -28,6 +30,10 @@ trait GameController:
     val quizInGame = QuizInGame(selectedCourse, selectedQuiz, selectedAnswers)
     quizInGame
 
-  def endGame(gameStage: GameStage): Unit = AppController.handle(ReviewMenuAction(Option(gameStage)))
+  def endGame(gameStage: GameStage): Unit =
+    // Update session player stats and export to personal stats
+    AppController.changePlayerStats(PlayerStats.mergePlayerStats(AppController.session.playerStats, gameStage.playerStatsInGame))
+    ExportHandler.exportDataToPersonalDirectory(AppController.session.playerStats)
+    AppController.handle(ReviewMenuAction(Option(gameStage)))
 
   def randomNumberGenerator(quantity: Int, range: Int): List[Int] = scala.util.Random.shuffle(0 until range).take(quantity).toList

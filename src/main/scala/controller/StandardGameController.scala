@@ -104,12 +104,3 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
     val score = (coeff * timeRemaining).toInt
     if (score >= maxScore) score else score + 1
   }
-
-  override def endGame(): Unit =
-    // Update session player stats and export to personal stats
-    AppController.changePlayerStats(PlayerStats.mergePlayerStats(AppController.session.playerStats, gameStage.playerStatsInGame))
-    ExportHandler.exportDataToPersonalDirectory(AppController.session.playerStats)
-
-    AppController.handle(ReviewMenuAction(Option(gameStage)))
-
-  def randomNumberGenerator(quantity: Int, range: Int): List[Int] = scala.util.Random.shuffle(0 until range).take(quantity).toList
