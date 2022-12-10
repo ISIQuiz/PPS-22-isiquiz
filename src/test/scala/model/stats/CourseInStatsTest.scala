@@ -1,6 +1,7 @@
 package model.stats
 
 import model.stats.CourseInStats
+import model.stats.QuizInStats.QuizInStats
 import model.Course
 import model.CourseIdentifier.*
 import org.scalatest.funsuite.AnyFunSuite
@@ -24,8 +25,7 @@ class CourseInStatsTest extends AnyFunSuite with Matchers:
     val courseInStatsChanged = CourseInStats.changeCourse(courseInStats, course)
     courseInStatsChanged.course shouldEqual course
   }
-
-
+  
   test("Test change quiz in stats list") {
     val quizInStatsList = List(
       QuizInStats(UUID.randomUUID(), 1, 2, 3),

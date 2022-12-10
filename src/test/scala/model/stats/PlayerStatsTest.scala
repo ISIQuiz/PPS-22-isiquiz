@@ -3,6 +3,7 @@ package model.stats
 import model.Course
 import model.CourseIdentifier.*
 import model.stats.CourseInStats.CourseInStats
+import model.stats.PlayerStats.PlayerStats
 import model.stats.PlayerStats.initStats
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
@@ -15,6 +16,8 @@ class PlayerStatsTest extends AnyFunSuite with Matchers :
     playerStats shouldEqual initStats
   }
 
+  import model.stats.PlayerStats
+  
   test("Test change total score") {
     val playerStatsChanged = PlayerStats.changeTotalScore(playerStats, 1)
     playerStatsChanged.totalScore shouldEqual 1
@@ -42,6 +45,3 @@ class PlayerStatsTest extends AnyFunSuite with Matchers :
     val playerStatsChanged = PlayerStats.changeCourseInStatsList(playerStats, courseInStatsList)
     playerStatsChanged.courseInStatsList shouldEqual courseInStatsList
   }
-
-
-

@@ -2,7 +2,7 @@ package model
 
 import model.Answer.*
 import model.CourseIdentifier.*
-import model.stats.PlayerStats
+import model.stats.PlayerStats.PlayerStats
 import model.stats.PlayerStats.initStats
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
