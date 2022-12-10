@@ -4,6 +4,7 @@ import model.Answer.Answer
 import model.Quiz.Quiz
 import model.Review.*
 import model.settings.StandardGameSettings
+import model.stats.PlayerStats
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
@@ -42,15 +43,25 @@ class GameStageTest extends AnyFunSuite with Matchers:
   test("Add quizInGame in GameStage test") {
     gameStage.quizInGame_(quizInGame)
     gameStage.quizInGamePresent shouldEqual true
-    gameStage.addReviewQuizNotAnswered
+    gameStage.addReviewQuizNotAnswered()
     gameStage.review.quizAnsweredList shouldEqual List(QuizAnswered(quizInGame, None))
     gameStage.currentQuizNumber shouldEqual 2
     gameStage.maxQuizzesReached shouldEqual false
     val answer: Answer = Answer("ans", true)
-    gameStage.addReviewQuizAnswer(answer)
+    gameStage.addReviewQuizAnswer(answer, 0, 0)
     gameStage.review.quizAnsweredList shouldEqual List(QuizAnswered(quizInGame, None), QuizAnswered(quizInGame, Option(answer)))
     gameStage.currentQuizNumber shouldEqual 3
     gameStage.maxQuizzesReached shouldEqual false
   }
 
+  test("Add playerStatsInGame"){
+    gameStage.quizInGame_(quizInGame)
+    gameStage.addQuizToStats(true,12, 10)
+    println(gameStage.playerStatsInGame)
+    gameStage.playerStatsInGame.totalScore shouldEqual 12 // 12 punti
+    gameStage.playerStatsInGame.totalAnsweredQuestions shouldEqual 1 // 1 risposta data
+    gameStage.playerStatsInGame.totalCorrectAnswers shouldEqual 1 // 1 risposta corretta
+    gameStage.playerStatsInGame.totalAnswerPrecision shouldEqual 100 // 100% precisione
+    gameStage.playerStatsInGame.totalAverageTimeAnswer shouldEqual 10 // 10sec tempo di risposta 
+  }
 
