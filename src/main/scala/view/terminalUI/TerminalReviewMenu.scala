@@ -31,7 +31,9 @@ class TerminalReviewMenu extends TerminalView:
     case CurrentReviewUpdate(updateParameter) => if updateParameter.isDefined then
       updateParameter.get.quizAnsweredList foreach (quizAnswered =>
         println(quizAnswered.quizInGame.quiz.question);
-        println(s"(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}");
+        println(s"(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) " +
+          s"- (Tempo: ${quizAnswered.timeToAnswer}) " +
+          s"- ${quizAnswered.quizInGame.course.courseId.courseName}");
         quizAnswered.quizInGame.answers
           .filter(ans => showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
           .foreach(answerQuiz =>
