@@ -26,10 +26,10 @@ class TestGraphicSettingsMenu extends ViewTest with ButtonTest:
     testButton(graphicSettingsMenu.backButton, "Indietro")(robot)
 
   @Test def testImportButton(robot: FxRobot): Unit =
-    testButton(graphicSettingsMenu.importButton, "Importa domande")(robot)
+    testButton(graphicSettingsMenu.importButton, "Importa quiz")(robot)
 
   @Test def testExportButton(robot: FxRobot): Unit =
-    testButton(graphicSettingsMenu.exportButton, "Esporta domande")(robot)
+    testButton(graphicSettingsMenu.exportButton, "Esporta quiz")(robot)
 
   @Test def testEditCourseButton(robot: FxRobot): Unit =
     testButton(graphicSettingsMenu.editCourseButton, "Modifica corso")(robot)

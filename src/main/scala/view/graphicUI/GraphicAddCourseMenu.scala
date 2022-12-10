@@ -19,13 +19,15 @@ object GraphicAddCourseMenu
 /** add course menu graphic interface  */
 class GraphicAddCourseMenu(stage: Stage) extends GraphicView:
 
-
   @FXML
   var courseNameTextField: TextField = _
+
   @FXML
   var degreeNameTextField: TextField = _
+
   @FXML
   var universityNameTextField: TextField = _
+
   @FXML
   var descriptionCourseTextField: TextField = _
 
@@ -59,7 +61,7 @@ class GraphicAddCourseMenu(stage: Stage) extends GraphicView:
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case CourseAddedUpdate =>
-      feedbackLabel.setText("Corso Aggiunto!!!")
+      feedbackLabel.setText("Corso aggiunto")
       courseNameTextField.clear()
       degreeNameTextField.clear()
       universityNameTextField.clear()
