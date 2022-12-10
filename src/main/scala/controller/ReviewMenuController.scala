@@ -25,6 +25,9 @@ class ReviewMenuController(var gameStage: GameStage) extends PageController :
   override def nextIteration(): Unit =
     sendUpdate(DefaultUpdate)
     sendUpdate(CurrentReviewUpdate(Option(gameStage.review)))
-    sendUpdate(TotalPointsUpdate(Option(gameStage.review.totalPoints)))
-    sendUpdate(TotalCorrectAnswersUpdate(Option(gameStage.review.totalCorrectAnswers)))
+    //sendUpdate(TotalPointsUpdate(Option(gameStage.review.totalPoints)))
+    //sendUpdate(TotalCorrectAnswersUpdate(Option(gameStage.review.totalCorrectAnswers)))
+    sendUpdate(TotalPointsUpdate(Option(gameStage.playerStatsInGame.totalScore)))
+    sendUpdate(TotalCorrectAnswersUpdate(Option(gameStage.playerStatsInGame.totalCorrectAnswers)))
+
 
