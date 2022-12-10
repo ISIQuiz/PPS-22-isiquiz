@@ -28,69 +28,73 @@
 </span>4 <span style=''>import controller.actions.{Action, ParameterlessAction}
 </span>5 <span style=''>import javafx.stage.Stage
 </span>6 <span style=''>import model.GameStage
-</span>7 <span style=''>import model.stats.PlayerStats.{PlayerStats, updatePlayerStats}
-</span>8 <span style=''>import model.SavedCourse.SavedCourse
-</span>9 <span style=''>import utils.storage.ImportHandler.importSessionFromPersonalDirectory
-</span>10 <span style=''>import view.View
-</span>11 <span style=''>import view.View.{PageView, TerminalView, ViewFactory}
-</span>12 <span style=''>
-</span>13 <span style=''>import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
-</span>14 <span style=''>import scala.concurrent.duration.TimeUnit
-</span>15 <span style=''>import scala.util.{Failure, Success}
-</span>16 <span style=''>
-</span>17 <span style=''>/** Controller for the general logic of the application */
-</span>18 <span style=''>object AppController extends Controller:
-</span>19 <span style=''>
-</span>20 <span style=''>  private var _currentPage: Page[PageController, PageView] = Page[PageController, PageView](</span><span style='background: #F0ADAD'>new MainMenuController</span><span style=''>, </span><span style='background: #F0ADAD'>ViewFactory.create(MainMenuAction)</span><span style=''>)
-</span>21 <span style=''>  </span><span style='background: #F0ADAD'>def currentPage</span><span style=''>: Page[PageController, PageView] = _currentPage
-</span>22 <span style=''>  </span><span style='background: #F0ADAD'>def currentPage_</span><span style=''>(pageController: PageController, pageView: PageView): Unit = _currentPage = Page[PageController, PageView](pageController, pageView)
-</span>23 <span style=''>  
-</span>24 <span style=''>  import model.Session.*
-</span>25 <span style=''>  // Init var session with a default saved course list
-</span>26 <span style=''>  private var _session: Session = </span><span style='background: #F0ADAD'>Session</span><span style=''>()
-</span>27 <span style=''>  </span><span style='background: #F0ADAD'>def session</span><span style=''>: Session = _session
-</span>28 <span style=''>  
-</span>29 <span style=''>  import model.Session
-</span>30 <span style=''>  </span><span style='background: #F0ADAD'>def changeSavedCourses</span><span style=''>(savedCourses: List[SavedCourse]): Unit = _session = </span><span style='background: #F0ADAD'>Session.changeSavedCourses(session, savedCourses)</span><span style=''>
-</span>31 <span style=''>  </span><span style='background: #F0ADAD'>def changePlayerStats</span><span style=''>(playerStats: PlayerStats): Unit = _session = </span><span style='background: #F0ADAD'>Session.changePlayerStats(session, playerStats)</span><span style=''>
-</span>32 <span style=''>
-</span>33 <span style=''>  case object MainMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>34 <span style=''>  case object SelectMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>35 <span style=''>  case object StatisticsMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>36 <span style=''>  case object SettingsMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>37 <span style=''>  case object AddCourseMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>38 <span style=''>  case object AddQuizMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>39 <span style=''>  case object EditCourseMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>40 <span style=''>  case object EditQuizMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>41 <span style=''>  case class ReviewMenuAction(override val actionParameter: Option[GameStage]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
-</span>42 <span style=''>  case class CustomMenuAction[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
-</span>43 <span style=''>  case class StandardGameAction[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
-</span>44 <span style=''>  case class BlitzGameAction[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
-</span>45 <span style=''>
-</span>46 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
-</span>47 <span style=''>    </span><span style='background: #F0ADAD'>case MainMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new MainMenuController, ViewFactory.create(MainMenuAction))</span><span style=''>
-</span>48 <span style=''>    </span><span style='background: #F0ADAD'>case SelectMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new SelectMenuController, ViewFactory.create(SelectMenuAction))</span><span style=''>
-</span>49 <span style=''>    </span><span style='background: #F0ADAD'>case StatisticsMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new StatisticsMenuController, ViewFactory.create(StatisticsMenuAction))</span><span style=''>
-</span>50 <span style=''>    </span><span style='background: #F0ADAD'>case SettingsMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new SettingsMenuController, ViewFactory.create(SettingsMenuAction))</span><span style=''>
-</span>51 <span style=''>    </span><span style='background: #F0ADAD'>case StandardGameAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(StandardGameController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(StandardGameAction(Option.empty)))</span><span style=''>
-</span>52 <span style=''>    </span><span style='background: #F0ADAD'>case BlitzGameAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(BlitzGameController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(BlitzGameAction(Option.empty)))</span><span style=''>
-</span>53 <span style=''>    </span><span style='background: #F0ADAD'>case AddCourseMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new AddCourseMenuController, ViewFactory.create(AddCourseMenuAction))</span><span style=''>
-</span>54 <span style=''>    </span><span style='background: #F0ADAD'>case AddQuizMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new AddQuizMenuController, ViewFactory.create(AddQuizMenuAction))</span><span style=''>
-</span>55 <span style=''>    </span><span style='background: #F0ADAD'>case EditCourseMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new EditCourseMenuController, ViewFactory.create(EditCourseMenuAction))</span><span style=''>
-</span>56 <span style=''>    </span><span style='background: #F0ADAD'>case EditQuizMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new EditQuizMenuController, ViewFactory.create(EditQuizMenuAction))</span><span style=''>
-</span>57 <span style=''>    </span><span style='background: #F0ADAD'>case ReviewMenuAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new ReviewMenuController(actionParameter.get), ViewFactory.create(ReviewMenuAction(Option.empty)))</span><span style=''>
-</span>58 <span style=''>    </span><span style='background: #F0ADAD'>case CustomMenuAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new CustomMenuController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(CustomMenuAction(Option.empty)))</span><span style=''>
-</span>59 <span style=''>    </span><span style='background: #F0ADAD'>case action: Action[T]</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage.pageController.handle(action)</span><span style=''>
-</span>60 <span style=''>    </span><span style='background: #F0ADAD'>case null</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>throw new IllegalArgumentException</span><span style=''>
-</span>61 <span style=''>
-</span>62 <span style=''>  </span><span style='background: #F0ADAD'>def startApp</span><span style=''>(): Unit =
-</span>63 <span style=''>
-</span>64 <span style=''>    </span><span style='background: #F0ADAD'>importSessionFromPersonalDirectory(session)</span><span style=''> match
-</span>65 <span style=''>      </span><span style='background: #F0ADAD'>case Success(s)</span><span style=''> =&gt; _session = s
-</span>66 <span style=''>      </span><span style='background: #F0ADAD'>case Failure(f)</span><span style=''> =&gt; Failure(f)
-</span>67 <span style=''>
-</span>68 <span style=''>    val scheduler: ScheduledExecutorService = </span><span style='background: #F0ADAD'>Executors.newSingleThreadScheduledExecutor()</span><span style=''>
-</span>69 <span style=''>    </span><span style='background: #F0ADAD'>scheduler.scheduleAtFixedRate(() =&gt; currentPage.pageController.nextIteration(), 0, 1000/10, TimeUnit.MILLISECONDS)</span><span style=''>
+</span>7 <span style=''>import model.stats.PlayerStats.{PlayerStats, removeUnusedStats}
+</span>8 <span style=''>import utils.storage.ExportHandler
+</span>9 <span style=''>import model.SavedCourse.SavedCourse
+</span>10 <span style=''>import utils.storage.ImportHandler.importSessionFromPersonalDirectory
+</span>11 <span style=''>import view.View
+</span>12 <span style=''>import view.View.{PageView, TerminalView, ViewFactory}
+</span>13 <span style=''>
+</span>14 <span style=''>import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
+</span>15 <span style=''>import scala.concurrent.duration.TimeUnit
+</span>16 <span style=''>import scala.util.{Failure, Success}
+</span>17 <span style=''>
+</span>18 <span style=''>/** Controller for the general logic of the application */
+</span>19 <span style=''>object AppController extends Controller:
+</span>20 <span style=''>
+</span>21 <span style=''>  private var _currentPage: Page[PageController, PageView] = Page[PageController, PageView](</span><span style='background: #F0ADAD'>new MainMenuController</span><span style=''>, </span><span style='background: #F0ADAD'>ViewFactory.create(MainMenuAction)</span><span style=''>)
+</span>22 <span style=''>  </span><span style='background: #F0ADAD'>def currentPage</span><span style=''>: Page[PageController, PageView] = _currentPage
+</span>23 <span style=''>  </span><span style='background: #F0ADAD'>def currentPage_</span><span style=''>(pageController: PageController, pageView: PageView): Unit = _currentPage = Page[PageController, PageView](pageController, pageView)
+</span>24 <span style=''>  
+</span>25 <span style=''>  import model.Session.*
+</span>26 <span style=''>  // Init var session with a default saved course list
+</span>27 <span style=''>  private var _session: Session = </span><span style='background: #F0ADAD'>Session</span><span style=''>()
+</span>28 <span style=''>  </span><span style='background: #F0ADAD'>def session</span><span style=''>: Session = _session
+</span>29 <span style=''>  
+</span>30 <span style=''>  import model.Session
+</span>31 <span style=''>  </span><span style='background: #F0ADAD'>def changeSavedCourses</span><span style=''>(savedCourses: List[SavedCourse]): Unit = _session = </span><span style='background: #F0ADAD'>Session.changeSavedCourses(session, savedCourses)</span><span style=''>
+</span>32 <span style=''>  </span><span style='background: #F0ADAD'>def changePlayerStats</span><span style=''>(playerStats: PlayerStats): Unit = _session = </span><span style='background: #F0ADAD'>Session.changePlayerStats(session, playerStats)</span><span style=''>
+</span>33 <span style=''>
+</span>34 <span style=''>  case object MainMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>35 <span style=''>  case object SelectMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>36 <span style=''>  case object StatisticsMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>37 <span style=''>  case object SettingsMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>38 <span style=''>  case object AddCourseMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>39 <span style=''>  case object AddQuizMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>40 <span style=''>  case object EditCourseMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>41 <span style=''>  case object EditQuizMenuAction extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>42 <span style=''>  case class ReviewMenuAction(override val actionParameter: Option[GameStage]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>43 <span style=''>  case class CustomMenuAction[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>44 <span style=''>  case class StandardGameAction[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>45 <span style=''>  case class BlitzGameAction[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>46 <span style=''>
+</span>47 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
+</span>48 <span style=''>    </span><span style='background: #F0ADAD'>case MainMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new MainMenuController, ViewFactory.create(MainMenuAction))</span><span style=''>
+</span>49 <span style=''>    </span><span style='background: #F0ADAD'>case SelectMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new SelectMenuController, ViewFactory.create(SelectMenuAction))</span><span style=''>
+</span>50 <span style=''>    </span><span style='background: #F0ADAD'>case StatisticsMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new StatisticsMenuController, ViewFactory.create(StatisticsMenuAction))</span><span style=''>
+</span>51 <span style=''>    </span><span style='background: #F0ADAD'>case SettingsMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new SettingsMenuController, ViewFactory.create(SettingsMenuAction))</span><span style=''>
+</span>52 <span style=''>    </span><span style='background: #F0ADAD'>case StandardGameAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(StandardGameController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(StandardGameAction(Option.empty)))</span><span style=''>
+</span>53 <span style=''>    </span><span style='background: #F0ADAD'>case BlitzGameAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(BlitzGameController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(BlitzGameAction(Option.empty)))</span><span style=''>
+</span>54 <span style=''>    </span><span style='background: #F0ADAD'>case AddCourseMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new AddCourseMenuController, ViewFactory.create(AddCourseMenuAction))</span><span style=''>
+</span>55 <span style=''>    </span><span style='background: #F0ADAD'>case AddQuizMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new AddQuizMenuController, ViewFactory.create(AddQuizMenuAction))</span><span style=''>
+</span>56 <span style=''>    </span><span style='background: #F0ADAD'>case EditCourseMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new EditCourseMenuController, ViewFactory.create(EditCourseMenuAction))</span><span style=''>
+</span>57 <span style=''>    </span><span style='background: #F0ADAD'>case EditQuizMenuAction</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new EditQuizMenuController, ViewFactory.create(EditQuizMenuAction))</span><span style=''>
+</span>58 <span style=''>    </span><span style='background: #F0ADAD'>case ReviewMenuAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new ReviewMenuController(actionParameter.get), ViewFactory.create(ReviewMenuAction(Option.empty)))</span><span style=''>
+</span>59 <span style=''>    </span><span style='background: #F0ADAD'>case CustomMenuAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage_(new CustomMenuController(actionParameter.get.asInstanceOf[GameStage]), ViewFactory.create(CustomMenuAction(Option.empty)))</span><span style=''>
+</span>60 <span style=''>    </span><span style='background: #F0ADAD'>case action: Action[T]</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>currentPage.pageController.handle(action)</span><span style=''>
+</span>61 <span style=''>    </span><span style='background: #F0ADAD'>case null</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>throw new IllegalArgumentException</span><span style=''>
+</span>62 <span style=''>
+</span>63 <span style=''>  </span><span style='background: #F0ADAD'>def startApp</span><span style=''>(): Unit =
+</span>64 <span style=''>
+</span>65 <span style=''>    </span><span style='background: #F0ADAD'>importSessionFromPersonalDirectory(session)</span><span style=''> match
+</span>66 <span style=''>      </span><span style='background: #F0ADAD'>case Success(s)</span><span style=''> =&gt; _session = s
+</span>67 <span style=''>      </span><span style='background: #F0ADAD'>case Failure(f)</span><span style=''> =&gt; Failure(f)
+</span>68 <span style=''>
+</span>69 <span style=''>    // Remove unused player stats and export it
+</span>70 <span style=''>    </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(removeUnusedStats(session.savedCourses, session.playerStats))</span><span style=''>
+</span>71 <span style=''>
+</span>72 <span style=''>    val scheduler: ScheduledExecutorService = </span><span style='background: #F0ADAD'>Executors.newSingleThreadScheduledExecutor()</span><span style=''>
+</span>73 <span style=''>    </span><span style='background: #F0ADAD'>scheduler.scheduleAtFixedRate(() =&gt; currentPage.pageController.nextIteration(), 0, 1000/10, TimeUnit.MILLISECONDS)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -105,15 +109,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          19
+          20
         </td>
         <td>
           53
         </td>
         <td>
-          747
+          782
           -
-          769
+          804
         </td>
         <td>
           Apply
@@ -129,15 +133,15 @@
         </td>
       </tr><tr>
         <td>
-          19
+          20
         </td>
         <td>
           54
         </td>
         <td>
-          771
+          806
           -
-          805
+          840
         </td>
         <td>
           Apply
@@ -153,15 +157,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          21
         </td>
         <td>
           55
         </td>
         <td>
-          809
+          844
           -
-          824
+          859
         </td>
         <td>
           DefDef
@@ -177,15 +181,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
           56
         </td>
         <td>
-          874
+          909
           -
-          890
+          925
         </td>
         <td>
           DefDef
@@ -201,15 +205,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          26
         </td>
         <td>
           58
         </td>
         <td>
-          1140
+          1175
           -
-          1147
+          1182
         </td>
         <td>
           Select
@@ -225,15 +229,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          26
         </td>
         <td>
           57
         </td>
         <td>
-          1140
+          1175
           -
-          1147
+          1182
         </td>
         <td>
           Select
@@ -249,15 +253,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          27
         </td>
         <td>
           59
         </td>
         <td>
-          1152
+          1187
           -
-          1163
+          1198
         </td>
         <td>
           DefDef
@@ -273,15 +277,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          30
         </td>
         <td>
           62
         </td>
         <td>
-          1212
+          1247
           -
-          1234
+          1269
         </td>
         <td>
           DefDef
@@ -297,15 +301,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          30
         </td>
         <td>
           61
         </td>
         <td>
-          1287
+          1322
           -
-          1336
+          1371
         </td>
         <td>
           Apply
@@ -321,15 +325,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          30
         </td>
         <td>
           60
         </td>
         <td>
-          1314
+          1349
           -
-          1321
+          1356
         </td>
         <td>
           Ident
@@ -345,15 +349,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          31
         </td>
         <td>
           65
         </td>
         <td>
-          1339
+          1374
           -
-          1360
+          1395
         </td>
         <td>
           DefDef
@@ -369,15 +373,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          31
         </td>
         <td>
           64
         </td>
         <td>
-          1406
+          1441
           -
-          1453
+          1488
         </td>
         <td>
           Apply
@@ -393,15 +397,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          31
         </td>
         <td>
           63
         </td>
         <td>
-          1432
+          1467
           -
-          1439
+          1474
         </td>
         <td>
           Ident
@@ -417,39 +421,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          33
         </td>
         <td>
           66
         </td>
         <td>
-          1492
+          1527
           -
-          1511
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ParameterlessAction
-        </td>
-      </tr><tr>
-        <td>
-          33
-        </td>
-        <td>
-          67
-        </td>
-        <td>
-          1551
-          -
-          1570
+          1546
         </td>
         <td>
           Apply
@@ -468,12 +448,12 @@
           34
         </td>
         <td>
-          68
+          67
         </td>
         <td>
-          1614
+          1586
           -
-          1633
+          1605
         </td>
         <td>
           Apply
@@ -492,12 +472,12 @@
           35
         </td>
         <td>
-          69
+          68
         </td>
         <td>
-          1675
+          1649
           -
-          1694
+          1668
         </td>
         <td>
           Apply
@@ -516,12 +496,12 @@
           36
         </td>
         <td>
-          70
+          69
         </td>
         <td>
-          1737
+          1710
           -
-          1756
+          1729
         </td>
         <td>
           Apply
@@ -540,12 +520,12 @@
           37
         </td>
         <td>
-          71
+          70
         </td>
         <td>
-          1797
+          1772
           -
-          1816
+          1791
         </td>
         <td>
           Apply
@@ -564,12 +544,12 @@
           38
         </td>
         <td>
-          72
+          71
         </td>
         <td>
-          1860
+          1832
           -
-          1879
+          1851
         </td>
         <td>
           Apply
@@ -588,12 +568,12 @@
           39
         </td>
         <td>
-          73
+          72
         </td>
         <td>
-          1921
+          1895
           -
-          1940
+          1914
         </td>
         <td>
           Apply
@@ -612,12 +592,12 @@
           40
         </td>
         <td>
-          74
+          73
         </td>
         <td>
-          2028
+          1956
           -
-          2051
+          1975
         </td>
         <td>
           Apply
@@ -629,19 +609,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          Action(actionParameter)
+          ParameterlessAction
         </td>
       </tr><tr>
         <td>
           41
         </td>
         <td>
-          75
+          74
         </td>
         <td>
-          2134
+          2063
           -
-          2157
+          2086
         </td>
         <td>
           Apply
@@ -660,12 +640,12 @@
           42
         </td>
         <td>
-          76
+          75
         </td>
         <td>
-          2242
+          2169
           -
-          2265
+          2192
         </td>
         <td>
           Apply
@@ -684,12 +664,12 @@
           43
         </td>
         <td>
-          77
+          76
         </td>
         <td>
-          2347
+          2277
           -
-          2370
+          2300
         </td>
         <td>
           Apply
@@ -705,15 +685,39 @@
         </td>
       </tr><tr>
         <td>
-          45
+          44
+        </td>
+        <td>
+          77
+        </td>
+        <td>
+          2382
+          -
+          2405
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Action(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          46
         </td>
         <td>
           140
         </td>
         <td>
-          2374
+          2409
           -
-          2393
+          2428
         </td>
         <td>
           DefDef
@@ -729,15 +733,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          47
         </td>
         <td>
           80
         </td>
         <td>
-          2464
+          2499
           -
-          2536
+          2571
         </td>
         <td>
           Apply
@@ -753,15 +757,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          47
         </td>
         <td>
           79
         </td>
         <td>
-          2501
+          2536
           -
-          2535
+          2570
         </td>
         <td>
           Apply
@@ -777,15 +781,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          47
         </td>
         <td>
           78
         </td>
         <td>
-          2477
+          2512
           -
-          2499
+          2534
         </td>
         <td>
           Apply
@@ -801,15 +805,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          47
         </td>
         <td>
           81
         </td>
         <td>
-          2441
+          2476
           -
-          2460
+          2495
         </td>
         <td>
           Block
@@ -825,15 +829,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          48
         </td>
         <td>
           83
         </td>
         <td>
-          2605
+          2640
           -
-          2641
+          2676
         </td>
         <td>
           Apply
@@ -849,15 +853,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          48
         </td>
         <td>
           82
         </td>
         <td>
-          2579
+          2614
           -
-          2603
+          2638
         </td>
         <td>
           Apply
@@ -873,15 +877,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          48
         </td>
         <td>
           85
         </td>
         <td>
-          2541
+          2576
           -
-          2562
+          2597
         </td>
         <td>
           Block
@@ -897,15 +901,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          48
         </td>
         <td>
           84
         </td>
         <td>
-          2566
+          2601
           -
-          2642
+          2677
         </td>
         <td>
           Apply
@@ -921,15 +925,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          49
         </td>
         <td>
           86
         </td>
         <td>
-          2689
+          2724
           -
-          2717
+          2752
         </td>
         <td>
           Apply
@@ -945,15 +949,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          49
         </td>
         <td>
           89
         </td>
         <td>
-          2647
+          2682
           -
-          2672
+          2707
         </td>
         <td>
           Block
@@ -969,15 +973,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          49
         </td>
         <td>
           88
         </td>
         <td>
-          2676
+          2711
           -
-          2760
+          2795
         </td>
         <td>
           Apply
@@ -993,15 +997,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          49
         </td>
         <td>
           87
         </td>
         <td>
-          2719
+          2754
           -
-          2759
+          2794
         </td>
         <td>
           Apply
@@ -1017,15 +1021,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          50
         </td>
         <td>
           92
         </td>
         <td>
-          2792
+          2827
           -
-          2872
+          2907
         </td>
         <td>
           Apply
@@ -1041,15 +1045,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          50
         </td>
         <td>
           91
         </td>
         <td>
-          2833
+          2868
           -
-          2871
+          2906
         </td>
         <td>
           Apply
@@ -1065,15 +1069,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          50
         </td>
         <td>
           90
         </td>
         <td>
-          2805
+          2840
           -
-          2831
+          2866
         </td>
         <td>
           Apply
@@ -1089,15 +1093,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          50
         </td>
         <td>
           93
         </td>
         <td>
-          2765
+          2800
           -
-          2788
+          2823
         </td>
         <td>
           Block
@@ -1113,15 +1117,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          51
         </td>
         <td>
           95
         </td>
         <td>
-          2934
+          2969
           -
-          3001
+          3036
         </td>
         <td>
           Apply
@@ -1137,15 +1141,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          51
         </td>
         <td>
           98
         </td>
         <td>
-          2921
+          2956
           -
-          3056
+          3091
         </td>
         <td>
           Apply
@@ -1161,15 +1165,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          51
         </td>
         <td>
           94
         </td>
         <td>
-          2957
+          2992
           -
-          2976
+          3011
         </td>
         <td>
           Select
@@ -1185,15 +1189,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          51
         </td>
         <td>
           97
         </td>
         <td>
-          3003
+          3038
           -
-          3055
+          3090
         </td>
         <td>
           Apply
@@ -1209,15 +1213,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          51
         </td>
         <td>
           96
         </td>
         <td>
-          3041
+          3076
           -
-          3053
+          3088
         </td>
         <td>
           Select
@@ -1233,15 +1237,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          51
         </td>
         <td>
           99
         </td>
         <td>
-          2877
+          2912
           -
-          2917
+          2952
         </td>
         <td>
           Block
@@ -1257,15 +1261,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          52
         </td>
         <td>
           101
         </td>
         <td>
-          3115
+          3150
           -
-          3179
+          3214
         </td>
         <td>
           Apply
@@ -1281,15 +1285,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          52
         </td>
         <td>
           104
         </td>
         <td>
-          3102
+          3137
           -
-          3231
+          3266
         </td>
         <td>
           Apply
@@ -1305,15 +1309,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          52
         </td>
         <td>
           100
         </td>
         <td>
-          3135
+          3170
           -
-          3154
+          3189
         </td>
         <td>
           Select
@@ -1329,15 +1333,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          52
         </td>
         <td>
           103
         </td>
         <td>
-          3181
+          3216
           -
-          3230
+          3265
         </td>
         <td>
           Apply
@@ -1353,15 +1357,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          52
         </td>
         <td>
           105
         </td>
         <td>
-          3061
+          3096
           -
-          3098
+          3133
         </td>
         <td>
           Block
@@ -1377,15 +1381,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          52
         </td>
         <td>
           102
         </td>
         <td>
-          3216
+          3251
           -
-          3228
+          3263
         </td>
         <td>
           Select
@@ -1401,15 +1405,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          53
         </td>
         <td>
           107
         </td>
         <td>
-          3306
+          3341
           -
-          3345
+          3380
         </td>
         <td>
           Apply
@@ -1425,15 +1429,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          53
         </td>
         <td>
           106
         </td>
         <td>
-          3277
+          3312
           -
-          3304
+          3339
         </td>
         <td>
           Apply
@@ -1449,15 +1453,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          53
         </td>
         <td>
           109
         </td>
         <td>
-          3236
+          3271
           -
-          3260
+          3295
         </td>
         <td>
           Block
@@ -1473,15 +1477,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          53
         </td>
         <td>
           108
         </td>
         <td>
-          3264
+          3299
           -
-          3346
+          3381
         </td>
         <td>
           Apply
@@ -1497,15 +1501,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          54
         </td>
         <td>
           110
         </td>
         <td>
-          3390
+          3425
           -
-          3415
+          3450
         </td>
         <td>
           Apply
@@ -1521,15 +1525,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          54
         </td>
         <td>
           113
         </td>
         <td>
-          3351
+          3386
           -
-          3373
+          3408
         </td>
         <td>
           Block
@@ -1545,15 +1549,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          54
         </td>
         <td>
           112
         </td>
         <td>
-          3377
+          3412
           -
-          3455
+          3490
         </td>
         <td>
           Apply
@@ -1569,15 +1573,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          54
         </td>
         <td>
           111
         </td>
         <td>
-          3417
+          3452
           -
-          3454
+          3489
         </td>
         <td>
           Apply
@@ -1593,15 +1597,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          55
         </td>
         <td>
           116
         </td>
         <td>
-          3489
+          3524
           -
-          3573
+          3608
         </td>
         <td>
           Apply
@@ -1617,15 +1621,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          55
         </td>
         <td>
           115
         </td>
         <td>
-          3532
+          3567
           -
-          3572
+          3607
         </td>
         <td>
           Apply
@@ -1641,15 +1645,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          55
         </td>
         <td>
           114
         </td>
         <td>
-          3502
+          3537
           -
-          3530
+          3565
         </td>
         <td>
           Apply
@@ -1665,15 +1669,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          55
         </td>
         <td>
           117
         </td>
         <td>
-          3460
+          3495
           -
-          3485
+          3520
         </td>
         <td>
           Block
@@ -1689,15 +1693,15 @@
         </td>
       </tr><tr>
         <td>
-          55
+          56
         </td>
         <td>
           119
         </td>
         <td>
-          3646
+          3681
           -
-          3684
+          3719
         </td>
         <td>
           Apply
@@ -1713,15 +1717,15 @@
         </td>
       </tr><tr>
         <td>
-          55
+          56
         </td>
         <td>
           118
         </td>
         <td>
-          3618
+          3653
           -
-          3644
+          3679
         </td>
         <td>
           Apply
@@ -1737,15 +1741,15 @@
         </td>
       </tr><tr>
         <td>
-          55
+          56
         </td>
         <td>
           121
         </td>
         <td>
-          3578
+          3613
           -
-          3601
+          3636
         </td>
         <td>
           Block
@@ -1761,15 +1765,15 @@
         </td>
       </tr><tr>
         <td>
-          55
+          56
         </td>
         <td>
           120
         </td>
         <td>
-          3605
+          3640
           -
-          3685
+          3720
         </td>
         <td>
           Apply
@@ -1785,15 +1789,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          57
         </td>
         <td>
           122
         </td>
         <td>
-          3770
+          3805
           -
-          3789
+          3824
         </td>
         <td>
           Select
@@ -1809,15 +1813,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          57
         </td>
         <td>
           125
         </td>
         <td>
-          3792
+          3827
           -
-          3842
+          3877
         </td>
         <td>
           Apply
@@ -1833,15 +1837,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          57
         </td>
         <td>
           124
         </td>
         <td>
-          3828
+          3863
           -
-          3840
+          3875
         </td>
         <td>
           Select
@@ -1857,15 +1861,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          57
         </td>
         <td>
           127
         </td>
         <td>
-          3690
+          3725
           -
-          3728
+          3763
         </td>
         <td>
           Block
@@ -1881,15 +1885,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          57
         </td>
         <td>
           123
         </td>
         <td>
-          3745
+          3780
           -
-          3790
+          3825
         </td>
         <td>
           Apply
@@ -1905,15 +1909,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          57
         </td>
         <td>
           126
         </td>
         <td>
-          3732
+          3767
           -
-          3843
+          3878
         </td>
         <td>
           Apply
@@ -1929,15 +1933,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          58
         </td>
         <td>
           128
         </td>
         <td>
-          3928
+          3963
           -
-          3947
+          3982
         </td>
         <td>
           Select
@@ -1953,15 +1957,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          58
         </td>
         <td>
           131
         </td>
         <td>
-          3974
+          4009
           -
-          4024
+          4059
         </td>
         <td>
           Apply
@@ -1977,15 +1981,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          58
         </td>
         <td>
           133
         </td>
         <td>
-          3848
+          3883
           -
-          3886
+          3921
         </td>
         <td>
           Block
@@ -2001,15 +2005,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          58
         </td>
         <td>
           130
         </td>
         <td>
-          4010
+          4045
           -
-          4022
+          4057
         </td>
         <td>
           Select
@@ -2025,15 +2029,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          58
         </td>
         <td>
           129
         </td>
         <td>
-          3903
+          3938
           -
-          3972
+          4007
         </td>
         <td>
           Apply
@@ -2049,15 +2053,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          58
         </td>
         <td>
           132
         </td>
         <td>
-          3890
+          3925
           -
-          4025
+          4060
         </td>
         <td>
           Apply
@@ -2073,15 +2077,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          59
         </td>
         <td>
           134
         </td>
         <td>
-          4056
+          4091
           -
-          4067
+          4102
         </td>
         <td>
           Ident
@@ -2097,15 +2101,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          59
         </td>
         <td>
           136
         </td>
         <td>
-          4030
+          4065
           -
-          4052
+          4087
         </td>
         <td>
           Block
@@ -2121,15 +2125,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          59
         </td>
         <td>
           135
         </td>
         <td>
-          4056
+          4091
           -
-          4097
+          4132
         </td>
         <td>
           Apply
@@ -2145,15 +2149,15 @@
         </td>
       </tr><tr>
         <td>
-          59
+          60
         </td>
         <td>
           137
         </td>
         <td>
-          4121
+          4156
           -
-          4149
+          4184
         </td>
         <td>
           Apply
@@ -2169,15 +2173,15 @@
         </td>
       </tr><tr>
         <td>
-          59
+          60
         </td>
         <td>
           139
         </td>
         <td>
-          4102
+          4137
           -
-          4111
+          4146
         </td>
         <td>
           Block
@@ -2193,15 +2197,15 @@
         </td>
       </tr><tr>
         <td>
-          59
+          60
         </td>
         <td>
           138
         </td>
         <td>
-          4115
+          4150
           -
-          4149
+          4184
         </td>
         <td>
           Apply
@@ -2217,15 +2221,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          62
         </td>
         <td>
-          149
+          153
         </td>
         <td>
-          4153
+          4188
           -
-          4165
+          4200
         </td>
         <td>
           DefDef
@@ -2241,15 +2245,15 @@
         </td>
       </tr><tr>
         <td>
-          63
+          64
         </td>
         <td>
           142
         </td>
         <td>
-          4181
+          4216
           -
-          4224
+          4259
         </td>
         <td>
           Apply
@@ -2265,15 +2269,15 @@
         </td>
       </tr><tr>
         <td>
-          63
+          64
         </td>
         <td>
           141
         </td>
         <td>
-          4216
+          4251
           -
-          4223
+          4258
         </td>
         <td>
           Ident
@@ -2289,15 +2293,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          65
         </td>
         <td>
           143
         </td>
         <td>
-          4237
+          4272
           -
-          4252
+          4287
         </td>
         <td>
           Block
@@ -2313,15 +2317,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          66
         </td>
         <td>
           144
         </td>
         <td>
-          4275
+          4310
           -
-          4290
+          4325
         </td>
         <td>
           Block
@@ -2337,15 +2341,111 @@
         </td>
       </tr><tr>
         <td>
-          67
+          69
+        </td>
+        <td>
+          146
+        </td>
+        <td>
+          4477
+          -
+          4484
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          session
+        </td>
+      </tr><tr>
+        <td>
+          69
         </td>
         <td>
           145
         </td>
         <td>
-          4352
+          4455
           -
-          4396
+          4462
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          session
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          148
+        </td>
+        <td>
+          4393
+          -
+          4498
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          exportDataToPersonalDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ExportHandler.exportDataToPersonalDirectory(removeUnusedStats(session.savedCourses, session.playerStats))
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          147
+        </td>
+        <td>
+          4437
+          -
+          4497
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          removeUnusedStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          removeUnusedStats(session.savedCourses, session.playerStats)
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          149
+        </td>
+        <td>
+          4546
+          -
+          4590
         </td>
         <td>
           Apply
@@ -2361,15 +2461,39 @@
         </td>
       </tr><tr>
         <td>
-          68
+          72
         </td>
         <td>
-          146
+          151
         </td>
         <td>
-          4437
+          4631
           -
-          4448
+          4673
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          nextIteration
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          currentPage.pageController.nextIteration()
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          150
+        </td>
+        <td>
+          4631
+          -
+          4642
         </td>
         <td>
           Ident
@@ -2385,15 +2509,15 @@
         </td>
       </tr><tr>
         <td>
-          68
+          72
         </td>
         <td>
-          148
+          152
         </td>
         <td>
-          4401
+          4595
           -
-          4515
+          4709
         </td>
         <td>
           Apply
@@ -2406,30 +2530,6 @@
         </td>
         <td style="background: #F0ADAD">
           scheduler.scheduleAtFixedRate(() =&gt; currentPage.pageController.nextIteration(), 0, 1000/10, TimeUnit.MILLISECONDS)
-        </td>
-      </tr><tr>
-        <td>
-          68
-        </td>
-        <td>
-          147
-        </td>
-        <td>
-          4437
-          -
-          4479
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          nextIteration
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          currentPage.pageController.nextIteration()
         </td>
       </tr>
     </table>
