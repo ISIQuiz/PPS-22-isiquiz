@@ -40,40 +40,41 @@
 </span>16 <span style=''>
 </span>17 <span style=''>/** Companion object of add quiz menu controller */
 </span>18 <span style=''>object AddQuizMenuController extends BackAction:
-</span>19 <span style=''>
-</span>20 <span style=''>  case class AddCourseAction(override val actionParameter: Option[SavedCourse]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
-</span>21 <span style=''>  case class AddQuizAction(override val actionParameter: Option[Quiz]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
-</span>22 <span style=''>
-</span>23 <span style=''>/** Defines the logic of the add course page */
-</span>24 <span style=''>class AddQuizMenuController extends PageController :
-</span>25 <span style=''>
-</span>26 <span style=''>  import AddQuizMenuController.*
-</span>27 <span style=''>
-</span>28 <span style=''>  var courseSelected:Option[SavedCourse] = </span><span style='background: #F0ADAD'>Option.empty</span><span style=''>
-</span>29 <span style=''>  var quizToAdd:Option[Quiz] = </span><span style='background: #F0ADAD'>Option.empty</span><span style=''>
-</span>30 <span style=''>
-</span>31 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
-</span>32 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(SettingsMenuAction)</span><span style=''>
-</span>33 <span style=''>    </span><span style='background: #F0ADAD'>case AddCourseAction(actionParameter)</span><span style=''> =&gt; courseSelected = actionParameter
-</span>34 <span style=''>    </span><span style='background: #F0ADAD'>case AddQuizAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>addQuiz(actionParameter)</span><span style=''>
-</span>35 <span style=''>
-</span>36 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>37 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(DefaultUpdate)</span><span style=''>
-</span>38 <span style=''>    if </span><span style='background: #F0ADAD'>courseSelected.isEmpty</span><span style=''> then
-</span>39 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(CourseUpdate(Option(AppController.session.savedCourses)))
-</span>40 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(AskCourseUpdate)</span><span style=''>
-</span>41 <span style=''>    else
-</span>42 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(AskQuizUpdate)</span><span style=''>
-</span>43 <span style=''>
-</span>44 <span style=''>  </span><span style='background: #F0ADAD'>private def addQuiz</span><span style=''>[T](actionParameter: Option[Quiz]): Unit =
-</span>45 <span style=''>    quizToAdd = actionParameter
-</span>46 <span style=''>    val newSavedCourse = </span><span style='background: #F0ADAD'>SavedCourse.changeQuizList(courseSelected.get, courseSelected.get.quizList.::(quizToAdd.get))</span><span style=''>
-</span>47 <span style=''>    val newListCourses = </span><span style='background: #F0ADAD'>AppController.session.savedCourses.filterNot(course =&gt; course == courseSelected.get).appended(newSavedCourse)</span><span style=''>
-</span>48 <span style=''>    </span><span style='background: #F0ADAD'>AppController.changeSavedCourses(newListCourses)</span><span style=''>
-</span>49 <span style=''>    </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(newListCourses)</span><span style=''> // Export saved course list to personal directory
-</span>50 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(QuizPrintUpdate(quizToAdd))</span><span style=''>
-</span>51 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(QuizAddedUpdate)</span><span style=''>
-</span>52 <span style=''>    courseSelected = None
+</span>19 <span style=''>  /** action to select a course in the add quiz controller */
+</span>20 <span style=''>  case class SelectCourseAction(override val actionParameter: Option[SavedCourse]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>21 <span style=''>  /** action to add a quiz in the course selected in the add quiz controller */
+</span>22 <span style=''>  case class AddQuizAction(override val actionParameter: Option[Quiz]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>23 <span style=''>
+</span>24 <span style=''>/** Defines the logic of the add course page */
+</span>25 <span style=''>class AddQuizMenuController extends PageController :
+</span>26 <span style=''>
+</span>27 <span style=''>  import AddQuizMenuController.*
+</span>28 <span style=''>
+</span>29 <span style=''>  var courseSelected:Option[SavedCourse] = </span><span style='background: #F0ADAD'>Option.empty</span><span style=''>
+</span>30 <span style=''>  var quizToAdd:Option[Quiz] = </span><span style='background: #F0ADAD'>Option.empty</span><span style=''>
+</span>31 <span style=''>
+</span>32 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
+</span>33 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(SettingsMenuAction)</span><span style=''>
+</span>34 <span style=''>    </span><span style='background: #F0ADAD'>case SelectCourseAction(actionParameter)</span><span style=''> =&gt; courseSelected = actionParameter
+</span>35 <span style=''>    </span><span style='background: #F0ADAD'>case AddQuizAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>addQuiz(actionParameter)</span><span style=''>
+</span>36 <span style=''>
+</span>37 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
+</span>38 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
+</span>39 <span style=''>    if </span><span style='background: #F0ADAD'>courseSelected.isEmpty</span><span style=''> then
+</span>40 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(CourseListUpdate(Option(AppController.session.savedCourses)))
+</span>41 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(AskCourseSelectUpdate)</span><span style=''>
+</span>42 <span style=''>    else
+</span>43 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(AskQuizUpdate)</span><span style=''>
+</span>44 <span style=''>
+</span>45 <span style=''>  </span><span style='background: #F0ADAD'>private def addQuiz</span><span style=''>[T](actionParameter: Option[Quiz]): Unit =
+</span>46 <span style=''>    quizToAdd = actionParameter
+</span>47 <span style=''>    val newSavedCourse = </span><span style='background: #F0ADAD'>SavedCourse.changeQuizList(courseSelected.get, courseSelected.get.quizList.::(quizToAdd.get))</span><span style=''>
+</span>48 <span style=''>    val newListCourses = </span><span style='background: #F0ADAD'>AppController.session.savedCourses.filterNot(course =&gt; course == courseSelected.get).appended(newSavedCourse)</span><span style=''>
+</span>49 <span style=''>    </span><span style='background: #F0ADAD'>AppController.changeSavedCourses(newListCourses)</span><span style=''>
+</span>50 <span style=''>    </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(newListCourses)</span><span style=''> // Export saved course list to personal directory
+</span>51 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(QuizPrintUpdate(quizToAdd))</span><span style=''>
+</span>52 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(QuizAddedUpdate)</span><span style=''>
+</span>53 <span style=''>    courseSelected = None
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -94,9 +95,9 @@
           20
         </td>
         <td>
-          669
+          733
           -
-          692
+          756
         </td>
         <td>
           Apply
@@ -112,15 +113,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          21
         </td>
         <td>
           21
         </td>
         <td>
-          772
+          916
           -
-          795
+          939
         </td>
         <td>
           Apply
@@ -133,42 +134,18 @@
         </td>
         <td style="background: #F0ADAD">
           Action(actionParameter)
-        </td>
-      </tr><tr>
-        <td>
-          27
-        </td>
-        <td>
-          22
-        </td>
-        <td>
-          976
-          -
-          988
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          empty
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option.empty
         </td>
       </tr><tr>
         <td>
           28
         </td>
         <td>
-          23
+          22
         </td>
         <td>
-          1020
+          1120
           -
-          1032
+          1132
         </td>
         <td>
           Select
@@ -184,15 +161,39 @@
         </td>
       </tr><tr>
         <td>
-          30
+          29
+        </td>
+        <td>
+          23
+        </td>
+        <td>
+          1164
+          -
+          1176
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option.empty
+        </td>
+      </tr><tr>
+        <td>
+          31
         </td>
         <td>
           29
         </td>
         <td>
-          1036
+          1180
           -
-          1055
+          1199
         </td>
         <td>
           DefDef
@@ -208,15 +209,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          32
         </td>
         <td>
           25
         </td>
         <td>
-          1103
+          1247
           -
-          1112
+          1256
         </td>
         <td>
           Block
@@ -232,15 +233,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          32
         </td>
         <td>
           24
         </td>
         <td>
-          1116
+          1260
           -
-          1156
+          1300
         </td>
         <td>
           Apply
@@ -256,15 +257,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          33
         </td>
         <td>
           26
         </td>
         <td>
-          1161
+          1305
           -
-          1198
+          1345
         </td>
         <td>
           Block
@@ -276,19 +277,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          case AddCourseAction(actionParameter)
+          case SelectCourseAction(actionParameter)
         </td>
       </tr><tr>
         <td>
-          33
+          34
         </td>
         <td>
           28
         </td>
         <td>
-          1239
+          1386
           -
-          1274
+          1421
         </td>
         <td>
           Block
@@ -304,15 +305,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          34
         </td>
         <td>
           27
         </td>
         <td>
-          1278
+          1425
           -
-          1302
+          1449
         </td>
         <td>
           Apply
@@ -328,15 +329,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          36
         </td>
         <td>
-          41
+          40
         </td>
         <td>
-          1306
+          1453
           -
-          1332
+          1479
         </td>
         <td>
           DefDef
@@ -352,63 +353,39 @@
         </td>
       </tr><tr>
         <td>
-          36
-        </td>
-        <td>
-          31
-        </td>
-        <td>
-          1347
-          -
-          1405
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          updateUI
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.currentPage.pageView.updateUI(DefaultUpdate)
-        </td>
-      </tr><tr>
-        <td>
-          36
+          37
         </td>
         <td>
           30
         </td>
         <td>
-          1347
+          1494
           -
-          1372
+          1519
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          currentPage
+          sendUpdate
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          AppController.currentPage
+          sendUpdate(DefaultUpdate)
         </td>
       </tr><tr>
         <td>
-          37
+          38
         </td>
         <td>
-          32
+          31
         </td>
         <td>
-          1413
+          1527
           -
-          1435
+          1549
         </td>
         <td>
           Select
@@ -424,15 +401,63 @@
         </td>
       </tr><tr>
         <td>
-          38
+          39
+        </td>
+        <td>
+          32
+        </td>
+        <td>
+          1596
+          -
+          1617
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session
+        </td>
+      </tr><tr>
+        <td>
+          39
         </td>
         <td>
           35
         </td>
         <td>
-          1471
+          1561
           -
-          1513
+          1633
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendUpdate
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendUpdate(CourseListUpdate(Option(AppController.session.savedCourses)))
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          34
+        </td>
+        <td>
+          1589
+          -
+          1631
         </td>
         <td>
           Apply
@@ -448,15 +473,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          39
         </td>
         <td>
-          38
+          37
         </td>
         <td>
-          1447
+          1561
           -
-          1549
+          1673
         </td>
         <td>
           Block
@@ -468,20 +493,20 @@
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(CourseUpdate(Option(AppController.session.savedCourses)))
-      sendUpdate(AskCourseUpdate)
+          sendUpdate(CourseListUpdate(Option(AppController.session.savedCourses)))
+      sendUpdate(AskCourseSelectUpdate)
         </td>
       </tr><tr>
         <td>
-          38
+          39
         </td>
         <td>
-          34
+          33
         </td>
         <td>
-          1478
+          1596
           -
-          1512
+          1630
         </td>
         <td>
           Select
@@ -497,15 +522,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          40
         </td>
         <td>
           36
         </td>
         <td>
-          1447
+          1640
           -
-          1515
+          1673
         </td>
         <td>
           Apply
@@ -517,43 +542,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(CourseUpdate(Option(AppController.session.savedCourses)))
+          sendUpdate(AskCourseSelectUpdate)
         </td>
       </tr><tr>
+        <td>
+          42
+        </td>
         <td>
           38
         </td>
         <td>
-          33
-        </td>
-        <td>
-          1478
+          1689
           -
-          1499
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          session
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session
-        </td>
-      </tr><tr>
-        <td>
-          39
-        </td>
-        <td>
-          37
-        </td>
-        <td>
-          1522
-          -
-          1549
+          1714
         </td>
         <td>
           Apply
@@ -565,19 +566,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(AskCourseUpdate)
+          sendUpdate(AskQuizUpdate)
         </td>
       </tr><tr>
         <td>
-          41
+          42
         </td>
         <td>
-          40
+          39
         </td>
         <td>
-          1565
+          1689
           -
-          1590
+          1714
         </td>
         <td>
           Block
@@ -593,39 +594,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          44
         </td>
         <td>
-          39
+          56
         </td>
         <td>
-          1565
+          1718
           -
-          1590
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendUpdate
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendUpdate(AskQuizUpdate)
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          57
-        </td>
-        <td>
-          1594
-          -
-          1613
+          1737
         </td>
         <td>
           DefDef
@@ -641,87 +618,15 @@
         </td>
       </tr><tr>
         <td>
-          45
-        </td>
-        <td>
-          44
-        </td>
-        <td>
-          1760
-          -
-          1787
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          quizList
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseSelected.get.quizList
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          47
-        </td>
-        <td>
-          1713
-          -
-          1806
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          changeQuizList
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          SavedCourse.changeQuizList(courseSelected.get, courseSelected.get.quizList.::(quizToAdd.get))
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
           46
         </td>
         <td>
-          1760
+          41
+        </td>
+        <td>
+          1864
           -
-          1805
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          ::
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseSelected.get.quizList.::(quizToAdd.get)
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          43
-        </td>
-        <td>
-          1760
-          -
-          1778
+          1882
         </td>
         <td>
           Select
@@ -737,15 +642,15 @@
         </td>
       </tr><tr>
         <td>
-          45
+          46
         </td>
         <td>
-          45
+          44
         </td>
         <td>
-          1791
+          1915
           -
-          1804
+          1928
         </td>
         <td>
           Select
@@ -761,135 +666,111 @@
         </td>
       </tr><tr>
         <td>
-          45
+          46
         </td>
-        <td>
-          42
-        </td>
-        <td>
-          1740
-          -
-          1758
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          get
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseSelected.get
-        </td>
-      </tr><tr>
         <td>
           46
         </td>
         <td>
-          50
-        </td>
-        <td>
-          1897
+          1837
           -
-          1915
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          get
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseSelected.get
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          49
-        </td>
-        <td>
-          1832
-          -
-          1866
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          savedCourses
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session.savedCourses
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          52
-        </td>
-        <td>
-          1832
-          -
-          1941
+          1930
         </td>
         <td>
           Apply
         </td>
         <td>
-          appended
+          changeQuizList
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          AppController.session.savedCourses.filterNot(course =&gt; course == courseSelected.get).appended(newSavedCourse)
+          SavedCourse.changeQuizList(courseSelected.get, courseSelected.get.quizList.::(quizToAdd.get))
         </td>
       </tr><tr>
         <td>
           46
         </td>
         <td>
-          48
+          43
         </td>
         <td>
-          1832
+          1884
           -
-          1853
+          1911
         </td>
         <td>
           Select
         </td>
         <td>
-          session
+          quizList
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          AppController.session
+          courseSelected.get.quizList
         </td>
       </tr><tr>
         <td>
           46
         </td>
         <td>
-          51
+          45
         </td>
         <td>
-          1832
+          1884
           -
-          1916
+          1929
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          ::
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseSelected.get.quizList.::(quizToAdd.get)
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          42
+        </td>
+        <td>
+          1884
+          -
+          1902
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseSelected.get
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          50
+        </td>
+        <td>
+          1956
+          -
+          2040
         </td>
         <td>
           Apply
@@ -908,12 +789,108 @@
           47
         </td>
         <td>
-          53
+          47
         </td>
         <td>
-          1946
+          1956
           -
-          1994
+          1977
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          49
+        </td>
+        <td>
+          2021
+          -
+          2039
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseSelected.get
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          48
+        </td>
+        <td>
+          1956
+          -
+          1990
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          savedCourses
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session.savedCourses
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          51
+        </td>
+        <td>
+          1956
+          -
+          2065
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          appended
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session.savedCourses.filterNot(course =&gt; course == courseSelected.get).appended(newSavedCourse)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          52
+        </td>
+        <td>
+          2070
+          -
+          2118
         </td>
         <td>
           Apply
@@ -929,15 +906,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          49
         </td>
         <td>
-          54
+          53
         </td>
         <td>
-          1999
+          2123
           -
-          2058
+          2182
         </td>
         <td>
           Apply
@@ -953,15 +930,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          50
         </td>
         <td>
-          55
+          54
         </td>
         <td>
-          2113
+          2237
           -
-          2151
+          2275
         </td>
         <td>
           Apply
@@ -977,15 +954,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          51
         </td>
         <td>
-          56
+          55
         </td>
         <td>
-          2156
+          2280
           -
-          2183
+          2307
         </td>
         <td>
           Apply

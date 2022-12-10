@@ -39,7 +39,7 @@
 </span>15 <span style=''>
 </span>16 <span style=''>object TerminalAddQuizMenu
 </span>17 <span style=''>
-</span>18 <span style=''>/** Add quiz terminal interface  */
+</span>18 <span style=''>/** Add quiz menu terminal interface  */
 </span>19 <span style=''>class TerminalAddQuizMenu extends TerminalView:
 </span>20 <span style=''>
 </span>21 <span style=''>  var courseList:List[SavedCourse] = </span><span style='background: #F0ADAD'>Nil</span><span style=''>
@@ -52,14 +52,14 @@
 </span>28 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
 </span>29 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Menu aggiunta quiz:\n1) Menu principale&quot;)</span><span style=''>
 </span>30 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Aggiunta quiz:&quot;)</span><span style=''>
-</span>31 <span style=''>    </span><span style='background: #F0ADAD'>case CourseUpdate(updateParameter)</span><span style=''> =&gt;
+</span>31 <span style=''>    </span><span style='background: #F0ADAD'>case CourseListUpdate(updateParameter)</span><span style=''> =&gt;
 </span>32 <span style=''>      courseList = </span><span style='background: #F0ADAD'>updateParameter.get</span><span style=''>
-</span>33 <span style=''>    </span><span style='background: #F0ADAD'>case AskCourseUpdate</span><span style=''> =&gt;
+</span>33 <span style=''>    </span><span style='background: #F0ADAD'>case AskCourseSelectUpdate</span><span style=''> =&gt;
 </span>34 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Seleziona il corso al quale aggiungere la domanda&quot;)</span><span style=''>
 </span>35 <span style=''>      </span><span style='background: #F0ADAD'>courseList.map(course=&gt;course.courseId.courseName).zipWithIndex.foreach{ case (e, i) =&gt; println(i+&quot;] &quot;+e) }</span><span style=''>
 </span>36 <span style=''>      val courseIndex = </span><span style='background: #F0ADAD'>readLine.toInt</span><span style=''>
-</span>37 <span style=''>      import controller.AddQuizMenuController.AddCourseAction
-</span>38 <span style=''>      </span><span style='background: #F0ADAD'>sendEvent(AddCourseAction(courseList.lift(courseIndex)))</span><span style=''>
+</span>37 <span style=''>      import controller.AddQuizMenuController.SelectCourseAction
+</span>38 <span style=''>      </span><span style='background: #F0ADAD'>sendEvent(SelectCourseAction(courseList.lift(courseIndex)))</span><span style=''>
 </span>39 <span style=''>    </span><span style='background: #F0ADAD'>case AskQuizUpdate</span><span style=''> =&gt;
 </span>40 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Inserisci domanda:&quot;)</span><span style=''>
 </span>41 <span style=''>      val question = </span><span style='background: #F0ADAD'>readLine</span><span style=''>
@@ -105,12 +105,12 @@
           20
         </td>
         <td>
-          1987
+          2022
         </td>
         <td>
-          516
+          521
           -
-          519
+          524
         </td>
         <td>
           Ident
@@ -129,12 +129,12 @@
           22
         </td>
         <td>
-          1989
+          2024
         </td>
         <td>
-          575
+          580
           -
-          600
+          605
         </td>
         <td>
           Apply
@@ -155,12 +155,12 @@
           23
         </td>
         <td>
-          1988
+          2023
         </td>
         <td>
-          584
+          589
           -
-          596
+          601
         </td>
         <td>
           Apply
@@ -179,12 +179,12 @@
           26
         </td>
         <td>
-          2045
+          2080
         </td>
         <td>
-          604
+          609
           -
-          625
+          630
         </td>
         <td>
           DefDef
@@ -203,12 +203,12 @@
           27
         </td>
         <td>
-          1992
+          2027
         </td>
         <td>
-          679
+          684
           -
-          697
+          702
         </td>
         <td>
           Block
@@ -227,12 +227,12 @@
           28
         </td>
         <td>
-          1990
+          2025
         </td>
         <td>
-          707
+          712
           -
-          757
+          762
         </td>
         <td>
           Apply
@@ -251,12 +251,12 @@
           29
         </td>
         <td>
-          1991
+          2026
         </td>
         <td>
-          764
+          769
           -
-          789
+          794
         </td>
         <td>
           Apply
@@ -275,12 +275,12 @@
           30
         </td>
         <td>
-          1994
+          2029
         </td>
         <td>
-          794
+          799
           -
-          828
+          837
         </td>
         <td>
           Block
@@ -292,19 +292,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          case CourseUpdate(updateParameter)
+          case CourseListUpdate(updateParameter)
         </td>
       </tr><tr>
         <td>
           31
         </td>
         <td>
-          1993
+          2028
         </td>
         <td>
-          851
+          860
           -
-          870
+          879
         </td>
         <td>
           Select
@@ -323,12 +323,12 @@
           32
         </td>
         <td>
-          2010
+          2045
         </td>
         <td>
-          875
+          884
           -
-          895
+          910
         </td>
         <td>
           Block
@@ -340,19 +340,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          case AskCourseUpdate
+          case AskCourseSelectUpdate
         </td>
       </tr><tr>
         <td>
           33
         </td>
         <td>
-          1995
+          2030
         </td>
         <td>
-          905
+          920
           -
-          965
+          980
         </td>
         <td>
           Apply
@@ -371,156 +371,12 @@
           34
         </td>
         <td>
-          2003
+          2033
         </td>
         <td>
-          972
+          987
           -
-          1079
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          foreach
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseList.map(course=&gt;course.courseId.courseName).zipWithIndex.foreach{ case (e, i) =&gt; println(i+&quot;] &quot;+e) }
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          1997
-        </td>
-        <td>
-          995
-          -
-          1021
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          courseName
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          course.courseId.courseName
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          2000
-        </td>
-        <td>
-          1068
-          -
-          1076
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          +
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          i+&quot;] &quot;+e
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          2002
-        </td>
-        <td>
-          1045
-          -
-          1056
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case (e, i)
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          1996
-        </td>
-        <td>
-          995
-          -
-          1010
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          courseId
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          course.courseId
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          1999
-        </td>
-        <td>
-          972
-          -
-          1035
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          zipWithIndex
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseList.map(course=&gt;course.courseId.courseName).zipWithIndex
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          1998
-        </td>
-        <td>
-          972
-          -
-          1022
+          1037
         </td>
         <td>
           Apply
@@ -539,12 +395,12 @@
           34
         </td>
         <td>
-          2001
+          2036
         </td>
         <td>
-          1060
+          1075
           -
-          1077
+          1092
         </td>
         <td>
           Apply
@@ -560,15 +416,183 @@
         </td>
       </tr><tr>
         <td>
+          34
+        </td>
+        <td>
+          2035
+        </td>
+        <td>
+          1083
+          -
+          1091
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          i+&quot;] &quot;+e
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          2038
+        </td>
+        <td>
+          987
+          -
+          1094
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseList.map(course=&gt;course.courseId.courseName).zipWithIndex.foreach{ case (e, i) =&gt; println(i+&quot;] &quot;+e) }
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          2032
+        </td>
+        <td>
+          1010
+          -
+          1036
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          course.courseId.courseName
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          2031
+        </td>
+        <td>
+          1010
+          -
+          1025
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          course.courseId
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          2034
+        </td>
+        <td>
+          987
+          -
+          1050
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          zipWithIndex
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseList.map(course=&gt;course.courseId.courseName).zipWithIndex
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          2037
+        </td>
+        <td>
+          1060
+          -
+          1071
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case (e, i)
+        </td>
+      </tr><tr>
+        <td>
           35
         </td>
         <td>
-          2006
+          2039
         </td>
         <td>
-          1104
+          1119
           -
-          1118
+          1127
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2041
+        </td>
+        <td>
+          1119
+          -
+          1133
         </td>
         <td>
           Select
@@ -587,12 +611,12 @@
           35
         </td>
         <td>
-          2005
+          2040
         </td>
         <td>
-          1104
+          1119
           -
-          1112
+          1127
         </td>
         <td>
           Apply
@@ -608,87 +632,15 @@
         </td>
       </tr><tr>
         <td>
-          35
-        </td>
-        <td>
-          2004
-        </td>
-        <td>
-          1104
-          -
-          1112
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          readLine
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          readLine
-        </td>
-      </tr><tr>
-        <td>
           37
         </td>
         <td>
-          2009
+          2042
         </td>
         <td>
-          1187
+          1234
           -
-          1243
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendEvent
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendEvent(AddCourseAction(courseList.lift(courseIndex)))
-        </td>
-      </tr><tr>
-        <td>
-          37
-        </td>
-        <td>
-          2008
-        </td>
-        <td>
-          1213
-          -
-          1241
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseList.lift(courseIndex)
-        </td>
-      </tr><tr>
-        <td>
-          37
-        </td>
-        <td>
-          2007
-        </td>
-        <td>
-          1213
-          -
-          1228
+          1249
         </td>
         <td>
           Select
@@ -704,15 +656,63 @@
         </td>
       </tr><tr>
         <td>
+          37
+        </td>
+        <td>
+          2044
+        </td>
+        <td>
+          1205
+          -
+          1264
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(SelectCourseAction(courseList.lift(courseIndex)))
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          2043
+        </td>
+        <td>
+          1234
+          -
+          1262
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseList.lift(courseIndex)
+        </td>
+      </tr><tr>
+        <td>
           38
         </td>
         <td>
-          2036
+          2071
         </td>
         <td>
-          1248
+          1269
           -
-          1266
+          1287
         </td>
         <td>
           Block
@@ -731,12 +731,12 @@
           39
         </td>
         <td>
-          2011
+          2046
         </td>
         <td>
-          1276
+          1297
           -
-          1305
+          1326
         </td>
         <td>
           Apply
@@ -755,12 +755,12 @@
           40
         </td>
         <td>
-          2012
+          2047
         </td>
         <td>
-          1327
+          1348
           -
-          1335
+          1356
         </td>
         <td>
           Apply
@@ -779,12 +779,12 @@
           41
         </td>
         <td>
-          2013
+          2048
         </td>
         <td>
-          1342
+          1363
           -
-          1369
+          1390
         </td>
         <td>
           Apply
@@ -803,12 +803,36 @@
           42
         </td>
         <td>
-          2015
+          2051
         </td>
         <td>
-          1388
+          1409
           -
-          1396
+          1423
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toInt
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine.toInt
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          2050
+        </td>
+        <td>
+          1409
+          -
+          1417
         </td>
         <td>
           Apply
@@ -827,12 +851,12 @@
           42
         </td>
         <td>
-          2014
+          2049
         </td>
         <td>
-          1388
+          1409
           -
-          1396
+          1417
         </td>
         <td>
           Apply
@@ -848,39 +872,15 @@
         </td>
       </tr><tr>
         <td>
-          42
-        </td>
-        <td>
-          2016
-        </td>
-        <td>
-          1388
-          -
-          1402
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          toInt
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          readLine.toInt
-        </td>
-      </tr><tr>
-        <td>
           44
         </td>
         <td>
-          2017
+          2052
         </td>
         <td>
-          1472
+          1493
           -
-          1475
+          1496
         </td>
         <td>
           Ident
@@ -899,12 +899,12 @@
           45
         </td>
         <td>
-          2018
+          2053
         </td>
         <td>
-          1489
+          1510
           -
-          1534
+          1555
         </td>
         <td>
           Apply
@@ -923,12 +923,12 @@
           45
         </td>
         <td>
-          2020
+          2055
         </td>
         <td>
-          1543
+          1564
           -
-          1563
+          1584
         </td>
         <td>
           Apply
@@ -947,12 +947,12 @@
           45
         </td>
         <td>
-          2019
+          2054
         </td>
         <td>
-          1543
+          1564
           -
-          1551
+          1572
         </td>
         <td>
           Apply
@@ -971,12 +971,12 @@
           46
         </td>
         <td>
-          2021
+          2056
         </td>
         <td>
-          1576
+          1597
           -
-          1604
+          1625
         </td>
         <td>
           Apply
@@ -995,12 +995,12 @@
           47
         </td>
         <td>
-          2022
+          2057
         </td>
         <td>
-          1630
+          1651
           -
-          1638
+          1659
         </td>
         <td>
           Apply
@@ -1019,12 +1019,12 @@
           48
         </td>
         <td>
-          2023
+          2058
         </td>
         <td>
-          1647
+          1668
           -
-          1686
+          1707
         </td>
         <td>
           Apply
@@ -1043,36 +1043,12 @@
           49
         </td>
         <td>
-          2024
+          2060
         </td>
         <td>
-          1718
+          1739
           -
-          1726
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          readLine
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          readLine
-        </td>
-      </tr><tr>
-        <td>
-          49
-        </td>
-        <td>
-          2025
-        </td>
-        <td>
-          1718
-          -
-          1738
+          1759
         </td>
         <td>
           Apply
@@ -1088,15 +1064,39 @@
         </td>
       </tr><tr>
         <td>
+          49
+        </td>
+        <td>
+          2059
+        </td>
+        <td>
+          1739
+          -
+          1747
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine
+        </td>
+      </tr><tr>
+        <td>
           50
         </td>
         <td>
-          2026
+          2061
         </td>
         <td>
-          1760
+          1781
           -
-          1804
+          1825
         </td>
         <td>
           Apply
@@ -1115,12 +1115,12 @@
           51
         </td>
         <td>
-          2027
+          2062
         </td>
         <td>
-          1811
+          1832
           -
-          1857
+          1878
         </td>
         <td>
           Apply
@@ -1139,12 +1139,12 @@
           53
         </td>
         <td>
-          2029
+          2064
         </td>
         <td>
-          1914
+          1935
           -
-          1934
+          1955
         </td>
         <td>
           Apply
@@ -1163,12 +1163,12 @@
           53
         </td>
         <td>
-          2028
+          2063
         </td>
         <td>
-          1914
+          1935
           -
-          1922
+          1943
         </td>
         <td>
           Apply
@@ -1187,12 +1187,12 @@
           54
         </td>
         <td>
-          2030
+          2065
         </td>
         <td>
-          1948
+          1969
           -
-          1980
+          2001
         </td>
         <td>
           Apply
@@ -1211,12 +1211,12 @@
           54
         </td>
         <td>
-          2032
+          2067
         </td>
         <td>
-          1948
+          1969
           -
-          2015
+          2036
         </td>
         <td>
           Block
@@ -1236,12 +1236,12 @@
           55
         </td>
         <td>
-          2031
+          2066
         </td>
         <td>
-          2006
+          2027
           -
-          2014
+          2035
         </td>
         <td>
           Apply
@@ -1260,12 +1260,36 @@
           58
         </td>
         <td>
-          2033
+          2069
         </td>
         <td>
-          2142
+          2156
           -
-          2146
+          2255
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(Quiz(question = question, answerList = answerList, maxScore = score, imagePath = imagePath))
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          2068
+        </td>
+        <td>
+          2163
+          -
+          2167
         </td>
         <td>
           Select
@@ -1284,12 +1308,12 @@
           58
         </td>
         <td>
-          2035
+          2070
         </td>
         <td>
-          2111
+          2132
           -
-          2236
+          2257
         </td>
         <td>
           Apply
@@ -1305,39 +1329,15 @@
         </td>
       </tr><tr>
         <td>
-          58
-        </td>
-        <td>
-          2034
-        </td>
-        <td>
-          2135
-          -
-          2234
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option(Quiz(question = question, answerList = answerList, maxScore = score, imagePath = imagePath))
-        </td>
-      </tr><tr>
-        <td>
           59
         </td>
         <td>
-          2040
+          2075
         </td>
         <td>
-          2241
+          2262
           -
-          2278
+          2299
         </td>
         <td>
           Block
@@ -1356,12 +1356,12 @@
           61
         </td>
         <td>
-          2039
+          2074
         </td>
         <td>
-          2314
+          2335
           -
-          2357
+          2378
         </td>
         <td>
           Apply
@@ -1380,12 +1380,12 @@
           61
         </td>
         <td>
-          2038
+          2073
         </td>
         <td>
-          2322
+          2343
           -
-          2356
+          2377
         </td>
         <td>
           Apply
@@ -1404,12 +1404,12 @@
           61
         </td>
         <td>
-          2037
+          2072
         </td>
         <td>
-          2336
+          2357
           -
-          2355
+          2376
         </td>
         <td>
           Select
@@ -1428,12 +1428,12 @@
           62
         </td>
         <td>
-          2043
+          2078
         </td>
         <td>
-          2362
+          2383
           -
-          2382
+          2403
         </td>
         <td>
           Block
@@ -1452,12 +1452,12 @@
           63
         </td>
         <td>
-          2041
+          2076
         </td>
         <td>
-          2392
+          2413
           -
-          2417
+          2438
         </td>
         <td>
           Apply
@@ -1476,12 +1476,12 @@
           64
         </td>
         <td>
-          2042
+          2077
         </td>
         <td>
-          2424
+          2445
           -
-          2439
+          2460
         </td>
         <td>
           Apply
@@ -1500,12 +1500,12 @@
           65
         </td>
         <td>
-          2044
+          2079
         </td>
         <td>
-          2444
+          2465
           -
-          2450
+          2471
         </td>
         <td>
           Block

@@ -30,19 +30,29 @@
 </span>6 <span style=''>
 </span>7 <span style=''>object EditQuizMenuView extends DefaultUpdate:
 </span>8 <span style=''>
-</span>9 <span style=''>  case class CourseListUpdate(override val updateParameter: Option[List[SavedCourse]]) extends </span><span style='background: #F0ADAD'>ViewUpdate(updateParameter)</span><span style=''>
-</span>10 <span style=''>
-</span>11 <span style=''>  case object AskCourseUpdate extends </span><span style='background: #F0ADAD'>ParameterlessViewUpdate</span><span style=''>
-</span>12 <span style=''>
-</span>13 <span style=''>  case class QuizListUpdate(override val updateParameter: Option[List[Quiz]]) extends </span><span style='background: #F0ADAD'>ViewUpdate(updateParameter)</span><span style=''>
+</span>9 <span style=''>  /** Update for the view containing the list of current curses */
+</span>10 <span style=''>  case class CourseListUpdate(override val updateParameter: Option[List[SavedCourse]]) extends </span><span style='background: #F0ADAD'>ViewUpdate(updateParameter)</span><span style=''>
+</span>11 <span style=''>
+</span>12 <span style=''>  /** Update for the view asking to select the course, used in Terminal View  */
+</span>13 <span style=''>  case object AskCourseSelectUpdate extends </span><span style='background: #F0ADAD'>ParameterlessViewUpdate</span><span style=''>
 </span>14 <span style=''>
-</span>15 <span style=''>  case object AskQuizUpdate extends </span><span style='background: #F0ADAD'>ParameterlessViewUpdate</span><span style=''>
-</span>16 <span style=''>
-</span>17 <span style=''>  case class QuizPrintUpdate(override val updateParameter: Option[Quiz]) extends </span><span style='background: #F0ADAD'>ViewUpdate(updateParameter)</span><span style=''>
-</span>18 <span style=''>
-</span>19 <span style=''>  case object AskQuizEditUpdate extends </span><span style='background: #F0ADAD'>ParameterlessViewUpdate</span><span style=''>
-</span>20 <span style=''>  
-</span>21 <span style=''>  case object QuizEditedUpdate extends </span><span style='background: #F0ADAD'>ParameterlessViewUpdate</span><span style=''>
+</span>15 <span style=''>  /** Update for the view containing the list of current quizzes in the course selected */
+</span>16 <span style=''>  case class QuizListUpdate(override val updateParameter: Option[List[Quiz]]) extends </span><span style='background: #F0ADAD'>ViewUpdate(updateParameter)</span><span style=''>
+</span>17 <span style=''>
+</span>18 <span style=''>  /** Update for the view asking to select the quiz, used in Terminal View  */
+</span>19 <span style=''>  case object AskQuizSelectUpdate extends </span><span style='background: #F0ADAD'>ParameterlessViewUpdate</span><span style=''>
+</span>20 <span style=''>
+</span>21 <span style=''>  /** Update for the view containing the current Quiz, used in Terminal View  */
+</span>22 <span style=''>  case class QuizPrintUpdate(override val updateParameter: Option[Quiz]) extends </span><span style='background: #F0ADAD'>ViewUpdate(updateParameter)</span><span style=''>
+</span>23 <span style=''>
+</span>24 <span style=''>  /** Update for the view asking to edit the quiz, used in Terminal View */
+</span>25 <span style=''>  case object AskQuizEditUpdate extends </span><span style='background: #F0ADAD'>ParameterlessViewUpdate</span><span style=''>
+</span>26 <span style=''>
+</span>27 <span style=''>  /** Update for the view for the feedback quiz edited */
+</span>28 <span style=''>  case object QuizEditedUpdate extends </span><span style='background: #F0ADAD'>ParameterlessViewUpdate</span><span style=''>
+</span>29 <span style=''>
+</span>30 <span style=''>  /** Update for the view for the feedback quiz deleted */
+</span>31 <span style=''>  case object QuizDeletedUpdate extends </span><span style='background: #F0ADAD'>ParameterlessViewUpdate</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -57,15 +67,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          8
+          9
         </td>
         <td>
-          1175
+          1181
         </td>
         <td>
-          279
+          346
           -
-          306
+          373
         </td>
         <td>
           Apply
@@ -78,66 +88,18 @@
         </td>
         <td style="background: #F0ADAD">
           ViewUpdate(updateParameter)
-        </td>
-      </tr><tr>
-        <td>
-          10
-        </td>
-        <td>
-          1176
-        </td>
-        <td>
-          346
-          -
-          369
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ParameterlessViewUpdate
         </td>
       </tr><tr>
         <td>
           12
         </td>
         <td>
-          1177
+          1182
         </td>
         <td>
-          457
+          500
           -
-          484
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ViewUpdate(updateParameter)
-        </td>
-      </tr><tr>
-        <td>
-          14
-        </td>
-        <td>
-          1178
-        </td>
-        <td>
-          522
-          -
-          545
+          523
         </td>
         <td>
           Apply
@@ -153,15 +115,15 @@
         </td>
       </tr><tr>
         <td>
-          16
+          15
         </td>
         <td>
-          1179
+          1183
         </td>
         <td>
-          628
+          702
           -
-          655
+          729
         </td>
         <td>
           Apply
@@ -180,12 +142,12 @@
           18
         </td>
         <td>
-          1180
+          1184
         </td>
         <td>
-          697
+          852
           -
-          720
+          875
         </td>
         <td>
           Apply
@@ -201,15 +163,87 @@
         </td>
       </tr><tr>
         <td>
-          20
+          21
         </td>
         <td>
-          1181
+          1185
         </td>
         <td>
-          763
+          1039
           -
-          786
+          1066
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ViewUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          24
+        </td>
+        <td>
+          1186
+        </td>
+        <td>
+          1184
+          -
+          1207
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ParameterlessViewUpdate
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          1187
+        </td>
+        <td>
+          1306
+          -
+          1329
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ParameterlessViewUpdate
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          1188
+        </td>
+        <td>
+          1430
+          -
+          1453
         </td>
         <td>
           Apply
