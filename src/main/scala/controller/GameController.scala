@@ -4,7 +4,8 @@ import controller.AppController.ReviewMenuAction
 import model.Answer.Answer
 import model.Quiz.Quiz
 import model.stats.PlayerStats
-import model.{GameStage, QuizInGame, SavedCourse}
+import model.{GameStage, QuizInGame}
+import model.SavedCourse.SavedCourse
 import utils.storage.ExportHandler
 
 trait GameController:
