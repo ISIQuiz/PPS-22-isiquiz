@@ -24,25 +24,50 @@
           <div class="tab-pane active" id="codegrid">
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model
 </span>2 <span style=''>
-</span>3 <span style=''>object Answer:
-</span>4 <span style=''>  
-</span>5 <span style=''>  case class Answer(text: String, isCorrect: Boolean)
-</span>6 <span style=''>
-</span>7 <span style=''>  </span><span style='background: #AEF1AE'>def getText</span><span style=''>(a: Answer): String = a match
-</span>8 <span style=''>    </span><span style='background: #AEF1AE'>case Answer(text, _)</span><span style=''> =&gt; text
-</span>9 <span style=''>  
-</span>10 <span style=''>  </span><span style='background: #AEF1AE'>def changeText</span><span style=''>(a: Answer, c: String): Answer = a match
-</span>11 <span style=''>    </span><span style='background: #AEF1AE'>case Answer(_, isCorrect)</span><span style=''> =&gt; Answer(c, isCorrect)
-</span>12 <span style=''>  
-</span>13 <span style=''>  </span><span style='background: #AEF1AE'>def isCorrect</span><span style=''>(a: Answer): Boolean = a match
-</span>14 <span style=''>    </span><span style='background: #AEF1AE'>case Answer(_, isCorrect)</span><span style=''> =&gt; isCorrect
-</span>15 <span style=''>  
-</span>16 <span style=''>  </span><span style='background: #AEF1AE'>def changeCorrect</span><span style=''>(c: Boolean)(a: Answer): Answer = a match
-</span>17 <span style=''>    </span><span style='background: #AEF1AE'>case Answer(text, _)</span><span style=''> =&gt; Answer(text, c)
-</span>18 <span style=''>  
-</span>19 <span style=''>  </span><span style='background: #AEF1AE'>def makeCorrect</span><span style=''>: Answer =&gt; Answer = </span><span style='background: #AEF1AE'>changeCorrect(true)</span><span style=''>
-</span>20 <span style=''>  
-</span>21 <span style=''>  </span><span style='background: #AEF1AE'>def makeWrong</span><span style=''>: Answer =&gt; Answer = </span><span style='background: #AEF1AE'>changeCorrect(false)</span><span style=''>
+</span>3 <span style=''>/**
+</span>4 <span style=''> * Object for an answer
+</span>5 <span style=''> */
+</span>6 <span style=''>object Answer:
+</span>7 <span style=''>
+</span>8 <span style=''>  /**
+</span>9 <span style=''>   * An answer has a text and is correct or wrong
+</span>10 <span style=''>   *
+</span>11 <span style=''>   * @param text the text of the answer
+</span>12 <span style=''>   * @param isCorrect an answer is correct or wrong
+</span>13 <span style=''>   */
+</span>14 <span style=''>  case class Answer(text: String, isCorrect: Boolean)
+</span>15 <span style=''>
+</span>16 <span style=''>  /**
+</span>17 <span style=''>   * Change answer text
+</span>18 <span style=''>   *
+</span>19 <span style=''>   * @param answer the answer to edit
+</span>20 <span style=''>   * @param answerText a new answer text
+</span>21 <span style=''>   * @return Answer
+</span>22 <span style=''>   */
+</span>23 <span style=''>  </span><span style='background: #AEF1AE'>def changeText</span><span style=''>(answer: Answer, answerText: String): Answer = Answer(answerText, answer.isCorrect)
+</span>24 <span style=''>
+</span>25 <span style=''>  /**
+</span>26 <span style=''>   * Change whether or not the answer is correct
+</span>27 <span style=''>   *
+</span>28 <span style=''>   * @param isCorrect the new value of correctness
+</span>29 <span style=''>   * @param answer the answer to edit
+</span>30 <span style=''>   * @return Answer
+</span>31 <span style=''>   */
+</span>32 <span style=''>  </span><span style='background: #AEF1AE'>def changeCorrect</span><span style=''>(isCorrect: Boolean)(answer: Answer): Answer = Answer(answer.text, isCorrect)
+</span>33 <span style=''>
+</span>34 <span style=''>  /**
+</span>35 <span style=''>   * Make an answer correct
+</span>36 <span style=''>   *
+</span>37 <span style=''>   * @return Answer
+</span>38 <span style=''>   */
+</span>39 <span style=''>  </span><span style='background: #AEF1AE'>def makeCorrect</span><span style=''>: Answer =&gt; Answer = </span><span style='background: #AEF1AE'>changeCorrect(true)</span><span style=''>
+</span>40 <span style=''>
+</span>41 <span style=''>  /**
+</span>42 <span style=''>   * Make an answer wrong
+</span>43 <span style=''>   *
+</span>44 <span style=''>   * @return Answer
+</span>45 <span style=''>   */
+</span>46 <span style=''>  </span><span style='background: #AEF1AE'>def makeWrong</span><span style=''>: Answer =&gt; Answer = </span><span style='background: #AEF1AE'>changeCorrect(false)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -57,63 +82,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          6
+          22
         </td>
         <td>
-          458
+          439
         </td>
         <td>
-          90
+          419
           -
-          101
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          getText
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          def getText
-        </td>
-      </tr><tr>
-        <td>
-          7
-        </td>
-        <td>
-          457
-        </td>
-        <td>
-          135
-          -
-          155
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          case Answer(text, _)
-        </td>
-      </tr><tr>
-        <td>
-          9
-        </td>
-        <td>
-          460
-        </td>
-        <td>
-          169
-          -
-          183
+          433
         </td>
         <td>
           DefDef
@@ -129,87 +106,15 @@
         </td>
       </tr><tr>
         <td>
-          10
+          31
         </td>
         <td>
-          459
+          440
         </td>
         <td>
-          228
+          695
           -
-          253
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          case Answer(_, isCorrect)
-        </td>
-      </tr><tr>
-        <td>
-          12
-        </td>
-        <td>
-          462
-        </td>
-        <td>
-          283
-          -
-          296
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          isCorrect
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          def isCorrect
-        </td>
-      </tr><tr>
-        <td>
-          13
-        </td>
-        <td>
-          461
-        </td>
-        <td>
-          331
-          -
-          356
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          case Answer(_, isCorrect)
-        </td>
-      </tr><tr>
-        <td>
-          15
-        </td>
-        <td>
-          464
-        </td>
-        <td>
-          375
-          -
-          392
+          712
         </td>
         <td>
           DefDef
@@ -225,63 +130,15 @@
         </td>
       </tr><tr>
         <td>
-          16
+          38
         </td>
         <td>
-          463
+          442
         </td>
         <td>
-          438
+          858
           -
-          458
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          case Answer(text, _)
-        </td>
-      </tr><tr>
-        <td>
-          18
-        </td>
-        <td>
-          465
-        </td>
-        <td>
-          519
-          -
-          538
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          changeCorrect
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          changeCorrect(true)
-        </td>
-      </tr><tr>
-        <td>
-          18
-        </td>
-        <td>
-          466
-        </td>
-        <td>
-          483
-          -
-          498
+          873
         </td>
         <td>
           DefDef
@@ -297,15 +154,39 @@
         </td>
       </tr><tr>
         <td>
-          20
+          38
         </td>
         <td>
-          468
+          441
         </td>
         <td>
-          544
+          894
           -
-          557
+          913
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          changeCorrect
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          changeCorrect(true)
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          444
+        </td>
+        <td>
+          980
+          -
+          993
         </td>
         <td>
           DefDef
@@ -321,15 +202,15 @@
         </td>
       </tr><tr>
         <td>
-          20
+          45
         </td>
         <td>
-          467
+          443
         </td>
         <td>
-          578
+          1014
           -
-          598
+          1034
         </td>
         <td>
           Apply

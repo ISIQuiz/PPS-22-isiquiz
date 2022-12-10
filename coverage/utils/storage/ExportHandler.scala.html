@@ -29,77 +29,79 @@
 </span>5 <span style=''>import model.Quiz.Quiz
 </span>6 <span style=''>import model.stats.PlayerStats.{PlayerStats, initStats}
 </span>7 <span style=''>import model.stats.{CourseInStats, QuizInStats}
-</span>8 <span style=''>import model.{Course, SavedCourse, Session}
-</span>9 <span style=''>import play.api.libs.json.JsObject
-</span>10 <span style=''>import utils.storage.FileHandler
-</span>11 <span style=''>import utils.storage.Configuration.*
-</span>12 <span style=''>import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
-</span>13 <span style=''>import java.io.File
-</span>14 <span style=''>import java.io.FileNotFoundException
-</span>15 <span style=''>import scala.util.{Failure, Success, Try}
-</span>16 <span style=''>
-</span>17 <span style=''>/** Object that manage data export */
-</span>18 <span style=''>object ExportHandler extends DataStorageHandler:
-</span>19 <span style=''>
-</span>20 <span style=''>  /**
-</span>21 <span style=''>   * Export data to personal directory if possible
-</span>22 <span style=''>   * Path and name are predetermined in [[Configuration]]
-</span>23 <span style=''>   *
-</span>24 <span style=''>   * @param data the data to export
-</span>25 <span style=''>   * @tparam A
-</span>26 <span style=''>   * @return a Try[String] with file path
-</span>27 <span style=''>   */
-</span>28 <span style=''>  </span><span style='background: #AEF1AE'>def exportDataToPersonalDirectory</span><span style=''>[A](data: A): Try[String] = data match
-</span>29 <span style=''>    </span><span style='background: #AEF1AE'>case session: Session</span><span style=''> =&gt;
-</span>30 <span style=''>      </span><span style='background: #AEF1AE'>exportSessionToPersonalDirectory(session)</span><span style=''>
-</span>31 <span style=''>    </span><span style='background: #AEF1AE'>case savedCourseList: List[SavedCourse]</span><span style=''> =&gt;
-</span>32 <span style=''>      </span><span style='background: #AEF1AE'>exportSavedCourseListToPersonalDirectory(savedCourseList)</span><span style=''>
-</span>33 <span style=''>    </span><span style='background: #AEF1AE'>case playerStats: PlayerStats</span><span style=''> =&gt;
-</span>34 <span style=''>      </span><span style='background: #AEF1AE'>exportPlayerStatsToPersonalDirectory(playerStats)</span><span style=''>
-</span>35 <span style=''>
-</span>36 <span style=''>  /**
-</span>37 <span style=''>   * Export the list of [[SavedCourse]] to chosen directory
-</span>38 <span style=''>   * Name of file is predetermined in [[Configuration]]
-</span>39 <span style=''>   *
-</span>40 <span style=''>   * @param session
-</span>41 <span style=''>   * @return a Try[String] with file path
-</span>42 <span style=''>   */
-</span>43 <span style=''>  </span><span style='background: #AEF1AE'>def exportSavedCoursesToPath</span><span style=''>(savedCourseList: List[SavedCourse], filePath: String): Try[String] =
-</span>44 <span style=''>    val path: String = </span><span style='background: #AEF1AE'>filePath + FileSeparator + PlayerCoursesFileName</span><span style=''>
-</span>45 <span style=''>    </span><span style='background: #AEF1AE'>storeDataToPath(savedCourseList, path)</span><span style=''>
-</span>46 <span style=''>
-</span>47 <span style=''>  /**
-</span>48 <span style=''>   * Export personal [[Session]] to personal directory.
-</span>49 <span style=''>   *
-</span>50 <span style=''>   * @param session
-</span>51 <span style=''>   * @return a Try[String] with directory path
-</span>52 <span style=''>   */
-</span>53 <span style=''>  </span><span style='background: #AEF1AE'>private def exportSessionToPersonalDirectory</span><span style=''>(session: Session): Try[String] =
-</span>54 <span style=''>    </span><span style='background: #AEF1AE'>Try {
-</span>55 <span style=''></span><span style='background: #AEF1AE'>      exportSavedCourseListToPersonalDirectory(session.savedCourses)
-</span>56 <span style=''></span><span style='background: #AEF1AE'>      exportPlayerStatsToPersonalDirectory(session.playerStats)
-</span>57 <span style=''></span><span style='background: #AEF1AE'>      PlayerDataDirectoryPath
-</span>58 <span style=''></span><span style='background: #AEF1AE'>    }</span><span style=''>
-</span>59 <span style=''>
-</span>60 <span style=''>
-</span>61 <span style=''>  /**
-</span>62 <span style=''>   * Export the [[PlayerStats]] in a file inside the personal directory.
-</span>63 <span style=''>   *
-</span>64 <span style=''>   * @param session
-</span>65 <span style=''>   * @return a Try[String] with file path
-</span>66 <span style=''>   */
-</span>67 <span style=''>  </span><span style='background: #AEF1AE'>private def exportPlayerStatsToPersonalDirectory</span><span style=''>(playerStats: PlayerStats): Try[String] =
-</span>68 <span style=''>    </span><span style='background: #AEF1AE'>storeDataToPath(playerStats, PlayerStatsFilePath)</span><span style=''>
-</span>69 <span style=''>
-</span>70 <span style=''>
-</span>71 <span style=''>  /**
-</span>72 <span style=''>   * Export the [[SavedCourse]] list in a file inside the personal directory.
-</span>73 <span style=''>   *
-</span>74 <span style=''>   * @param session
-</span>75 <span style=''>   * @return a Try[String] with file path
-</span>76 <span style=''>   */
-</span>77 <span style=''>  </span><span style='background: #AEF1AE'>private def exportSavedCourseListToPersonalDirectory</span><span style=''>(savedCourseList: List[SavedCourse]): Try[String] =
-</span>78 <span style=''>    </span><span style='background: #AEF1AE'>exportSavedCoursesToPath(savedCourseList: List[SavedCourse], PlayerDataDirectoryPath)</span><span style=''>
+</span>8 <span style=''>import model.{Course, Session}
+</span>9 <span style=''>import model.Session.Session
+</span>10 <span style=''>import model.SavedCourse.SavedCourse
+</span>11 <span style=''>import play.api.libs.json.JsObject
+</span>12 <span style=''>import utils.storage.FileHandler
+</span>13 <span style=''>import utils.storage.Configuration.*
+</span>14 <span style=''>import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
+</span>15 <span style=''>import java.io.File
+</span>16 <span style=''>import java.io.FileNotFoundException
+</span>17 <span style=''>import scala.util.{Failure, Success, Try}
+</span>18 <span style=''>
+</span>19 <span style=''>/** Object that manage data export */
+</span>20 <span style=''>object ExportHandler extends DataStorageHandler:
+</span>21 <span style=''>
+</span>22 <span style=''>  /**
+</span>23 <span style=''>   * Export data to personal directory if possible
+</span>24 <span style=''>   * Path and name are predetermined in [[Configuration]]
+</span>25 <span style=''>   *
+</span>26 <span style=''>   * @param data the data to export
+</span>27 <span style=''>   * @tparam A
+</span>28 <span style=''>   * @return a Try[String] with file path
+</span>29 <span style=''>   */
+</span>30 <span style=''>  </span><span style='background: #AEF1AE'>def exportDataToPersonalDirectory</span><span style=''>[A](data: A): Try[String] = data match
+</span>31 <span style=''>    </span><span style='background: #AEF1AE'>case session: Session</span><span style=''> =&gt;
+</span>32 <span style=''>      </span><span style='background: #AEF1AE'>exportSessionToPersonalDirectory(session)</span><span style=''>
+</span>33 <span style=''>    </span><span style='background: #AEF1AE'>case savedCourseList: List[SavedCourse]</span><span style=''> =&gt;
+</span>34 <span style=''>      </span><span style='background: #AEF1AE'>exportSavedCourseListToPersonalDirectory(savedCourseList)</span><span style=''>
+</span>35 <span style=''>    </span><span style='background: #AEF1AE'>case playerStats: PlayerStats</span><span style=''> =&gt;
+</span>36 <span style=''>      </span><span style='background: #AEF1AE'>exportPlayerStatsToPersonalDirectory(playerStats)</span><span style=''>
+</span>37 <span style=''>
+</span>38 <span style=''>  /**
+</span>39 <span style=''>   * Export the list of [[SavedCourse]] to chosen directory
+</span>40 <span style=''>   * Name of file is predetermined in [[Configuration]]
+</span>41 <span style=''>   *
+</span>42 <span style=''>   * @param session
+</span>43 <span style=''>   * @return a Try[String] with file path
+</span>44 <span style=''>   */
+</span>45 <span style=''>  </span><span style='background: #AEF1AE'>def exportSavedCoursesToPath</span><span style=''>(savedCourseList: List[SavedCourse], filePath: String): Try[String] =
+</span>46 <span style=''>    val path: String = </span><span style='background: #AEF1AE'>filePath + FileSeparator + PlayerCoursesFileName</span><span style=''>
+</span>47 <span style=''>    </span><span style='background: #AEF1AE'>storeDataToPath(savedCourseList, path)</span><span style=''>
+</span>48 <span style=''>
+</span>49 <span style=''>  /**
+</span>50 <span style=''>   * Export personal [[Session]] to personal directory.
+</span>51 <span style=''>   *
+</span>52 <span style=''>   * @param session
+</span>53 <span style=''>   * @return a Try[String] with directory path
+</span>54 <span style=''>   */
+</span>55 <span style=''>  </span><span style='background: #AEF1AE'>private def exportSessionToPersonalDirectory</span><span style=''>(session: Session): Try[String] =
+</span>56 <span style=''>    </span><span style='background: #AEF1AE'>Try {
+</span>57 <span style=''></span><span style='background: #AEF1AE'>      exportSavedCourseListToPersonalDirectory(session.savedCourses)
+</span>58 <span style=''></span><span style='background: #AEF1AE'>      exportPlayerStatsToPersonalDirectory(session.playerStats)
+</span>59 <span style=''></span><span style='background: #AEF1AE'>      PlayerDataDirectoryPath
+</span>60 <span style=''></span><span style='background: #AEF1AE'>    }</span><span style=''>
+</span>61 <span style=''>
+</span>62 <span style=''>
+</span>63 <span style=''>  /**
+</span>64 <span style=''>   * Export the [[PlayerStats]] in a file inside the personal directory.
+</span>65 <span style=''>   *
+</span>66 <span style=''>   * @param session
+</span>67 <span style=''>   * @return a Try[String] with file path
+</span>68 <span style=''>   */
+</span>69 <span style=''>  </span><span style='background: #AEF1AE'>private def exportPlayerStatsToPersonalDirectory</span><span style=''>(playerStats: PlayerStats): Try[String] =
+</span>70 <span style=''>    </span><span style='background: #AEF1AE'>storeDataToPath(playerStats, PlayerStatsFilePath)</span><span style=''>
+</span>71 <span style=''>
+</span>72 <span style=''>
+</span>73 <span style=''>  /**
+</span>74 <span style=''>   * Export the [[SavedCourse]] list in a file inside the personal directory.
+</span>75 <span style=''>   *
+</span>76 <span style=''>   * @param session
+</span>77 <span style=''>   * @return a Try[String] with file path
+</span>78 <span style=''>   */
+</span>79 <span style=''>  </span><span style='background: #AEF1AE'>private def exportSavedCourseListToPersonalDirectory</span><span style=''>(savedCourseList: List[SavedCourse]): Try[String] =
+</span>80 <span style=''>    </span><span style='background: #AEF1AE'>exportSavedCoursesToPath(savedCourseList: List[SavedCourse], PlayerDataDirectoryPath)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -114,15 +116,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          27
+          29
         </td>
         <td>
-          1176
+          1105
         </td>
         <td>
-          835
+          888
           -
-          868
+          921
         </td>
         <td>
           DefDef
@@ -138,15 +140,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          30
         </td>
         <td>
-          1171
+          1100
         </td>
         <td>
-          911
+          964
           -
-          932
+          985
         </td>
         <td>
           Block
@@ -162,15 +164,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          31
         </td>
         <td>
-          1170
+          1099
         </td>
         <td>
-          942
+          995
           -
-          983
+          1036
         </td>
         <td>
           Apply
@@ -186,15 +188,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          32
         </td>
         <td>
-          1173
+          1102
         </td>
         <td>
-          988
+          1041
           -
-          1027
+          1080
         </td>
         <td>
           Block
@@ -210,15 +212,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          33
         </td>
         <td>
-          1172
+          1101
         </td>
         <td>
-          1037
+          1090
           -
-          1094
+          1147
         </td>
         <td>
           Apply
@@ -234,15 +236,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          34
         </td>
         <td>
-          1175
+          1104
         </td>
         <td>
-          1099
+          1152
           -
-          1128
+          1181
         </td>
         <td>
           Block
@@ -258,15 +260,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          35
         </td>
         <td>
-          1174
+          1103
         </td>
         <td>
-          1138
+          1191
           -
-          1187
+          1240
         </td>
         <td>
           Apply
@@ -282,15 +284,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          44
         </td>
         <td>
-          1180
+          1109
         </td>
         <td>
-          1386
+          1439
           -
-          1414
+          1467
         </td>
         <td>
           DefDef
@@ -306,39 +308,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          45
         </td>
         <td>
-          1178
+          1106
         </td>
         <td>
-          1507
+          1560
           -
-          1555
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          +
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          filePath + FileSeparator + PlayerCoursesFileName
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          1177
-        </td>
-        <td>
-          1507
-          -
-          1531
+          1584
         </td>
         <td>
           Apply
@@ -354,15 +332,39 @@
         </td>
       </tr><tr>
         <td>
-          44
+          45
         </td>
         <td>
-          1179
+          1107
         </td>
         <td>
           1560
           -
-          1598
+          1608
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          filePath + FileSeparator + PlayerCoursesFileName
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          1108
+        </td>
+        <td>
+          1613
+          -
+          1651
         </td>
         <td>
           Apply
@@ -378,15 +380,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          54
         </td>
         <td>
-          1182
+          1111
         </td>
         <td>
-          1742
+          1795
           -
-          1786
+          1839
         </td>
         <td>
           DefDef
@@ -402,15 +404,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          55
         </td>
         <td>
-          1181
+          1110
         </td>
         <td>
-          1824
+          1877
           -
-          1998
+          2051
         </td>
         <td>
           Apply
@@ -430,15 +432,15 @@
         </td>
       </tr><tr>
         <td>
-          66
+          68
         </td>
         <td>
-          1184
+          1113
         </td>
         <td>
-          2155
+          2208
           -
-          2203
+          2256
         </td>
         <td>
           DefDef
@@ -454,15 +456,15 @@
         </td>
       </tr><tr>
         <td>
-          67
+          69
         </td>
         <td>
-          1183
+          1112
         </td>
         <td>
-          2249
+          2302
           -
-          2298
+          2351
         </td>
         <td>
           Apply
@@ -478,15 +480,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          78
         </td>
         <td>
-          1186
+          1115
         </td>
         <td>
-          2460
+          2513
           -
-          2512
+          2565
         </td>
         <td>
           DefDef
@@ -502,15 +504,15 @@
         </td>
       </tr><tr>
         <td>
-          77
+          79
         </td>
         <td>
-          1185
+          1114
         </td>
         <td>
-          2568
+          2621
           -
-          2653
+          2706
         </td>
         <td>
           Apply

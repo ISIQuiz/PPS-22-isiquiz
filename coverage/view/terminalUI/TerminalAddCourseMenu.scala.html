@@ -28,11 +28,11 @@
 </span>4 <span style=''>import controller.AddCourseMenuController.*
 </span>5 <span style=''>import view.AddCourseMenuView.*
 </span>6 <span style=''>import controller.actions.Action
-</span>7 <span style=''>import model.SavedCourse
-</span>8 <span style=''>import model.SavedCourse.SavedCourseImpl
-</span>9 <span style=''>import view.View.*
-</span>10 <span style=''>import view.updates.{ViewUpdate}
-</span>11 <span style=''>
+</span>7 <span style=''>import model.SavedCourse.SavedCourse
+</span>8 <span style=''>import view.View.*
+</span>9 <span style=''>import view.updates.ViewUpdate
+</span>10 <span style=''>import model.CourseIdentifier.CourseIdentifier
+</span>11 <span style=''>import model.Quiz.Quiz
 </span>12 <span style=''>import scala.collection.mutable.Map
 </span>13 <span style=''>import scala.io.StdIn.readLine
 </span>14 <span style=''>
@@ -61,25 +61,23 @@
 </span>37 <span style=''>      if &quot;s&quot; == </span><span style='background: #F0ADAD'>readLine.toLowerCase</span><span style=''> then
 </span>38 <span style=''>        </span><span style='background: #F0ADAD'>println(&quot;inserisci descrizione del corso:&quot;)
 </span>39 <span style=''></span><span style='background: #F0ADAD'>        descriptionIns = Some(readLine)</span><span style=''>
-</span>40 <span style=''>      import model.CourseIdentifier.CourseIdentifierImpl
-</span>41 <span style=''>      import model.Quiz.Quiz
-</span>42 <span style=''>      val course = SavedCourseImpl(
-</span>43 <span style=''>        courseId = CourseIdentifierImpl(
-</span>44 <span style=''>          courseName = courseNameIns,
-</span>45 <span style=''>          degreeName = degreeNameIns,
-</span>46 <span style=''>          universityName = universityNameIns
-</span>47 <span style=''>        ),
-</span>48 <span style=''>        description = descriptionIns,
-</span>49 <span style=''>        quizList = </span><span style='background: #F0ADAD'>Nil</span><span style=''>
-</span>50 <span style=''>      )
-</span>51 <span style=''>      import controller.AddCourseMenuController.AddCourseAction
-</span>52 <span style=''>      </span><span style='background: #F0ADAD'>sendEvent(AddCourseAction(Option(course)))</span><span style=''>
-</span>53 <span style=''>    </span><span style='background: #F0ADAD'>case CoursePrintUpdate(course)</span><span style=''> =&gt;
-</span>54 <span style=''>      import model.SavedCourse
-</span>55 <span style=''>      </span><span style='background: #F0ADAD'>println(course.get)</span><span style=''>
-</span>56 <span style=''>    </span><span style='background: #F0ADAD'>case CourseAddedUpdate</span><span style=''> =&gt;
-</span>57 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Corso Aggiunto!&quot;)</span><span style=''>
-</span>58 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
+</span>40 <span style=''>
+</span>41 <span style=''>      val course = SavedCourse(
+</span>42 <span style=''>        courseId = CourseIdentifier(
+</span>43 <span style=''>          courseName = courseNameIns,
+</span>44 <span style=''>          degreeName = degreeNameIns,
+</span>45 <span style=''>          universityName = universityNameIns
+</span>46 <span style=''>        ),
+</span>47 <span style=''>        description = descriptionIns,
+</span>48 <span style=''>        quizList = </span><span style='background: #F0ADAD'>Nil</span><span style=''>
+</span>49 <span style=''>      )
+</span>50 <span style=''>      import controller.AddCourseMenuController.AddCourseAction
+</span>51 <span style=''>      </span><span style='background: #F0ADAD'>sendEvent(AddCourseAction(Option(course)))</span><span style=''>
+</span>52 <span style=''>    </span><span style='background: #F0ADAD'>case CoursePrintUpdate(course)</span><span style=''> =&gt;
+</span>53 <span style=''>      </span><span style='background: #F0ADAD'>println(course.get)</span><span style=''>
+</span>54 <span style=''>    </span><span style='background: #F0ADAD'>case CourseAddedUpdate</span><span style=''> =&gt;
+</span>55 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Corso Aggiunto!&quot;)</span><span style=''>
+</span>56 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -97,12 +95,12 @@
           19
         </td>
         <td>
-          2053
+          1956
         </td>
         <td>
-          540
+          578
           -
-          564
+          602
         </td>
         <td>
           Apply
@@ -123,12 +121,12 @@
           20
         </td>
         <td>
-          2052
+          1955
         </td>
         <td>
-          549
+          587
           -
-          560
+          598
         </td>
         <td>
           Apply
@@ -147,12 +145,12 @@
           23
         </td>
         <td>
-          2079
+          1982
         </td>
         <td>
-          568
+          606
           -
-          589
+          627
         </td>
         <td>
           DefDef
@@ -171,12 +169,12 @@
           24
         </td>
         <td>
-          2056
+          1959
         </td>
         <td>
-          643
+          681
           -
-          661
+          699
         </td>
         <td>
           Block
@@ -195,12 +193,12 @@
           25
         </td>
         <td>
-          2054
+          1957
         </td>
         <td>
-          671
+          709
           -
-          722
+          760
         </td>
         <td>
           Apply
@@ -219,12 +217,12 @@
           26
         </td>
         <td>
-          2055
+          1958
         </td>
         <td>
-          729
+          767
           -
-          755
+          793
         </td>
         <td>
           Apply
@@ -243,12 +241,12 @@
           27
         </td>
         <td>
-          2072
+          1975
         </td>
         <td>
-          760
+          798
           -
-          780
+          818
         </td>
         <td>
           Block
@@ -267,12 +265,12 @@
           28
         </td>
         <td>
-          2057
+          1960
         </td>
         <td>
-          790
+          828
           -
-          822
+          860
         </td>
         <td>
           Apply
@@ -291,12 +289,12 @@
           29
         </td>
         <td>
-          2058
+          1961
         </td>
         <td>
-          849
+          887
           -
-          857
+          895
         </td>
         <td>
           Apply
@@ -315,12 +313,12 @@
           30
         </td>
         <td>
-          2059
+          1962
         </td>
         <td>
-          864
+          902
           -
-          906
+          944
         </td>
         <td>
           Apply
@@ -339,12 +337,12 @@
           31
         </td>
         <td>
-          2060
+          1963
         </td>
         <td>
-          933
+          971
           -
-          941
+          979
         </td>
         <td>
           Apply
@@ -363,12 +361,12 @@
           32
         </td>
         <td>
-          2061
+          1964
         </td>
         <td>
-          948
+          986
           -
-          985
+          1023
         </td>
         <td>
           Apply
@@ -387,12 +385,12 @@
           33
         </td>
         <td>
-          2062
+          1965
         </td>
         <td>
-          1016
+          1054
           -
-          1024
+          1062
         </td>
         <td>
           Apply
@@ -411,12 +409,12 @@
           34
         </td>
         <td>
-          2063
+          1966
         </td>
         <td>
-          1031
+          1069
           -
-          1089
+          1127
         </td>
         <td>
           Apply
@@ -435,12 +433,36 @@
           36
         </td>
         <td>
-          2065
+          1967
         </td>
         <td>
-          1154
+          1192
           -
-          1174
+          1200
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readLine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          readLine
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          1968
+        </td>
+        <td>
+          1192
+          -
+          1212
         </td>
         <td>
           Apply
@@ -456,39 +478,15 @@
         </td>
       </tr><tr>
         <td>
-          36
-        </td>
-        <td>
-          2064
-        </td>
-        <td>
-          1154
-          -
-          1162
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          readLine
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          readLine
-        </td>
-      </tr><tr>
-        <td>
           37
         </td>
         <td>
-          2066
+          1969
         </td>
         <td>
-          1188
+          1226
           -
-          1231
+          1269
         </td>
         <td>
           Apply
@@ -507,12 +505,12 @@
           37
         </td>
         <td>
-          2068
+          1971
         </td>
         <td>
-          1188
+          1226
           -
-          1271
+          1309
         </td>
         <td>
           Block
@@ -532,12 +530,12 @@
           38
         </td>
         <td>
-          2067
+          1970
         </td>
         <td>
-          1262
+          1300
           -
-          1270
+          1308
         </td>
         <td>
           Apply
@@ -553,15 +551,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          47
         </td>
         <td>
-          2069
+          1972
         </td>
         <td>
-          1624
+          1569
           -
-          1627
+          1572
         </td>
         <td>
           Ident
@@ -577,15 +575,39 @@
         </td>
       </tr><tr>
         <td>
-          51
+          50
         </td>
         <td>
-          2071
+          1973
         </td>
         <td>
-          1706
+          1677
           -
-          1748
+          1691
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(course)
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          1974
+        </td>
+        <td>
+          1651
+          -
+          1693
         </td>
         <td>
           Apply
@@ -604,36 +626,12 @@
           51
         </td>
         <td>
-          2070
+          1978
         </td>
         <td>
-          1732
+          1698
           -
-          1746
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option(course)
-        </td>
-      </tr><tr>
-        <td>
-          52
-        </td>
-        <td>
-          2075
-        </td>
-        <td>
-          1753
-          -
-          1783
+          1728
         </td>
         <td>
           Block
@@ -649,39 +647,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          52
         </td>
         <td>
-          2074
+          1976
         </td>
         <td>
-          1824
+          1746
           -
-          1843
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          println
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          println(course.get)
-        </td>
-      </tr><tr>
-        <td>
-          54
-        </td>
-        <td>
-          2073
-        </td>
-        <td>
-          1832
-          -
-          1842
+          1756
         </td>
         <td>
           Select
@@ -697,15 +671,39 @@
         </td>
       </tr><tr>
         <td>
-          55
+          52
         </td>
         <td>
-          2077
+          1977
         </td>
         <td>
-          1848
+          1738
           -
-          1870
+          1757
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(course.get)
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          1980
+        </td>
+        <td>
+          1762
+          -
+          1784
         </td>
         <td>
           Block
@@ -721,15 +719,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          54
         </td>
         <td>
-          2076
+          1979
         </td>
         <td>
-          1880
+          1794
           -
-          1906
+          1820
         </td>
         <td>
           Apply
@@ -745,15 +743,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          55
         </td>
         <td>
-          2078
+          1981
         </td>
         <td>
-          1911
+          1825
           -
-          1917
+          1831
         </td>
         <td>
           Block

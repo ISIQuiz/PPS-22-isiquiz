@@ -26,108 +26,110 @@
 </span>2 <span style=''>
 </span>3 <span style=''>import model.Answer.Answer
 </span>4 <span style=''>import model.Quiz.Quiz
-</span>5 <span style=''>import model.{Course, CourseIdentifier, SavedCourse, Session}
-</span>6 <span style=''>import play.api.libs.json.*
-</span>7 <span style=''>import utils.parser.JsonLabels.*
-</span>8 <span style=''>
-</span>9 <span style=''>import java.util.UUID
-</span>10 <span style=''>import scala.util.Try
-</span>11 <span style=''>
-</span>12 <span style=''>/** Trait for the [[CourseJsonParser]] parser */
-</span>13 <span style=''>trait CourseJsonParser extends JsonParser[List[SavedCourse]]
-</span>14 <span style=''>
-</span>15 <span style=''>/** Companion object of [[SavedCourse]] parser */
-</span>16 <span style=''>object CourseJsonParser:
-</span>17 <span style=''>
-</span>18 <span style=''>  /** Creates a new [[CourseJsonParser]] */
-</span>19 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(): CourseJsonParser = </span><span style='background: #AEF1AE'>new CourseJsonParserImpl()</span><span style=''>
-</span>20 <span style=''>
-</span>21 <span style=''>  // Implementation of CourseJsonParser trait
-</span>22 <span style=''>  private class CourseJsonParserImpl extends CourseJsonParser :
-</span>23 <span style=''>
-</span>24 <span style=''>    </span><span style='background: #AEF1AE'>override def serialize</span><span style=''>(savedCourseList: List[SavedCourse]): JsObject =
-</span>25 <span style=''>      </span><span style='background: #AEF1AE'>JsObject(Seq(SavedCourseListLabel -&gt; JsArray(savedCourseList.map(serializeObjectOfSavedCourse))))</span><span style=''>
-</span>26 <span style=''>
-</span>27 <span style=''>    // Serialize an object based on his type
-</span>28 <span style=''>    </span><span style='background: #AEF1AE'>private def serializeObjectOfSavedCourse</span><span style=''>[A](element: A): JsObject =
-</span>29 <span style=''>      element match
-</span>30 <span style=''>        </span><span style='background: #F0ADAD'>case savedCourseList: List[SavedCourse]</span><span style=''> =&gt;
-</span>31 <span style=''>          </span><span style='background: #F0ADAD'>JsObject(Seq(
-</span>32 <span style=''></span><span style='background: #F0ADAD'>            SavedCourseListLabel -&gt; JsArray(savedCourseList.map(serializeObjectOfSavedCourse))
-</span>33 <span style=''></span><span style='background: #F0ADAD'>          ))</span><span style=''>
-</span>34 <span style=''>        </span><span style='background: #AEF1AE'>case savedCourse: SavedCourse</span><span style=''> =&gt; // SavedCourse
-</span>35 <span style=''>          </span><span style='background: #AEF1AE'>JsObject(Seq(
-</span>36 <span style=''></span><span style='background: #AEF1AE'>            CourseIdentifierLabel -&gt; serializeObjectOfSavedCourse(savedCourse.courseId),
-</span>37 <span style=''></span><span style='background: #AEF1AE'>            DescriptionLabel -&gt; JsString(savedCourse.description.getOrElse(&quot;&quot;)),
-</span>38 <span style=''></span><span style='background: #AEF1AE'>            QuizListLabel -&gt; JsArray(savedCourse.quizList.map(serializeObjectOfSavedCourse))
-</span>39 <span style=''></span><span style='background: #AEF1AE'>          ))</span><span style=''>
-</span>40 <span style=''>        </span><span style='background: #AEF1AE'>case quiz: Quiz</span><span style=''> =&gt; // Quiz
-</span>41 <span style=''>          </span><span style='background: #AEF1AE'>JsObject(Seq(
-</span>42 <span style=''></span><span style='background: #AEF1AE'>            QuizIdLabel -&gt; JsString(quiz.quizId.toString),
-</span>43 <span style=''></span><span style='background: #AEF1AE'>            QuestionLabel -&gt; JsString(quiz.question),
-</span>44 <span style=''></span><span style='background: #AEF1AE'>            AnswerListLabel -&gt; JsArray(quiz.answerList.map(serializeObjectOfSavedCourse)),
-</span>45 <span style=''></span><span style='background: #AEF1AE'>            MaxScoreLabel -&gt; JsNumber(quiz.maxScore),
-</span>46 <span style=''></span><span style='background: #AEF1AE'>            ImagePathLabel -&gt; JsString(quiz.imagePath.getOrElse(&quot;&quot;))
-</span>47 <span style=''></span><span style='background: #AEF1AE'>          ))</span><span style=''>
-</span>48 <span style=''>        </span><span style='background: #AEF1AE'>case answer: Answer</span><span style=''> =&gt; // Answer
-</span>49 <span style=''>          </span><span style='background: #AEF1AE'>JsObject(Seq(
-</span>50 <span style=''></span><span style='background: #AEF1AE'>            TextLabel -&gt; JsString(answer.text),
-</span>51 <span style=''></span><span style='background: #AEF1AE'>            IsCorrectLabel -&gt; JsBoolean(answer.isCorrect)
-</span>52 <span style=''></span><span style='background: #AEF1AE'>          ))</span><span style=''>
-</span>53 <span style=''>        </span><span style='background: #AEF1AE'>case courseIdentifier: CourseIdentifier</span><span style=''> =&gt;
-</span>54 <span style=''>          </span><span style='background: #AEF1AE'>serializeCourseIdentifier(courseIdentifier)</span><span style=''>
-</span>55 <span style=''>
-</span>56 <span style=''>        </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>JsObject.empty</span><span style=''>
+</span>5 <span style=''>import model.SavedCourse.SavedCourse
+</span>6 <span style=''>import model.CourseIdentifier.CourseIdentifier
+</span>7 <span style=''>import model.{Course, Session}
+</span>8 <span style=''>import play.api.libs.json.*
+</span>9 <span style=''>import utils.parser.JsonLabels.*
+</span>10 <span style=''>
+</span>11 <span style=''>import java.util.UUID
+</span>12 <span style=''>import scala.util.Try
+</span>13 <span style=''>
+</span>14 <span style=''>/** Trait for the [[CourseJsonParser]] parser */
+</span>15 <span style=''>trait CourseJsonParser extends JsonParser[List[SavedCourse]]
+</span>16 <span style=''>
+</span>17 <span style=''>/** Companion object of [[SavedCourse]] parser */
+</span>18 <span style=''>object CourseJsonParser:
+</span>19 <span style=''>
+</span>20 <span style=''>  /** Creates a new [[CourseJsonParser]] */
+</span>21 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(): CourseJsonParser = </span><span style='background: #AEF1AE'>new CourseJsonParserImpl()</span><span style=''>
+</span>22 <span style=''>
+</span>23 <span style=''>  // Implementation of CourseJsonParser trait
+</span>24 <span style=''>  private class CourseJsonParserImpl extends CourseJsonParser :
+</span>25 <span style=''>
+</span>26 <span style=''>    </span><span style='background: #AEF1AE'>override def serialize</span><span style=''>(savedCourseList: List[SavedCourse]): JsObject =
+</span>27 <span style=''>      </span><span style='background: #AEF1AE'>JsObject(Seq(SavedCourseListLabel -&gt; JsArray(savedCourseList.map(serializeObjectOfSavedCourse))))</span><span style=''>
+</span>28 <span style=''>
+</span>29 <span style=''>    // Serialize an object based on his type
+</span>30 <span style=''>    </span><span style='background: #AEF1AE'>private def serializeObjectOfSavedCourse</span><span style=''>[A](element: A): JsObject =
+</span>31 <span style=''>      element match
+</span>32 <span style=''>        </span><span style='background: #F0ADAD'>case savedCourseList: List[SavedCourse]</span><span style=''> =&gt;
+</span>33 <span style=''>          </span><span style='background: #F0ADAD'>JsObject(Seq(
+</span>34 <span style=''></span><span style='background: #F0ADAD'>            SavedCourseListLabel -&gt; JsArray(savedCourseList.map(serializeObjectOfSavedCourse))
+</span>35 <span style=''></span><span style='background: #F0ADAD'>          ))</span><span style=''>
+</span>36 <span style=''>        </span><span style='background: #AEF1AE'>case savedCourse: SavedCourse</span><span style=''> =&gt; // SavedCourse
+</span>37 <span style=''>          </span><span style='background: #AEF1AE'>JsObject(Seq(
+</span>38 <span style=''></span><span style='background: #AEF1AE'>            CourseIdentifierLabel -&gt; serializeObjectOfSavedCourse(savedCourse.courseId),
+</span>39 <span style=''></span><span style='background: #AEF1AE'>            DescriptionLabel -&gt; JsString(savedCourse.description.getOrElse(&quot;&quot;)),
+</span>40 <span style=''></span><span style='background: #AEF1AE'>            QuizListLabel -&gt; JsArray(savedCourse.quizList.map(serializeObjectOfSavedCourse))
+</span>41 <span style=''></span><span style='background: #AEF1AE'>          ))</span><span style=''>
+</span>42 <span style=''>        </span><span style='background: #AEF1AE'>case quiz: Quiz</span><span style=''> =&gt; // Quiz
+</span>43 <span style=''>          </span><span style='background: #AEF1AE'>JsObject(Seq(
+</span>44 <span style=''></span><span style='background: #AEF1AE'>            QuizIdLabel -&gt; JsString(quiz.quizId.toString),
+</span>45 <span style=''></span><span style='background: #AEF1AE'>            QuestionLabel -&gt; JsString(quiz.question),
+</span>46 <span style=''></span><span style='background: #AEF1AE'>            AnswerListLabel -&gt; JsArray(quiz.answerList.map(serializeObjectOfSavedCourse)),
+</span>47 <span style=''></span><span style='background: #AEF1AE'>            MaxScoreLabel -&gt; JsNumber(quiz.maxScore),
+</span>48 <span style=''></span><span style='background: #AEF1AE'>            ImagePathLabel -&gt; JsString(quiz.imagePath.getOrElse(&quot;&quot;))
+</span>49 <span style=''></span><span style='background: #AEF1AE'>          ))</span><span style=''>
+</span>50 <span style=''>        </span><span style='background: #AEF1AE'>case answer: Answer</span><span style=''> =&gt; // Answer
+</span>51 <span style=''>          </span><span style='background: #AEF1AE'>JsObject(Seq(
+</span>52 <span style=''></span><span style='background: #AEF1AE'>            TextLabel -&gt; JsString(answer.text),
+</span>53 <span style=''></span><span style='background: #AEF1AE'>            IsCorrectLabel -&gt; JsBoolean(answer.isCorrect)
+</span>54 <span style=''></span><span style='background: #AEF1AE'>          ))</span><span style=''>
+</span>55 <span style=''>        </span><span style='background: #AEF1AE'>case courseIdentifier: CourseIdentifier</span><span style=''> =&gt;
+</span>56 <span style=''>          </span><span style='background: #AEF1AE'>serializeCourseIdentifier(courseIdentifier)</span><span style=''>
 </span>57 <span style=''>
-</span>58 <span style=''>    
-</span>59 <span style=''>    </span><span style='background: #AEF1AE'>override def deserialize</span><span style=''>(string: String): Try[List[SavedCourse]] =
-</span>60 <span style=''>      </span><span style='background: #AEF1AE'>for {
-</span>61 <span style=''></span><span style='background: #AEF1AE'>        // Check if string is empty
-</span>62 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- Try(if (string.isEmpty) throw IllegalArgumentException())
-</span>63 <span style=''></span><span style='background: #AEF1AE'>        // Check if json file is parsable
-</span>64 <span style=''></span><span style='background: #AEF1AE'>        jsonObject &lt;- Try(Json.parse(string).as[JsObject])
-</span>65 <span style=''></span><span style='background: #AEF1AE'>      } yield {
-</span>66 <span style=''></span><span style='background: #AEF1AE'>        deserializeObjectOfSavedCourse((jsonObject \ SavedCourseListLabel).as[JsArray], SavedCourseListLabel).asInstanceOf[List[SavedCourse]]
-</span>67 <span style=''></span><span style='background: #AEF1AE'>      }</span><span style=''>
-</span>68 <span style=''>      
-</span>69 <span style=''>      /* TODO
-</span>70 <span style=''>      def mergeLists[T](list: T, newList: T): T = (list, newList) match
-</span>71 <span style=''>        case (savedCourseList: List[SavedCourse], newSavedCourseList: List[SavedCourse]) =&gt; savedCourseList
-</span>72 <span style=''>
-</span>73 <span style=''>      */
+</span>58 <span style=''>        </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>JsObject.empty</span><span style=''>
+</span>59 <span style=''>
+</span>60 <span style=''>    
+</span>61 <span style=''>    </span><span style='background: #AEF1AE'>override def deserialize</span><span style=''>(string: String): Try[List[SavedCourse]] =
+</span>62 <span style=''>      </span><span style='background: #AEF1AE'>for {
+</span>63 <span style=''></span><span style='background: #AEF1AE'>        // Check if string is empty
+</span>64 <span style=''></span><span style='background: #AEF1AE'>        _ &lt;- Try(if (string.isEmpty) throw IllegalArgumentException())
+</span>65 <span style=''></span><span style='background: #AEF1AE'>        // Check if json file is parsable
+</span>66 <span style=''></span><span style='background: #AEF1AE'>        jsonObject &lt;- Try(Json.parse(string).as[JsObject])
+</span>67 <span style=''></span><span style='background: #AEF1AE'>      } yield {
+</span>68 <span style=''></span><span style='background: #AEF1AE'>        deserializeObjectOfSavedCourse((jsonObject \ SavedCourseListLabel).as[JsArray], SavedCourseListLabel).asInstanceOf[List[SavedCourse]]
+</span>69 <span style=''></span><span style='background: #AEF1AE'>      }</span><span style=''>
+</span>70 <span style=''>      
+</span>71 <span style=''>      /* TODO
+</span>72 <span style=''>      def mergeLists[T](list: T, newList: T): T = (list, newList) match
+</span>73 <span style=''>        case (savedCourseList: List[SavedCourse], newSavedCourseList: List[SavedCourse]) =&gt; savedCourseList
 </span>74 <span style=''>
-</span>75 <span style=''>    // Deserialize an object based on his type
-</span>76 <span style=''>    </span><span style='background: #AEF1AE'>private def deserializeObjectOfSavedCourse</span><span style=''>(jsonArray: JsArray, label: String): List[SavedCourse] | List[Quiz] | List[Answer] =
-</span>77 <span style=''>      (jsonArray, label) match
-</span>78 <span style=''>        </span><span style='background: #AEF1AE'>case (jsonArray, SavedCourseListLabel)</span><span style=''> =&gt;
-</span>79 <span style=''>          </span><span style='background: #AEF1AE'>jsonArray.value.map(
-</span>80 <span style=''></span><span style='background: #AEF1AE'>            course =&gt;
-</span>81 <span style=''></span><span style='background: #AEF1AE'>              SavedCourse(
-</span>82 <span style=''></span><span style='background: #AEF1AE'>                courseId = deserializeCourseIdentifier((course \ CourseIdentifierLabel).as[JsObject]),
-</span>83 <span style=''></span><span style='background: #AEF1AE'>                description = (course \ DescriptionLabel).asOpt[String],
-</span>84 <span style=''></span><span style='background: #AEF1AE'>                quizList = deserializeObjectOfSavedCourse((course \ QuizListLabel).as[JsArray], QuizListLabel).asInstanceOf[List[Quiz]]
-</span>85 <span style=''></span><span style='background: #AEF1AE'>              )
-</span>86 <span style=''></span><span style='background: #AEF1AE'>          ).toList</span><span style=''>
-</span>87 <span style=''>        </span><span style='background: #AEF1AE'>case (jsonArray, QuizListLabel)</span><span style=''> =&gt;
-</span>88 <span style=''>          </span><span style='background: #AEF1AE'>jsonArray.value.map(
-</span>89 <span style=''></span><span style='background: #AEF1AE'>            quiz =&gt;
-</span>90 <span style=''></span><span style='background: #AEF1AE'>              Quiz(
-</span>91 <span style=''></span><span style='background: #AEF1AE'>                quizId = UUID.fromString((quiz \ QuizIdLabel).as[String]),
-</span>92 <span style=''></span><span style='background: #AEF1AE'>                question = (quiz \ QuestionLabel).as[String],
-</span>93 <span style=''></span><span style='background: #AEF1AE'>                answerList = deserializeObjectOfSavedCourse((quiz \ AnswerListLabel).as[JsArray], AnswerListLabel).asInstanceOf[List[Answer]],
-</span>94 <span style=''></span><span style='background: #AEF1AE'>                maxScore = (quiz \ MaxScoreLabel).as[Int],
-</span>95 <span style=''></span><span style='background: #AEF1AE'>                imagePath = (quiz \ ImagePathLabel).asOpt[String],
-</span>96 <span style=''></span><span style='background: #AEF1AE'>              )
-</span>97 <span style=''></span><span style='background: #AEF1AE'>          ).toList</span><span style=''>
-</span>98 <span style=''>        </span><span style='background: #AEF1AE'>case (jsonArray, AnswerListLabel)</span><span style=''> =&gt;
-</span>99 <span style=''>          </span><span style='background: #AEF1AE'>jsonArray.value.map(
-</span>100 <span style=''></span><span style='background: #AEF1AE'>            answer =&gt;
-</span>101 <span style=''></span><span style='background: #AEF1AE'>              Answer(
-</span>102 <span style=''></span><span style='background: #AEF1AE'>                text = (answer \ TextLabel).as[String],
-</span>103 <span style=''></span><span style='background: #AEF1AE'>                isCorrect = (answer \ IsCorrectLabel).as[Boolean]
-</span>104 <span style=''></span><span style='background: #AEF1AE'>              )
-</span>105 <span style=''></span><span style='background: #AEF1AE'>          ).toList</span><span style=''>
-</span>106 <span style=''>        </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>List()</span><span style=''>
+</span>75 <span style=''>      */
+</span>76 <span style=''>
+</span>77 <span style=''>    // Deserialize an object based on his type
+</span>78 <span style=''>    </span><span style='background: #AEF1AE'>private def deserializeObjectOfSavedCourse</span><span style=''>(jsonArray: JsArray, label: String): List[SavedCourse] | List[Quiz] | List[Answer] =
+</span>79 <span style=''>      (jsonArray, label) match
+</span>80 <span style=''>        </span><span style='background: #AEF1AE'>case (jsonArray, SavedCourseListLabel)</span><span style=''> =&gt;
+</span>81 <span style=''>          </span><span style='background: #AEF1AE'>jsonArray.value.map(
+</span>82 <span style=''></span><span style='background: #AEF1AE'>            course =&gt;
+</span>83 <span style=''></span><span style='background: #AEF1AE'>              SavedCourse(
+</span>84 <span style=''></span><span style='background: #AEF1AE'>                courseId = deserializeCourseIdentifier((course \ CourseIdentifierLabel).as[JsObject]),
+</span>85 <span style=''></span><span style='background: #AEF1AE'>                description = (course \ DescriptionLabel).asOpt[String],
+</span>86 <span style=''></span><span style='background: #AEF1AE'>                quizList = deserializeObjectOfSavedCourse((course \ QuizListLabel).as[JsArray], QuizListLabel).asInstanceOf[List[Quiz]]
+</span>87 <span style=''></span><span style='background: #AEF1AE'>              )
+</span>88 <span style=''></span><span style='background: #AEF1AE'>          ).toList</span><span style=''>
+</span>89 <span style=''>        </span><span style='background: #AEF1AE'>case (jsonArray, QuizListLabel)</span><span style=''> =&gt;
+</span>90 <span style=''>          </span><span style='background: #AEF1AE'>jsonArray.value.map(
+</span>91 <span style=''></span><span style='background: #AEF1AE'>            quiz =&gt;
+</span>92 <span style=''></span><span style='background: #AEF1AE'>              Quiz(
+</span>93 <span style=''></span><span style='background: #AEF1AE'>                quizId = UUID.fromString((quiz \ QuizIdLabel).as[String]),
+</span>94 <span style=''></span><span style='background: #AEF1AE'>                question = (quiz \ QuestionLabel).as[String],
+</span>95 <span style=''></span><span style='background: #AEF1AE'>                answerList = deserializeObjectOfSavedCourse((quiz \ AnswerListLabel).as[JsArray], AnswerListLabel).asInstanceOf[List[Answer]],
+</span>96 <span style=''></span><span style='background: #AEF1AE'>                maxScore = (quiz \ MaxScoreLabel).as[Int],
+</span>97 <span style=''></span><span style='background: #AEF1AE'>                imagePath = (quiz \ ImagePathLabel).asOpt[String],
+</span>98 <span style=''></span><span style='background: #AEF1AE'>              )
+</span>99 <span style=''></span><span style='background: #AEF1AE'>          ).toList</span><span style=''>
+</span>100 <span style=''>        </span><span style='background: #AEF1AE'>case (jsonArray, AnswerListLabel)</span><span style=''> =&gt;
+</span>101 <span style=''>          </span><span style='background: #AEF1AE'>jsonArray.value.map(
+</span>102 <span style=''></span><span style='background: #AEF1AE'>            answer =&gt;
+</span>103 <span style=''></span><span style='background: #AEF1AE'>              Answer(
+</span>104 <span style=''></span><span style='background: #AEF1AE'>                text = (answer \ TextLabel).as[String],
+</span>105 <span style=''></span><span style='background: #AEF1AE'>                isCorrect = (answer \ IsCorrectLabel).as[Boolean]
+</span>106 <span style=''></span><span style='background: #AEF1AE'>              )
+</span>107 <span style=''></span><span style='background: #AEF1AE'>          ).toList</span><span style=''>
+</span>108 <span style=''>        </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>List()</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -142,15 +144,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          18
+          20
         </td>
         <td>
-          735
+          686
         </td>
         <td>
-          474
+          527
           -
-          483
+          536
         </td>
         <td>
           DefDef
@@ -166,15 +168,15 @@
         </td>
       </tr><tr>
         <td>
-          18
+          20
         </td>
         <td>
-          734
+          685
         </td>
         <td>
-          506
+          559
           -
-          532
+          585
         </td>
         <td>
           Apply
@@ -190,15 +192,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          25
         </td>
         <td>
-          742
+          693
         </td>
         <td>
-          649
+          702
           -
-          671
+          724
         </td>
         <td>
           DefDef
@@ -214,111 +216,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          26
         </td>
         <td>
-          738
+          687
         </td>
         <td>
-          763
+          844
           -
-          821
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          JsArray(savedCourseList.map(serializeObjectOfSavedCourse))
-        </td>
-      </tr><tr>
-        <td>
-          24
-        </td>
-        <td>
-          741
-        </td>
-        <td>
-          726
-          -
-          823
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          JsObject(Seq(SavedCourseListLabel -&gt; JsArray(savedCourseList.map(serializeObjectOfSavedCourse))))
-        </td>
-      </tr><tr>
-        <td>
-          24
-        </td>
-        <td>
-          737
-        </td>
-        <td>
-          771
-          -
-          820
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          map
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          savedCourseList.map(serializeObjectOfSavedCourse)
-        </td>
-      </tr><tr>
-        <td>
-          24
-        </td>
-        <td>
-          740
-        </td>
-        <td>
-          735
-          -
-          822
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          Seq(SavedCourseListLabel -&gt; JsArray(savedCourseList.map(serializeObjectOfSavedCourse)))
-        </td>
-      </tr><tr>
-        <td>
-          24
-        </td>
-        <td>
-          736
-        </td>
-        <td>
-          791
-          -
-          819
+          872
         </td>
         <td>
           Apply
@@ -334,15 +240,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          26
         </td>
         <td>
-          739
+          690
         </td>
         <td>
-          739
+          792
           -
-          821
+          874
         </td>
         <td>
           Apply
@@ -358,15 +264,111 @@
         </td>
       </tr><tr>
         <td>
-          27
+          26
+        </td>
+        <td>
+          692
+        </td>
+        <td>
+          779
+          -
+          876
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          JsObject(Seq(SavedCourseListLabel -&gt; JsArray(savedCourseList.map(serializeObjectOfSavedCourse))))
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          689
+        </td>
+        <td>
+          816
+          -
+          874
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          JsArray(savedCourseList.map(serializeObjectOfSavedCourse))
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          691
         </td>
         <td>
           788
+          -
+          875
         </td>
         <td>
-          874
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Seq(SavedCourseListLabel -&gt; JsArray(savedCourseList.map(serializeObjectOfSavedCourse)))
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          688
+        </td>
+        <td>
+          824
           -
-          914
+          873
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          savedCourseList.map(serializeObjectOfSavedCourse)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          736
+        </td>
+        <td>
+          927
+          -
+          967
         </td>
         <td>
           DefDef
@@ -382,15 +384,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          31
         </td>
         <td>
-          749
+          700
         </td>
         <td>
-          970
+          1023
           -
-          1009
+          1062
         </td>
         <td>
           Block
@@ -406,41 +408,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          32
         </td>
         <td>
-          747
+          699
         </td>
         <td>
-          1032
+          1076
           -
-          1143
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Seq(
-            SavedCourseListLabel -&gt; JsArray(savedCourseList.map(serializeObjectOfSavedCourse))
-          )
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          748
-        </td>
-        <td>
-          1023
-          -
-          1144
+          1197
         </td>
         <td>
           Apply
@@ -458,87 +434,41 @@
         </td>
       </tr><tr>
         <td>
-          31
+          32
         </td>
         <td>
-          744
+          698
         </td>
         <td>
-          1081
+          1085
           -
-          1130
+          1196
         </td>
         <td>
           Apply
         </td>
         <td>
-          map
+          apply
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          savedCourseList.map(serializeObjectOfSavedCourse)
+          Seq(
+            SavedCourseListLabel -&gt; JsArray(savedCourseList.map(serializeObjectOfSavedCourse))
+          )
         </td>
       </tr><tr>
         <td>
-          31
+          33
         </td>
         <td>
-          743
+          696
         </td>
         <td>
-          1101
+          1126
           -
-          1129
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          serializeObjectOfSavedCourse
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          serializeObjectOfSavedCourse
-        </td>
-      </tr><tr>
-        <td>
-          31
-        </td>
-        <td>
-          746
-        </td>
-        <td>
-          1049
-          -
-          1131
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          -&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          SavedCourseListLabel -&gt; JsArray(savedCourseList.map(serializeObjectOfSavedCourse))
-        </td>
-      </tr><tr>
-        <td>
-          31
-        </td>
-        <td>
-          745
-        </td>
-        <td>
-          1073
-          -
-          1131
+          1184
         </td>
         <td>
           Apply
@@ -557,12 +487,84 @@
           33
         </td>
         <td>
-          763
+          695
         </td>
         <td>
-          1153
+          1134
+          -
+          1183
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          savedCourseList.map(serializeObjectOfSavedCourse)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          697
+        </td>
+        <td>
+          1102
+          -
+          1184
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          -&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          SavedCourseListLabel -&gt; JsArray(savedCourseList.map(serializeObjectOfSavedCourse))
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          694
+        </td>
+        <td>
+          1154
           -
           1182
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          serializeObjectOfSavedCourse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          serializeObjectOfSavedCourse
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          711
+        </td>
+        <td>
+          1206
+          -
+          1235
         </td>
         <td>
           Block
@@ -578,15 +580,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          36
         </td>
         <td>
-          762
+          710
         </td>
         <td>
-          1211
+          1264
           -
-          1500
+          1553
         </td>
         <td>
           Apply
@@ -606,15 +608,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          36
         </td>
         <td>
-          761
+          709
         </td>
         <td>
-          1220
+          1273
           -
-          1499
+          1552
         </td>
         <td>
           Apply
@@ -634,39 +636,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          37
         </td>
         <td>
-          750
+          702
         </td>
         <td>
-          1291
+          1290
           -
-          1311
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          courseId
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          savedCourse.courseId
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          752
-        </td>
-        <td>
-          1237
-          -
-          1312
+          1365
         </td>
         <td>
           Apply
@@ -682,15 +660,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          37
         </td>
         <td>
-          751
+          701
         </td>
         <td>
-          1262
+          1315
           -
-          1312
+          1365
         </td>
         <td>
           Apply
@@ -706,39 +684,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          38
         </td>
         <td>
-          753
+          704
         </td>
         <td>
-          1355
+          1379
           -
-          1378
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          description
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          savedCourse.description
-        </td>
-      </tr><tr>
-        <td>
-          36
-        </td>
-        <td>
-          755
-        </td>
-        <td>
-          1326
-          -
-          1393
+          1446
         </td>
         <td>
           Apply
@@ -754,15 +708,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          38
         </td>
         <td>
-          754
+          703
         </td>
         <td>
-          1355
+          1408
           -
-          1392
+          1445
         </td>
         <td>
           Apply
@@ -778,87 +732,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          39
         </td>
         <td>
-          756
+          705
         </td>
         <td>
-          1432
+          1510
           -
-          1452
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          quizList
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          savedCourse.quizList
-        </td>
-      </tr><tr>
-        <td>
-          37
-        </td>
-        <td>
-          759
-        </td>
-        <td>
-          1424
-          -
-          1487
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          JsArray(savedCourse.quizList.map(serializeObjectOfSavedCourse))
-        </td>
-      </tr><tr>
-        <td>
-          37
-        </td>
-        <td>
-          758
-        </td>
-        <td>
-          1432
-          -
-          1486
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          map
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          savedCourse.quizList.map(serializeObjectOfSavedCourse)
-        </td>
-      </tr><tr>
-        <td>
-          37
-        </td>
-        <td>
-          757
-        </td>
-        <td>
-          1457
-          -
-          1485
+          1538
         </td>
         <td>
           Apply
@@ -874,15 +756,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          39
         </td>
         <td>
-          760
+          708
         </td>
         <td>
-          1407
+          1460
           -
-          1487
+          1540
         </td>
         <td>
           Apply
@@ -901,12 +783,60 @@
           39
         </td>
         <td>
-          777
+          707
         </td>
         <td>
-          1509
+          1477
           -
-          1524
+          1540
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          JsArray(savedCourse.quizList.map(serializeObjectOfSavedCourse))
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          706
+        </td>
+        <td>
+          1485
+          -
+          1539
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          savedCourse.quizList.map(serializeObjectOfSavedCourse)
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          725
+        </td>
+        <td>
+          1562
+          -
+          1577
         </td>
         <td>
           Block
@@ -922,45 +852,15 @@
         </td>
       </tr><tr>
         <td>
-          40
+          42
         </td>
         <td>
-          776
+          723
         </td>
         <td>
-          1546
+          1608
           -
-          1899
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          JsObject(Seq(
-            QuizIdLabel -&gt; JsString(quiz.quizId.toString),
-            QuestionLabel -&gt; JsString(quiz.question),
-            AnswerListLabel -&gt; JsArray(quiz.answerList.map(serializeObjectOfSavedCourse)),
-            MaxScoreLabel -&gt; JsNumber(quiz.maxScore),
-            ImagePathLabel -&gt; JsString(quiz.imagePath.getOrElse(&quot;&quot;))
-          ))
-        </td>
-      </tr><tr>
-        <td>
-          40
-        </td>
-        <td>
-          775
-        </td>
-        <td>
-          1555
-          -
-          1898
+          1951
         </td>
         <td>
           Apply
@@ -982,15 +882,45 @@
         </td>
       </tr><tr>
         <td>
-          41
+          42
         </td>
         <td>
-          765
+          724
         </td>
         <td>
-          1572
+          1599
           -
-          1617
+          1952
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          JsObject(Seq(
+            QuizIdLabel -&gt; JsString(quiz.quizId.toString),
+            QuestionLabel -&gt; JsString(quiz.question),
+            AnswerListLabel -&gt; JsArray(quiz.answerList.map(serializeObjectOfSavedCourse)),
+            MaxScoreLabel -&gt; JsNumber(quiz.maxScore),
+            ImagePathLabel -&gt; JsString(quiz.imagePath.getOrElse(&quot;&quot;))
+          ))
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          713
+        </td>
+        <td>
+          1625
+          -
+          1670
         </td>
         <td>
           Apply
@@ -1006,15 +936,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          43
         </td>
         <td>
-          764
+          712
         </td>
         <td>
-          1596
+          1649
           -
-          1616
+          1669
         </td>
         <td>
           Apply
@@ -1030,15 +960,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          44
         </td>
         <td>
-          766
+          714
         </td>
         <td>
-          1631
+          1684
           -
-          1671
+          1724
         </td>
         <td>
           Apply
@@ -1054,87 +984,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          45
         </td>
         <td>
-          768
+          717
         </td>
         <td>
-          1712
+          1757
           -
-          1761
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          map
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz.answerList.map(serializeObjectOfSavedCourse)
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          770
-        </td>
-        <td>
-          1685
-          -
-          1762
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          -&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          AnswerListLabel -&gt; JsArray(quiz.answerList.map(serializeObjectOfSavedCourse))
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          767
-        </td>
-        <td>
-          1732
-          -
-          1760
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          serializeObjectOfSavedCourse
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          serializeObjectOfSavedCourse
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          769
-        </td>
-        <td>
-          1704
-          -
-          1762
+          1815
         </td>
         <td>
           Apply
@@ -1150,13 +1008,61 @@
         </td>
       </tr><tr>
         <td>
-          44
+          45
         </td>
         <td>
-          771
+          716
         </td>
         <td>
-          1802
+          1765
+          -
+          1814
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          quiz.answerList.map(serializeObjectOfSavedCourse)
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          715
+        </td>
+        <td>
+          1785
+          -
+          1813
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          serializeObjectOfSavedCourse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          serializeObjectOfSavedCourse
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          718
+        </td>
+        <td>
+          1738
           -
           1815
         </td>
@@ -1164,25 +1070,25 @@
           Apply
         </td>
         <td>
-          int2bigDecimal
+          -&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          quiz.maxScore
+          AnswerListLabel -&gt; JsArray(quiz.answerList.map(serializeObjectOfSavedCourse))
         </td>
       </tr><tr>
         <td>
-          44
+          46
         </td>
         <td>
-          772
+          720
         </td>
         <td>
-          1776
+          1829
           -
-          1816
+          1869
         </td>
         <td>
           Apply
@@ -1198,15 +1104,39 @@
         </td>
       </tr><tr>
         <td>
-          45
+          46
         </td>
         <td>
-          774
+          719
         </td>
         <td>
-          1830
+          1855
           -
-          1886
+          1868
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          int2bigDecimal
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          quiz.maxScore
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          722
+        </td>
+        <td>
+          1883
+          -
+          1939
         </td>
         <td>
           Apply
@@ -1222,15 +1152,15 @@
         </td>
       </tr><tr>
         <td>
-          45
+          47
         </td>
         <td>
-          773
+          721
         </td>
         <td>
-          1857
+          1910
           -
-          1885
+          1938
         </td>
         <td>
           Apply
@@ -1246,15 +1176,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          49
         </td>
         <td>
-          783
+          731
         </td>
         <td>
-          1908
+          1961
           -
-          1927
+          1980
         </td>
         <td>
           Block
@@ -1270,42 +1200,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          50
         </td>
         <td>
-          782
+          729
         </td>
         <td>
-          1951
+          2013
           -
-          2083
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          JsObject(Seq(
-            TextLabel -&gt; JsString(answer.text),
-            IsCorrectLabel -&gt; JsBoolean(answer.isCorrect)
-          ))
-        </td>
-      </tr><tr>
-        <td>
-          48
-        </td>
-        <td>
-          781
-        </td>
-        <td>
-          1960
-          -
-          2082
+          2135
         </td>
         <td>
           Apply
@@ -1324,15 +1227,42 @@
         </td>
       </tr><tr>
         <td>
-          49
+          50
         </td>
         <td>
-          778
+          730
         </td>
         <td>
-          1977
+          2004
           -
-          2011
+          2136
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          JsObject(Seq(
+            TextLabel -&gt; JsString(answer.text),
+            IsCorrectLabel -&gt; JsBoolean(answer.isCorrect)
+          ))
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          726
+        </td>
+        <td>
+          2030
+          -
+          2064
         </td>
         <td>
           Apply
@@ -1348,39 +1278,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          52
         </td>
         <td>
-          779
+          728
         </td>
         <td>
-          2043
+          2078
           -
-          2070
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          JsBoolean(answer.isCorrect)
-        </td>
-      </tr><tr>
-        <td>
-          50
-        </td>
-        <td>
-          780
-        </td>
-        <td>
-          2025
-          -
-          2070
+          2123
         </td>
         <td>
           Apply
@@ -1399,12 +1305,36 @@
           52
         </td>
         <td>
-          785
+          727
         </td>
         <td>
-          2092
+          2096
           -
-          2131
+          2123
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          JsBoolean(answer.isCorrect)
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          733
+        </td>
+        <td>
+          2145
+          -
+          2184
         </td>
         <td>
           Block
@@ -1420,15 +1350,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          55
         </td>
         <td>
-          784
+          732
         </td>
         <td>
-          2145
+          2198
           -
-          2188
+          2241
         </td>
         <td>
           Apply
@@ -1444,39 +1374,15 @@
         </td>
       </tr><tr>
         <td>
-          55
+          57
         </td>
         <td>
-          786
+          735
         </td>
         <td>
-          2208
+          2251
           -
-          2222
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          empty
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          JsObject.empty
-        </td>
-      </tr><tr>
-        <td>
-          55
-        </td>
-        <td>
-          787
-        </td>
-        <td>
-          2198
-          -
-          2204
+          2257
         </td>
         <td>
           Block
@@ -1492,15 +1398,39 @@
         </td>
       </tr><tr>
         <td>
-          58
+          57
         </td>
         <td>
-          798
+          734
         </td>
         <td>
-          2233
+          2261
           -
-          2257
+          2275
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          JsObject.empty
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          746
+        </td>
+        <td>
+          2286
+          -
+          2310
         </td>
         <td>
           DefDef
@@ -1516,15 +1446,15 @@
         </td>
       </tr><tr>
         <td>
-          59
+          61
         </td>
         <td>
-          797
+          745
         </td>
         <td>
-          2306
+          2359
           -
-          2685
+          2738
         </td>
         <td>
           Apply
@@ -1547,15 +1477,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          63
         </td>
         <td>
-          796
+          744
         </td>
         <td>
-          2356
+          2409
           -
-          2357
+          2410
         </td>
         <td>
           Block
@@ -1571,15 +1501,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          63
         </td>
         <td>
-          789
+          737
         </td>
         <td>
-          2361
+          2414
           -
-          2418
+          2471
         </td>
         <td>
           Apply
@@ -1595,42 +1525,15 @@
         </td>
       </tr><tr>
         <td>
-          63
+          65
         </td>
         <td>
-          795
+          738
         </td>
         <td>
-          2469
+          2536
           -
-          2685
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          map
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          jsonObject &lt;- Try(Json.parse(string).as[JsObject])
-      } yield {
-        deserializeObjectOfSavedCourse((jsonObject \ SavedCourseListLabel).as[JsArray], SavedCourseListLabel).asInstanceOf[List[SavedCourse]]
-      }
-        </td>
-      </tr><tr>
-        <td>
-          63
-        </td>
-        <td>
-          790
-        </td>
-        <td>
-          2483
-          -
-          2519
+          2572
         </td>
         <td>
           Apply
@@ -1649,84 +1552,39 @@
           65
         </td>
         <td>
-          792
+          743
         </td>
         <td>
-          2576
+          2522
           -
-          2609
+          2738
         </td>
         <td>
           Apply
         </td>
         <td>
-          \
+          map
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          jsonObject \ SavedCourseListLabel
+          jsonObject &lt;- Try(Json.parse(string).as[JsObject])
+      } yield {
+        deserializeObjectOfSavedCourse((jsonObject \ SavedCourseListLabel).as[JsArray], SavedCourseListLabel).asInstanceOf[List[SavedCourse]]
+      }
         </td>
       </tr><tr>
         <td>
-          65
+          67
         </td>
         <td>
-          791
+          741
         </td>
         <td>
-          2576
+          2628
           -
-          2586
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          jsValueToJsLookup
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          jsonObject
-        </td>
-      </tr><tr>
-        <td>
-          65
-        </td>
-        <td>
-          794
-        </td>
-        <td>
-          2544
-          -
-          2645
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          deserializeObjectOfSavedCourse
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          deserializeObjectOfSavedCourse((jsonObject \ SavedCourseListLabel).as[JsArray], SavedCourseListLabel)
-        </td>
-      </tr><tr>
-        <td>
-          65
-        </td>
-        <td>
-          793
-        </td>
-        <td>
-          2575
-          -
-          2622
+          2675
         </td>
         <td>
           Apply
@@ -1742,15 +1600,87 @@
         </td>
       </tr><tr>
         <td>
-          75
+          67
         </td>
         <td>
-          845
+          740
         </td>
         <td>
-          2949
+          2629
           -
-          2991
+          2662
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          \
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          jsonObject \ SavedCourseListLabel
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          742
+        </td>
+        <td>
+          2597
+          -
+          2698
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          deserializeObjectOfSavedCourse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          deserializeObjectOfSavedCourse((jsonObject \ SavedCourseListLabel).as[JsArray], SavedCourseListLabel)
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          739
+        </td>
+        <td>
+          2629
+          -
+          2639
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          jsValueToJsLookup
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          jsonObject
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          792
+        </td>
+        <td>
+          3002
+          -
+          3044
         </td>
         <td>
           DefDef
@@ -1766,15 +1696,15 @@
         </td>
       </tr><tr>
         <td>
-          77
+          79
         </td>
         <td>
-          813
+          760
         </td>
         <td>
-          3115
+          3168
           -
-          3153
+          3206
         </td>
         <td>
           Block
@@ -1790,15 +1720,15 @@
         </td>
       </tr><tr>
         <td>
-          78
+          80
         </td>
         <td>
-          811
+          758
         </td>
         <td>
-          3167
+          3220
           -
-          3576
+          3629
         </td>
         <td>
           Apply
@@ -1821,91 +1751,39 @@
         </td>
       </tr><tr>
         <td>
-          80
+          83
         </td>
         <td>
-          810
+          747
         </td>
         <td>
-          3224
+          3346
           -
-          3564
+          3352
         </td>
         <td>
           Apply
         </td>
         <td>
-          apply
+          jsValueToJsLookup
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          SavedCourse(
-                courseId = deserializeCourseIdentifier((course \ CourseIdentifierLabel).as[JsObject]),
-                description = (course \ DescriptionLabel).asOpt[String],
-                quizList = deserializeObjectOfSavedCourse((course \ QuizListLabel).as[JsArray], QuizListLabel).asInstanceOf[List[Quiz]]
-              )
+          course
         </td>
       </tr><tr>
         <td>
-          81
+          83
         </td>
         <td>
-          801
+          750
         </td>
         <td>
-          3292
+          3317
           -
-          3337
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          as
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          (course \ CourseIdentifierLabel).as[JsObject]
-        </td>
-      </tr><tr>
-        <td>
-          81
-        </td>
-        <td>
-          800
-        </td>
-        <td>
-          3293
-          -
-          3323
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          \
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          course \ CourseIdentifierLabel
-        </td>
-      </tr><tr>
-        <td>
-          81
-        </td>
-        <td>
-          802
-        </td>
-        <td>
-          3264
-          -
-          3338
+          3391
         </td>
         <td>
           Apply
@@ -1921,39 +1799,39 @@
         </td>
       </tr><tr>
         <td>
-          81
+          83
         </td>
         <td>
-          799
+          749
         </td>
         <td>
-          3293
+          3345
           -
-          3299
+          3390
         </td>
         <td>
           Apply
         </td>
         <td>
-          jsValueToJsLookup
+          as
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          course
+          (course \ CourseIdentifierLabel).as[JsObject]
         </td>
       </tr><tr>
         <td>
-          82
+          83
         </td>
         <td>
-          804
+          748
         </td>
         <td>
-          3371
+          3346
           -
-          3396
+          3376
         </td>
         <td>
           Apply
@@ -1965,43 +1843,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          course \ DescriptionLabel
+          course \ CourseIdentifierLabel
         </td>
       </tr><tr>
         <td>
-          82
+          84
         </td>
         <td>
-          803
+          753
         </td>
         <td>
-          3371
+          3423
           -
-          3377
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          jsValueToJsLookup
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          course
-        </td>
-      </tr><tr>
-        <td>
-          82
-        </td>
-        <td>
-          805
-        </td>
-        <td>
-          3370
-          -
-          3411
+          3464
         </td>
         <td>
           Apply
@@ -2017,15 +1871,39 @@
         </td>
       </tr><tr>
         <td>
-          83
+          84
         </td>
         <td>
-          806
+          752
         </td>
         <td>
-          3472
+          3424
           -
-          3478
+          3449
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          \
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          course \ DescriptionLabel
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          751
+        </td>
+        <td>
+          3424
+          -
+          3430
         </td>
         <td>
           Apply
@@ -2041,39 +1919,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          85
         </td>
         <td>
-          809
+          756
         </td>
         <td>
-          3440
+          3524
           -
-          3523
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          deserializeObjectOfSavedCourse
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          deserializeObjectOfSavedCourse((course \ QuizListLabel).as[JsArray], QuizListLabel)
-        </td>
-      </tr><tr>
-        <td>
-          83
-        </td>
-        <td>
-          808
-        </td>
-        <td>
-          3471
-          -
-          3507
+          3560
         </td>
         <td>
           Apply
@@ -2089,15 +1943,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          85
         </td>
         <td>
-          807
+          755
         </td>
         <td>
-          3472
+          3525
           -
-          3494
+          3547
         </td>
         <td>
           Apply
@@ -2116,12 +1970,60 @@
           85
         </td>
         <td>
-          812
+          757
         </td>
         <td>
-          3167
+          3493
           -
-          3583
+          3576
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          deserializeObjectOfSavedCourse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          deserializeObjectOfSavedCourse((course \ QuizListLabel).as[JsArray], QuizListLabel)
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          754
+        </td>
+        <td>
+          3525
+          -
+          3531
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          jsValueToJsLookup
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          course
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          759
+        </td>
+        <td>
+          3220
+          -
+          3636
         </td>
         <td>
           Select
@@ -2144,15 +2046,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          88
         </td>
         <td>
-          833
+          780
         </td>
         <td>
-          3592
+          3645
           -
-          3623
+          3676
         </td>
         <td>
           Block
@@ -2168,15 +2070,15 @@
         </td>
       </tr><tr>
         <td>
-          87
+          89
         </td>
         <td>
-          831
+          778
         </td>
         <td>
-          3637
+          3690
           -
-          4131
+          4184
         </td>
         <td>
           Apply
@@ -2201,15 +2103,15 @@
         </td>
       </tr><tr>
         <td>
-          90
+          92
         </td>
         <td>
-          815
+          762
         </td>
         <td>
-          3740
+          3793
           -
-          3758
+          3811
         </td>
         <td>
           Apply
@@ -2225,15 +2127,39 @@
         </td>
       </tr><tr>
         <td>
-          90
+          92
         </td>
         <td>
-          817
+          761
         </td>
         <td>
-          3723
+          3793
           -
-          3771
+          3797
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          jsValueToJsLookup
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          quiz
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          764
+        </td>
+        <td>
+          3776
+          -
+          3824
         </td>
         <td>
           Apply
@@ -2249,39 +2175,15 @@
         </td>
       </tr><tr>
         <td>
-          90
+          92
         </td>
         <td>
-          814
+          763
         </td>
         <td>
-          3740
+          3792
           -
-          3744
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          jsValueToJsLookup
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz
-        </td>
-      </tr><tr>
-        <td>
-          90
-        </td>
-        <td>
-          816
-        </td>
-        <td>
-          3739
-          -
-          3770
+          3823
         </td>
         <td>
           Apply
@@ -2297,39 +2199,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          93
         </td>
         <td>
-          819
+          765
         </td>
         <td>
-          3801
+          3854
           -
-          3821
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          \
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz \ QuestionLabel
-        </td>
-      </tr><tr>
-        <td>
-          91
-        </td>
-        <td>
-          818
-        </td>
-        <td>
-          3801
-          -
-          3805
+          3858
         </td>
         <td>
           Apply
@@ -2345,15 +2223,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          93
         </td>
         <td>
-          820
+          767
         </td>
         <td>
-          3800
+          3853
           -
-          3833
+          3886
         </td>
         <td>
           Apply
@@ -2369,15 +2247,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          93
         </td>
         <td>
-          822
+          766
         </td>
         <td>
-          3896
+          3854
           -
-          3918
+          3874
         </td>
         <td>
           Apply
@@ -2389,19 +2267,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          quiz \ AnswerListLabel
+          quiz \ QuestionLabel
         </td>
       </tr><tr>
         <td>
-          92
+          94
         </td>
         <td>
-          821
+          768
         </td>
         <td>
-          3896
+          3949
           -
-          3900
+          3953
         </td>
         <td>
           Apply
@@ -2417,15 +2295,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          94
         </td>
         <td>
-          824
+          771
         </td>
         <td>
-          3864
+          3917
           -
-          3949
+          4002
         </td>
         <td>
           Apply
@@ -2441,15 +2319,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          94
         </td>
         <td>
-          823
+          770
         </td>
         <td>
-          3895
+          3948
           -
-          3931
+          3984
         </td>
         <td>
           Apply
@@ -2465,15 +2343,39 @@
         </td>
       </tr><tr>
         <td>
-          93
+          94
         </td>
         <td>
-          827
+          769
         </td>
         <td>
-          4005
+          3949
           -
-          4035
+          3971
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          \
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          quiz \ AnswerListLabel
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          774
+        </td>
+        <td>
+          4058
+          -
+          4088
         </td>
         <td>
           Apply
@@ -2489,15 +2391,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          95
         </td>
         <td>
-          826
+          773
         </td>
         <td>
-          4006
+          4059
           -
-          4026
+          4079
         </td>
         <td>
           Apply
@@ -2513,15 +2415,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          95
         </td>
         <td>
-          825
+          772
         </td>
         <td>
-          4006
+          4059
           -
-          4010
+          4063
         </td>
         <td>
           Apply
@@ -2537,39 +2439,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          96
         </td>
         <td>
-          828
+          777
         </td>
         <td>
-          4066
+          4118
           -
-          4070
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          jsValueToJsLookup
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz
-        </td>
-      </tr><tr>
-        <td>
-          94
-        </td>
-        <td>
-          830
-        </td>
-        <td>
-          4065
-          -
-          4103
+          4156
         </td>
         <td>
           Apply
@@ -2585,15 +2463,15 @@
         </td>
       </tr><tr>
         <td>
-          94
+          96
         </td>
         <td>
-          829
+          776
         </td>
         <td>
-          4066
+          4119
           -
-          4087
+          4140
         </td>
         <td>
           Apply
@@ -2612,12 +2490,36 @@
           96
         </td>
         <td>
-          832
+          775
         </td>
         <td>
-          3637
+          4119
           -
-          4138
+          4123
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          jsValueToJsLookup
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          quiz
+        </td>
+      </tr><tr>
+        <td>
+          98
+        </td>
+        <td>
+          779
+        </td>
+        <td>
+          3690
+          -
+          4191
         </td>
         <td>
           Select
@@ -2642,15 +2544,15 @@
         </td>
       </tr><tr>
         <td>
-          97
+          99
         </td>
         <td>
-          842
+          789
         </td>
         <td>
-          4147
+          4200
           -
-          4180
+          4233
         </td>
         <td>
           Block
@@ -2666,15 +2568,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          100
         </td>
         <td>
-          840
+          787
         </td>
         <td>
-          4194
+          4247
           -
-          4408
+          4461
         </td>
         <td>
           Apply
@@ -2696,15 +2598,15 @@
         </td>
       </tr><tr>
         <td>
-          101
+          103
         </td>
         <td>
-          836
+          783
         </td>
         <td>
-          4282
+          4335
           -
-          4313
+          4366
         </td>
         <td>
           Apply
@@ -2720,15 +2622,15 @@
         </td>
       </tr><tr>
         <td>
-          101
+          103
         </td>
         <td>
-          835
+          782
         </td>
         <td>
-          4283
+          4336
           -
-          4301
+          4354
         </td>
         <td>
           Apply
@@ -2744,15 +2646,15 @@
         </td>
       </tr><tr>
         <td>
-          101
+          103
         </td>
         <td>
-          834
+          781
         </td>
         <td>
-          4283
+          4336
           -
-          4289
+          4342
         </td>
         <td>
           Apply
@@ -2768,39 +2670,15 @@
         </td>
       </tr><tr>
         <td>
-          102
+          104
         </td>
         <td>
-          837
+          786
         </td>
         <td>
-          4344
+          4396
           -
-          4350
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          jsValueToJsLookup
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          answer
-        </td>
-      </tr><tr>
-        <td>
-          102
-        </td>
-        <td>
-          839
-        </td>
-        <td>
-          4343
-          -
-          4380
+          4433
         </td>
         <td>
           Apply
@@ -2816,15 +2694,15 @@
         </td>
       </tr><tr>
         <td>
-          102
+          104
         </td>
         <td>
-          838
+          785
         </td>
         <td>
-          4344
+          4397
           -
-          4367
+          4420
         </td>
         <td>
           Apply
@@ -2843,12 +2721,36 @@
           104
         </td>
         <td>
-          841
+          784
         </td>
         <td>
-          4194
+          4397
           -
-          4415
+          4403
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          jsValueToJsLookup
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          answer
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          788
+        </td>
+        <td>
+          4247
+          -
+          4468
         </td>
         <td>
           Select
@@ -2870,15 +2772,15 @@
         </td>
       </tr><tr>
         <td>
-          105
+          107
         </td>
         <td>
-          844
+          791
         </td>
         <td>
-          4424
+          4477
           -
-          4430
+          4483
         </td>
         <td>
           Block
@@ -2894,15 +2796,15 @@
         </td>
       </tr><tr>
         <td>
-          105
+          107
         </td>
         <td>
-          843
+          790
         </td>
         <td>
-          4434
+          4487
           -
-          4440
+          4493
         </td>
         <td>
           Apply

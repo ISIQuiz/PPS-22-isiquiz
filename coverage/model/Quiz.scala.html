@@ -30,73 +30,71 @@
 </span>6 <span style=''>import java.util.UUID
 </span>7 <span style=''>
 </span>8 <span style=''>/**
-</span>9 <span style=''> * Module quiz contains all the definitions of a single question and answers
-</span>10 <span style=''> * and the functions to operate with it
-</span>11 <span style=''> */
-</span>12 <span style=''>object Quiz:
-</span>13 <span style=''>
-</span>14 <span style=''>  /**
-</span>15 <span style=''>   *  A quiz with quesiton and answers
-</span>16 <span style=''>   * @param quizId
-</span>17 <span style=''>   * @param question
-</span>18 <span style=''>   * @param answerList
-</span>19 <span style=''>   * @param maxScore
-</span>20 <span style=''>   * @param imagePath
-</span>21 <span style=''>   */
-</span>22 <span style=''>  case class Quiz(quizId: UUID = </span><span style='background: #AEF1AE'>UUID.randomUUID()</span><span style=''>, question: String, answerList: List[Answer], maxScore:Int, imagePath:Option[String]=None) {
-</span>23 <span style=''>    // Overriding toString method to print directly requires parenthesis
-</span>24 <span style=''>    </span><span style='background: #AEF1AE'>override def toString</span><span style=''>(): String = </span><span style='background: #AEF1AE'>printQuiz(this)</span><span style=''>
+</span>9 <span style=''> * Object for a quiz
+</span>10 <span style=''> */
+</span>11 <span style=''>object Quiz:
+</span>12 <span style=''>
+</span>13 <span style=''>  /**
+</span>14 <span style=''>   *  A quiz has an identifier, a question, some answers,
+</span>15 <span style=''>   *  a max score and optionally an image
+</span>16 <span style=''>   *
+</span>17 <span style=''>   * @param quizId a random UUID for the quiz
+</span>18 <span style=''>   * @param question the question of the quiz
+</span>19 <span style=''>   * @param answerList a list of answers
+</span>20 <span style=''>   * @param maxScore a max score
+</span>21 <span style=''>   * @param imagePath an image path (optional)
+</span>22 <span style=''>   */
+</span>23 <span style=''>  case class Quiz(quizId: UUID = </span><span style='background: #AEF1AE'>UUID.randomUUID()</span><span style=''>, question: String, answerList: List[Answer], maxScore:Int, imagePath:Option[String]=None) {
+</span>24 <span style=''>    </span><span style='background: #F0ADAD'>override def toString</span><span style=''>(): String = </span><span style='background: #F0ADAD'>printQuiz(this)</span><span style=''>
 </span>25 <span style=''>  }
 </span>26 <span style=''>
-</span>27 <span style=''>  </span><span style='background: #AEF1AE'>def getCorrectAnswers</span><span style=''>(quiz: Quiz): List[Answer] = </span><span style='background: #AEF1AE'>quiz.answerList.filter(answer =&gt; isCorrect(answer))</span><span style=''>
-</span>28 <span style=''>
-</span>29 <span style=''>  val printQuiz: Quiz =&gt; String = quiz =&gt; </span><span style='background: #AEF1AE'>quiz.question + &quot;\n&quot; + quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${getText(answer)}&quot;)</span><span style=''>
-</span>30 <span style=''>  val printQuizFull: Quiz =&gt; String = quiz =&gt; </span><span style='background: #AEF1AE'>quiz.question + &quot;\n&quot; +
-</span>31 <span style=''></span><span style='background: #AEF1AE'>    quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${getText(answer)} ${isCorrect(answer)}&quot;)</span><span style=''>
-</span>32 <span style=''>
-</span>33 <span style=''>  /**
-</span>34 <span style=''>   * Change max score of a quiz
-</span>35 <span style=''>   *
-</span>36 <span style=''>   * @param Quiz the saved quiz to edit
-</span>37 <span style=''>   * @param maxScore  a new quiz max score
-</span>38 <span style=''>   * @return Quiz
-</span>39 <span style=''>   */
-</span>40 <span style=''>  </span><span style='background: #F0ADAD'>def changeMaxScore</span><span style=''>(quiz: Quiz, maxScore: Int): Quiz = Quiz(quiz.quizId, quiz.question, quiz.answerList, maxScore, quiz.imagePath)
-</span>41 <span style=''>
-</span>42 <span style=''>  /**
-</span>43 <span style=''>   * Change image path of a quiz
-</span>44 <span style=''>   *
-</span>45 <span style=''>   * @param Quiz the quiz to edit
-</span>46 <span style=''>   * @param imagePath a new quiz image path (optional)
-</span>47 <span style=''>   * @returna Quiz
-</span>48 <span style=''>   */
-</span>49 <span style=''>  </span><span style='background: #F0ADAD'>def changeImagePath</span><span style=''>(quiz: Quiz, imagePath: Option[String]): Quiz = Quiz(quiz.quizId, quiz.question, quiz.answerList, quiz.maxScore, imagePath)
-</span>50 <span style=''>
-</span>51 <span style=''>  /**
-</span>52 <span style=''>   *  Gets the question of a quiz
-</span>53 <span style=''>   * @param quiz
-</span>54 <span style=''>   * @return
+</span>27 <span style=''>  val printQuiz: Quiz =&gt; String = quiz =&gt; </span><span style='background: #F0ADAD'>quiz.question + &quot;\n&quot; + quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${answer.text}&quot;)</span><span style=''>
+</span>28 <span style=''>  val printQuizFull: Quiz =&gt; String = quiz =&gt; </span><span style='background: #F0ADAD'>quiz.question + &quot;\n&quot; +
+</span>29 <span style=''></span><span style='background: #F0ADAD'>    quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${answer.text} ${answer.isCorrect}&quot;)</span><span style=''>
+</span>30 <span style=''>
+</span>31 <span style=''>  /**
+</span>32 <span style=''>   * Change max score of a quiz
+</span>33 <span style=''>   *
+</span>34 <span style=''>   * @param quiz the saved quiz to edit
+</span>35 <span style=''>   * @param maxScore a new quiz max score
+</span>36 <span style=''>   * @return Quiz
+</span>37 <span style=''>   */
+</span>38 <span style=''>  </span><span style='background: #AEF1AE'>def changeMaxScore</span><span style=''>(quiz: Quiz, maxScore: Int): Quiz = Quiz(quiz.quizId, quiz.question, quiz.answerList, maxScore, quiz.imagePath)
+</span>39 <span style=''>
+</span>40 <span style=''>  /**
+</span>41 <span style=''>   * Change image path of a quiz
+</span>42 <span style=''>   *
+</span>43 <span style=''>   * @param quiz the quiz to edit
+</span>44 <span style=''>   * @param imagePath a new quiz image path (optional)
+</span>45 <span style=''>   * @return Quiz
+</span>46 <span style=''>   */
+</span>47 <span style=''>  </span><span style='background: #AEF1AE'>def changeImagePath</span><span style=''>(quiz: Quiz, imagePath: Option[String]): Quiz = Quiz(quiz.quizId, quiz.question, quiz.answerList, quiz.maxScore, imagePath)
+</span>48 <span style=''>
+</span>49 <span style=''>  /**
+</span>50 <span style=''>   * Change question of a quiz
+</span>51 <span style=''>   *
+</span>52 <span style=''>   * @param quiz the quiz to edit
+</span>53 <span style=''>   * @param questionText a new quiz text question
+</span>54 <span style=''>   * @return Quiz
 </span>55 <span style=''>   */
-</span>56 <span style=''>  </span><span style='background: #F0ADAD'>def getQuestion</span><span style=''>(quiz:Quiz):String = quiz match
-</span>57 <span style=''>    </span><span style='background: #F0ADAD'>case Quiz(_,q,_,_,_)</span><span style=''> =&gt; q
-</span>58 <span style=''>
-</span>59 <span style=''>  /**
-</span>60 <span style=''>   * Change question of a quiz
-</span>61 <span style=''>   *
-</span>62 <span style=''>   * @param Quiz the quiz to edit
-</span>63 <span style=''>   * @param text a new quiz text question
-</span>64 <span style=''>   * @return Quiz
-</span>65 <span style=''>   */
-</span>66 <span style=''>  </span><span style='background: #F0ADAD'>def changeText</span><span style=''>(quiz: Quiz, text: String): Quiz = Quiz(quiz.quizId, text, quiz.answerList, quiz.maxScore, quiz.imagePath)
-</span>67 <span style=''>
-</span>68 <span style=''>  /**
-</span>69 <span style=''>   * Change the list of answers
-</span>70 <span style=''>   *
-</span>71 <span style=''>   * @param quiz  the quiz to edit
-</span>72 <span style=''>   * @param answerList a new answer list
-</span>73 <span style=''>   * @return Quiz
-</span>74 <span style=''>   */
-</span>75 <span style=''>  </span><span style='background: #F0ADAD'>def changeAnswerList</span><span style=''>(quiz: Quiz, answerList: List[Answer]): Quiz = Quiz(quiz.quizId, quiz.question, answerList, quiz.maxScore, quiz.imagePath)
+</span>56 <span style=''>  </span><span style='background: #AEF1AE'>def changeQuestion</span><span style=''>(quiz: Quiz, questionText: String): Quiz = Quiz(quiz.quizId, questionText, quiz.answerList, quiz.maxScore, quiz.imagePath)
+</span>57 <span style=''>
+</span>58 <span style=''>  /**
+</span>59 <span style=''>   * Change the list of answers
+</span>60 <span style=''>   *
+</span>61 <span style=''>   * @param quiz the quiz to edit
+</span>62 <span style=''>   * @param answerList a new answer list
+</span>63 <span style=''>   * @return Quiz
+</span>64 <span style=''>   */
+</span>65 <span style=''>  </span><span style='background: #AEF1AE'>def changeAnswerList</span><span style=''>(quiz: Quiz, answerList: List[Answer]): Quiz = Quiz(quiz.quizId, quiz.question, answerList, quiz.maxScore, quiz.imagePath)
+</span>66 <span style=''>
+</span>67 <span style=''>  /**
+</span>68 <span style=''>   * Return the list of the correct answers of the quiz
+</span>69 <span style=''>   *
+</span>70 <span style=''>   * @param quiz the quiz
+</span>71 <span style=''>   * @return List[Answer]
+</span>72 <span style=''>   */
+</span>73 <span style=''>  </span><span style='background: #AEF1AE'>def getCorrectAnswers</span><span style=''>(quiz: Quiz): List[Answer] = </span><span style='background: #AEF1AE'>quiz.answerList.filter(answer =&gt; answer.isCorrect)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -111,39 +109,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          510
+          481
         </td>
         <td>
-          431
+          611
           -
-          448
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          randomUUID
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          UUID.randomUUID()
-        </td>
-      </tr><tr>
-        <td>
-          21
-        </td>
-        <td>
-          512
-        </td>
-        <td>
-          533
-          -
-          533
+          611
         </td>
         <td>
           DefDef
@@ -159,15 +133,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          511
+          480
         </td>
         <td>
-          431
+          509
           -
-          431
+          509
         </td>
         <td>
           DefDef
@@ -183,39 +157,39 @@
         </td>
       </tr><tr>
         <td>
-          23
+          22
         </td>
         <td>
-          508
+          479
         </td>
         <td>
-          654
+          509
           -
-          669
+          526
         </td>
         <td>
           Apply
         </td>
         <td>
-          apply
+          randomUUID
         </td>
         <td>
           
         </td>
         <td style="background: #AEF1AE">
-          printQuiz(this)
+          UUID.randomUUID()
         </td>
       </tr><tr>
         <td>
           23
         </td>
         <td>
-          509
+          478
         </td>
         <td>
-          620
+          624
           -
-          641
+          645
         </td>
         <td>
           DefDef
@@ -226,20 +200,381 @@
         <td>
           
         </td>
-        <td style="background: #AEF1AE">
+        <td style="background: #F0ADAD">
           override def toString
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          477
+        </td>
+        <td>
+          658
+          -
+          673
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          printQuiz(this)
         </td>
       </tr><tr>
         <td>
           26
         </td>
         <td>
-          514
+          483
         </td>
         <td>
-          730
-          -
           781
+          -
+          812
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          indexOf
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quiz.answerList.indexOf(answer)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          486
+        </td>
+        <td>
+          724
+          -
+          833
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quiz.question + &quot;\n&quot; + quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${answer.text}&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          482
+        </td>
+        <td>
+          724
+          -
+          744
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quiz.question + &quot;\n&quot;
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          485
+        </td>
+        <td>
+          747
+          -
+          833
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${answer.text}&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          484
+        </td>
+        <td>
+          777
+          -
+          832
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;${quiz.answerList.indexOf(answer)+1}) ${answer.text}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          487
+        </td>
+        <td>
+          881
+          -
+          901
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quiz.question + &quot;\n&quot;
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          491
+        </td>
+        <td>
+          881
+          -
+          1015
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quiz.question + &quot;\n&quot; +
+    quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${answer.text} ${answer.isCorrect}&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          490
+        </td>
+        <td>
+          909
+          -
+          1015
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${answer.text} ${answer.isCorrect}&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          489
+        </td>
+        <td>
+          939
+          -
+          1014
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;${quiz.answerList.indexOf(answer)+1}) ${answer.text} ${answer.isCorrect}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          488
+        </td>
+        <td>
+          943
+          -
+          974
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          indexOf
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quiz.answerList.indexOf(answer)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          492
+        </td>
+        <td>
+          1177
+          -
+          1195
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeMaxScore
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def changeMaxScore
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          493
+        </td>
+        <td>
+          1476
+          -
+          1495
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeImagePath
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def changeImagePath
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          494
+        </td>
+        <td>
+          1781
+          -
+          1799
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeQuestion
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def changeQuestion
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          495
+        </td>
+        <td>
+          2076
+          -
+          2096
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          changeAnswerList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def changeAnswerList
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          496
+        </td>
+        <td>
+          2405
+          -
+          2455
         </td>
         <td>
           Apply
@@ -251,43 +586,19 @@
           
         </td>
         <td style="background: #AEF1AE">
-          quiz.answerList.filter(answer =&gt; isCorrect(answer))
+          quiz.answerList.filter(answer =&gt; answer.isCorrect)
         </td>
       </tr><tr>
         <td>
-          26
+          72
         </td>
         <td>
-          513
+          497
         </td>
         <td>
-          763
+          2355
           -
-          780
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          isCorrect
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          isCorrect(answer)
-        </td>
-      </tr><tr>
-        <td>
-          26
-        </td>
-        <td>
-          515
-        </td>
-        <td>
-          680
-          -
-          701
+          2376
         </td>
         <td>
           DefDef
@@ -300,463 +611,6 @@
         </td>
         <td style="background: #AEF1AE">
           def getCorrectAnswers
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          517
-        </td>
-        <td>
-          884
-          -
-          915
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          indexOf
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz.answerList.indexOf(answer)
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          516
-        </td>
-        <td>
-          827
-          -
-          847
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          +
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz.question + &quot;\n&quot;
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          519
-        </td>
-        <td>
-          880
-          -
-          939
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          s
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          s&quot;${quiz.answerList.indexOf(answer)+1}) ${getText(answer)}&quot;
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          521
-        </td>
-        <td>
-          827
-          -
-          940
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          +
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz.question + &quot;\n&quot; + quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${getText(answer)}&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          518
-        </td>
-        <td>
-          922
-          -
-          937
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getText
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          getText(answer)
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          520
-        </td>
-        <td>
-          850
-          -
-          940
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          map
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${getText(answer)}&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          29
-        </td>
-        <td>
-          528
-        </td>
-        <td>
-          988
-          -
-          1127
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          +
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz.question + &quot;\n&quot; +
-    quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${getText(answer)} ${isCorrect(answer)}&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          29
-        </td>
-        <td>
-          522
-        </td>
-        <td>
-          988
-          -
-          1008
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          +
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz.question + &quot;\n&quot;
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          523
-        </td>
-        <td>
-          1050
-          -
-          1081
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          indexOf
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz.answerList.indexOf(answer)
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          525
-        </td>
-        <td>
-          1107
-          -
-          1124
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          isCorrect
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          isCorrect(answer)
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          524
-        </td>
-        <td>
-          1088
-          -
-          1103
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getText
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          getText(answer)
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          527
-        </td>
-        <td>
-          1016
-          -
-          1127
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          map
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${getText(answer)} ${isCorrect(answer)}&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          526
-        </td>
-        <td>
-          1046
-          -
-          1126
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          s
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          s&quot;${quiz.answerList.indexOf(answer)+1}) ${getText(answer)} ${isCorrect(answer)}&quot;
-        </td>
-      </tr><tr>
-        <td>
-          39
-        </td>
-        <td>
-          529
-        </td>
-        <td>
-          1290
-          -
-          1308
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          changeMaxScore
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          def changeMaxScore
-        </td>
-      </tr><tr>
-        <td>
-          48
-        </td>
-        <td>
-          530
-        </td>
-        <td>
-          1590
-          -
-          1609
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          changeImagePath
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          def changeImagePath
-        </td>
-      </tr><tr>
-        <td>
-          55
-        </td>
-        <td>
-          532
-        </td>
-        <td>
-          1819
-          -
-          1834
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          getQuestion
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          def getQuestion
-        </td>
-      </tr><tr>
-        <td>
-          56
-        </td>
-        <td>
-          531
-        </td>
-        <td>
-          1871
-          -
-          1891
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case Quiz(_,q,_,_,_)
-        </td>
-      </tr><tr>
-        <td>
-          65
-        </td>
-        <td>
-          533
-        </td>
-        <td>
-          2051
-          -
-          2065
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          changeText
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          def changeText
-        </td>
-      </tr><tr>
-        <td>
-          74
-        </td>
-        <td>
-          534
-        </td>
-        <td>
-          2327
-          -
-          2347
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          changeAnswerList
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          def changeAnswerList
         </td>
       </tr>
     </table>

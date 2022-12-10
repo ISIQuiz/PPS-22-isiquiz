@@ -24,60 +24,41 @@
           <div class="tab-pane active" id="codegrid">
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model
 </span>2 <span style=''>
-</span>3 <span style=''>import model.stats.PlayerStats.{PlayerStats, initStats}
-</span>4 <span style=''>import utils.storage.Configuration.PlayerCoursesFilePath
-</span>5 <span style=''>import utils.storage.DefaultDataList.defaultCourseList
-</span>6 <span style=''>import utils.parser.CourseJsonParser
-</span>7 <span style=''>import utils.storage.{DefaultDataList, FileHandler}
-</span>8 <span style=''>
-</span>9 <span style=''>import scala.util.{Failure, Success, Try}
-</span>10 <span style=''>
-</span>11 <span style=''>/**
-</span>12 <span style=''> * Trait needed to manage a game session
-</span>13 <span style=''> */
-</span>14 <span style=''>trait Session:
-</span>15 <span style=''>  // def playerStats: PlayerStats
+</span>3 <span style=''>import model.SavedCourse.SavedCourse
+</span>4 <span style=''>import model.stats.PlayerStats.{PlayerStats, initStats}
+</span>5 <span style=''>import utils.storage.Configuration.PlayerCoursesFilePath
+</span>6 <span style=''>import utils.storage.DefaultDataList.defaultCourseList
+</span>7 <span style=''>import utils.parser.CourseJsonParser
+</span>8 <span style=''>import utils.storage.{DefaultDataList, FileHandler}
+</span>9 <span style=''>
+</span>10 <span style=''>import scala.util.{Failure, Success, Try}
+</span>11 <span style=''>
+</span>12 <span style=''>/**
+</span>13 <span style=''> * Object for the game session model
+</span>14 <span style=''> */
+</span>15 <span style=''>object Session:
 </span>16 <span style=''>
 </span>17 <span style=''>  /**
-</span>18 <span style=''>   * @return list of saved course
-</span>19 <span style=''>   */
-</span>20 <span style=''>  def savedCourses: List[SavedCourse]
-</span>21 <span style=''>
-</span>22 <span style=''>  def playerStats: PlayerStats
-</span>23 <span style=''>/**
-</span>24 <span style=''> * Object for the game session model
-</span>25 <span style=''> */
-</span>26 <span style=''>object Session:
-</span>27 <span style=''>
-</span>28 <span style=''>  /**
-</span>29 <span style=''>   * Creates a new [[Session]] object
-</span>30 <span style=''>   * @param savedCourses the list of saved course, if empty it uses a sample list
-</span>31 <span style=''>   * @return Session
-</span>32 <span style=''>   */
-</span>33 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(savedCourses: List[SavedCourse] = defaultCourseList, playerStats: PlayerStats = </span><span style='background: #AEF1AE'>initStats</span><span style=''>): Session = SessionImpl(savedCourses, playerStats)
-</span>34 <span style=''>
-</span>35 <span style=''>  /**
-</span>36 <span style=''>   * Case class for session model
-</span>37 <span style=''>   * @param savedCourses list of saved course in session
-</span>38 <span style=''>   */
-</span>39 <span style=''>  case class SessionImpl(savedCourses: List[SavedCourse], playerStats: PlayerStats) extends Session
-</span>40 <span style=''>
-</span>41 <span style=''>  /**
-</span>42 <span style=''>   * Change the saved course list in session
-</span>43 <span style=''>   * @param savedCourses the new saved course list
-</span>44 <span style=''>   * @return a [[Session]]
-</span>45 <span style=''>   */
-</span>46 <span style=''>  </span><span style='background: #AEF1AE'>def changeSavedCourses</span><span style=''>(session: Session, savedCourses: List[SavedCourse]): Session = session match
-</span>47 <span style=''>    </span><span style='background: #AEF1AE'>case SessionImpl(_, playerStats)</span><span style=''> =&gt; SessionImpl(savedCourses, playerStats)
-</span>48 <span style=''>
-</span>49 <span style=''>  /**
-</span>50 <span style=''>   * Change player stats in session
-</span>51 <span style=''>   * @param session
-</span>52 <span style=''>   * @param playerStats the new player stats
-</span>53 <span style=''>   * @return a [[Session]]
-</span>54 <span style=''>   */
-</span>55 <span style=''>  </span><span style='background: #AEF1AE'>def changePlayerStats</span><span style=''>(session: Session, playerStats: PlayerStats): Session = session match
-</span>56 <span style=''>    </span><span style='background: #AEF1AE'>case SessionImpl(savedCourses, _)</span><span style=''> =&gt; SessionImpl(savedCourses, playerStats)
+</span>18 <span style=''>   * Case class for session model
+</span>19 <span style=''>   * @param savedCourses list of saved course in session
+</span>20 <span style=''>   * @param playerStats
+</span>21 <span style=''>   */
+</span>22 <span style=''>  case class Session(savedCourses: List[SavedCourse] = defaultCourseList, playerStats: PlayerStats = </span><span style='background: #AEF1AE'>initStats</span><span style=''>)
+</span>23 <span style=''>
+</span>24 <span style=''>  /**
+</span>25 <span style=''>   * Change the saved course list in session
+</span>26 <span style=''>   * @param savedCourses the new saved course list
+</span>27 <span style=''>   * @return a [[Session]]
+</span>28 <span style=''>   */
+</span>29 <span style=''>  </span><span style='background: #AEF1AE'>def changeSavedCourses</span><span style=''>(session: Session, savedCourses: List[SavedCourse]): Session = Session(savedCourses, session.playerStats)
+</span>30 <span style=''>
+</span>31 <span style=''>  /**
+</span>32 <span style=''>   * Change player stats in session
+</span>33 <span style=''>   * @param session
+</span>34 <span style=''>   * @param playerStats the new player stats
+</span>35 <span style=''>   * @return a [[Session]]
+</span>36 <span style=''>   */
+</span>37 <span style=''>  </span><span style='background: #AEF1AE'>def changePlayerStats</span><span style=''>(session: Session, playerStats: PlayerStats): Session = Session(session.savedCourses, playerStats)
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -92,15 +73,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          32
+          21
         </td>
         <td>
-          555
+          510
         </td>
         <td>
-          838
+          643
           -
-          847
+          652
         </td>
         <td>
           Ident
@@ -116,87 +97,63 @@
         </td>
       </tr><tr>
         <td>
-          32
+          21
         </td>
         <td>
-          554
+          509
+        </td>
+        <td>
+          597
+          -
+          597
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          511
+        </td>
+        <td>
+          643
+          -
+          643
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          512
         </td>
         <td>
           792
           -
-          792
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          apply$default$1
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          
-        </td>
-      </tr><tr>
-        <td>
-          32
-        </td>
-        <td>
-          553
-        </td>
-        <td>
-          748
-          -
-          757
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          def apply
-        </td>
-      </tr><tr>
-        <td>
-          32
-        </td>
-        <td>
-          556
-        </td>
-        <td>
-          838
-          -
-          838
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          apply$default$2
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          558
-        </td>
-        <td>
-          1241
-          -
-          1263
+          814
         </td>
         <td>
           DefDef
@@ -212,39 +169,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          36
         </td>
         <td>
-          557
+          513
         </td>
         <td>
-          1344
+          1063
           -
-          1376
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          case SessionImpl(_, playerStats)
-        </td>
-      </tr><tr>
-        <td>
-          54
-        </td>
-        <td>
-          560
-        </td>
-        <td>
-          1562
-          -
-          1583
+          1084
         </td>
         <td>
           DefDef
@@ -257,30 +190,6 @@
         </td>
         <td style="background: #AEF1AE">
           def changePlayerStats
-        </td>
-      </tr><tr>
-        <td>
-          55
-        </td>
-        <td>
-          559
-        </td>
-        <td>
-          1657
-          -
-          1690
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          case SessionImpl(savedCourses, _)
         </td>
       </tr>
     </table>

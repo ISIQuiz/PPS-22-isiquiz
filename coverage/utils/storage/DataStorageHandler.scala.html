@@ -27,91 +27,92 @@
 </span>3 <span style=''>import model.Answer.Answer
 </span>4 <span style=''>import model.Quiz.Quiz
 </span>5 <span style=''>import model.stats.PlayerStats.{PlayerStats, initStats}
-</span>6 <span style=''>import model.{SavedCourse, Session}
-</span>7 <span style=''>import play.api.libs.json.JsObject
-</span>8 <span style=''>import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
-</span>9 <span style=''>import utils.storage.Configuration.{PlayerDataDirectoryPath, PlayerStatsFilePath}
-</span>10 <span style=''>import scala.util.{Failure, Success, Try}
-</span>11 <span style=''>
-</span>12 <span style=''>/** Trait fo Data store management */
-</span>13 <span style=''>trait DataStorageHandler:
-</span>14 <span style=''>
-</span>15 <span style=''>  /**
-</span>16 <span style=''>   * Store a [[JsObject]] as string in a file
-</span>17 <span style=''>   *
-</span>18 <span style=''>   * @param jsonObject
-</span>19 <span style=''>   * @param path where store the file
-</span>20 <span style=''>   * @return a Try[String] with file path
-</span>21 <span style=''>   */
-</span>22 <span style=''>  </span><span style='background: #AEF1AE'>private def storeObjectToPath</span><span style=''>(jsonObject: JsObject, path: String): Try[String] =
-</span>23 <span style=''>    </span><span style='background: #AEF1AE'>FileHandler.writeFile(path, JsonParser.toString(jsonObject))</span><span style=''>
-</span>24 <span style=''>
-</span>25 <span style=''>  /**
-</span>26 <span style=''>   * Store JSON parsed data in a file depending on which [[JsonParser]] type is passed
-</span>27 <span style=''>   *
-</span>28 <span style=''>   * @param data
-</span>29 <span style=''>   * @param filePath
-</span>30 <span style=''>   * @tparam A
-</span>31 <span style=''>   * @return a Try[String] with file path
-</span>32 <span style=''>   */
-</span>33 <span style=''>  </span><span style='background: #AEF1AE'>def storeDataToPath</span><span style=''>[A](data: A, filePath: String): Try[String] =
-</span>34 <span style=''>    </span><span style='background: #AEF1AE'>FileHandler.createDirectory(PlayerDataDirectoryPath)</span><span style=''>
-</span>35 <span style=''>    </span><span style='background: #AEF1AE'>storeObjectToPath(
-</span>36 <span style=''></span><span style='background: #AEF1AE'>      data match
-</span>37 <span style=''></span><span style='background: #AEF1AE'>        case savedCourseList: List[SavedCourse] =&gt; CourseJsonParser().serialize(savedCourseList)
-</span>38 <span style=''></span><span style='background: #AEF1AE'>        case playerStats: PlayerStats =&gt; StatsJsonParser().serialize(playerStats)
-</span>39 <span style=''></span><span style='background: #AEF1AE'>      ,
-</span>40 <span style=''></span><span style='background: #AEF1AE'>      filePath
-</span>41 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
-</span>42 <span style=''>
-</span>43 <span style=''>  /**
-</span>44 <span style=''>   * Load data from a file and return the object depending on which [[JsonParser]] type is passed
-</span>45 <span style=''>   *
-</span>46 <span style=''>   * @param jsonParser
-</span>47 <span style=''>   * @param filePath
-</span>48 <span style=''>   * @tparam A
-</span>49 <span style=''>   * @return a Try[A]
-</span>50 <span style=''>   */
-</span>51 <span style=''>  </span><span style='background: #AEF1AE'>def loadDataFromFile</span><span style=''>[A](jsonParser: JsonParser[A], filePath: String): Try[A] =
-</span>52 <span style=''>    </span><span style='background: #AEF1AE'>FileHandler.readFile(filePath)</span><span style=''> match
-</span>53 <span style=''>      </span><span style='background: #AEF1AE'>case Success(jsonString: String)</span><span style=''> =&gt;
-</span>54 <span style=''>        </span><span style='background: #AEF1AE'>for {
-</span>55 <span style=''></span><span style='background: #AEF1AE'>          jsonParser &lt;- jsonParser.deserialize(jsonString)
-</span>56 <span style=''></span><span style='background: #AEF1AE'>        } yield {
-</span>57 <span style=''></span><span style='background: #AEF1AE'>          jsonParser match
-</span>58 <span style=''></span><span style='background: #AEF1AE'>            case savedCourseList: List[SavedCourse] =&gt; savedCourseList
-</span>59 <span style=''></span><span style='background: #AEF1AE'>            case playerStats: PlayerStats =&gt; playerStats
-</span>60 <span style=''></span><span style='background: #AEF1AE'>        }</span><span style=''>
-</span>61 <span style=''>      </span><span style='background: #AEF1AE'>case Failure(f)</span><span style=''> =&gt; Failure(f)
-</span>62 <span style=''>
+</span>6 <span style=''>import model.{Session}
+</span>7 <span style=''>import model.SavedCourse.SavedCourse
+</span>8 <span style=''>import play.api.libs.json.JsObject
+</span>9 <span style=''>import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
+</span>10 <span style=''>import utils.storage.Configuration.{PlayerDataDirectoryPath, PlayerStatsFilePath}
+</span>11 <span style=''>import scala.util.{Failure, Success, Try}
+</span>12 <span style=''>
+</span>13 <span style=''>/** Trait fo Data store management */
+</span>14 <span style=''>trait DataStorageHandler:
+</span>15 <span style=''>
+</span>16 <span style=''>  /**
+</span>17 <span style=''>   * Store a [[JsObject]] as string in a file
+</span>18 <span style=''>   *
+</span>19 <span style=''>   * @param jsonObject
+</span>20 <span style=''>   * @param path where store the file
+</span>21 <span style=''>   * @return a Try[String] with file path
+</span>22 <span style=''>   */
+</span>23 <span style=''>  </span><span style='background: #AEF1AE'>private def storeObjectToPath</span><span style=''>(jsonObject: JsObject, path: String): Try[String] =
+</span>24 <span style=''>    </span><span style='background: #AEF1AE'>FileHandler.writeFile(path, JsonParser.toString(jsonObject))</span><span style=''>
+</span>25 <span style=''>
+</span>26 <span style=''>  /**
+</span>27 <span style=''>   * Store JSON parsed data in a file depending on which [[JsonParser]] type is passed
+</span>28 <span style=''>   *
+</span>29 <span style=''>   * @param data
+</span>30 <span style=''>   * @param filePath
+</span>31 <span style=''>   * @tparam A
+</span>32 <span style=''>   * @return a Try[String] with file path
+</span>33 <span style=''>   */
+</span>34 <span style=''>  </span><span style='background: #AEF1AE'>def storeDataToPath</span><span style=''>[A](data: A, filePath: String): Try[String] =
+</span>35 <span style=''>    </span><span style='background: #AEF1AE'>FileHandler.createDirectory(PlayerDataDirectoryPath)</span><span style=''>
+</span>36 <span style=''>    </span><span style='background: #AEF1AE'>storeObjectToPath(
+</span>37 <span style=''></span><span style='background: #AEF1AE'>      data match
+</span>38 <span style=''></span><span style='background: #AEF1AE'>        case savedCourseList: List[SavedCourse] =&gt; CourseJsonParser().serialize(savedCourseList)
+</span>39 <span style=''></span><span style='background: #AEF1AE'>        case playerStats: PlayerStats =&gt; StatsJsonParser().serialize(playerStats)
+</span>40 <span style=''></span><span style='background: #AEF1AE'>      ,
+</span>41 <span style=''></span><span style='background: #AEF1AE'>      filePath
+</span>42 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>43 <span style=''>
+</span>44 <span style=''>  /**
+</span>45 <span style=''>   * Load data from a file and return the object depending on which [[JsonParser]] type is passed
+</span>46 <span style=''>   *
+</span>47 <span style=''>   * @param jsonParser
+</span>48 <span style=''>   * @param filePath
+</span>49 <span style=''>   * @tparam A
+</span>50 <span style=''>   * @return a Try[A]
+</span>51 <span style=''>   */
+</span>52 <span style=''>  </span><span style='background: #AEF1AE'>def loadDataFromFile</span><span style=''>[A](jsonParser: JsonParser[A], filePath: String): Try[A] =
+</span>53 <span style=''>    </span><span style='background: #AEF1AE'>FileHandler.readFile(filePath)</span><span style=''> match
+</span>54 <span style=''>      </span><span style='background: #AEF1AE'>case Success(jsonString: String)</span><span style=''> =&gt;
+</span>55 <span style=''>        </span><span style='background: #AEF1AE'>for {
+</span>56 <span style=''></span><span style='background: #AEF1AE'>          jsonParser &lt;- jsonParser.deserialize(jsonString)
+</span>57 <span style=''></span><span style='background: #AEF1AE'>        } yield {
+</span>58 <span style=''></span><span style='background: #AEF1AE'>          jsonParser match
+</span>59 <span style=''></span><span style='background: #AEF1AE'>            case savedCourseList: List[SavedCourse] =&gt; savedCourseList
+</span>60 <span style=''></span><span style='background: #AEF1AE'>            case playerStats: PlayerStats =&gt; playerStats
+</span>61 <span style=''></span><span style='background: #AEF1AE'>        }</span><span style=''>
+</span>62 <span style=''>      </span><span style='background: #AEF1AE'>case Failure(f)</span><span style=''> =&gt; Failure(f)
 </span>63 <span style=''>
-</span>64 <span style=''>/** Companion object of DataStorageHandler trait */
-</span>65 <span style=''>object DataStorageHandler:
-</span>66 <span style=''>
-</span>67 <span style=''>  /**
-</span>68 <span style=''>   * Merge the elements of two list of [[SavedCourses]] using [[List.groupMapReduce]].
-</span>69 <span style=''>   * If two or more elements have the same id, it checks if their value are the same,
-</span>70 <span style=''>   *
-</span>71 <span style=''>   * @param savedCourseList
-</span>72 <span style=''>   * @param newSavedCourseList
-</span>73 <span style=''>   * @return a resulting List[SavedCourse]
-</span>74 <span style=''>   */
-</span>75 <span style=''>  </span><span style='background: #AEF1AE'>def mergeSavedCourseLists</span><span style=''>(savedCourseList: List[SavedCourse], newSavedCourseList: List[SavedCourse]): List[SavedCourse] =
-</span>76 <span style=''>    </span><span style='background: #AEF1AE'>(savedCourseList ::: newSavedCourseList).groupMapReduce(sc =&gt; sc.courseId)(sc =&gt; (sc.description, sc.quizList))(
-</span>77 <span style=''></span><span style='background: #AEF1AE'>      (savedCourse, newSavedCourse) =&gt; (savedCourse._1, mergeQuizLists(savedCourse._2, newSavedCourse._2))
-</span>78 <span style=''></span><span style='background: #AEF1AE'>    ).map((k, v) =&gt; SavedCourse(k, v._1, v._2)).toList</span><span style=''>
-</span>79 <span style=''>
-</span>80 <span style=''>  // Used by mergeSavedCourseLists to merge quiz lists
-</span>81 <span style=''>  </span><span style='background: #AEF1AE'>private def mergeQuizLists</span><span style=''>(quizList: List[Quiz], newQuizList: List[Quiz]): List[Quiz] =
-</span>82 <span style=''>    </span><span style='background: #AEF1AE'>(quizList ::: newQuizList).groupMapReduce(q =&gt; q.quizId)(q =&gt; (q.question, q.answerList, q.maxScore, q.imagePath))(
-</span>83 <span style=''></span><span style='background: #AEF1AE'>      (quiz, newQuiz) =&gt; (quiz._1, mergeAnswerLists(quiz._2, newQuiz._2), quiz._3, quiz._4)
-</span>84 <span style=''></span><span style='background: #AEF1AE'>    ).map((k, v) =&gt; Quiz(k, v._1, v._2, v._3, v._4)).toList</span><span style=''>
-</span>85 <span style=''>
-</span>86 <span style=''>  // Used by mergeQuizLists to merge answer lists
-</span>87 <span style=''>  </span><span style='background: #AEF1AE'>private def mergeAnswerLists</span><span style=''>(answerList: List[Answer], newAnswerList: List[Answer]): List[Answer] =
-</span>88 <span style=''>    </span><span style='background: #AEF1AE'>(answerList ::: newAnswerList).groupMapReduce(a =&gt; a.text)(a =&gt; a.isCorrect)(
-</span>89 <span style=''></span><span style='background: #AEF1AE'>      (answer, newAnswer) =&gt; answer
-</span>90 <span style=''></span><span style='background: #AEF1AE'>    ).map((k, v) =&gt; Answer(k, v)).toList</span><span style=''>
+</span>64 <span style=''>
+</span>65 <span style=''>/** Companion object of DataStorageHandler trait */
+</span>66 <span style=''>object DataStorageHandler:
+</span>67 <span style=''>
+</span>68 <span style=''>  /**
+</span>69 <span style=''>   * Merge the elements of two list of [[SavedCourses]] using [[List.groupMapReduce]].
+</span>70 <span style=''>   * If two or more elements have the same id, it checks if their value are the same,
+</span>71 <span style=''>   *
+</span>72 <span style=''>   * @param savedCourseList
+</span>73 <span style=''>   * @param newSavedCourseList
+</span>74 <span style=''>   * @return a resulting List[SavedCourse]
+</span>75 <span style=''>   */
+</span>76 <span style=''>  </span><span style='background: #AEF1AE'>def mergeSavedCourseLists</span><span style=''>(savedCourseList: List[SavedCourse], newSavedCourseList: List[SavedCourse]): List[SavedCourse] =
+</span>77 <span style=''>    </span><span style='background: #AEF1AE'>(savedCourseList ::: newSavedCourseList).groupMapReduce(sc =&gt; sc.courseId)(sc =&gt; (sc.description, sc.quizList))(
+</span>78 <span style=''></span><span style='background: #AEF1AE'>      (savedCourse, newSavedCourse) =&gt; (savedCourse._1, mergeQuizLists(savedCourse._2, newSavedCourse._2))
+</span>79 <span style=''></span><span style='background: #AEF1AE'>    ).map((k, v) =&gt; SavedCourse(k, v._1, v._2)).toList</span><span style=''>
+</span>80 <span style=''>
+</span>81 <span style=''>  // Used by mergeSavedCourseLists to merge quiz lists
+</span>82 <span style=''>  </span><span style='background: #AEF1AE'>private def mergeQuizLists</span><span style=''>(quizList: List[Quiz], newQuizList: List[Quiz]): List[Quiz] =
+</span>83 <span style=''>    </span><span style='background: #AEF1AE'>(quizList ::: newQuizList).groupMapReduce(q =&gt; q.quizId)(q =&gt; (q.question, q.answerList, q.maxScore, q.imagePath))(
+</span>84 <span style=''></span><span style='background: #AEF1AE'>      (quiz, newQuiz) =&gt; (quiz._1, mergeAnswerLists(quiz._2, newQuiz._2), quiz._3, quiz._4)
+</span>85 <span style=''></span><span style='background: #AEF1AE'>    ).map((k, v) =&gt; Quiz(k, v._1, v._2, v._3, v._4)).toList</span><span style=''>
+</span>86 <span style=''>
+</span>87 <span style=''>  // Used by mergeQuizLists to merge answer lists
+</span>88 <span style=''>  </span><span style='background: #AEF1AE'>private def mergeAnswerLists</span><span style=''>(answerList: List[Answer], newAnswerList: List[Answer]): List[Answer] =
+</span>89 <span style=''>    </span><span style='background: #AEF1AE'>(answerList ::: newAnswerList).groupMapReduce(a =&gt; a.text)(a =&gt; a.isCorrect)(
+</span>90 <span style=''></span><span style='background: #AEF1AE'>      (answer, newAnswer) =&gt; answer
+</span>91 <span style=''></span><span style='background: #AEF1AE'>    ).map((k, v) =&gt; Answer(k, v)).toList</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -126,15 +127,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          21
+          22
         </td>
         <td>
-          1006
+          949
         </td>
         <td>
-          626
+          650
           -
-          655
+          679
         </td>
         <td>
           DefDef
@@ -150,15 +151,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          23
         </td>
         <td>
-          1004
+          947
         </td>
         <td>
-          739
+          763
           -
-          770
+          794
         </td>
         <td>
           Apply
@@ -174,15 +175,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          23
         </td>
         <td>
-          1005
+          948
         </td>
         <td>
-          711
+          735
           -
-          771
+          795
         </td>
         <td>
           Apply
@@ -198,15 +199,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          33
         </td>
         <td>
-          1015
+          958
         </td>
         <td>
-          974
+          998
           -
-          993
+          1017
         </td>
         <td>
           DefDef
@@ -222,15 +223,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          34
         </td>
         <td>
-          1007
+          950
         </td>
         <td>
-          1043
+          1067
           -
-          1095
+          1119
         </td>
         <td>
           Apply
@@ -246,15 +247,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          35
         </td>
         <td>
-          1014
+          957
         </td>
         <td>
-          1100
+          1124
           -
-          1343
+          1367
         </td>
         <td>
           Apply
@@ -276,15 +277,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          37
         </td>
         <td>
-          1010
+          953
         </td>
         <td>
-          1144
+          1168
           -
-          1183
+          1207
         </td>
         <td>
           Block
@@ -300,15 +301,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          37
         </td>
         <td>
-          1009
+          952
         </td>
         <td>
-          1187
+          1211
           -
-          1232
+          1256
         </td>
         <td>
           Apply
@@ -324,15 +325,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          37
         </td>
         <td>
-          1008
+          951
         </td>
         <td>
-          1187
+          1211
           -
-          1205
+          1229
         </td>
         <td>
           Apply
@@ -348,15 +349,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          38
         </td>
         <td>
-          1013
+          956
         </td>
         <td>
-          1241
+          1265
           -
-          1270
+          1294
         </td>
         <td>
           Block
@@ -372,15 +373,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          38
         </td>
         <td>
-          1012
+          955
         </td>
         <td>
-          1274
+          1298
           -
-          1314
+          1338
         </td>
         <td>
           Apply
@@ -396,15 +397,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          38
         </td>
         <td>
-          1011
+          954
         </td>
         <td>
-          1274
+          1298
           -
-          1291
+          1315
         </td>
         <td>
           Apply
@@ -420,15 +421,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          51
         </td>
         <td>
-          1023
+          966
         </td>
         <td>
-          1543
+          1567
           -
-          1563
+          1587
         </td>
         <td>
           DefDef
@@ -444,15 +445,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          52
         </td>
         <td>
-          1016
+          959
         </td>
         <td>
-          1626
+          1650
           -
-          1656
+          1680
         </td>
         <td>
           Apply
@@ -468,15 +469,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          53
         </td>
         <td>
-          1021
+          964
         </td>
         <td>
-          1669
+          1693
           -
-          1701
+          1725
         </td>
         <td>
           Block
@@ -492,15 +493,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          54
         </td>
         <td>
-          1020
+          963
         </td>
         <td>
-          1713
+          1737
           -
-          1960
+          1984
         </td>
         <td>
           Apply
@@ -522,15 +523,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          55
         </td>
         <td>
-          1017
+          960
         </td>
         <td>
-          1743
+          1767
           -
-          1777
+          1801
         </td>
         <td>
           Apply
@@ -546,15 +547,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          58
         </td>
         <td>
-          1018
+          961
         </td>
         <td>
-          1835
+          1859
           -
-          1874
+          1898
         </td>
         <td>
           Block
@@ -570,15 +571,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          59
         </td>
         <td>
-          1019
+          962
         </td>
         <td>
-          1906
+          1930
           -
-          1935
+          1959
         </td>
         <td>
           Block
@@ -594,15 +595,15 @@
         </td>
       </tr><tr>
         <td>
-          60
+          61
         </td>
         <td>
-          1022
+          965
         </td>
         <td>
-          1967
+          1991
           -
-          1982
+          2006
         </td>
         <td>
           Block
@@ -618,15 +619,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          75
         </td>
         <td>
-          1038
+          977
         </td>
         <td>
-          2373
+          2397
           -
-          2398
+          2422
         </td>
         <td>
           DefDef
@@ -642,39 +643,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          76
         </td>
         <td>
-          1025
+          967
         </td>
         <td>
-          2561
+          2524
           -
-          2572
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          courseId
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          sc.courseId
-        </td>
-      </tr><tr>
-        <td>
-          75
-        </td>
-        <td>
-          1024
-        </td>
-        <td>
-          2500
-          -
-          2538
+          2562
         </td>
         <td>
           Apply
@@ -690,39 +667,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          76
         </td>
         <td>
-          1027
+          972
         </td>
         <td>
-          2597
+          2523
           -
-          2608
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          quizList
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          sc.quizList
-        </td>
-      </tr><tr>
-        <td>
-          75
-        </td>
-        <td>
-          1032
-        </td>
-        <td>
-          2499
-          -
-          2724
+          2748
         </td>
         <td>
           Apply
@@ -740,39 +693,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          77
         </td>
         <td>
-          1026
+          968
         </td>
         <td>
-          2581
+          2676
           -
-          2595
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          description
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          sc.description
-        </td>
-      </tr><tr>
-        <td>
-          76
-        </td>
-        <td>
-          1028
-        </td>
-        <td>
-          2652
-          -
-          2666
+          2690
         </td>
         <td>
           Select
@@ -788,15 +717,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          77
         </td>
         <td>
-          1031
+          971
         </td>
         <td>
-          2668
+          2692
           -
-          2717
+          2741
         </td>
         <td>
           Apply
@@ -812,15 +741,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          77
         </td>
         <td>
-          1030
+          970
         </td>
         <td>
-          2699
+          2723
           -
-          2716
+          2740
         </td>
         <td>
           Select
@@ -836,15 +765,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          77
         </td>
         <td>
-          1029
+          969
         </td>
         <td>
-          2683
+          2707
           -
-          2697
+          2721
         </td>
         <td>
           Select
@@ -860,15 +789,63 @@
         </td>
       </tr><tr>
         <td>
-          77
+          78
         </td>
         <td>
-          1037
+          974
         </td>
         <td>
-          2499
+          2784
           -
-          2773
+          2788
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          v._2
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          973
+        </td>
+        <td>
+          2778
+          -
+          2782
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          v._1
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          976
+        </td>
+        <td>
+          2523
+          -
+          2797
         </td>
         <td>
           Select
@@ -886,63 +863,15 @@
         </td>
       </tr><tr>
         <td>
-          77
+          78
         </td>
         <td>
-          1034
+          975
         </td>
         <td>
-          2760
+          2523
           -
-          2764
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _2
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          v._2
-        </td>
-      </tr><tr>
-        <td>
-          77
-        </td>
-        <td>
-          1033
-        </td>
-        <td>
-          2754
-          -
-          2758
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _1
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          v._1
-        </td>
-      </tr><tr>
-        <td>
-          77
-        </td>
-        <td>
-          1036
-        </td>
-        <td>
-          2499
-          -
-          2766
+          2790
         </td>
         <td>
           Apply
@@ -960,39 +889,15 @@
         </td>
       </tr><tr>
         <td>
-          77
+          81
         </td>
         <td>
-          1035
+          992
         </td>
         <td>
-          2739
+          2856
           -
-          2765
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          SavedCourse(k, v._1, v._2)
-        </td>
-      </tr><tr>
-        <td>
-          80
-        </td>
-        <td>
-          1053
-        </td>
-        <td>
-          2832
-          -
-          2858
+          2882
         </td>
         <td>
           DefDef
@@ -1008,15 +913,15 @@
         </td>
       </tr><tr>
         <td>
-          81
+          82
         </td>
         <td>
-          1046
+          985
         </td>
         <td>
-          2924
+          2948
           -
-          3137
+          3161
         </td>
         <td>
           Apply
@@ -1034,15 +939,15 @@
         </td>
       </tr><tr>
         <td>
-          81
+          82
         </td>
         <td>
-          1039
+          978
         </td>
         <td>
-          2925
-          -
           2949
+          -
+          2973
         </td>
         <td>
           Apply
@@ -1058,135 +963,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          83
         </td>
         <td>
-          1043
+          983
         </td>
         <td>
-          3075
+          3138
           -
-          3112
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          mergeAnswerLists
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          mergeAnswerLists(quiz._2, newQuiz._2)
-        </td>
-      </tr><tr>
-        <td>
-          82
-        </td>
-        <td>
-          1040
-        </td>
-        <td>
-          3066
-          -
-          3073
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _1
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz._1
-        </td>
-      </tr><tr>
-        <td>
-          82
-        </td>
-        <td>
-          1042
-        </td>
-        <td>
-          3101
-          -
-          3111
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _2
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          newQuiz._2
-        </td>
-      </tr><tr>
-        <td>
-          82
-        </td>
-        <td>
-          1045
-        </td>
-        <td>
-          3123
-          -
-          3130
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _4
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz._4
-        </td>
-      </tr><tr>
-        <td>
-          82
-        </td>
-        <td>
-          1041
-        </td>
-        <td>
-          3092
-          -
-          3099
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _2
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          quiz._2
-        </td>
-      </tr><tr>
-        <td>
-          82
-        </td>
-        <td>
-          1044
-        </td>
-        <td>
-          3114
-          -
-          3121
+          3145
         </td>
         <td>
           Select
@@ -1205,12 +990,180 @@
           83
         </td>
         <td>
-          1052
+          980
         </td>
         <td>
-          2924
+          3116
           -
-          3191
+          3123
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          quiz._2
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          982
+        </td>
+        <td>
+          3099
+          -
+          3136
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          mergeAnswerLists
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          mergeAnswerLists(quiz._2, newQuiz._2)
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          979
+        </td>
+        <td>
+          3090
+          -
+          3097
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          quiz._1
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          981
+        </td>
+        <td>
+          3125
+          -
+          3135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          newQuiz._2
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          984
+        </td>
+        <td>
+          3147
+          -
+          3154
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          quiz._4
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          986
+        </td>
+        <td>
+          3184
+          -
+          3188
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          v._1
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          989
+        </td>
+        <td>
+          3202
+          -
+          3206
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          v._4
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          991
+        </td>
+        <td>
+          2948
+          -
+          3215
         </td>
         <td>
           Select
@@ -1228,15 +1181,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          84
         </td>
         <td>
-          1049
+          988
         </td>
         <td>
-          3172
+          3196
           -
-          3176
+          3200
         </td>
         <td>
           Select
@@ -1252,15 +1205,39 @@
         </td>
       </tr><tr>
         <td>
-          83
+          84
         </td>
         <td>
-          1051
+          987
         </td>
         <td>
-          2924
+          3190
           -
-          3184
+          3194
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          v._2
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          990
+        </td>
+        <td>
+          2948
+          -
+          3208
         </td>
         <td>
           Apply
@@ -1278,87 +1255,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          87
         </td>
         <td>
-          1048
+          997
         </td>
         <td>
-          3166
+          3269
           -
-          3170
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _2
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          v._2
-        </td>
-      </tr><tr>
-        <td>
-          83
-        </td>
-        <td>
-          1047
-        </td>
-        <td>
-          3160
-          -
-          3164
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _1
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          v._1
-        </td>
-      </tr><tr>
-        <td>
-          83
-        </td>
-        <td>
-          1050
-        </td>
-        <td>
-          3178
-          -
-          3182
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _4
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          v._4
-        </td>
-      </tr><tr>
-        <td>
-          86
-        </td>
-        <td>
-          1058
-        </td>
-        <td>
-          3245
-          -
-          3273
+          3297
         </td>
         <td>
           DefDef
@@ -1374,15 +1279,15 @@
         </td>
       </tr><tr>
         <td>
-          87
+          88
         </td>
         <td>
-          1055
+          994
         </td>
         <td>
-          3349
+          3373
           -
-          3468
+          3492
         </td>
         <td>
           Apply
@@ -1400,15 +1305,15 @@
         </td>
       </tr><tr>
         <td>
-          87
+          88
         </td>
         <td>
-          1054
+          993
         </td>
         <td>
-          3350
+          3374
           -
-          3378
+          3402
         </td>
         <td>
           Apply
@@ -1424,41 +1329,15 @@
         </td>
       </tr><tr>
         <td>
-          89
+          90
         </td>
         <td>
-          1057
+          995
         </td>
         <td>
-          3349
+          3373
           -
-          3503
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          toList
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          (answerList ::: newAnswerList).groupMapReduce(a =&gt; a.text)(a =&gt; a.isCorrect)(
-      (answer, newAnswer) =&gt; answer
-    ).map((k, v) =&gt; Answer(k, v)).toList
-        </td>
-      </tr><tr>
-        <td>
-          89
-        </td>
-        <td>
-          1056
-        </td>
-        <td>
-          3349
-          -
-          3496
+          3520
         </td>
         <td>
           Apply
@@ -1473,6 +1352,32 @@
           (answerList ::: newAnswerList).groupMapReduce(a =&gt; a.text)(a =&gt; a.isCorrect)(
       (answer, newAnswer) =&gt; answer
     ).map((k, v) =&gt; Answer(k, v))
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          996
+        </td>
+        <td>
+          3373
+          -
+          3527
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          (answerList ::: newAnswerList).groupMapReduce(a =&gt; a.text)(a =&gt; a.isCorrect)(
+      (answer, newAnswer) =&gt; answer
+    ).map((k, v) =&gt; Answer(k, v)).toList
         </td>
       </tr>
     </table>

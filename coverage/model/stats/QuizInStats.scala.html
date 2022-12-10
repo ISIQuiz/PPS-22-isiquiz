@@ -29,65 +29,54 @@
 </span>5 <span style=''>/** Object for quiz in player stats model */
 </span>6 <span style=''>object QuizInStats:
 </span>7 <span style=''>
-</span>8 <span style=''>  // Case class of quiz in stats
-</span>9 <span style=''>  case class QuizInStats(quizId: UUID, totalSeen: Int, totalScore: Int, totalRightAnswers: Int, averageTimeAnswer: Double)
-</span>10 <span style=''>
-</span>11 <span style=''>  /**
-</span>12 <span style=''>   * Create a new [[QuizInStats]]
-</span>13 <span style=''>   *
-</span>14 <span style=''>   * @param totalSeen         number of times the user has answered the quiz
-</span>15 <span style=''>   * @param totalScore        total score gained in the quiz
-</span>16 <span style=''>   * @param totalRightAnswers number of time the user answered the quiz correctly
-</span>17 <span style=''>   * @param averageTimeAnswer average time taken by user to answer
-</span>18 <span style=''>   * @return a [[QuizInStats]]
-</span>19 <span style=''>   */
-</span>20 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(quizId: UUID,
-</span>21 <span style=''>            totalSeen: Int = 0,
-</span>22 <span style=''>            totalScore: Int = 0,
-</span>23 <span style=''>            totalRightAnswers: Int = 0,
-</span>24 <span style=''>            averageTimeAnswer: Double = 0) = 
-</span>25 <span style=''>    QuizInStats(quizId, totalSeen, totalScore, totalRightAnswers, averageTimeAnswer)
-</span>26 <span style=''>
-</span>27 <span style=''>  /**
-</span>28 <span style=''>   * Change total seen in quiz in stats
-</span>29 <span style=''>   *
+</span>8 <span style=''>  /**
+</span>9 <span style=''>   * Create a new [[QuizInStats]]
+</span>10 <span style=''>   *
+</span>11 <span style=''>   * @param totalSeen         number of times the user has answered the quiz
+</span>12 <span style=''>   * @param totalScore        total score gained in the quiz
+</span>13 <span style=''>   * @param totalRightAnswers number of time the user answered the quiz correctly
+</span>14 <span style=''>   * @param averageTimeAnswer average time taken by user to answer
+</span>15 <span style=''>   */
+</span>16 <span style=''>  case class QuizInStats(quizId: UUID, totalSeen: Int = 0, totalScore: Int = 0, totalRightAnswers: Int = 0, averageTimeAnswer: Double = 0.0)
+</span>17 <span style=''>
+</span>18 <span style=''>  /**
+</span>19 <span style=''>   * Change total seen in quiz in stats
+</span>20 <span style=''>   *
+</span>21 <span style=''>   * @param quizInStats
+</span>22 <span style=''>   * @param totalSeen
+</span>23 <span style=''>   * @return updated [[QuizInStats]]
+</span>24 <span style=''>   */
+</span>25 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalSeen</span><span style=''>(quizInStats: QuizInStats, totalSeen: Int): QuizInStats =
+</span>26 <span style=''>    QuizInStats(quizInStats.quizId, totalSeen, quizInStats.totalScore, quizInStats.totalRightAnswers, quizInStats.averageTimeAnswer)
+</span>27 <span style=''>
+</span>28 <span style=''>  /**
+</span>29 <span style=''>   * Change total score of the quiz
 </span>30 <span style=''>   * @param quizInStats
-</span>31 <span style=''>   * @param totalSeen
+</span>31 <span style=''>   * @param totalScore
 </span>32 <span style=''>   * @return updated [[QuizInStats]]
 </span>33 <span style=''>   */
-</span>34 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalSeen</span><span style=''>(quizInStats: QuizInStats, totalSeen: Int): QuizInStats =
-</span>35 <span style=''>    QuizInStats(quizInStats.quizId, totalSeen, quizInStats.totalScore, quizInStats.totalRightAnswers, quizInStats.averageTimeAnswer)
+</span>34 <span style=''>  </span><span style='background: #F0ADAD'>def changeTotalScore</span><span style=''>(quizInStats: QuizInStats, totalScore: Int): QuizInStats =
+</span>35 <span style=''>    QuizInStats(quizInStats.quizId, quizInStats.totalSeen, totalScore, quizInStats.totalRightAnswers, quizInStats.averageTimeAnswer)
 </span>36 <span style=''>
-</span>37 <span style=''>
-</span>38 <span style=''>  /**
-</span>39 <span style=''>   * Change total score of the quiz
+</span>37 <span style=''>  /**
+</span>38 <span style=''>   * Change total right answers in quiz in stats
+</span>39 <span style=''>   *
 </span>40 <span style=''>   * @param quizInStats
-</span>41 <span style=''>   * @param totalScore
+</span>41 <span style=''>   * @param totalRightAnswers
 </span>42 <span style=''>   * @return updated [[QuizInStats]]
 </span>43 <span style=''>   */
-</span>44 <span style=''>  </span><span style='background: #F0ADAD'>def changeTotalScore</span><span style=''>(quizInStats: QuizInStats, totalScore: Int): QuizInStats =
-</span>45 <span style=''>    QuizInStats(quizInStats.quizId, quizInStats.totalSeen, totalScore, quizInStats.totalRightAnswers, quizInStats.averageTimeAnswer)
+</span>44 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalRightAnswers</span><span style=''>(quizInStats: QuizInStats, totalRightAnswers: Int): QuizInStats =
+</span>45 <span style=''>    QuizInStats(quizInStats.quizId, quizInStats.totalSeen, quizInStats.totalScore, totalRightAnswers, quizInStats.averageTimeAnswer)
 </span>46 <span style=''>
-</span>47 <span style=''>
-</span>48 <span style=''>  /**
-</span>49 <span style=''>   * Change total right answers in quiz in stats
-</span>50 <span style=''>   *
-</span>51 <span style=''>   * @param quizInStats
-</span>52 <span style=''>   * @param totalRightAnswers
-</span>53 <span style=''>   * @return updated [[QuizInStats]]
-</span>54 <span style=''>   */
-</span>55 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalRightAnswers</span><span style=''>(quizInStats: QuizInStats, totalRightAnswers: Int): QuizInStats =
-</span>56 <span style=''>    QuizInStats(quizInStats.quizId, quizInStats.totalSeen, quizInStats.totalScore, totalRightAnswers, quizInStats.averageTimeAnswer)
-</span>57 <span style=''>
-</span>58 <span style=''>  /**
-</span>59 <span style=''>   * Change average time answer in quiz in stats
-</span>60 <span style=''>   *
-</span>61 <span style=''>   * @param quizInStats
-</span>62 <span style=''>   * @param averageTimeAnswer
-</span>63 <span style=''>   * @return updated [[QuizInStats]]
-</span>64 <span style=''>   */
-</span>65 <span style=''>  </span><span style='background: #AEF1AE'>def changeAverageTimeAnswer</span><span style=''>(quizInStats: QuizInStats, averageTimeAnswer: Double): QuizInStats =
-</span>66 <span style=''>    QuizInStats(quizInStats.quizId, quizInStats.totalSeen, quizInStats.totalScore, quizInStats.totalRightAnswers, averageTimeAnswer)
+</span>47 <span style=''>  /**
+</span>48 <span style=''>   * Change average time answer in quiz in stats
+</span>49 <span style=''>   *
+</span>50 <span style=''>   * @param quizInStats
+</span>51 <span style=''>   * @param averageTimeAnswer
+</span>52 <span style=''>   * @return updated [[QuizInStats]]
+</span>53 <span style=''>   */
+</span>54 <span style=''>  </span><span style='background: #AEF1AE'>def changeAverageTimeAnswer</span><span style=''>(quizInStats: QuizInStats, averageTimeAnswer: Double): QuizInStats =
+</span>55 <span style=''>    QuizInStats(quizInStats.quizId, quizInStats.totalSeen, quizInStats.totalScore, quizInStats.totalRightAnswers, averageTimeAnswer)
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -102,45 +91,21 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          19
+          15
         </td>
         <td>
-          667
+          621
         </td>
         <td>
-          638
+          553
           -
-          647
+          553
         </td>
         <td>
           DefDef
         </td>
         <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          def apply
-        </td>
-      </tr><tr>
-        <td>
-          20
-        </td>
-        <td>
-          668
-        </td>
-        <td>
-          691
-          -
-          691
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          apply$default$2
+          $lessinit$greater$default$4
         </td>
         <td>
           
@@ -150,21 +115,21 @@
         </td>
       </tr><tr>
         <td>
-          21
+          15
         </td>
         <td>
-          669
+          620
         </td>
         <td>
-          724
+          525
           -
-          724
+          525
         </td>
         <td>
           DefDef
         </td>
         <td>
-          apply$default$3
+          $lessinit$greater$default$3
         </td>
         <td>
           
@@ -174,21 +139,21 @@
         </td>
       </tr><tr>
         <td>
-          22
+          15
         </td>
         <td>
-          670
+          622
         </td>
         <td>
-          764
+          584
           -
-          764
+          584
         </td>
         <td>
           DefDef
         </td>
         <td>
-          apply$default$4
+          $lessinit$greater$default$5
         </td>
         <td>
           
@@ -198,21 +163,21 @@
         </td>
       </tr><tr>
         <td>
-          23
+          15
         </td>
         <td>
-          671
+          619
         </td>
         <td>
-          807
+          504
           -
-          807
+          504
         </td>
         <td>
           DefDef
         </td>
         <td>
-          apply$default$5
+          $lessinit$greater$default$2
         </td>
         <td>
           
@@ -222,15 +187,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          24
         </td>
         <td>
-          672
+          623
         </td>
         <td>
-          1041
+          732
           -
-          1060
+          751
         </td>
         <td>
           DefDef
@@ -246,15 +211,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          33
         </td>
         <td>
-          673
+          624
         </td>
         <td>
-          1387
+          1077
           -
-          1407
+          1097
         </td>
         <td>
           DefDef
@@ -270,15 +235,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          43
         </td>
         <td>
-          674
+          625
         </td>
         <td>
-          1760
+          1449
           -
-          1787
+          1476
         </td>
         <td>
           DefDef
@@ -294,15 +259,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          53
         </td>
         <td>
-          675
+          626
         </td>
         <td>
-          2146
+          1835
           -
-          2173
+          1862
         </td>
         <td>
           DefDef

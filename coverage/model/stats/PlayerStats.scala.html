@@ -33,217 +33,199 @@
 </span>9 <span style=''>/** Object for PlayerStats model */
 </span>10 <span style=''>object PlayerStats:
 </span>11 <span style=''>
-</span>12 <span style=''>  // Case class for player stats
-</span>13 <span style=''>  case class PlayerStats(totalScore: Int,
-</span>14 <span style=''>                         totalAnsweredQuestions: Int,
-</span>15 <span style=''>                         totalCorrectAnswers: Int,
-</span>16 <span style=''>                         totalAnswerPrecision: Int,
-</span>17 <span style=''>                         totalAverageTimeAnswer: Double,
-</span>18 <span style=''>                         courseInStatsList: List[CourseInStats])
-</span>19 <span style=''>
-</span>20 <span style=''>  /**
-</span>21 <span style=''>   * Create a new [[PlayerStats]]
-</span>22 <span style=''>   *
-</span>23 <span style=''>   * @param totalScore             total user score
-</span>24 <span style=''>   * @param totalAnsweredQuestions total number of answered questions
-</span>25 <span style=''>   * @param totalCorrectAnswers    total number of question answered correctly
-</span>26 <span style=''>   * @param totalAnswerPrecision   total % answer precision
-</span>27 <span style=''>   * @param totalAverageTimeAnswer total average time to answer
-</span>28 <span style=''>   * @param courseInStatsList      the list of course in stats
-</span>29 <span style=''>   * @return a [[PlayerStats]]
-</span>30 <span style=''>   */
-</span>31 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(totalScore: Int = </span><span style='background: #AEF1AE'>initStats</span><span style=''>.totalScore,
-</span>32 <span style=''>            totalAnsweredQuestions: Int = </span><span style='background: #AEF1AE'>initStats</span><span style=''>.totalAnsweredQuestions,
-</span>33 <span style=''>            totalCorrectAnswers: Int = </span><span style='background: #AEF1AE'>initStats</span><span style=''>.totalCorrectAnswers,
-</span>34 <span style=''>            totalAnswerPrecision: Int = </span><span style='background: #AEF1AE'>initStats</span><span style=''>.totalAnswerPrecision,
-</span>35 <span style=''>            totalAverageTimeAnswer: Double = </span><span style='background: #AEF1AE'>initStats</span><span style=''>.totalAverageTimeAnswer,
-</span>36 <span style=''>            courseInStatsList: List[CourseInStats] = </span><span style='background: #AEF1AE'>initStats</span><span style=''>.courseInStatsList) =
-</span>37 <span style=''>    PlayerStats(totalScore,
-</span>38 <span style=''>      totalAnsweredQuestions,
-</span>39 <span style=''>      totalCorrectAnswers,
-</span>40 <span style=''>      totalAnswerPrecision,
-</span>41 <span style=''>      totalAverageTimeAnswer,
-</span>42 <span style=''>      courseInStatsList)
-</span>43 <span style=''>
-</span>44 <span style=''>  /**
-</span>45 <span style=''>   * Change total score in player stats
-</span>46 <span style=''>   *
-</span>47 <span style=''>   * @param playerStats
-</span>48 <span style=''>   * @param totalScore
-</span>49 <span style=''>   * @return updated [[PlayerStats]]
-</span>50 <span style=''>   */
-</span>51 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalScore</span><span style=''>(playerStats: PlayerStats, totalScore: Int): PlayerStats =
-</span>52 <span style=''>    PlayerStats(totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, playerStats.totalAverageTimeAnswer, playerStats.courseInStatsList)
-</span>53 <span style=''>
-</span>54 <span style=''>  /**
-</span>55 <span style=''>   * Change total answered questions
-</span>56 <span style=''>   *
-</span>57 <span style=''>   * @param playerStats
-</span>58 <span style=''>   * @param totalAnsweredQuestions
-</span>59 <span style=''>   * @return updated [[PlayerStats]]
-</span>60 <span style=''>   */
-</span>61 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalAnsweredQuestions</span><span style=''>(playerStats: PlayerStats, totalAnsweredQuestions: Int): PlayerStats =
-</span>62 <span style=''>    PlayerStats(playerStats.totalScore, totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, playerStats.totalAverageTimeAnswer, playerStats.courseInStatsList)
-</span>63 <span style=''>
-</span>64 <span style=''>  /**
-</span>65 <span style=''>   * Change total correct answers
-</span>66 <span style=''>   *
-</span>67 <span style=''>   * @param playerStats
-</span>68 <span style=''>   * @param totalCorrectAnswers
-</span>69 <span style=''>   * @return updated [[PlayerStats]]
-</span>70 <span style=''>   */
-</span>71 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalCorrectAnswers</span><span style=''>(playerStats: PlayerStats, totalCorrectAnswers: Int): PlayerStats =
-</span>72 <span style=''>    PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, totalCorrectAnswers, playerStats.totalAnswerPrecision, playerStats.totalAverageTimeAnswer, playerStats.courseInStatsList)
-</span>73 <span style=''>
-</span>74 <span style=''>  /**
-</span>75 <span style=''>   * Change total answer precision
-</span>76 <span style=''>   *
-</span>77 <span style=''>   * @param playerStats
-</span>78 <span style=''>   * @param totalAnswerPrecision
-</span>79 <span style=''>   * @return updated [[PlayerStats]]
-</span>80 <span style=''>   */
-</span>81 <span style=''>  </span><span style='background: #F0ADAD'>def changeTotalAnswerPrecision</span><span style=''>(playerStats: PlayerStats, totalAnswerPrecision: Int): PlayerStats =
-</span>82 <span style=''>    PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, totalAnswerPrecision, playerStats.totalAverageTimeAnswer, playerStats.courseInStatsList)
-</span>83 <span style=''>
-</span>84 <span style=''>
-</span>85 <span style=''>  /**
-</span>86 <span style=''>   * Change total average time to answer
-</span>87 <span style=''>   *
-</span>88 <span style=''>   * @param playerStats
-</span>89 <span style=''>   * @param totalAverageTimeAnswer
-</span>90 <span style=''>   * @return updated [[PlayerStats]]
-</span>91 <span style=''>   */
-</span>92 <span style=''>  </span><span style='background: #F0ADAD'>def changeTotalAverageTimeAnswer</span><span style=''>(playerStats: PlayerStats, totalAverageTimeAnswer: Double): PlayerStats =
-</span>93 <span style=''>    PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, totalAverageTimeAnswer, playerStats.courseInStatsList)
-</span>94 <span style=''>
-</span>95 <span style=''>
-</span>96 <span style=''>  /**
-</span>97 <span style=''>   * Change course in stats list
-</span>98 <span style=''>   *
-</span>99 <span style=''>   * @param playerStats
-</span>100 <span style=''>   * @param courseInStatsList
-</span>101 <span style=''>   * @return updated [[PlayerStats]]
-</span>102 <span style=''>   */
-</span>103 <span style=''>  </span><span style='background: #AEF1AE'>def changeCourseInStatsList</span><span style=''>(playerStats: PlayerStats, courseInStatsList: List[CourseInStats]): PlayerStats =
-</span>104 <span style=''>    PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, playerStats.totalAverageTimeAnswer, courseInStatsList)
+</span>12 <span style=''>  /**
+</span>13 <span style=''>   * Create a new [[PlayerStats]]
+</span>14 <span style=''>   *
+</span>15 <span style=''>   * @param totalScore             total user score
+</span>16 <span style=''>   * @param totalAnsweredQuestions total number of answered questions
+</span>17 <span style=''>   * @param totalCorrectAnswers    total number of question answered correctly
+</span>18 <span style=''>   * @param totalAnswerPrecision   total % answer precision
+</span>19 <span style=''>   * @param totalAverageTimeAnswer total average time to answer
+</span>20 <span style=''>   * @param courseInStatsList      the list of course in stats
+</span>21 <span style=''>   * @return a [[PlayerStats]]
+</span>22 <span style=''>   */
+</span>23 <span style=''>  case class PlayerStats(totalScore: Int = </span><span style='background: #AEF1AE'>initStats</span><span style=''>.totalScore,
+</span>24 <span style=''>                         totalAnsweredQuestions: Int = </span><span style='background: #AEF1AE'>initStats</span><span style=''>.totalAnsweredQuestions,
+</span>25 <span style=''>                         totalCorrectAnswers: Int = </span><span style='background: #AEF1AE'>initStats</span><span style=''>.totalCorrectAnswers,
+</span>26 <span style=''>                         totalAnswerPrecision: Int = </span><span style='background: #AEF1AE'>initStats</span><span style=''>.totalAnswerPrecision,
+</span>27 <span style=''>                         totalAverageTimeAnswer: Double = </span><span style='background: #AEF1AE'>initStats</span><span style=''>.totalAverageTimeAnswer,
+</span>28 <span style=''>                         courseInStatsList: List[CourseInStats] = </span><span style='background: #AEF1AE'>initStats</span><span style=''>.courseInStatsList)
+</span>29 <span style=''>
+</span>30 <span style=''>  /**
+</span>31 <span style=''>   * Change total score in player stats
+</span>32 <span style=''>   *
+</span>33 <span style=''>   * @param playerStats
+</span>34 <span style=''>   * @param totalScore
+</span>35 <span style=''>   * @return updated [[PlayerStats]]
+</span>36 <span style=''>   */
+</span>37 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalScore</span><span style=''>(playerStats: PlayerStats, totalScore: Int): PlayerStats =
+</span>38 <span style=''>    PlayerStats(totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, playerStats.totalAverageTimeAnswer, playerStats.courseInStatsList)
+</span>39 <span style=''>
+</span>40 <span style=''>  /**
+</span>41 <span style=''>   * Change total answered questions
+</span>42 <span style=''>   *
+</span>43 <span style=''>   * @param playerStats
+</span>44 <span style=''>   * @param totalAnsweredQuestions
+</span>45 <span style=''>   * @return updated [[PlayerStats]]
+</span>46 <span style=''>   */
+</span>47 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalAnsweredQuestions</span><span style=''>(playerStats: PlayerStats, totalAnsweredQuestions: Int): PlayerStats =
+</span>48 <span style=''>    PlayerStats(playerStats.totalScore, totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, playerStats.totalAverageTimeAnswer, playerStats.courseInStatsList)
+</span>49 <span style=''>
+</span>50 <span style=''>  /**
+</span>51 <span style=''>   * Change total correct answers
+</span>52 <span style=''>   *
+</span>53 <span style=''>   * @param playerStats
+</span>54 <span style=''>   * @param totalCorrectAnswers
+</span>55 <span style=''>   * @return updated [[PlayerStats]]
+</span>56 <span style=''>   */
+</span>57 <span style=''>  </span><span style='background: #AEF1AE'>def changeTotalCorrectAnswers</span><span style=''>(playerStats: PlayerStats, totalCorrectAnswers: Int): PlayerStats =
+</span>58 <span style=''>    PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, totalCorrectAnswers, playerStats.totalAnswerPrecision, playerStats.totalAverageTimeAnswer, playerStats.courseInStatsList)
+</span>59 <span style=''>
+</span>60 <span style=''>  /**
+</span>61 <span style=''>   * Change total answer precision
+</span>62 <span style=''>   *
+</span>63 <span style=''>   * @param playerStats
+</span>64 <span style=''>   * @param totalAnswerPrecision
+</span>65 <span style=''>   * @return updated [[PlayerStats]]
+</span>66 <span style=''>   */
+</span>67 <span style=''>  </span><span style='background: #F0ADAD'>def changeTotalAnswerPrecision</span><span style=''>(playerStats: PlayerStats, totalAnswerPrecision: Int): PlayerStats =
+</span>68 <span style=''>    PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, totalAnswerPrecision, playerStats.totalAverageTimeAnswer, playerStats.courseInStatsList)
+</span>69 <span style=''>
+</span>70 <span style=''>  /**
+</span>71 <span style=''>   * Change total average time to answer
+</span>72 <span style=''>   *
+</span>73 <span style=''>   * @param playerStats
+</span>74 <span style=''>   * @param totalAverageTimeAnswer
+</span>75 <span style=''>   * @return updated [[PlayerStats]]
+</span>76 <span style=''>   */
+</span>77 <span style=''>  </span><span style='background: #F0ADAD'>def changeTotalAverageTimeAnswer</span><span style=''>(playerStats: PlayerStats, totalAverageTimeAnswer: Double): PlayerStats =
+</span>78 <span style=''>    PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, totalAverageTimeAnswer, playerStats.courseInStatsList)
+</span>79 <span style=''>
+</span>80 <span style=''>  /**
+</span>81 <span style=''>   * Change course in stats list
+</span>82 <span style=''>   *
+</span>83 <span style=''>   * @param playerStats
+</span>84 <span style=''>   * @param courseInStatsList
+</span>85 <span style=''>   * @return updated [[PlayerStats]]
+</span>86 <span style=''>   */
+</span>87 <span style=''>  </span><span style='background: #AEF1AE'>def changeCourseInStatsList</span><span style=''>(playerStats: PlayerStats, courseInStatsList: List[CourseInStats]): PlayerStats =
+</span>88 <span style=''>    PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, playerStats.totalAverageTimeAnswer, courseInStatsList)
+</span>89 <span style=''>
+</span>90 <span style=''>  /**
+</span>91 <span style=''>   * Update [[PlayerStats]] with all the values that can be derived
+</span>92 <span style=''>   *
+</span>93 <span style=''>   * @param courseInStatsList
+</span>94 <span style=''>   * @return an updated [[PlayerStats]]
+</span>95 <span style=''>   */
+</span>96 <span style=''>  </span><span style='background: #AEF1AE'>def updatePlayerStats</span><span style=''>(courseInStatsList: List[CourseInStats]): PlayerStats =
+</span>97 <span style=''>    PlayerStats(
+</span>98 <span style=''>      totalScore = </span><span style='background: #AEF1AE'>calculateTotalScore(courseInStatsList)</span><span style=''>,
+</span>99 <span style=''>      totalAnsweredQuestions = </span><span style='background: #AEF1AE'>calculateTotalAnsweredQuestions(courseInStatsList)</span><span style=''>,
+</span>100 <span style=''>      totalCorrectAnswers = </span><span style='background: #AEF1AE'>calculateTotalCorrectAnswer(courseInStatsList)</span><span style=''>,
+</span>101 <span style=''>      totalAnswerPrecision = </span><span style='background: #AEF1AE'>calculateTotalAnswerPrecision(courseInStatsList)</span><span style=''>,
+</span>102 <span style=''>      totalAverageTimeAnswer = </span><span style='background: #AEF1AE'>calculateTotalAverageTimeAnswer(courseInStatsList)</span><span style=''>,
+</span>103 <span style=''>      courseInStatsList = courseInStatsList
+</span>104 <span style=''>    )
 </span>105 <span style=''>
-</span>106 <span style=''>
-</span>107 <span style=''>  /**
-</span>108 <span style=''>   * Update [[PlayerStats]] with all the values that can be derived
-</span>109 <span style=''>   *
-</span>110 <span style=''>   * @param courseInStatsList
-</span>111 <span style=''>   * @return an updated [[PlayerStats]]
-</span>112 <span style=''>   */
-</span>113 <span style=''>  </span><span style='background: #AEF1AE'>def updatePlayerStats</span><span style=''>(courseInStatsList: List[CourseInStats]): PlayerStats =
-</span>114 <span style=''>    PlayerStats(
-</span>115 <span style=''>      totalScore = </span><span style='background: #AEF1AE'>calculateTotalScore(courseInStatsList)</span><span style=''>,
-</span>116 <span style=''>      totalAnsweredQuestions = </span><span style='background: #AEF1AE'>calculateTotalAnsweredQuestions(courseInStatsList)</span><span style=''>,
-</span>117 <span style=''>      totalCorrectAnswers = </span><span style='background: #AEF1AE'>calculateTotalCorrectAnswer(courseInStatsList)</span><span style=''>,
-</span>118 <span style=''>      totalAnswerPrecision = </span><span style='background: #AEF1AE'>calculateTotalAnswerPrecision(courseInStatsList)</span><span style=''>,
-</span>119 <span style=''>      totalAverageTimeAnswer = </span><span style='background: #AEF1AE'>calculateTotalAverageTimeAnswer(courseInStatsList)</span><span style=''>,
-</span>120 <span style=''>      courseInStatsList = courseInStatsList
-</span>121 <span style=''>    )
-</span>122 <span style=''>
-</span>123 <span style=''>  /**
-</span>124 <span style=''>   * Add a [[QuizInGame]] to the [[PlayerStats]] of the current game
-</span>125 <span style=''>   *
-</span>126 <span style=''>   * @param playerStats
-</span>127 <span style=''>   * @param quizInGame
-</span>128 <span style=''>   * @param isCorrect
-</span>129 <span style=''>   * @param score
-</span>130 <span style=''>   * @param timeToAnswer
-</span>131 <span style=''>   * @return an updated [[PlayerStats]] with the newly added quiz in game
-</span>132 <span style=''>   */
-</span>133 <span style=''>  </span><span style='background: #AEF1AE'>def addQuizInGameToStats</span><span style=''>(playerStats: PlayerStats, quizInGame: QuizInGame, isCorrect: Boolean, score: Int, timeToAnswer: Double): PlayerStats =
-</span>134 <span style=''>    val newQuizInStats = QuizInStats(quizInGame.quiz.quizId, 1, score, if (isCorrect) </span><span style='background: #AEF1AE'>1</span><span style=''> else </span><span style='background: #F0ADAD'>0</span><span style=''>, timeToAnswer)
-</span>135 <span style=''>    val newCourseInStats = CourseInStats(quizInGame.course, </span><span style='background: #AEF1AE'>List(newQuizInStats)</span><span style=''>)
-</span>136 <span style=''>
-</span>137 <span style=''>    // Check if course already exists
-</span>138 <span style=''>    val newCourseInStatsList = if (</span><span style='background: #AEF1AE'>playerStats.courseInStatsList.map(c =&gt; c.course).contains(quizInGame.course)</span><span style=''>)
-</span>139 <span style=''>    // Merge existent player stats with the new player stats
-</span>140 <span style=''>      </span><span style='background: #F0ADAD'>mergeCourseInStatsLists(playerStats.courseInStatsList, List(newCourseInStats))</span><span style=''>
-</span>141 <span style=''>    else
-</span>142 <span style=''>      </span><span style='background: #AEF1AE'>playerStats.courseInStatsList.appended(newCourseInStats)</span><span style=''>
-</span>143 <span style=''>
-</span>144 <span style=''>    </span><span style='background: #AEF1AE'>updatePlayerStats(newCourseInStatsList)</span><span style=''>
-</span>145 <span style=''>
-</span>146 <span style=''>
-</span>147 <span style=''>  /**
-</span>148 <span style=''>   * Merge two [[PlayerStats]] in a new one
-</span>149 <span style=''>   *
-</span>150 <span style=''>   * @param playerStats
-</span>151 <span style=''>   * @param newPlayerStats
-</span>152 <span style=''>   * @return an updated [[PlayerStats]]
-</span>153 <span style=''>   */
-</span>154 <span style=''>  </span><span style='background: #F0ADAD'>def mergePlayerStats</span><span style=''>(playerStats: PlayerStats, newPlayerStats: PlayerStats): PlayerStats =
-</span>155 <span style=''>    </span><span style='background: #F0ADAD'>updatePlayerStats(mergeCourseInStatsLists(playerStats.courseInStatsList, newPlayerStats.courseInStatsList))</span><span style=''>
-</span>156 <span style=''>
-</span>157 <span style=''>  // Merge two lists of CourseInStats
-</span>158 <span style=''>  </span><span style='background: #F0ADAD'>private def mergeCourseInStatsLists</span><span style=''>(courseInStatsList: List[CourseInStats], newCourseInStatsList: List[CourseInStats]): List[CourseInStats] =
-</span>159 <span style=''>    </span><span style='background: #F0ADAD'>(courseInStatsList ::: newCourseInStatsList).groupMapReduce(c =&gt; c.course)(c =&gt; (c.quizInStatsList))(
-</span>160 <span style=''></span><span style='background: #F0ADAD'>      (courseInStats, newCourseInStats) =&gt; mergeQuizInStatsLists(courseInStats, newCourseInStats)
-</span>161 <span style=''></span><span style='background: #F0ADAD'>    ).map((k, v) =&gt; CourseInStats(k, v)).toList</span><span style=''>
-</span>162 <span style=''>
-</span>163 <span style=''>  // Merge two lists of QuizInStats and calculates the new values
-</span>164 <span style=''>  </span><span style='background: #F0ADAD'>private def mergeQuizInStatsLists</span><span style=''>(quizInStatsList: List[QuizInStats], newQuizInStatsList: List[QuizInStats]): List[QuizInStats] =
-</span>165 <span style=''>    </span><span style='background: #F0ADAD'>(quizInStatsList ::: newQuizInStatsList).groupMapReduce(q =&gt; q.quizId)(q =&gt; (q.totalSeen, q.totalScore, q.totalRightAnswers, q.averageTimeAnswer))(
-</span>166 <span style=''></span><span style='background: #F0ADAD'>      (quizInStats, newQuizInStats) =&gt; (
-</span>167 <span style=''></span><span style='background: #F0ADAD'>        quizInStats._1 + newQuizInStats._1, // sum total seen
-</span>168 <span style=''></span><span style='background: #F0ADAD'>        quizInStats._2 + newQuizInStats._2, // sum total score
-</span>169 <span style=''></span><span style='background: #F0ADAD'>        quizInStats._3 + newQuizInStats._3, // sum total right answer
-</span>170 <span style=''></span><span style='background: #F0ADAD'>        calculateWeightedAverage(quizInStats._4, quizInStats._1, newQuizInStats._4, newQuizInStats._1) //calculate weighted average
-</span>171 <span style=''></span><span style='background: #F0ADAD'>      )
-</span>172 <span style=''></span><span style='background: #F0ADAD'>    ).map((k, v) =&gt; QuizInStats(k, v._1, v._2, v._3, v._4)).toList</span><span style=''>
-</span>173 <span style=''>
-</span>174 <span style=''>  // Needed to calculate weighted average
-</span>175 <span style=''>  </span><span style='background: #F0ADAD'>private def calculateWeightedAverage</span><span style=''>(averageTimeAnswer: Double, totalSeen: Int, newAverageTimeAnswer: Double, newTotalSeen: Int): Double =
-</span>176 <span style=''>    </span><span style='background: #F0ADAD'>Try(
-</span>177 <span style=''></span><span style='background: #F0ADAD'>      ((averageTimeAnswer * (if (totalSeen == 0) 1 else totalSeen)) + newAverageTimeAnswer) / (totalSeen + newTotalSeen)
-</span>178 <span style=''></span><span style='background: #F0ADAD'>    ).getOrElse(averageTimeAnswer)</span><span style=''>
-</span>179 <span style=''>
-</span>180 <span style=''>  // Calculate total score
-</span>181 <span style=''>  </span><span style='background: #AEF1AE'>private def calculateTotalScore</span><span style=''>(courseInStatsList: List[CourseInStats]): Int =
-</span>182 <span style=''>    </span><span style='background: #AEF1AE'>courseInStatsList.map(
-</span>183 <span style=''></span><span style='background: #AEF1AE'>      _.quizInStatsList.map(
-</span>184 <span style=''></span><span style='background: #AEF1AE'>        _.totalScore
-</span>185 <span style=''></span><span style='background: #AEF1AE'>      ).sum
-</span>186 <span style=''></span><span style='background: #AEF1AE'>    ).sum</span><span style=''>
-</span>187 <span style=''>
-</span>188 <span style=''>  //Calculates total answered questions
-</span>189 <span style=''>  </span><span style='background: #AEF1AE'>private def calculateTotalAnsweredQuestions</span><span style=''>(courseInStatsList: List[CourseInStats]): Int =
-</span>190 <span style=''>    </span><span style='background: #AEF1AE'>courseInStatsList.map(
-</span>191 <span style=''></span><span style='background: #AEF1AE'>      _.quizInStatsList.map(
-</span>192 <span style=''></span><span style='background: #AEF1AE'>        _.totalSeen
-</span>193 <span style=''></span><span style='background: #AEF1AE'>      ).sum
-</span>194 <span style=''></span><span style='background: #AEF1AE'>    ).sum</span><span style=''>
-</span>195 <span style=''>
-</span>196 <span style=''>  //Calculates total correct answer
-</span>197 <span style=''>  </span><span style='background: #AEF1AE'>private def calculateTotalCorrectAnswer</span><span style=''>(courseInStatsList: List[CourseInStats]): Int =
-</span>198 <span style=''>    </span><span style='background: #AEF1AE'>courseInStatsList.map(
-</span>199 <span style=''></span><span style='background: #AEF1AE'>      _.quizInStatsList.map(
-</span>200 <span style=''></span><span style='background: #AEF1AE'>        _.totalRightAnswers
-</span>201 <span style=''></span><span style='background: #AEF1AE'>      ).sum
-</span>202 <span style=''></span><span style='background: #AEF1AE'>    ).sum</span><span style=''>
-</span>203 <span style=''>
-</span>204 <span style=''>  // Calculates total answer precision
-</span>205 <span style=''>  </span><span style='background: #AEF1AE'>private def calculateTotalAnswerPrecision</span><span style=''>(courseInStatsList: List[CourseInStats]): Int =
-</span>206 <span style=''>    </span><span style='background: #AEF1AE'>Try(calculateTotalCorrectAnswer(courseInStatsList) * 100 / calculateTotalAnsweredQuestions(courseInStatsList)).getOrElse(0)</span><span style=''>
-</span>207 <span style=''>  
-</span>208 <span style=''>  // Calculates total average time to answer
-</span>209 <span style=''>  </span><span style='background: #AEF1AE'>private def calculateTotalAverageTimeAnswer</span><span style=''>(courseInStatsList: List[CourseInStats]): Double =
-</span>210 <span style=''>    </span><span style='background: #AEF1AE'>courseInStatsList.filter(courseInStats =&gt; courseInStats.quizInStatsList.nonEmpty).map(
-</span>211 <span style=''></span><span style='background: #AEF1AE'>      courseInStats =&gt; courseInStats.quizInStatsList.map(
-</span>212 <span style=''></span><span style='background: #AEF1AE'>        quizInStats =&gt; quizInStats.averageTimeAnswer
-</span>213 <span style=''></span><span style='background: #AEF1AE'>      ).sum / courseInStats.quizInStatsList.size
-</span>214 <span style=''></span><span style='background: #AEF1AE'>    ).sum</span><span style=''> / </span><span style='background: #AEF1AE'>courseInStatsList.size</span><span style=''>
-</span>215 <span style=''>
-</span>216 <span style=''>  /**
-</span>217 <span style=''>   * Init player stats with default values
-</span>218 <span style=''>   *
-</span>219 <span style=''>   * @return a [[PlayerStats]]
-</span>220 <span style=''>   */
-</span>221 <span style=''>  </span><span style='background: #AEF1AE'>def initStats</span><span style=''>: PlayerStats =
-</span>222 <span style=''>    PlayerStats(0, 0, 0, 0, 0, </span><span style='background: #AEF1AE'>List()</span><span style=''>)
+</span>106 <span style=''>  /**
+</span>107 <span style=''>   * Add a [[QuizInGame]] to the [[PlayerStats]] of the current game
+</span>108 <span style=''>   *
+</span>109 <span style=''>   * @param playerStats
+</span>110 <span style=''>   * @param quizInGame
+</span>111 <span style=''>   * @param isCorrect
+</span>112 <span style=''>   * @param score
+</span>113 <span style=''>   * @param timeToAnswer
+</span>114 <span style=''>   * @return an updated [[PlayerStats]] with the newly added quiz in game
+</span>115 <span style=''>   */
+</span>116 <span style=''>  </span><span style='background: #AEF1AE'>def addQuizInGameToStats</span><span style=''>(playerStats: PlayerStats, quizInGame: QuizInGame, isCorrect: Boolean, score: Int, timeToAnswer: Double): PlayerStats =
+</span>117 <span style=''>    val newQuizInStats = QuizInStats(quizInGame.quiz.quizId, 1, score, if (isCorrect) </span><span style='background: #AEF1AE'>1</span><span style=''> else </span><span style='background: #F0ADAD'>0</span><span style=''>, timeToAnswer)
+</span>118 <span style=''>    val newCourseInStats = CourseInStats(quizInGame.course, </span><span style='background: #AEF1AE'>List(newQuizInStats)</span><span style=''>)
+</span>119 <span style=''>
+</span>120 <span style=''>    // Check if course already exists
+</span>121 <span style=''>    val newCourseInStatsList = if (</span><span style='background: #AEF1AE'>playerStats.courseInStatsList.map(c =&gt; c.course).contains(quizInGame.course)</span><span style=''>)
+</span>122 <span style=''>    // Merge existent player stats with the new player stats
+</span>123 <span style=''>      </span><span style='background: #F0ADAD'>mergeCourseInStatsLists(playerStats.courseInStatsList, List(newCourseInStats))</span><span style=''>
+</span>124 <span style=''>    else
+</span>125 <span style=''>      </span><span style='background: #AEF1AE'>playerStats.courseInStatsList.appended(newCourseInStats)</span><span style=''>
+</span>126 <span style=''>
+</span>127 <span style=''>    </span><span style='background: #AEF1AE'>updatePlayerStats(newCourseInStatsList)</span><span style=''>
+</span>128 <span style=''>
+</span>129 <span style=''>  /**
+</span>130 <span style=''>   * Merge two [[PlayerStats]] in a new one
+</span>131 <span style=''>   *
+</span>132 <span style=''>   * @param playerStats
+</span>133 <span style=''>   * @param newPlayerStats
+</span>134 <span style=''>   * @return an updated [[PlayerStats]]
+</span>135 <span style=''>   */
+</span>136 <span style=''>  </span><span style='background: #F0ADAD'>def mergePlayerStats</span><span style=''>(playerStats: PlayerStats, newPlayerStats: PlayerStats): PlayerStats =
+</span>137 <span style=''>    </span><span style='background: #F0ADAD'>updatePlayerStats(mergeCourseInStatsLists(playerStats.courseInStatsList, newPlayerStats.courseInStatsList))</span><span style=''>
+</span>138 <span style=''>
+</span>139 <span style=''>  // Merge two lists of CourseInStats
+</span>140 <span style=''>  </span><span style='background: #F0ADAD'>private def mergeCourseInStatsLists</span><span style=''>(courseInStatsList: List[CourseInStats], newCourseInStatsList: List[CourseInStats]): List[CourseInStats] =
+</span>141 <span style=''>    </span><span style='background: #F0ADAD'>(courseInStatsList ::: newCourseInStatsList).groupMapReduce(c =&gt; c.course)(c =&gt; (c.quizInStatsList))(
+</span>142 <span style=''></span><span style='background: #F0ADAD'>      (courseInStats, newCourseInStats) =&gt; mergeQuizInStatsLists(courseInStats, newCourseInStats)
+</span>143 <span style=''></span><span style='background: #F0ADAD'>    ).map((k, v) =&gt; CourseInStats(k, v)).toList</span><span style=''>
+</span>144 <span style=''>
+</span>145 <span style=''>  // Merge two lists of QuizInStats and calculates the new values
+</span>146 <span style=''>  </span><span style='background: #F0ADAD'>private def mergeQuizInStatsLists</span><span style=''>(quizInStatsList: List[QuizInStats], newQuizInStatsList: List[QuizInStats]): List[QuizInStats] =
+</span>147 <span style=''>    </span><span style='background: #F0ADAD'>(quizInStatsList ::: newQuizInStatsList).groupMapReduce(q =&gt; q.quizId)(q =&gt; (q.totalSeen, q.totalScore, q.totalRightAnswers, q.averageTimeAnswer))(
+</span>148 <span style=''></span><span style='background: #F0ADAD'>      (quizInStats, newQuizInStats) =&gt; (
+</span>149 <span style=''></span><span style='background: #F0ADAD'>        quizInStats._1 + newQuizInStats._1, // sum total seen
+</span>150 <span style=''></span><span style='background: #F0ADAD'>        quizInStats._2 + newQuizInStats._2, // sum total score
+</span>151 <span style=''></span><span style='background: #F0ADAD'>        quizInStats._3 + newQuizInStats._3, // sum total right answer
+</span>152 <span style=''></span><span style='background: #F0ADAD'>        calculateWeightedAverage(quizInStats._4, quizInStats._1, newQuizInStats._4, newQuizInStats._1) //calculate weighted average
+</span>153 <span style=''></span><span style='background: #F0ADAD'>      )
+</span>154 <span style=''></span><span style='background: #F0ADAD'>    ).map((k, v) =&gt; QuizInStats(k, v._1, v._2, v._3, v._4)).toList</span><span style=''>
+</span>155 <span style=''>
+</span>156 <span style=''>  // Needed to calculate weighted average
+</span>157 <span style=''>  </span><span style='background: #F0ADAD'>private def calculateWeightedAverage</span><span style=''>(averageTimeAnswer: Double, totalSeen: Int, newAverageTimeAnswer: Double, newTotalSeen: Int): Double =
+</span>158 <span style=''>    </span><span style='background: #F0ADAD'>Try(
+</span>159 <span style=''></span><span style='background: #F0ADAD'>      ((averageTimeAnswer * (if (totalSeen == 0) 1 else totalSeen)) + newAverageTimeAnswer) / (totalSeen + newTotalSeen)
+</span>160 <span style=''></span><span style='background: #F0ADAD'>    ).getOrElse(averageTimeAnswer)</span><span style=''>
+</span>161 <span style=''>
+</span>162 <span style=''>  // Calculate total score
+</span>163 <span style=''>  </span><span style='background: #AEF1AE'>private def calculateTotalScore</span><span style=''>(courseInStatsList: List[CourseInStats]): Int =
+</span>164 <span style=''>    </span><span style='background: #AEF1AE'>courseInStatsList.map(
+</span>165 <span style=''></span><span style='background: #AEF1AE'>      _.quizInStatsList.map(
+</span>166 <span style=''></span><span style='background: #AEF1AE'>        _.totalScore
+</span>167 <span style=''></span><span style='background: #AEF1AE'>      ).sum
+</span>168 <span style=''></span><span style='background: #AEF1AE'>    ).sum</span><span style=''>
+</span>169 <span style=''>
+</span>170 <span style=''>  //Calculates total answered questions
+</span>171 <span style=''>  </span><span style='background: #AEF1AE'>private def calculateTotalAnsweredQuestions</span><span style=''>(courseInStatsList: List[CourseInStats]): Int =
+</span>172 <span style=''>    </span><span style='background: #AEF1AE'>courseInStatsList.map(
+</span>173 <span style=''></span><span style='background: #AEF1AE'>      _.quizInStatsList.map(
+</span>174 <span style=''></span><span style='background: #AEF1AE'>        _.totalSeen
+</span>175 <span style=''></span><span style='background: #AEF1AE'>      ).sum
+</span>176 <span style=''></span><span style='background: #AEF1AE'>    ).sum</span><span style=''>
+</span>177 <span style=''>
+</span>178 <span style=''>  //Calculates total correct answer
+</span>179 <span style=''>  </span><span style='background: #AEF1AE'>private def calculateTotalCorrectAnswer</span><span style=''>(courseInStatsList: List[CourseInStats]): Int =
+</span>180 <span style=''>    </span><span style='background: #AEF1AE'>courseInStatsList.map(
+</span>181 <span style=''></span><span style='background: #AEF1AE'>      _.quizInStatsList.map(
+</span>182 <span style=''></span><span style='background: #AEF1AE'>        _.totalRightAnswers
+</span>183 <span style=''></span><span style='background: #AEF1AE'>      ).sum
+</span>184 <span style=''></span><span style='background: #AEF1AE'>    ).sum</span><span style=''>
+</span>185 <span style=''>
+</span>186 <span style=''>  // Calculates total answer precision
+</span>187 <span style=''>  </span><span style='background: #AEF1AE'>private def calculateTotalAnswerPrecision</span><span style=''>(courseInStatsList: List[CourseInStats]): Int =
+</span>188 <span style=''>    </span><span style='background: #AEF1AE'>Try(calculateTotalCorrectAnswer(courseInStatsList) * 100 / calculateTotalAnsweredQuestions(courseInStatsList)).getOrElse(0)</span><span style=''>
+</span>189 <span style=''>
+</span>190 <span style=''>  // Calculates total average time to answer
+</span>191 <span style=''>  </span><span style='background: #AEF1AE'>private def calculateTotalAverageTimeAnswer</span><span style=''>(courseInStatsList: List[CourseInStats]): Double =
+</span>192 <span style=''>    </span><span style='background: #AEF1AE'>courseInStatsList.filter(courseInStats =&gt; courseInStats.quizInStatsList.nonEmpty).map(
+</span>193 <span style=''></span><span style='background: #AEF1AE'>      courseInStats =&gt; courseInStats.quizInStatsList.map(
+</span>194 <span style=''></span><span style='background: #AEF1AE'>        quizInStats =&gt; quizInStats.averageTimeAnswer
+</span>195 <span style=''></span><span style='background: #AEF1AE'>      ).sum / courseInStats.quizInStatsList.size
+</span>196 <span style=''></span><span style='background: #AEF1AE'>    ).sum</span><span style=''> / </span><span style='background: #AEF1AE'>courseInStatsList.size</span><span style=''>
+</span>197 <span style=''>
+</span>198 <span style=''>  /**
+</span>199 <span style=''>   * Init player stats with default values
+</span>200 <span style=''>   *
+</span>201 <span style=''>   * @return a [[PlayerStats]]
+</span>202 <span style=''>   */
+</span>203 <span style=''>  </span><span style='background: #AEF1AE'>def initStats</span><span style=''>: PlayerStats =
+</span>204 <span style=''>    PlayerStats(0, 0, 0, 0, 0, </span><span style='background: #AEF1AE'>List()</span><span style=''>)
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -258,15 +240,39 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          30
+          22
         </td>
         <td>
-          570
+          523
         </td>
         <td>
-          1143
+          801
           -
-          1152
+          801
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          522
+        </td>
+        <td>
+          801
+          -
+          810
         </td>
         <td>
           Ident
@@ -282,45 +288,21 @@
         </td>
       </tr><tr>
         <td>
-          30
+          23
         </td>
         <td>
-          569
+          525
         </td>
         <td>
-          1115
+          878
           -
-          1124
+          878
         </td>
         <td>
           DefDef
         </td>
         <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          def apply
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          571
-        </td>
-        <td>
-          1143
-          -
-          1143
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          apply$default$1
+          $lessinit$greater$default$2
         </td>
         <td>
           
@@ -330,39 +312,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          23
         </td>
         <td>
-          573
+          524
         </td>
         <td>
-          1207
+          878
           -
-          1207
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          apply$default$2
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          
-        </td>
-      </tr><tr>
-        <td>
-          31
-        </td>
-        <td>
-          572
-        </td>
-        <td>
-          1207
-          -
-          1216
+          887
         </td>
         <td>
           Ident
@@ -378,21 +336,21 @@
         </td>
       </tr><tr>
         <td>
-          32
+          24
         </td>
         <td>
-          575
+          527
         </td>
         <td>
-          1280
+          964
           -
-          1280
+          964
         </td>
         <td>
           DefDef
         </td>
         <td>
-          apply$default$3
+          $lessinit$greater$default$3
         </td>
         <td>
           
@@ -402,15 +360,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          24
         </td>
         <td>
-          574
+          526
         </td>
         <td>
-          1280
+          964
           -
-          1289
+          973
         </td>
         <td>
           Ident
@@ -426,39 +384,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          25
         </td>
         <td>
-          577
+          528
         </td>
         <td>
-          1351
+          1048
           -
-          1351
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          apply$default$4
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          
-        </td>
-      </tr><tr>
-        <td>
-          33
-        </td>
-        <td>
-          576
-        </td>
-        <td>
-          1351
-          -
-          1360
+          1057
         </td>
         <td>
           Ident
@@ -474,21 +408,21 @@
         </td>
       </tr><tr>
         <td>
-          34
+          25
         </td>
         <td>
-          579
+          529
         </td>
         <td>
-          1428
+          1048
           -
-          1428
+          1048
         </td>
         <td>
           DefDef
         </td>
         <td>
-          apply$default$5
+          $lessinit$greater$default$4
         </td>
         <td>
           
@@ -498,15 +432,39 @@
         </td>
       </tr><tr>
         <td>
-          34
+          26
         </td>
         <td>
-          578
+          531
         </td>
         <td>
-          1428
+          1138
           -
-          1437
+          1138
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$5
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          530
+        </td>
+        <td>
+          1138
+          -
+          1147
         </td>
         <td>
           Ident
@@ -522,39 +480,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          27
         </td>
         <td>
-          581
+          532
         </td>
         <td>
-          1515
+          1238
           -
-          1515
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          apply$default$6
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          580
-        </td>
-        <td>
-          1515
-          -
-          1524
+          1247
         </td>
         <td>
           Ident
@@ -570,15 +504,39 @@
         </td>
       </tr><tr>
         <td>
-          50
+          27
         </td>
         <td>
-          582
+          533
         </td>
         <td>
-          1858
+          1238
           -
-          1878
+          1238
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$6
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          534
+        </td>
+        <td>
+          1411
+          -
+          1431
         </td>
         <td>
           DefDef
@@ -594,15 +552,15 @@
         </td>
       </tr><tr>
         <td>
-          60
+          46
         </td>
         <td>
-          583
+          535
         </td>
         <td>
-          2288
+          1841
           -
-          2320
+          1873
         </td>
         <td>
           DefDef
@@ -618,15 +576,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          56
         </td>
         <td>
-          584
+          536
         </td>
         <td>
-          2736
+          2289
           -
-          2765
+          2318
         </td>
         <td>
           DefDef
@@ -642,15 +600,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          66
         </td>
         <td>
-          585
+          537
         </td>
         <td>
-          3180
+          2733
           -
-          3210
+          2763
         </td>
         <td>
           DefDef
@@ -666,15 +624,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          76
         </td>
         <td>
-          586
+          538
         </td>
         <td>
-          3635
+          3187
           -
-          3667
+          3219
         </td>
         <td>
           DefDef
@@ -690,15 +648,15 @@
         </td>
       </tr><tr>
         <td>
-          102
+          86
         </td>
         <td>
-          587
+          539
         </td>
         <td>
-          4084
+          3635
           -
-          4111
+          3662
         </td>
         <td>
           DefDef
@@ -714,15 +672,15 @@
         </td>
       </tr><tr>
         <td>
-          112
+          95
         </td>
         <td>
-          593
+          545
         </td>
         <td>
-          4550
+          4100
           -
-          4571
+          4121
         </td>
         <td>
           DefDef
@@ -738,15 +696,15 @@
         </td>
       </tr><tr>
         <td>
-          114
+          97
         </td>
         <td>
-          588
+          540
         </td>
         <td>
-          4663
+          4213
           -
-          4701
+          4251
         </td>
         <td>
           Apply
@@ -762,15 +720,15 @@
         </td>
       </tr><tr>
         <td>
-          115
+          98
         </td>
         <td>
-          589
+          541
         </td>
         <td>
-          4734
+          4284
           -
-          4784
+          4334
         </td>
         <td>
           Apply
@@ -786,15 +744,15 @@
         </td>
       </tr><tr>
         <td>
-          116
+          99
         </td>
         <td>
-          590
+          542
         </td>
         <td>
-          4814
+          4364
           -
-          4860
+          4410
         </td>
         <td>
           Apply
@@ -810,15 +768,15 @@
         </td>
       </tr><tr>
         <td>
-          117
+          100
         </td>
         <td>
-          591
+          543
         </td>
         <td>
-          4891
+          4441
           -
-          4939
+          4489
         </td>
         <td>
           Apply
@@ -834,15 +792,15 @@
         </td>
       </tr><tr>
         <td>
-          118
+          101
         </td>
         <td>
-          592
+          544
         </td>
         <td>
-          4972
+          4522
           -
-          5022
+          4572
         </td>
         <td>
           Apply
@@ -858,15 +816,15 @@
         </td>
       </tr><tr>
         <td>
-          132
+          115
         </td>
         <td>
-          605
+          557
         </td>
         <td>
-          5349
+          4899
           -
-          5373
+          4923
         </td>
         <td>
           DefDef
@@ -882,15 +840,15 @@
         </td>
       </tr><tr>
         <td>
-          133
+          116
         </td>
         <td>
-          594
+          546
         </td>
         <td>
-          5579
+          5129
           -
-          5580
+          5130
         </td>
         <td>
           Literal
@@ -906,15 +864,15 @@
         </td>
       </tr><tr>
         <td>
-          133
+          116
         </td>
         <td>
-          595
+          547
         </td>
         <td>
-          5586
+          5136
           -
-          5587
+          5137
         </td>
         <td>
           Literal
@@ -930,15 +888,15 @@
         </td>
       </tr><tr>
         <td>
-          134
+          117
         </td>
         <td>
-          596
+          548
         </td>
         <td>
-          5663
+          5213
           -
-          5683
+          5233
         </td>
         <td>
           Apply
@@ -954,39 +912,15 @@
         </td>
       </tr><tr>
         <td>
-          137
+          120
         </td>
         <td>
-          597
+          550
         </td>
         <td>
-          5759
+          5309
           -
-          5807
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          map
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          playerStats.courseInStatsList.map(c =&gt; c.course)
-        </td>
-      </tr><tr>
-        <td>
-          137
-        </td>
-        <td>
-          598
-        </td>
-        <td>
-          5759
-          -
-          5835
+          5385
         </td>
         <td>
           Apply
@@ -1002,15 +936,39 @@
         </td>
       </tr><tr>
         <td>
-          139
+          120
         </td>
         <td>
-          600
+          549
         </td>
         <td>
-          5904
+          5309
           -
-          5982
+          5357
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          playerStats.courseInStatsList.map(c =&gt; c.course)
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          552
+        </td>
+        <td>
+          5454
+          -
+          5532
         </td>
         <td>
           Apply
@@ -1026,15 +984,15 @@
         </td>
       </tr><tr>
         <td>
-          139
+          122
         </td>
         <td>
-          599
+          551
         </td>
         <td>
-          5959
+          5509
           -
-          5981
+          5531
         </td>
         <td>
           Apply
@@ -1050,15 +1008,15 @@
         </td>
       </tr><tr>
         <td>
-          139
+          122
         </td>
         <td>
-          601
+          553
         </td>
         <td>
-          5904
+          5454
           -
-          5982
+          5532
         </td>
         <td>
           Block
@@ -1074,15 +1032,15 @@
         </td>
       </tr><tr>
         <td>
-          141
+          124
         </td>
         <td>
-          603
+          555
         </td>
         <td>
-          5998
+          5548
           -
-          6054
+          5604
         </td>
         <td>
           Block
@@ -1098,15 +1056,15 @@
         </td>
       </tr><tr>
         <td>
-          141
+          124
         </td>
         <td>
-          602
+          554
         </td>
         <td>
-          5998
+          5548
           -
-          6054
+          5604
         </td>
         <td>
           Apply
@@ -1122,15 +1080,15 @@
         </td>
       </tr><tr>
         <td>
-          143
+          126
         </td>
         <td>
-          604
+          556
         </td>
         <td>
-          6060
+          5610
           -
-          6099
+          5649
         </td>
         <td>
           Apply
@@ -1146,15 +1104,15 @@
         </td>
       </tr><tr>
         <td>
-          153
+          135
         </td>
         <td>
-          608
+          560
         </td>
         <td>
-          6256
+          5805
           -
-          6276
+          5825
         </td>
         <td>
           DefDef
@@ -1170,39 +1128,15 @@
         </td>
       </tr><tr>
         <td>
-          154
+          136
         </td>
         <td>
-          606
+          559
         </td>
         <td>
-          6369
+          5900
           -
-          6457
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          mergeCourseInStatsLists
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          mergeCourseInStatsLists(playerStats.courseInStatsList, newPlayerStats.courseInStatsList)
-        </td>
-      </tr><tr>
-        <td>
-          154
-        </td>
-        <td>
-          607
-        </td>
-        <td>
-          6351
-          -
-          6458
+          6007
         </td>
         <td>
           Apply
@@ -1218,15 +1152,39 @@
         </td>
       </tr><tr>
         <td>
-          157
+          136
         </td>
         <td>
-          614
+          558
         </td>
         <td>
-          6500
+          5918
           -
-          6535
+          6006
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          mergeCourseInStatsLists
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          mergeCourseInStatsLists(playerStats.courseInStatsList, newPlayerStats.courseInStatsList)
+        </td>
+      </tr><tr>
+        <td>
+          139
+        </td>
+        <td>
+          566
+        </td>
+        <td>
+          6049
+          -
+          6084
         </td>
         <td>
           DefDef
@@ -1242,15 +1200,15 @@
         </td>
       </tr><tr>
         <td>
-          158
+          140
         </td>
         <td>
-          609
+          561
         </td>
         <td>
-          6647
+          6196
           -
-          6689
+          6238
         </td>
         <td>
           Apply
@@ -1266,15 +1224,15 @@
         </td>
       </tr><tr>
         <td>
-          158
+          140
         </td>
         <td>
-          611
+          563
         </td>
         <td>
-          6646
+          6195
           -
-          6851
+          6400
         </td>
         <td>
           Apply
@@ -1292,15 +1250,15 @@
         </td>
       </tr><tr>
         <td>
-          159
+          141
         </td>
         <td>
-          610
+          562
         </td>
         <td>
-          6791
+          6340
           -
-          6845
+          6394
         </td>
         <td>
           Apply
@@ -1316,15 +1274,15 @@
         </td>
       </tr><tr>
         <td>
-          160
+          142
         </td>
         <td>
-          612
+          564
         </td>
         <td>
-          6646
+          6195
           -
-          6886
+          6435
         </td>
         <td>
           Apply
@@ -1342,15 +1300,15 @@
         </td>
       </tr><tr>
         <td>
-          160
+          142
         </td>
         <td>
-          613
+          565
         </td>
         <td>
-          6646
+          6195
           -
-          6893
+          6442
         </td>
         <td>
           Select
@@ -1368,15 +1326,15 @@
         </td>
       </tr><tr>
         <td>
-          163
+          145
         </td>
         <td>
-          634
+          586
         </td>
         <td>
-          6963
+          6512
           -
-          6996
+          6545
         </td>
         <td>
           DefDef
@@ -1392,15 +1350,39 @@
         </td>
       </tr><tr>
         <td>
-          164
+          146
         </td>
         <td>
-          627
+          567
         </td>
         <td>
-          7097
+          6647
           -
-          7626
+          6685
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          :::
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInStatsList ::: newQuizInStatsList
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          579
+        </td>
+        <td>
+          6646
+          -
+          7175
         </td>
         <td>
           Apply
@@ -1423,63 +1405,15 @@
         </td>
       </tr><tr>
         <td>
-          164
+          148
         </td>
         <td>
-          615
+          568
         </td>
         <td>
-          7098
+          6843
           -
-          7136
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          :::
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizInStatsList ::: newQuizInStatsList
-        </td>
-      </tr><tr>
-        <td>
-          166
-        </td>
-        <td>
-          617
-        </td>
-        <td>
-          7311
-          -
-          7328
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _1
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          newQuizInStats._1
-        </td>
-      </tr><tr>
-        <td>
-          166
-        </td>
-        <td>
-          616
-        </td>
-        <td>
-          7294
-          -
-          7308
+          6857
         </td>
         <td>
           Select
@@ -1495,15 +1429,39 @@
         </td>
       </tr><tr>
         <td>
-          167
+          148
         </td>
         <td>
-          618
+          569
         </td>
         <td>
-          7356
+          6860
           -
-          7370
+          6877
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          newQuizInStats._1
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          570
+        </td>
+        <td>
+          6905
+          -
+          6919
         </td>
         <td>
           Select
@@ -1519,15 +1477,15 @@
         </td>
       </tr><tr>
         <td>
-          167
+          149
         </td>
         <td>
-          619
+          571
         </td>
         <td>
-          7373
+          6922
           -
-          7390
+          6939
         </td>
         <td>
           Select
@@ -1543,15 +1501,15 @@
         </td>
       </tr><tr>
         <td>
-          168
+          150
         </td>
         <td>
-          621
+          573
         </td>
         <td>
-          7436
+          6985
           -
-          7453
+          7002
         </td>
         <td>
           Select
@@ -1567,15 +1525,15 @@
         </td>
       </tr><tr>
         <td>
-          168
+          150
         </td>
         <td>
-          620
+          572
         </td>
         <td>
-          7419
+          6968
           -
-          7433
+          6982
         </td>
         <td>
           Select
@@ -1591,111 +1549,15 @@
         </td>
       </tr><tr>
         <td>
-          169
+          151
         </td>
         <td>
-          624
+          577
         </td>
         <td>
-          7546
+          7114
           -
-          7563
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _4
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          newQuizInStats._4
-        </td>
-      </tr><tr>
-        <td>
-          169
-        </td>
-        <td>
-          623
-        </td>
-        <td>
-          7530
-          -
-          7544
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _1
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizInStats._1
-        </td>
-      </tr><tr>
-        <td>
-          169
-        </td>
-        <td>
-          626
-        </td>
-        <td>
-          7489
-          -
-          7583
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          calculateWeightedAverage
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          calculateWeightedAverage(quizInStats._4, quizInStats._1, newQuizInStats._4, newQuizInStats._1)
-        </td>
-      </tr><tr>
-        <td>
-          169
-        </td>
-        <td>
-          622
-        </td>
-        <td>
-          7514
-          -
-          7528
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _4
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizInStats._4
-        </td>
-      </tr><tr>
-        <td>
-          169
-        </td>
-        <td>
-          625
-        </td>
-        <td>
-          7565
-          -
-          7582
+          7131
         </td>
         <td>
           Select
@@ -1711,39 +1573,111 @@
         </td>
       </tr><tr>
         <td>
-          171
+          151
         </td>
         <td>
-          630
+          576
         </td>
         <td>
-          7668
+          7095
           -
-          7672
+          7112
         </td>
         <td>
           Select
         </td>
         <td>
-          _3
+          _4
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          v._3
+          newQuizInStats._4
         </td>
       </tr><tr>
         <td>
-          171
+          151
         </td>
         <td>
-          633
+          575
         </td>
         <td>
-          7097
+          7079
           -
-          7687
+          7093
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInStats._1
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          578
+        </td>
+        <td>
+          7038
+          -
+          7132
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          calculateWeightedAverage
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          calculateWeightedAverage(quizInStats._4, quizInStats._1, newQuizInStats._4, newQuizInStats._1)
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          574
+        </td>
+        <td>
+          7063
+          -
+          7077
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInStats._4
+        </td>
+      </tr><tr>
+        <td>
+          153
+        </td>
+        <td>
+          585
+        </td>
+        <td>
+          6646
+          -
+          7236
         </td>
         <td>
           Select
@@ -1766,15 +1700,63 @@
         </td>
       </tr><tr>
         <td>
-          171
+          153
         </td>
         <td>
-          632
+          582
         </td>
         <td>
-          7097
+          7217
           -
-          7680
+          7221
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          v._3
+        </td>
+      </tr><tr>
+        <td>
+          153
+        </td>
+        <td>
+          581
+        </td>
+        <td>
+          7211
+          -
+          7215
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          v._2
+        </td>
+      </tr><tr>
+        <td>
+          153
+        </td>
+        <td>
+          584
+        </td>
+        <td>
+          6646
+          -
+          7229
         </td>
         <td>
           Apply
@@ -1797,63 +1779,15 @@
         </td>
       </tr><tr>
         <td>
-          171
+          153
         </td>
         <td>
-          629
+          580
         </td>
         <td>
-          7662
+          7205
           -
-          7666
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _2
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          v._2
-        </td>
-      </tr><tr>
-        <td>
-          171
-        </td>
-        <td>
-          631
-        </td>
-        <td>
-          7674
-          -
-          7678
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          _4
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          v._4
-        </td>
-      </tr><tr>
-        <td>
-          171
-        </td>
-        <td>
-          628
-        </td>
-        <td>
-          7656
-          -
-          7660
+          7209
         </td>
         <td>
           Select
@@ -1869,15 +1803,39 @@
         </td>
       </tr><tr>
         <td>
-          174
+          153
         </td>
         <td>
-          637
+          583
         </td>
         <td>
-          7733
+          7223
           -
-          7769
+          7227
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          v._4
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          589
+        </td>
+        <td>
+          7282
+          -
+          7318
         </td>
         <td>
           DefDef
@@ -1893,15 +1851,15 @@
         </td>
       </tr><tr>
         <td>
-          175
+          157
         </td>
         <td>
-          635
+          587
         </td>
         <td>
-          7876
+          7425
           -
-          8007
+          7556
         </td>
         <td>
           Apply
@@ -1919,15 +1877,15 @@
         </td>
       </tr><tr>
         <td>
-          177
+          159
         </td>
         <td>
-          636
+          588
         </td>
         <td>
-          7876
+          7425
           -
-          8036
+          7585
         </td>
         <td>
           Apply
@@ -1945,15 +1903,15 @@
         </td>
       </tr><tr>
         <td>
-          180
+          162
         </td>
         <td>
-          642
+          594
         </td>
         <td>
-          8067
+          7616
           -
-          8098
+          7647
         </td>
         <td>
           DefDef
@@ -1969,15 +1927,15 @@
         </td>
       </tr><tr>
         <td>
-          181
+          163
         </td>
         <td>
-          641
+          593
         </td>
         <td>
-          8150
+          7699
           -
-          8244
+          7793
         </td>
         <td>
           Apply
@@ -1997,15 +1955,15 @@
         </td>
       </tr><tr>
         <td>
-          181
+          163
         </td>
         <td>
-          640
+          592
         </td>
         <td>
-          8150
+          7699
           -
-          8240
+          7789
         </td>
         <td>
           Apply
@@ -2025,15 +1983,15 @@
         </td>
       </tr><tr>
         <td>
-          182
+          164
         </td>
         <td>
-          639
+          591
         </td>
         <td>
-          8179
+          7728
           -
-          8234
+          7783
         </td>
         <td>
           Apply
@@ -2051,15 +2009,15 @@
         </td>
       </tr><tr>
         <td>
-          182
+          164
         </td>
         <td>
-          638
+          590
         </td>
         <td>
-          8179
+          7728
           -
-          8230
+          7779
         </td>
         <td>
           Apply
@@ -2077,15 +2035,15 @@
         </td>
       </tr><tr>
         <td>
-          188
+          170
         </td>
         <td>
-          647
+          599
         </td>
         <td>
-          8288
+          7837
           -
-          8331
+          7880
         </td>
         <td>
           DefDef
@@ -2101,15 +2059,15 @@
         </td>
       </tr><tr>
         <td>
-          189
+          171
         </td>
         <td>
-          645
+          597
         </td>
         <td>
-          8383
+          7932
           -
-          8472
+          8021
         </td>
         <td>
           Apply
@@ -2129,15 +2087,15 @@
         </td>
       </tr><tr>
         <td>
-          189
+          171
         </td>
         <td>
-          646
+          598
         </td>
         <td>
-          8383
+          7932
           -
-          8476
+          8025
         </td>
         <td>
           Apply
@@ -2157,15 +2115,15 @@
         </td>
       </tr><tr>
         <td>
-          190
+          172
         </td>
         <td>
-          644
+          596
         </td>
         <td>
-          8412
+          7961
           -
-          8466
+          8015
         </td>
         <td>
           Apply
@@ -2183,15 +2141,15 @@
         </td>
       </tr><tr>
         <td>
-          190
+          172
         </td>
         <td>
-          643
+          595
         </td>
         <td>
-          8412
+          7961
           -
-          8462
+          8011
         </td>
         <td>
           Apply
@@ -2209,15 +2167,15 @@
         </td>
       </tr><tr>
         <td>
-          196
+          178
         </td>
         <td>
-          652
+          604
         </td>
         <td>
-          8516
+          8065
           -
-          8555
+          8104
         </td>
         <td>
           DefDef
@@ -2233,15 +2191,15 @@
         </td>
       </tr><tr>
         <td>
-          197
+          179
         </td>
         <td>
-          651
+          603
         </td>
         <td>
-          8607
+          8156
           -
-          8708
+          8257
         </td>
         <td>
           Apply
@@ -2261,15 +2219,15 @@
         </td>
       </tr><tr>
         <td>
-          197
+          179
         </td>
         <td>
-          650
+          602
         </td>
         <td>
-          8607
+          8156
           -
-          8704
+          8253
         </td>
         <td>
           Apply
@@ -2289,15 +2247,15 @@
         </td>
       </tr><tr>
         <td>
-          198
+          180
         </td>
         <td>
-          648
+          600
         </td>
         <td>
-          8636
+          8185
           -
-          8694
+          8243
         </td>
         <td>
           Apply
@@ -2315,15 +2273,15 @@
         </td>
       </tr><tr>
         <td>
-          198
+          180
         </td>
         <td>
-          649
+          601
         </td>
         <td>
-          8636
+          8185
           -
-          8698
+          8247
         </td>
         <td>
           Apply
@@ -2341,15 +2299,15 @@
         </td>
       </tr><tr>
         <td>
-          204
+          186
         </td>
         <td>
-          655
+          607
         </td>
         <td>
-          8751
+          8300
           -
-          8792
+          8341
         </td>
         <td>
           DefDef
@@ -2365,15 +2323,15 @@
         </td>
       </tr><tr>
         <td>
-          205
+          187
         </td>
         <td>
-          654
+          606
         </td>
         <td>
-          8844
+          8393
           -
-          8967
+          8516
         </td>
         <td>
           Apply
@@ -2389,15 +2347,15 @@
         </td>
       </tr><tr>
         <td>
-          205
+          187
         </td>
         <td>
-          653
+          605
         </td>
         <td>
-          8844
+          8393
           -
-          8954
+          8503
         </td>
         <td>
           Apply
@@ -2413,15 +2371,15 @@
         </td>
       </tr><tr>
         <td>
-          208
+          190
         </td>
         <td>
-          664
+          616
         </td>
         <td>
-          9018
+          8565
           -
-          9061
+          8608
         </td>
         <td>
           DefDef
@@ -2437,15 +2395,15 @@
         </td>
       </tr><tr>
         <td>
-          209
+          191
         </td>
         <td>
-          657
+          609
         </td>
         <td>
-          9116
+          8663
           -
-          9197
+          8744
         </td>
         <td>
           Apply
@@ -2461,15 +2419,39 @@
         </td>
       </tr><tr>
         <td>
-          209
+          191
         </td>
         <td>
-          662
+          608
         </td>
         <td>
-          9116
+          8705
           -
-          9372
+          8743
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          nonEmpty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          courseInStats.quizInStatsList.nonEmpty
+        </td>
+      </tr><tr>
+        <td>
+          191
+        </td>
+        <td>
+          614
+        </td>
+        <td>
+          8663
+          -
+          8919
         </td>
         <td>
           Apply
@@ -2489,39 +2471,15 @@
         </td>
       </tr><tr>
         <td>
-          209
+          191
         </td>
         <td>
-          656
+          613
         </td>
         <td>
-          9158
+          8663
           -
-          9196
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          nonEmpty
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          courseInStats.quizInStatsList.nonEmpty
-        </td>
-      </tr><tr>
-        <td>
-          209
-        </td>
-        <td>
-          661
-        </td>
-        <td>
-          9116
-          -
-          9368
+          8915
         </td>
         <td>
           Apply
@@ -2541,15 +2499,15 @@
         </td>
       </tr><tr>
         <td>
-          210
+          192
         </td>
         <td>
-          659
+          611
         </td>
         <td>
-          9226
+          8773
           -
-          9325
+          8872
         </td>
         <td>
           Apply
@@ -2567,15 +2525,15 @@
         </td>
       </tr><tr>
         <td>
-          210
+          192
         </td>
         <td>
-          658
+          610
         </td>
         <td>
-          9226
+          8773
           -
-          9321
+          8868
         </td>
         <td>
           Apply
@@ -2593,15 +2551,15 @@
         </td>
       </tr><tr>
         <td>
-          212
+          194
         </td>
         <td>
-          660
+          612
         </td>
         <td>
-          9328
+          8875
           -
-          9362
+          8909
         </td>
         <td>
           Select
@@ -2617,15 +2575,15 @@
         </td>
       </tr><tr>
         <td>
-          213
+          195
         </td>
         <td>
-          663
+          615
         </td>
         <td>
-          9375
+          8922
           -
-          9397
+          8944
         </td>
         <td>
           Select
@@ -2641,15 +2599,15 @@
         </td>
       </tr><tr>
         <td>
-          220
+          202
         </td>
         <td>
-          666
+          618
         </td>
         <td>
-          9492
+          9039
           -
-          9505
+          9052
         </td>
         <td>
           DefDef
@@ -2665,15 +2623,15 @@
         </td>
       </tr><tr>
         <td>
-          221
+          203
         </td>
         <td>
-          665
+          617
         </td>
         <td>
-          9552
+          9099
           -
-          9558
+          9105
         </td>
         <td>
           Apply
