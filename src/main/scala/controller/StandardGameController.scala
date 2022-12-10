@@ -8,6 +8,8 @@ import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import view.StandardGameMenuView.{AnswerFeedbackUpdate, CurrentGameUpdate, DefaultUpdate, QuizScoreUpdate, TimeExpiredUpdate, TimerUpdate}
 import model.Answer.Answer
 import model.GameStage
+import model.QuizInGame
+import model.SavedCourse.SavedCourse
 import model.Review
 import model.QuizAnswered
 import model.{QuizInGame, SavedCourse}

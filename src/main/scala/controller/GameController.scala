@@ -2,7 +2,8 @@ package controller
 
 import model.Answer.Answer
 import model.Quiz.Quiz
-import model.{QuizInGame, SavedCourse}
+import model.QuizInGame
+import model.SavedCourse.SavedCourse
 
 trait GameController:
 

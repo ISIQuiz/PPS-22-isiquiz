@@ -3,7 +3,9 @@ package utils.storage
 import model.Answer.Answer
 import model.Quiz.Quiz
 import model.stats.{CourseInStats, PlayerStats, QuizInStats}
-import model.{Course, CourseIdentifier, SavedCourse, Session}
+import model.{Course, Session}
+import model.SavedCourse.SavedCourse
+import model.CourseIdentifier.CourseIdentifier
 
 import java.util.UUID
 

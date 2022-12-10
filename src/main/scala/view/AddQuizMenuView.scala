@@ -1,7 +1,7 @@
 package view
 
 import model.Quiz.Quiz
-import model.SavedCourse
+import model.SavedCourse.SavedCourse
 import view.updates.{DefaultUpdate, ParameterlessViewUpdate, ViewUpdate}
 
 object AddQuizMenuView extends DefaultUpdate:

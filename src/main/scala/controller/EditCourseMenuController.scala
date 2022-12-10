@@ -5,6 +5,7 @@ import controller.actions.{Action, BackAction, ParameterlessAction}
 import controller.{AppController, PageController}
 import model.SavedCourse
 import utils.storage.ExportHandler
+import model.SavedCourse.*
 import view.EditCourseMenuView.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 
@@ -14,8 +15,10 @@ import scala.concurrent.duration.Duration
 
 /** Companion object of edit course menu controller */
 object EditCourseMenuController extends BackAction:
+
   /** action to select a course in the edit course controller */
   case class SelectCourseAction(override val actionParameter: Option[SavedCourse]) extends Action(actionParameter)
+
   /** action to edit a course selected in the edit course controller */
   case class EditCourseAction(override val actionParameter: Option[SavedCourse]) extends Action(actionParameter)
 

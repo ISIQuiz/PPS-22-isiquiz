@@ -2,7 +2,7 @@ package model.stats
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-
+import model.stats.QuizInStats.QuizInStats
 import java.util.UUID
 
 class QuizInStatsTest extends AnyFunSuite with Matchers :
@@ -15,6 +15,8 @@ class QuizInStatsTest extends AnyFunSuite with Matchers :
     quizInStats.averageTimeAnswer shouldEqual 0
   }
 
+  import model.stats.QuizInStats
+  
   test("Test change total seen") {
     val quizInStatsChanged = QuizInStats.changeTotalSeen(quizInStats, 1)
     quizInStatsChanged.totalSeen shouldEqual 1
@@ -29,6 +31,3 @@ class QuizInStatsTest extends AnyFunSuite with Matchers :
     val quizInStatsChanged = QuizInStats.changeAverageTimeAnswer(quizInStats, 3.33)
     quizInStatsChanged.averageTimeAnswer shouldEqual 3.33
   }
-
-
-

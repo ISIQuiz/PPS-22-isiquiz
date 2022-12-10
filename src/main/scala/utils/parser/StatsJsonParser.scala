@@ -5,7 +5,8 @@ import model.Quiz.Quiz
 import model.stats.CourseInStats.CourseInStats
 import model.stats.PlayerStats.PlayerStats
 import model.stats.QuizInStats.QuizInStats
-import model.{Course, CourseIdentifier, SavedCourse, Session}
+import model.CourseIdentifier.CourseIdentifier
+import model.{Course, SavedCourse, Session}
 import play.api.libs.json.*
 import utils.parser.JsonLabels.*
 import utils.parser.JsonParser
