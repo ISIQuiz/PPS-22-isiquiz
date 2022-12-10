@@ -1,9 +1,9 @@
 package model.stats
 
 import model.{Course, GameStage, QuizAnswered, QuizInGame, Review, SavedCourse, Session, stats}
+import model.SavedCourse.SavedCourse
 import model.stats.CourseInStats.CourseInStats
 import model.stats.QuizInStats.QuizInStats
-
 import scala.util.Try
 
 /** Object for PlayerStats model */
@@ -153,11 +153,12 @@ object PlayerStats:
       )
     ).map((k, v) => QuizInStats(k, v._1, v._2, v._3, v._4)).toList
 
-  // Needed to calculate weighted average
+  // Calculate weighted average
   private def calculateWeightedAverage(averageTimeAnswer: Double, totalSeen: Int, newAverageTimeAnswer: Double, newTotalSeen: Int): Double =
-    Try(
-      ((averageTimeAnswer * (if (totalSeen == 0) 1 else totalSeen)) + newAverageTimeAnswer) / (totalSeen + newTotalSeen)
-    ).getOrElse(averageTimeAnswer)
+    val c: Double = Try(
+      ((averageTimeAnswer * totalSeen) + (newAverageTimeAnswer * newTotalSeen)) / (totalSeen + newTotalSeen)
+    ).getOrElse(0)
+    BigDecimal(c).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
 
   // Calculate total score
   private def calculateTotalScore(courseInStatsList: List[CourseInStats]): Int =
@@ -189,11 +190,22 @@ object PlayerStats:
 
   // Calculates total average time to answer
   private def calculateTotalAverageTimeAnswer(courseInStatsList: List[CourseInStats]): Double =
-    courseInStatsList.filter(courseInStats => courseInStats.quizInStatsList.nonEmpty).map(
-      courseInStats => courseInStats.quizInStatsList.map(
+    if (courseInStatsList.nonEmpty)
+      val avg: Double = Try(
+        courseInStatsList.filter(courseInStats => courseInStats.quizInStatsList.nonEmpty).map(
+          courseInStats => calculateAverageCourseInStats(courseInStats)
+        ).sum / courseInStatsList.size
+      ).getOrElse(0)
+      BigDecimal(avg).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+    else 0
+
+  private def calculateAverageCourseInStats(courseInStats: CourseInStats): Double =
+    Try(
+      courseInStats.quizInStatsList.map(
         quizInStats => quizInStats.averageTimeAnswer
       ).sum / courseInStats.quizInStatsList.size
-    ).sum / courseInStatsList.size
+    ).getOrElse(0)
+
 
   /**
    * Init player stats with default values
@@ -202,3 +214,18 @@ object PlayerStats:
    */
   def initStats: PlayerStats =
     PlayerStats(0, 0, 0, 0, 0, List())
+
+  /**
+   * Removes statistics that don't have a correspondent [[SavedCourse]]
+   *
+   * @param savedCourseList
+   * @param playerStats
+   * @return an updated [[PlayerStats]]
+   */
+  def removeUnusedStats(savedCourseList: List[SavedCourse], playerStats: PlayerStats): PlayerStats =
+    val listOfQuizId = savedCourseList.flatMap(c => c.quizList).map(q => q.quizId)
+
+    val newCourseInStatsList = playerStats.courseInStatsList
+      .map(c => CourseInStats(c.course, c.quizInStatsList.filter(q => listOfQuizId.contains(q.quizId)))).filter(c => c.quizInStatsList.nonEmpty)
+
+    updatePlayerStats(newCourseInStatsList)

@@ -68,7 +68,7 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
 
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
-    currentTime = timer.getTime
+    currentTime = BigDecimal(timer.getTime).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
     timer.stopTimer()
     if actionParameter.isDefined && !timer.isExpired then
       actionParameter match

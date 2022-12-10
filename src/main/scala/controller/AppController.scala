@@ -4,7 +4,8 @@ import controller.Controller
 import controller.actions.{Action, ParameterlessAction}
 import javafx.stage.Stage
 import model.GameStage
-import model.stats.PlayerStats.{PlayerStats, updatePlayerStats}
+import model.stats.PlayerStats.{PlayerStats, removeUnusedStats}
+import utils.storage.ExportHandler
 import model.SavedCourse.SavedCourse
 import utils.storage.ImportHandler.importSessionFromPersonalDirectory
 import view.View
@@ -64,6 +65,9 @@ object AppController extends Controller:
     importSessionFromPersonalDirectory(session) match
       case Success(s) => _session = s
       case Failure(f) => Failure(f)
+
+    // Remove unused player stats and export it
+    ExportHandler.exportDataToPersonalDirectory(removeUnusedStats(session.savedCourses, session.playerStats))
 
     val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     scheduler.scheduleAtFixedRate(() => currentPage.pageController.nextIteration(), 0, 1000/10, TimeUnit.MILLISECONDS)
