@@ -2,7 +2,7 @@
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title id="title">
-          controller/EditCourseMenuController.scala.html
+          view/terminalUI/TerminalReviewMenu.scala.html
         </title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
         $(document).ready(function() {$(".tablesorter").tablesorter();});
@@ -22,54 +22,51 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active" id="codegrid">
-            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package controller
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package view.terminalUI
 </span>2 <span style=''>
-</span>3 <span style=''>import controller.AppController.*
-</span>4 <span style=''>import controller.actions.{Action, BackAction, ParameterlessAction}
-</span>5 <span style=''>import controller.{AppController, PageController}
-</span>6 <span style=''>import model.SavedCourse
-</span>7 <span style=''>import view.EditCourseMenuView.*
-</span>8 <span style=''>import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-</span>9 <span style=''>
-</span>10 <span style=''>import scala.collection.mutable.ListBuffer
-</span>11 <span style=''>import scala.concurrent.Await
-</span>12 <span style=''>import scala.concurrent.duration.Duration
-</span>13 <span style=''>
-</span>14 <span style=''>/** Companion object of edit course menu controller */
-</span>15 <span style=''>object EditCourseMenuController extends BackAction:
-</span>16 <span style=''>
-</span>17 <span style=''>  case class SelectCourseAction(override val actionParameter: Option[SavedCourse]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
-</span>18 <span style=''>
-</span>19 <span style=''>  case class EditCourseAction(override val actionParameter: Option[SavedCourse]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>3 <span style=''>import controller.ReviewMenuController
+</span>4 <span style=''>import controller.ReviewMenuController.End
+</span>5 <span style=''>import controller.actions.Action
+</span>6 <span style=''>import model.Answer.Answer
+</span>7 <span style=''>import model.SavedCourse
+</span>8 <span style=''>import view.ReviewMenuView.*
+</span>9 <span style=''>import view.View.*
+</span>10 <span style=''>import view.updates.ViewUpdate
+</span>11 <span style=''>
+</span>12 <span style=''>import java.util.UUID
+</span>13 <span style=''>import scala.io.StdIn.readLine
+</span>14 <span style=''>import scala.collection.mutable.Map
+</span>15 <span style=''>
+</span>16 <span style=''>object TerminalReviewMenu
+</span>17 <span style=''>
+</span>18 <span style=''>/** Review terminal interface  */
+</span>19 <span style=''>class TerminalReviewMenu extends TerminalView:
 </span>20 <span style=''>
-</span>21 <span style=''>/** Defines the logic of the edit course page */
-</span>22 <span style=''>class EditCourseMenuController extends PageController:
-</span>23 <span style=''>
-</span>24 <span style=''>  import EditCourseMenuController.*
-</span>25 <span style=''>
-</span>26 <span style=''>  var courseSelected: Option[SavedCourse] = </span><span style='background: #F0ADAD'>Option.empty</span><span style=''>
-</span>27 <span style=''>
-</span>28 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
-</span>29 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(SettingsMenuAction)</span><span style=''>
-</span>30 <span style=''>    </span><span style='background: #F0ADAD'>case SelectCourseAction(actionParameter)</span><span style=''> =&gt; courseSelected = actionParameter
-</span>31 <span style=''>    </span><span style='background: #F0ADAD'>case EditCourseAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>editCourse(actionParameter)</span><span style=''>
-</span>32 <span style=''>
-</span>33 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>34 <span style=''>    </span><span style='background: #F0ADAD'>AppController.currentPage.pageView.updateUI(DefaultUpdate)</span><span style=''>
-</span>35 <span style=''>    if </span><span style='background: #F0ADAD'>courseSelected.isEmpty</span><span style=''> then
-</span>36 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(CourseUpdate(Option(AppController.session.savedCourses)))
-</span>37 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(AskCourseUpdate)</span><span style=''>
-</span>38 <span style=''>    else
-</span>39 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(CoursePrintUpdate(courseSelected))
-</span>40 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(AskCourseEditUpdate)</span><span style=''>
-</span>41 <span style=''>
-</span>42 <span style=''>  </span><span style='background: #F0ADAD'>def editCourse</span><span style=''>(actionParameter:Option[SavedCourse]):Unit =
-</span>43 <span style=''>    val editedSavedCourse = </span><span style='background: #F0ADAD'>SavedCourse.changeQuizList(actionParameter.get, courseSelected.get.quizList)</span><span style=''>
-</span>44 <span style=''>    val newListCourses = </span><span style='background: #F0ADAD'>AppController.session.savedCourses.filterNot(course =&gt; course==courseSelected.get).appended(editedSavedCourse)</span><span style=''>
-</span>45 <span style=''>    </span><span style='background: #F0ADAD'>AppController.changeSavedCourses(newListCourses)</span><span style=''>
-</span>46 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CoursePrintUpdate(Option(editedSavedCourse)))</span><span style=''>
-</span>47 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CourseEditedUpdate)</span><span style=''>
-</span>48 <span style=''>    courseSelected = None
+</span>21 <span style=''>  override val actionsMap: Map[String, Action[Any]] = </span><span style='background: #F0ADAD'>Map(
+</span>22 <span style=''></span><span style='background: #F0ADAD'>    &quot;1&quot; -&gt; End,
+</span>23 <span style=''></span><span style='background: #F0ADAD'>  )</span><span style=''>
+</span>24 <span style=''>
+</span>25 <span style=''>  var showAllAnswers = false
+</span>26 <span style=''>
+</span>27 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>28 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
+</span>29 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Menu revisione :\n1) Menu principale&quot;)</span><span style=''>
+</span>30 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Revisione:&quot;)</span><span style=''>
+</span>31 <span style=''>    </span><span style='background: #F0ADAD'>case CurrentReviewUpdate(updateParameter)</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>updateParameter.isDefined</span><span style=''> then
+</span>32 <span style=''>      </span><span style='background: #F0ADAD'>updateParameter.get.quizAnsweredList foreach (quizAnswered =&gt;
+</span>33 <span style=''></span><span style='background: #F0ADAD'>        println(quizAnswered.quizInGame.quiz.question);
+</span>34 <span style=''></span><span style='background: #F0ADAD'>        println(s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;);
+</span>35 <span style=''></span><span style='background: #F0ADAD'>        quizAnswered.quizInGame.answers
+</span>36 <span style=''></span><span style='background: #F0ADAD'>          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
+</span>37 <span style=''></span><span style='background: #F0ADAD'>          .foreach(answerQuiz =&gt;
+</span>38 <span style=''></span><span style='background: #F0ADAD'>            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
+</span>39 <span style=''></span><span style='background: #F0ADAD'>          );</span><span style=''>
+</span>40 <span style=''>      )
+</span>41 <span style=''>    </span><span style='background: #F0ADAD'>case TotalPointsUpdate(updateParameter)</span><span style=''> =&gt;
+</span>42 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Punti totali: &quot;+updateParameter.get)</span><span style=''>
+</span>43 <span style=''>    </span><span style='background: #F0ADAD'>case TotalCorrectAnswersUpdate(updateParameter)</span><span style=''> =&gt;
+</span>44 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Risposte giuste totali: &quot; + updateParameter.get)</span><span style=''>
+</span>45 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -84,258 +81,68 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          16
+          20
         </td>
         <td>
-          163
+          2178
         </td>
         <td>
+          525
+          -
+          549
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Map(
+    &quot;1&quot; -&gt; End,
+  )
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          2177
+        </td>
+        <td>
+          534
+          -
+          545
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          -&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;1&quot; -&gt; End,
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          2212
+        </td>
+        <td>
+          583
+          -
           604
-          -
-          627
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Action(actionParameter)
-        </td>
-      </tr><tr>
-        <td>
-          18
-        </td>
-        <td>
-          164
-        </td>
-        <td>
-          718
-          -
-          741
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Action(actionParameter)
-        </td>
-      </tr><tr>
-        <td>
-          25
-        </td>
-        <td>
-          165
-        </td>
-        <td>
-          929
-          -
-          941
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          empty
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option.empty
-        </td>
-      </tr><tr>
-        <td>
-          27
-        </td>
-        <td>
-          171
-        </td>
-        <td>
-          945
-          -
-          964
         </td>
         <td>
           DefDef
-        </td>
-        <td>
-          handle
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          override def handle
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          167
-        </td>
-        <td>
-          1012
-          -
-          1021
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case Back
-        </td>
-      </tr><tr>
-        <td>
-          28
-        </td>
-        <td>
-          166
-        </td>
-        <td>
-          1025
-          -
-          1065
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          handle
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.handle(SettingsMenuAction)
-        </td>
-      </tr><tr>
-        <td>
-          29
-        </td>
-        <td>
-          168
-        </td>
-        <td>
-          1070
-          -
-          1110
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case SelectCourseAction(actionParameter)
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          169
-        </td>
-        <td>
-          1193
-          -
-          1220
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          editCourse
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          editCourse(actionParameter)
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          170
-        </td>
-        <td>
-          1151
-          -
-          1189
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case EditCourseAction(actionParameter)
-        </td>
-      </tr><tr>
-        <td>
-          32
-        </td>
-        <td>
-          184
-        </td>
-        <td>
-          1224
-          -
-          1250
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          nextIteration
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          override def nextIteration
-        </td>
-      </tr><tr>
-        <td>
-          33
-        </td>
-        <td>
-          173
-        </td>
-        <td>
-          1265
-          -
-          1323
-        </td>
-        <td>
-          Apply
         </td>
         <td>
           updateUI
@@ -344,142 +151,421 @@
           
         </td>
         <td style="background: #F0ADAD">
-          AppController.currentPage.pageView.updateUI(DefaultUpdate)
+          override def updateUI
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          2181
+        </td>
+        <td>
+          658
+          -
+          676
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case DefaultUpdate
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          2179
+        </td>
+        <td>
+          686
+          -
+          733
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Menu revisione :\n1) Menu principale&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          2180
+        </td>
+        <td>
+          740
+          -
+          761
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Revisione:&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          2182
+        </td>
+        <td>
+          814
+          -
+          839
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isDefined
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.isDefined
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          2202
+        </td>
+        <td>
+          766
+          -
+          807
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case CurrentReviewUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          2200
+        </td>
+        <td>
+          851
+          -
+          1438
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get.quizAnsweredList foreach (quizAnswered =&gt;
+        println(quizAnswered.quizInGame.quiz.question);
+        println(s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;);
+        quizAnswered.quizInGame.answers
+          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
+          .foreach(answerQuiz =&gt;
+            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
+          );
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          2201
+        </td>
+        <td>
+          851
+          -
+          1438
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get.quizAnsweredList foreach (quizAnswered =&gt;
+        println(quizAnswered.quizInGame.quiz.question);
+        println(s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;);
+        quizAnswered.quizInGame.answers
+          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
+          .foreach(answerQuiz =&gt;
+            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
+          );
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          2183
+        </td>
+        <td>
+          851
+          -
+          870
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          2184
+        </td>
+        <td>
+          921
+          -
+          967
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(quizAnswered.quizInGame.quiz.question)
         </td>
       </tr><tr>
         <td>
           33
         </td>
         <td>
-          172
+          2185
         </td>
         <td>
-          1265
+          1041
           -
-          1290
+          1080
         </td>
         <td>
           Select
         </td>
         <td>
-          currentPage
+          courseId
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          AppController.currentPage
+          quizAnswered.quizInGame.course.courseId
         </td>
       </tr><tr>
         <td>
-          34
+          33
         </td>
         <td>
-          174
+          2188
         </td>
         <td>
-          1331
+          977
           -
-          1353
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          isEmpty
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseSelected.isEmpty
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          176
-        </td>
-        <td>
-          1396
-          -
-          1430
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          savedCourses
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session.savedCourses
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          175
-        </td>
-        <td>
-          1396
-          -
-          1417
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          session
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          178
-        </td>
-        <td>
-          1365
-          -
-          1433
+          1094
         </td>
         <td>
           Apply
         </td>
         <td>
-          sendUpdate
+          println
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(CourseUpdate(Option(AppController.session.savedCourses)))
+          println(s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          2187
+        </td>
+        <td>
+          985
+          -
+          1093
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;(Punti: ${quizAnswered.quizInGame.quiz.maxScore}) - ${quizAnswered.quizInGame.course.courseId.courseName}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          2186
+        </td>
+        <td>
+          1041
+          -
+          1091
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizAnswered.quizInGame.course.courseId.courseName
         </td>
       </tr><tr>
         <td>
           35
         </td>
         <td>
-          180
+          2191
         </td>
         <td>
-          1365
+          1241
           -
-          1467
+          1277
         </td>
         <td>
-          Block
+          Apply
+        </td>
+        <td>
+          ==
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizAnswered.answerPlayer.get == ans
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2190
+        </td>
+        <td>
+          1241
+          -
+          1270
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizAnswered.answerPlayer.get
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2193
+        </td>
+        <td>
+          1104
+          -
+          1290
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          filter
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizAnswered.quizInGame.answers
+          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2192
+        </td>
+        <td>
+          1283
+          -
+          1288
+        </td>
+        <td>
+          Literal
         </td>
         <td>
           &lt;none&gt;
@@ -488,92 +574,191 @@
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(CourseUpdate(Option(AppController.session.savedCourses)))
-      sendUpdate(AskCourseUpdate)
+          false
         </td>
       </tr><tr>
         <td>
           35
         </td>
         <td>
-          177
+          2189
         </td>
         <td>
-          1389
+          1200
           -
-          1431
+          1235
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          apply
+          isDefined
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          Option(AppController.session.savedCourses)
+          quizAnswered.answerPlayer.isDefined
         </td>
       </tr><tr>
         <td>
           36
         </td>
         <td>
-          179
+          2199
         </td>
         <td>
-          1440
+          1104
           -
-          1467
+          1437
         </td>
         <td>
           Apply
         </td>
         <td>
-          sendUpdate
+          foreach
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(AskCourseUpdate)
+          quizAnswered.quizInGame.answers
+          .filter(ans =&gt; showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
+          .foreach(answerQuiz =&gt;
+            println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
+          )
         </td>
       </tr><tr>
         <td>
-          38
+          37
         </td>
         <td>
-          181
+          2197
         </td>
         <td>
-          1483
+          1344
           -
-          1528
+          1423
         </td>
         <td>
           Apply
         </td>
         <td>
-          sendUpdate
+          +
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(CoursePrintUpdate(courseSelected))
+          s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;
         </td>
       </tr><tr>
         <td>
-          38
+          37
         </td>
         <td>
-          183
+          2194
         </td>
         <td>
-          1483
+          1344
           -
-          1566
+          1365
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;${answerQuiz.text}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          2196
+        </td>
+        <td>
+          1412
+          -
+          1423
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;SBAGLIATA&quot;
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          2195
+        </td>
+        <td>
+          1396
+          -
+          1406
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;CORRETTA&quot;
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          2198
+        </td>
+        <td>
+          1336
+          -
+          1425
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(s&quot;${answerQuiz.text}&quot;+(if answerQuiz.isCorrect then &quot;CORRETTA&quot; else &quot;SBAGLIATA&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          2206
+        </td>
+        <td>
+          1451
+          -
+          1490
         </td>
         <td>
           Block
@@ -585,68 +770,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          sendUpdate(CoursePrintUpdate(courseSelected))
-      sendUpdate(AskCourseEditUpdate)
-        </td>
-      </tr><tr>
-        <td>
-          39
-        </td>
-        <td>
-          182
-        </td>
-        <td>
-          1535
-          -
-          1566
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendUpdate
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendUpdate(AskCourseEditUpdate)
+          case TotalPointsUpdate(updateParameter)
         </td>
       </tr><tr>
         <td>
           41
         </td>
         <td>
-          198
+          2203
         </td>
         <td>
-          1570
+          1525
           -
-          1584
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          editCourse
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          def editCourse
-        </td>
-      </tr><tr>
-        <td>
-          42
-        </td>
-        <td>
-          185
-        </td>
-        <td>
-          1684
-          -
-          1703
+          1544
         </td>
         <td>
           Select
@@ -658,43 +794,139 @@
           
         </td>
         <td style="background: #F0ADAD">
-          actionParameter.get
+          updateParameter.get
         </td>
       </tr><tr>
         <td>
-          42
+          41
         </td>
         <td>
-          187
+          2205
         </td>
         <td>
-          1705
+          1500
           -
-          1732
+          1545
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          quizList
+          println
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          courseSelected.get.quizList
+          println(&quot;Punti totali: &quot;+updateParameter.get)
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          2204
+        </td>
+        <td>
+          1508
+          -
+          1544
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Punti totali: &quot;+updateParameter.get
         </td>
       </tr><tr>
         <td>
           42
         </td>
         <td>
-          186
+          2210
         </td>
         <td>
-          1705
+          1550
           -
-          1723
+          1597
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case TotalCorrectAnswersUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          2209
+        </td>
+        <td>
+          1607
+          -
+          1664
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(&quot;Risposte giuste totali: &quot; + updateParameter.get)
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          2208
+        </td>
+        <td>
+          1615
+          -
+          1663
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Risposte giuste totali: &quot; + updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          2207
+        </td>
+        <td>
+          1644
+          -
+          1663
         </td>
         <td>
           Select
@@ -706,247 +938,31 @@
           
         </td>
         <td style="background: #F0ADAD">
-          courseSelected.get
-        </td>
-      </tr><tr>
-        <td>
-          42
-        </td>
-        <td>
-          188
-        </td>
-        <td>
-          1657
-          -
-          1733
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          changeQuizList
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          SavedCourse.changeQuizList(actionParameter.get, courseSelected.get.quizList)
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          191
-        </td>
-        <td>
-          1822
-          -
-          1840
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          get
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseSelected.get
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          193
-        </td>
-        <td>
-          1759
-          -
-          1869
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          appended
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session.savedCourses.filterNot(course =&gt; course==courseSelected.get).appended(editedSavedCourse)
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          190
-        </td>
-        <td>
-          1759
-          -
-          1793
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          savedCourses
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session.savedCourses
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          189
-        </td>
-        <td>
-          1759
-          -
-          1780
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          session
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          192
-        </td>
-        <td>
-          1759
-          -
-          1841
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          filterNot
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session.savedCourses.filterNot(course =&gt; course==courseSelected.get)
+          updateParameter.get
         </td>
       </tr><tr>
         <td>
           44
         </td>
         <td>
-          194
+          2211
         </td>
         <td>
-          1874
+          1669
           -
-          1922
+          1675
         </td>
         <td>
-          Apply
+          Block
         </td>
         <td>
-          changeSavedCourses
+          &lt;none&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          AppController.changeSavedCourses(newListCourses)
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          196
-        </td>
-        <td>
-          1927
-          -
-          1983
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendUpdate
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendUpdate(CoursePrintUpdate(Option(editedSavedCourse)))
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          195
-        </td>
-        <td>
-          1956
-          -
-          1981
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option(editedSavedCourse)
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          197
-        </td>
-        <td>
-          1988
-          -
-          2018
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendUpdate
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendUpdate(CourseEditedUpdate)
+          case _
         </td>
       </tr>
     </table>
