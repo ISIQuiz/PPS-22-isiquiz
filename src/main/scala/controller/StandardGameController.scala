@@ -38,6 +38,10 @@ object StandardGameController extends BackAction :
     standardGameController.timer.startTimer()
     standardGameController
 
+  def isGameStagePlayable(gameStage: GameStage): Boolean = gameStage.coursesInGame.nonEmpty && gameStage.coursesInGame.forall( course =>
+    course.quizList.nonEmpty && course.quizList.forall(quiz => 
+    quiz.answerList.exists(_.isCorrect) && quiz.answerList.count(!_.isCorrect)>=3))
+
 /** Defines the logic of the select page */
 class StandardGameController(val game: GameStage) extends PageController, GameController :
 

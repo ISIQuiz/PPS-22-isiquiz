@@ -7,6 +7,7 @@ import model.Answer.Answer
 import model.Quiz.Quiz
 import model.settings.BlitzGameSettings
 import model.*
+import model.SavedCourse.SavedCourse
 import utils.{TerminalInput, TerminalInputImpl, Timer}
 import view.StandardGameMenuView.*
 import view.View
@@ -32,6 +33,10 @@ object BlitzGameController extends BackAction:
     blitzGameController.gameStage.quizInGame = blitzGameController.extractQuizInGame(game)
     blitzGameController.timer.startTimer()
     blitzGameController
+
+  def isGameStagePlayable(gameStage: GameStage): Boolean = gameStage.coursesInGame.nonEmpty && gameStage.coursesInGame.forall(course =>
+    course.quizList.nonEmpty && course.quizList.forall(quiz =>
+      quiz.answerList.exists(_.isCorrect) && quiz.answerList.count(!_.isCorrect) >= 3))
 
 /** Defines the logic of the select page */
 class BlitzGameController(val game: GameStage) extends PageController, GameController:

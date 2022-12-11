@@ -6,7 +6,7 @@ import view.updates.ViewUpdate
 import utils.GUILoader
 import utils.GUILoader.loadGUI
 import javafx.fxml.FXML
-import javafx.scene.control.{Button, CheckBox, ScrollPane}
+import javafx.scene.control.{Button, CheckBox, Label, ScrollPane}
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import view.SelectMenuView.*
@@ -19,8 +19,8 @@ import scala.collection.mutable.ListBuffer
 
 object GraphicSelectMenu
 
-/** Select menu graphic interface  */
-class GraphicSelectMenu(stage: Stage) extends GraphicView:
+/** Select menu graphic interface */
+class GraphicSelectMenu(stage: Stage) extends GraphicView :
 
   @FXML
   var backButton: Button = _
@@ -39,6 +39,9 @@ class GraphicSelectMenu(stage: Stage) extends GraphicView:
 
   @FXML
   var coursesVBox: VBox = _
+
+  @FXML
+  var feedbackLabel: Label = _
 
   @FXML
   def backButtonClicked(): Unit =
@@ -86,6 +89,9 @@ class GraphicSelectMenu(stage: Stage) extends GraphicView:
             coursesVBox.getChildren.add(checkbox)
           )
         }
+    case CourseUnplayableUpdate =>
+      feedbackLabel.setText("Corsi selezionati invalidi per la modalità di gioco")
+    case _ => {}
 
   /* function to check if at least one course is selected before starting a game */
   private def isCourseSelected: Boolean =
