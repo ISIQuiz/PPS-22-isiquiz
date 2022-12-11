@@ -31,12 +31,8 @@ class ReviewTest extends AnyFunSuite with Matchers:
     review.addQuizAnswered(quizAnswered)
     review.quizAnsweredList shouldEqual List(quizAnswered)
     review.numberQuizAnswered shouldEqual 1
-    //review.totalCorrectAnswers shouldEqual 0
-   // review.totalPoints shouldEqual 0
     val quizAnswered2: QuizAnswered = QuizAnswered(quizInGame,Option(Answer("ans", true)))
     review.addQuizAnswered(quizAnswered2)
     review.numberQuizAnswered shouldEqual 2
-    //review.totalCorrectAnswers shouldEqual 1
-    //review.totalPoints shouldEqual 10
 
   }

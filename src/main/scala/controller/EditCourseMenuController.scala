@@ -14,7 +14,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 /** Companion object of edit course menu controller */
-object EditCourseMenuController extends BackAction:
+object EditCourseMenuController extends BackAction :
 
   /** action to select a course in the edit course controller */
   case class SelectCourseAction(override val actionParameter: Option[SavedCourse]) extends Action(actionParameter)
@@ -23,7 +23,7 @@ object EditCourseMenuController extends BackAction:
   case class EditCourseAction(override val actionParameter: Option[SavedCourse]) extends Action(actionParameter)
 
 /** Defines the logic of the edit course page */
-class EditCourseMenuController extends PageController:
+class EditCourseMenuController extends PageController :
 
   import EditCourseMenuController.*
 
@@ -43,12 +43,12 @@ class EditCourseMenuController extends PageController:
       sendUpdate(CoursePrintUpdate(courseSelected))
       sendUpdate(AskCourseEditUpdate)
 
-  def editCourse(optionalCourseEdited:Option[SavedCourse]):Unit =
-    val newListCourses = AppController.session.savedCourses.filterNot(course => course==courseSelected.get)
-    var feedbackUpdate:ParameterlessViewUpdate = DefaultUpdate
+  def editCourse(optionalCourseEdited: Option[SavedCourse]): Unit =
+    var newListCourses = AppController.session.savedCourses.filterNot(course => course == courseSelected.get)
+    var feedbackUpdate: ParameterlessViewUpdate = DefaultUpdate
     optionalCourseEdited match
       case Some(course) =>
-        newListCourses.appended(SavedCourse.changeQuizList(course, courseSelected.get.quizList))
+        newListCourses = newListCourses.appended(SavedCourse.changeQuizList(course, courseSelected.get.quizList))
         feedbackUpdate = CourseEditedUpdate
       case _ =>
         feedbackUpdate = CourseDeletedUpdate

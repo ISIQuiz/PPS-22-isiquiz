@@ -25,9 +25,10 @@ import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
 /** Companion object of standard game controller */
-object StandardGameController extends BackAction:
+object StandardGameController extends BackAction :
   /** action to select an answer in the controller of a standard game */
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
+
   /** action to go to the next quiz in the controller of a standard game */
   case object NextQuiz extends ParameterlessAction
 
@@ -38,7 +39,7 @@ object StandardGameController extends BackAction:
     standardGameController
 
 /** Defines the logic of the select page */
-class StandardGameController(val game: GameStage) extends PageController, GameController:
+class StandardGameController(val game: GameStage) extends PageController, GameController :
 
   import StandardGameController.*
 
@@ -63,7 +64,7 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
       if !timer.isStopped then
         sendUpdate(TimerUpdate(Option(timer)))
         // Update actual quiz in game score
-        currentScore = updateScore(timer.getRemainingTime.toInt, timer.maxTime, gameStage.quizInGame.quiz.maxScore)
+        currentScore = updateScore(timer.getRemainingTime.toInt, timer.maxTimeInSeconds, gameStage.quizInGame.quiz.maxScore)
         sendUpdate(QuizScoreUpdate(Option(currentScore)))
 
 
@@ -72,7 +73,7 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
     timer.stopTimer()
     if actionParameter.isDefined && !timer.isExpired then
       actionParameter match
-        case Some(selectedAnswerIndex:Int) =>
+        case Some(selectedAnswerIndex: Int) =>
           currentAnswer = Some(gameStage.quizInGame.answers(selectedAnswerIndex))
         case Some(selectedAnswer: Answer) =>
           currentAnswer = Some(selectedAnswer)
@@ -80,7 +81,7 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
       sendUpdate(AnswerFeedbackUpdate(Option((gameStage.quizInGame.answers.indexOf(currentAnswer.get), currentAnswer.get.isCorrect))))
 
   override def nextQuiz(): Unit =
-    val maxTime = timer.maxTime/1000
+    val maxTime = timer.maxTimeInSeconds
     currentAnswer match
       case Some(ans) =>
         if (!ans.isCorrect)
@@ -88,7 +89,6 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
           currentTime = 0
         gameStage.addReviewQuizAnswer(ans, currentScore, currentTime)
         gameStage.addQuizToStats(ans.isCorrect, currentScore, currentTime)
-
       case _ =>
         gameStage.addReviewQuizNotAnswered()
         gameStage.addQuizToStats(false, 0, 0)
@@ -101,8 +101,8 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
     gameStage.quizInGame = extractQuizInGame(gameStage)
 
   // update the game score based on time remaining
-  private def updateScore(timeRemaining: Int, maxTime: Long, maxScore: Int): Int = {
-    val coeff: Double = maxScore.toDouble / (maxTime / 1000).toDouble
+  private def updateScore(timeRemaining: Int, maxTimeInSeconds: Long, maxScore: Int): Int = {
+    val coeff: Double = maxScore.toDouble / maxTimeInSeconds.toDouble
     val score = (coeff * timeRemaining).toInt
     if (score >= maxScore) score else score + 1
   }
