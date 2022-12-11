@@ -4,6 +4,8 @@ import model.{Course, GameStage, QuizAnswered, QuizInGame, Review, SavedCourse, 
 import model.SavedCourse.SavedCourse
 import model.stats.CourseInStats.CourseInStats
 import model.stats.QuizInStats.QuizInStats
+
+import java.util.UUID
 import scala.util.Try
 
 /** Object for PlayerStats model */
@@ -98,7 +100,7 @@ object PlayerStats:
       totalScore = calculateTotalScore(courseInStatsList),
       totalAnsweredQuestions = calculateTotalAnsweredQuestions(courseInStatsList),
       totalCorrectAnswers = calculateTotalCorrectAnswer(courseInStatsList),
-      totalAnswerPrecision = calculateTotalAnswerPrecision(courseInStatsList),
+      totalAnswerPrecision = calculateTotalAnswerPrecision(calculateTotalAnsweredQuestions(courseInStatsList),calculateTotalCorrectAnswer(courseInStatsList) ),
       totalAverageTimeAnswer = calculateTotalAverageTimeAnswer(courseInStatsList),
       courseInStatsList = courseInStatsList
     )
@@ -185,8 +187,9 @@ object PlayerStats:
     ).sum
 
   // Calculates total answer precision
-  private def calculateTotalAnswerPrecision(courseInStatsList: List[CourseInStats]): Int =
-    Try(calculateTotalCorrectAnswer(courseInStatsList) * 100 / calculateTotalAnsweredQuestions(courseInStatsList)).getOrElse(0)
+  def calculateTotalAnswerPrecision(totalAnswered: Int, totalCorrectAnswer: Int): Int =
+    val percentage = Try((totalCorrectAnswer * 100) / totalAnswered).getOrElse(0)
+    if (percentage > 100) 100 else percentage
 
   // Calculates total average time to answer
   private def calculateTotalAverageTimeAnswer(courseInStatsList: List[CourseInStats]): Double =
@@ -229,3 +232,14 @@ object PlayerStats:
       .map(c => CourseInStats(c.course, c.quizInStatsList.filter(q => listOfQuizId.contains(q.quizId)))).filter(c => c.quizInStatsList.nonEmpty)
 
     updatePlayerStats(newCourseInStatsList)
+
+
+  /**
+   * Get the quiz question guiven an quiz id
+   * @param quizInStatsId
+   * @param savedCourseList
+   * @return a [[String]] with the question
+   */
+  def getQuizQuestionById(quizInStatsId: UUID, savedCourseList: List[SavedCourse]): String =
+    val list = savedCourseList.flatMap(s => s.quizList).map(q => (q.quizId, q.question))
+    list.filter(a => a._1 == quizInStatsId).map(a => a._2).head
