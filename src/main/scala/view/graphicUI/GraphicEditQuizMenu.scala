@@ -49,9 +49,6 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
   var answersVBox: VBox = _
 
   @FXML
-  var answerTextField: TextField = _
-
-  @FXML
   var feedbackLabel: Label = _
 
   @FXML
@@ -72,7 +69,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
       val answerList: ListBuffer[Answer] = ListBuffer()
       answersVBox.getChildren.forEach(hBox =>
         val answerTextField = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(1).asInstanceOf[TextField]
-        val answerCorrectCheckBox: CheckBox = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(3).asInstanceOf[CheckBox]
+        val answerCorrectCheckBox: CheckBox = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(2).asInstanceOf[CheckBox]
           answerList += Answer(answerTextField.getText, answerCorrectCheckBox.isSelected)
       )
       val quiz = Quiz(question = questionTextField.getText, answerList = answerList.toList, maxScore = scoreIntegerField.getText.toInt, imagePath = imagePathTextField.getText match
@@ -138,7 +135,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
     case _ => {}
 
   private def checkInputs: Boolean =
-    questionTextField.getText.nonEmpty && checkSelections
+    questionTextField.getText.nonEmpty && scoreIntegerField.getText().toIntOption.nonEmpty && answersVBox.getChildren.size()>0 && checkSelections
 
   private def checkSelections: Boolean =
     toggleCourseGroup.getToggles.removeIf(_.isSelected) && toggleQuizGroup.getToggles.removeIf(_.isSelected)
@@ -159,15 +156,15 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
       val idNum = answersVBox.getChildren.size()
       val answerBox: HBox = HBox()
       answerBox.setAlignment(javafx.geometry.Pos.CENTER)
-      answerBox.setPadding(Insets.apply(10, 0, 0, 10))
+      answerBox.setPadding(Insets.apply(5, 0, 0, 5))
       val textField: TextField = TextField(if opAnswer.nonEmpty then opAnswer.get.text else "")
       textField.setId("answerTextField" + idNum)
-      textField.getStyleClass.add("text-field-extra-large")
+      textField.getStyleClass.add("text-field-large")
       val checkBox = CheckBox()
       checkBox.setSelected(if opAnswer.nonEmpty then opAnswer.get.isCorrect else false)
       checkBox.setId("answerCorrectCheckBox" + idNum)
-      checkBox.setText("corretta")
-      checkBox.getStyleClass.add("checkbox-dark")
-      answerBox.getChildren.addAll(textField, checkBox)
+      checkBox.setText("Corretta")
+      checkBox.getStyleClass.add("checkbox")
+      answerBox.getChildren.addAll(Label("Risposta "), textField, checkBox)
       answersVBox.getChildren.addAll(answerBox)
   }
