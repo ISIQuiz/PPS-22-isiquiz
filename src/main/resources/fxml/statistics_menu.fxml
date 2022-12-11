@@ -7,100 +7,151 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="pane" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
-    <columnConstraints>
-      <ColumnConstraints hgrow="SOMETIMES" percentWidth="3.0" />
-        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
-        <ColumnConstraints hgrow="SOMETIMES" percentWidth="74.0" />
-        <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
-      <ColumnConstraints hgrow="SOMETIMES" percentWidth="3.0" />
-    </columnConstraints>
-    <rowConstraints>
-      <RowConstraints percentHeight="5.0" vgrow="SOMETIMES" />
-        <RowConstraints percentHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
-      <RowConstraints percentHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
-        <RowConstraints percentHeight="60.0" vgrow="SOMETIMES" />
-      <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
-        <RowConstraints percentHeight="5.0" vgrow="SOMETIMES" />
-    </rowConstraints>
-    <children>
-        <Button fx:id="backButton" mnemonicParsing="false" onMouseClicked="#backButtonClicked" styleClass="button-small" text="Indietro" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="2" GridPane.rowIndex="3">
-            <content>
-                  <VBox>
-                      <children>
-                          <HBox>
-                              <children>
-                                  <Label styleClass="label-dark" text="Totale punti:">
-                                      <HBox.margin>
-                                          <Insets right="20.0" />
-                                      </HBox.margin>
-                                  </Label>
-                                  <Label fx:id="totalScoreLabel" styleClass="label-dark" text="0" />
-                              </children>
-                              <VBox.margin>
-                                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                              </VBox.margin>
-                          </HBox>
-                          <HBox>
-                              <children>
-                                  <Label styleClass="label-dark" text="Totale domande risposta:">
-                                      <HBox.margin>
-                                          <Insets right="20.0" />
-                                      </HBox.margin>
-                                  </Label>
-                                  <Label fx:id="totalAnsweredQuestionsLabel" styleClass="label-dark" text="0" />
-                              </children>
-                              <VBox.margin>
-                                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                              </VBox.margin>
-                          </HBox>
-                          <HBox>
-                              <children>
-                                  <Label styleClass="label-dark" text="Totale risposte corrette:">
-                                      <HBox.margin>
-                                          <Insets right="20.0" />
-                                      </HBox.margin>
-                                  </Label>
-                                  <Label fx:id="totalCorrectAnswersLabel" styleClass="label-dark" text="0" />
-                              </children>
-                     <VBox.margin>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                     </VBox.margin>
-                          </HBox>
-                          <HBox>
-                              <children>
-                                  <Label styleClass="label-dark" text="Precisione:">
-                                      <HBox.margin>
-                                          <Insets right="20.0" />
-                                      </HBox.margin>
-                                  </Label>
-                                  <Label fx:id="totalAnswerPrecisionLabel" styleClass="label-dark" text="0" />
-                              </children>
-                     <VBox.margin>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                     </VBox.margin>
-                          </HBox>
-                          <HBox>
-                              <children>
-                                  <Label styleClass="label-dark" text="Tempo medio di risposta:">
-                                      <HBox.margin>
-                                          <Insets right="20.0" />
-                                      </HBox.margin>
-                                  </Label>
-                                  <Label fx:id="totalAverageTimeAnswerLabel" styleClass="label-dark" text="0" />
-                              </children>
-                     <VBox.margin>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                     </VBox.margin>
-                          </HBox>
-                      </children>
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="pane" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" percentWidth="3.0" />
+    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
+    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="74.0" prefWidth="100.0" />
+    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
+    <ColumnConstraints hgrow="SOMETIMES" percentWidth="3.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints percentHeight="5.0" vgrow="SOMETIMES" />
+    <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
+    <RowConstraints percentHeight="80.0" vgrow="SOMETIMES" />
+    <RowConstraints percentHeight="5.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+  <children>
+    <Button fx:id="backButton" mnemonicParsing="false" onMouseClicked="#backButtonClicked" styleClass="button-small" text="Indietro" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <Label fx:id="menuLabel" styleClass="title" text="Statistiche" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+    <VBox GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+      <children>
+
+        <HBox alignment="CENTER">
+        <children>
+          <VBox alignment="CENTER">
+            <children>
+              <Label text="Seleziona un corso:" />
+              <ScrollPane fx:id="coursesScrollPane">
+                <content>
+                  <VBox fx:id="coursesVBox" />
+                </content>
+              </ScrollPane>
+            </children>
+          </VBox>
+                  <Pane styleClass="horizontal-separator" />
+          <VBox alignment="CENTER">
+            <children>
+              <Label text="Seleziona un quiz:" />
+              <ScrollPane fx:id="quizScrollPane">
+                <content>
+                  <VBox fx:id="quizVBox" />
+                </content>
+              </ScrollPane>
+            </children>
+          </VBox>
+        </children>
+          <VBox.margin>
+            <Insets bottom="10.0" />
+          </VBox.margin>
+        </HBox>
+            <HBox alignment="CENTER">
+               <children>
+                  <Label fx:id="textLabel" alignment="CENTER" styleClass="label-large" text="Statistiche specifiche" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" />
+            <Pane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <HBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="948.0">
+                     <children>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Label text="Punti" />
+                              <Label fx:id="totalScoreLabel" text="0" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Label text="Domande risposte" />
+                              <Label fx:id="totalAnsweredQuestionsLabel" text="0" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Label text="Risposte corrette" />
+                              <Label fx:id="totalCorrectAnswersLabel" text="0" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Label text="Precisione" />
+                              <Label fx:id="totalAnswerPrecisionLabel" text="0" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Label text="Tempo medio di risposta" />
+                              <Label fx:id="totalAverageTimeAnswerLabel" text="0" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </Pane>
+            <HBox alignment="CENTER">
+               <children>
+                  <Label fx:id="textLabel2" alignment="CENTER" styleClass="label-large" text="Statistiche globali" />
+               </children>
+            </HBox>
+            <HBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="948.0">
+               <children>
+                  <VBox alignment="CENTER">
+                     <children>
+                        <Label text="Punti" />
+                        <Label fx:id="globalTotalScoreLabel" text="0" />
+                     </children>
                   </VBox>
-            </content>
-        </ScrollPane>
-        <Label styleClass="title" text="Statistiche" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-    </children>
+                  <VBox alignment="CENTER">
+                     <children>
+                        <Label text="Domande risposte" />
+                        <Label fx:id="globalTotalAnsweredQuestionsLabel" text="0" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER">
+                     <children>
+                        <Label text="Risposte corrette" />
+                        <Label fx:id="globalTotalCorrectAnswersLabel" text="0" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER">
+                     <children>
+                        <Label text="Precisione" />
+                        <Label fx:id="globalTotalAnswerPrecisionLabel" text="0" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER">
+                     <children>
+                        <Label text="Tempo medio di risposta" />
+                        <Label fx:id="globalTotalAverageTimeAnswerLabel" text="0" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER">
+               <children>
+                  <Button fx:id="resetStatsButton" mnemonicParsing="false" onMouseClicked="#resetStatsButtonClicked" styleClass="button-large" text="Reset statistiche">
+                     <HBox.margin>
+                        <Insets left="25.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+      </children>
+    </VBox>
+  </children>
 </GridPane>

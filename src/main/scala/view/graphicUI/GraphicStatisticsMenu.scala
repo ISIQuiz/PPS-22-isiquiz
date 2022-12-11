@@ -97,7 +97,7 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
       sendEvent(Back)
     }
 
-  loadGUI(stage, this, "statistics_menu_advanced.fxml")
+  loadGUI(stage, this, "statistics_menu.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case DefaultUpdate =>
