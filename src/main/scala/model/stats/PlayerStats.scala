@@ -114,7 +114,12 @@ object PlayerStats:
    * @return an updated [[PlayerStats]] with the newly added quiz in game
    */
   def addQuizInGameToStats(playerStats: PlayerStats, quizInGame: QuizInGame, isCorrect: Boolean, score: Int, timeToAnswer: Double): PlayerStats =
-    val newQuizInStats = QuizInStats(quizInGame.quiz.quizId, 1, score, if (isCorrect) 1 else 0, timeToAnswer)
+
+    val newQuizInStats = if (isCorrect)
+      QuizInStats(quizInGame.quiz.quizId, 1, score, 1, timeToAnswer)
+    else
+      QuizInStats(quizInGame.quiz.quizId, 1)
+
     val newCourseInStats = CourseInStats(quizInGame.course, List(newQuizInStats))
 
     // Check if course already exists
@@ -149,15 +154,16 @@ object PlayerStats:
         quizInStats._1 + newQuizInStats._1, // sum total seen
         quizInStats._2 + newQuizInStats._2, // sum total score
         quizInStats._3 + newQuizInStats._3, // sum total right answer
-        calculateWeightedAverage(quizInStats._4, quizInStats._1, newQuizInStats._4, newQuizInStats._1) //calculate weighted average
+        calculateWeightedAverage(quizInStats._4, quizInStats._3, newQuizInStats._4, newQuizInStats._3) //calculate weighted average
       )
     ).map((k, v) => QuizInStats(k, v._1, v._2, v._3, v._4)).toList
 
-  // Calculate weighted average
-  private def calculateWeightedAverage(averageTimeAnswer: Double, totalSeen: Int, newAverageTimeAnswer: Double, newTotalSeen: Int): Double =
-    val c: Double = Try(
-      ((averageTimeAnswer * totalSeen) + (newAverageTimeAnswer * newTotalSeen)) / (totalSeen + newTotalSeen)
-    ).getOrElse(0)
+  // Calculate weighted average time to answer only on correct answer
+  private def calculateWeightedAverage(averageTimeAnswer: Double, totalCorrectAnswers: Int, newAverageTimeAnswer: Double, newTotalCorrectAnswers: Int): Double =
+    val c: Double = if ((totalCorrectAnswers + newTotalCorrectAnswers) > 0)
+      ((averageTimeAnswer * totalCorrectAnswers) + (newAverageTimeAnswer * newTotalCorrectAnswers)) / (totalCorrectAnswers + newTotalCorrectAnswers)
+    else
+      0
     BigDecimal(c).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
 
   // Calculate total score
@@ -190,21 +196,13 @@ object PlayerStats:
 
   // Calculates total average time to answer
   private def calculateTotalAverageTimeAnswer(courseInStatsList: List[CourseInStats]): Double =
-    if (courseInStatsList.nonEmpty)
-      val avg: Double = Try(
-        courseInStatsList.filter(courseInStats => courseInStats.quizInStatsList.nonEmpty).map(
-          courseInStats => calculateAverageCourseInStats(courseInStats)
-        ).sum / courseInStatsList.size
-      ).getOrElse(0)
+    val totalCorrectAnswer = calculateTotalCorrectAnswer(courseInStatsList)
+    if (courseInStatsList.nonEmpty && totalCorrectAnswer != 0)
+      val totalAverageTimeAnswer = courseInStatsList.flatMap(c => c.quizInStatsList).map(q => q.averageTimeAnswer * q.totalRightAnswers).sum
+      val avg = totalAverageTimeAnswer / totalCorrectAnswer
       BigDecimal(avg).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
-    else 0
-
-  private def calculateAverageCourseInStats(courseInStats: CourseInStats): Double =
-    Try(
-      courseInStats.quizInStatsList.map(
-        quizInStats => quizInStats.averageTimeAnswer
-      ).sum / courseInStats.quizInStatsList.size
-    ).getOrElse(0)
+    else
+      0
 
 
   /**

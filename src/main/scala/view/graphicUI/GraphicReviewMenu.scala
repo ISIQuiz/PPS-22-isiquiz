@@ -15,6 +15,8 @@ import model.QuizAnswered
 import scalafx.geometry.Insets
 import scalafx.scene.layout.Pane
 
+import scala.util.Try
+
 object GraphicReviewMenu
 
 /** Review menu graphic interface */
@@ -68,9 +70,11 @@ class GraphicReviewMenu(stage: Stage) extends GraphicView:
         val quizQuestionLabel = Label(quizAnswered.quizInGame.quiz.question)
         quizQuestionLabel.getStyleClass.setAll("review-question")
         quizVBox.getChildren.addAll(quizQuestionLabel)
-        val quizDescLabel = Label(s"(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) " +
-          s"- (Tempo: ${quizAnswered.timeToAnswer}) " +
-          s"- ${quizAnswered.quizInGame.course.courseId.courseName}");
+        val quizDescLabel = Label(
+          s"(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) " +
+            getQuizDescriptionLabel(quizAnswered) +
+            s"- ${quizAnswered.quizInGame.course.courseId.courseName}"
+        );
         quizDescLabel.getStyleClass.setAll("label-dark")
         quizVBox.getChildren.addAll(quizDescLabel)
         for
@@ -83,3 +87,10 @@ class GraphicReviewMenu(stage: Stage) extends GraphicView:
         quizAnsweredVBox.setSpacing(10);
         quizAnsweredVBox.getChildren.addAll(quizVBox);
     })
+
+  private def getQuizDescriptionLabel(quizAnswered: QuizAnswered): String =
+    val cond = Try(quizAnswered.answerPlayer.get.isCorrect).getOrElse(false)
+    if (cond)
+      s"- (Tempo: ${quizAnswered.timeToAnswer}) "
+    else
+      ""
