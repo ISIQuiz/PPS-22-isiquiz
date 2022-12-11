@@ -1,7 +1,7 @@
 package view.graphicUI
 
 import controller.AppController
-import controller.StatisticsMenuController.{Back, ResetAction, SelectQuizAction}
+import controller.StatisticsMenuController.{Back, SelectQuizAction}
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Alert.AlertType
