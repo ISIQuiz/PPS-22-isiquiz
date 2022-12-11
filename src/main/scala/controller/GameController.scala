@@ -10,6 +10,8 @@ import utils.storage.ExportHandler
 
 trait GameController:
 
+  val gameStage: GameStage
+
   def nextQuiz(): Unit
 
   def chooseQuiz(course: SavedCourse): Quiz = course.quizList(randomNumberGenerator(1, course.quizList.size).head)

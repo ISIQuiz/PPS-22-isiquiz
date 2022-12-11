@@ -17,11 +17,13 @@ import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Promise}
 
-/** Companion object of standard game controller */
+/** Companion object of blitz game controller */
 object BlitzGameController extends BackAction:
-  /** action to select an answer in the controller of a standard game */
+
+  /** action to select an answer in the controller of a blitz game */
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
-  /** action to go to the next quiz in the controller of a standard game */
+
+  /** action to go to the next quiz in the controller of a blitz game */
   case object NextQuiz extends ParameterlessAction
 
   def apply(game: GameStage): BlitzGameController =
@@ -54,7 +56,6 @@ class BlitzGameController(val game: GameStage) extends PageController, GameContr
       sendUpdate(CurrentGameUpdate(Option(gameStage)))
       sendUpdate(TimerUpdate(Option(timer)))
 
-
   def selectAnswer[T](actionParameter: Option[T]): Unit =
     if actionParameter.isDefined && !timer.isExpired then
       actionParameter match
@@ -75,4 +76,3 @@ class BlitzGameController(val game: GameStage) extends PageController, GameContr
         gameStage.addQuizToStats(false, 0, timer.maxTime)
     currentAnswer = None
     gameStage.quizInGame = extractQuizInGame(gameStage)
-

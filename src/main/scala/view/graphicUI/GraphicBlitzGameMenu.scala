@@ -16,7 +16,7 @@ import view.updates.ViewUpdate
 
 object GraphicBlitzGameMenu
 
-/** Standard Game menu graphic interface */
+/** Blitz Game menu graphic interface */
 class GraphicBlitzGameMenu(stage: Stage) extends GraphicView:
 
   @FXML
