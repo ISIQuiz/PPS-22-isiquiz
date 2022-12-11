@@ -15,7 +15,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 /** Companion object of edit quiz menu controller */
-object EditQuizMenuController extends BackAction:
+object EditQuizMenuController extends BackAction :
 
   /** action to select a course in the edit quiz controller */
   case class SelectCourseAction(override val actionParameter: Option[SavedCourse]) extends Action(actionParameter)
@@ -27,12 +27,12 @@ object EditQuizMenuController extends BackAction:
   case class EditQuizAction(override val actionParameter: Option[Quiz]) extends Action(actionParameter)
 
 /** Defines the logic of the edit quiz page */
-class EditQuizMenuController extends PageController:
+class EditQuizMenuController extends PageController :
 
   import EditQuizMenuController.*
 
   var courseSelected: Option[SavedCourse] = Option.empty
-  
+
   var quizSelected: Option[Quiz] = Option.empty
 
   override def handle[T](action: Action[T]): Unit = action match
@@ -55,17 +55,17 @@ class EditQuizMenuController extends PageController:
       sendUpdate(QuizPrintUpdate(quizSelected))
       sendUpdate(AskQuizEditUpdate)
 
-  def editQuiz(optionalQuizEdited:Option[Quiz]):Unit =
-    val newQuizList = courseSelected.get.quizList.filterNot(quiz => quiz==quizSelected.get)
+  def editQuiz(optionalQuizEdited: Option[Quiz]): Unit =
+    var newQuizList = courseSelected.get.quizList.filterNot(quiz => quiz == quizSelected.get)
     var feedbackUpdate: ParameterlessViewUpdate = DefaultUpdate
     optionalQuizEdited match
       case Some(quiz) =>
-        newQuizList.appended(quiz)
+        newQuizList = newQuizList.appended(quiz)
         feedbackUpdate = QuizEditedUpdate
       case _ =>
         feedbackUpdate = QuizDeletedUpdate
     val newSavedCourse = SavedCourse.changeQuizList(courseSelected.get, newQuizList)
-    val newListCourses = AppController.session.savedCourses.filterNot(course => course==courseSelected.get).appended(newSavedCourse)
+    val newListCourses = AppController.session.savedCourses.filterNot(course => course == courseSelected.get).appended(newSavedCourse)
     AppController.changeSavedCourses(newListCourses)
     ExportHandler.exportDataToPersonalDirectory(newListCourses) // Export saved course list to personal directory
     sendUpdate(QuizPrintUpdate(optionalQuizEdited))
