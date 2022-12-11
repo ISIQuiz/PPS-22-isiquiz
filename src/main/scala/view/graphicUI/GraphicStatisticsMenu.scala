@@ -5,12 +5,11 @@ import controller.StatisticsMenuController.{Back, SelectQuizAction}
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Alert.AlertType
-import javafx.scene.control.Alert
+import javafx.scene.control.{Alert, Button, ButtonBar, ButtonType, Label, ToggleGroup}
 import javafx.stage.Stage
-import javafx.scene.control.{Button, ButtonType, Label, ToggleGroup}
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.VBox
-import model.stats.PlayerStats
+import model.stats.{PlayerStats, QuizInStats}
 import model.stats.PlayerStats.{calculateTotalAnswerPrecision, initStats, updatePlayerStats}
 import scalafx.scene.control.RadioButton
 import utils.GUILoader
@@ -30,6 +29,9 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
   val toggleCourseInStatsGroup: ToggleGroup = ToggleGroup()
 
   val toggleQuizGroup: ToggleGroup = ToggleGroup()
+
+  val yesButton = ButtonType("Si", ButtonBar.ButtonData.YES);
+  val cancelButton = ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
 
   @FXML
   var coursesVBox: VBox = _
@@ -85,13 +87,12 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
   def resetStatsButtonClicked: Unit =
     val alert: Alert = Alert(
       AlertType.CONFIRMATION,
-      "Sei sicuro di voler azzerare tutte le statistiche  ?",
-      ButtonType.YES,
-      ButtonType.NO,
-      ButtonType.CANCEL
+      "Sei sicuro di voler azzerare tutte le statistiche?",
+      yesButton,
+      cancelButton
     )
     alert.showAndWait();
-    if (alert.getResult() == ButtonType.YES) {
+    if (alert.getResult == yesButton) {
       AppController.changePlayerStats(initStats)
       ExportHandler.exportDataToPersonalDirectory(initStats)
       sendEvent(Back)
@@ -107,7 +108,7 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
         globalTotalAnsweredQuestionsLabel.setText(p.totalAnsweredQuestions.toString)
         globalTotalCorrectAnswersLabel.setText(p.totalCorrectAnswers.toString)
         globalTotalAnswerPrecisionLabel.setText(p.totalAnswerPrecision.toString + " %")
-        globalTotalAverageTimeAnswerLabel.setText(p.totalAverageTimeAnswer.toString)
+        globalTotalAverageTimeAnswerLabel.setText(p.totalAverageTimeAnswer.toString + " s")
       }
     case CourseInStatsListUpdate(updateParameter) =>
       Platform.runLater { () =>
@@ -136,7 +137,7 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
       Platform.runLater { () =>
         quizVBox.getChildren.clear()
         updateParameter.get.foreach(quizInStats =>
-          val question = PlayerStats.getQuizQuestionById(quizInStats.quizId, AppController.session.savedCourses)
+          val question = QuizInStats.getQuizQuestionById(quizInStats.quizId, AppController.session.savedCourses)
           val radioButton = RadioButton(question);
           radioButton.setToggleGroup(toggleQuizGroup);
           radioButton.getStyleClass.add("label-dark");
@@ -164,4 +165,4 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
     totalAnsweredQuestionsLabel.setText(totalAnsweredQuestions.toString)
     totalCorrectAnswersLabel.setText(totalCorrectAnswers.toString)
     totalAnswerPrecisionLabel.setText(totalAnswerPrecision.toString + " %")
-    totalAverageTimeAnswerLabel.setText(totalAverageTimeAnswer.toString)
+    totalAverageTimeAnswerLabel.setText(totalAverageTimeAnswer.toString +" s")

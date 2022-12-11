@@ -1,5 +1,7 @@
 package model.stats
 
+import model.SavedCourse.SavedCourse
+
 import java.util.UUID
 
 /** Object for quiz in player stats model */
@@ -53,3 +55,15 @@ object QuizInStats:
    */
   def changeAverageTimeAnswer(quizInStats: QuizInStats, averageTimeAnswer: Double): QuizInStats =
     QuizInStats(quizInStats.quizId, quizInStats.totalSeen, quizInStats.totalScore, quizInStats.totalRightAnswers, averageTimeAnswer)
+
+
+  /**
+   * Get the quiz question guiven an quiz id
+   *
+   * @param quizInStatsId
+   * @param savedCourseList
+   * @return a [[String]] with the question
+   */
+  def getQuizQuestionById(quizInStatsId: UUID, savedCourseList: List[SavedCourse]): String =
+    val list = savedCourseList.flatMap(s => s.quizList).map(q => (q.quizId, q.question))
+    list.filter(a => a._1 == quizInStatsId).map(a => a._2).head
