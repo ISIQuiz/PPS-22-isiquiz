@@ -27,39 +27,44 @@
 </span>3 <span style=''>import controller.{AppController, PageController}
 </span>4 <span style=''>import controller.AppController.*
 </span>5 <span style=''>import controller.actions.{Action, ParameterlessAction}
-</span>6 <span style=''>import utils.Timer
-</span>7 <span style=''>import view.View
-</span>8 <span style=''>import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-</span>9 <span style=''>import view.MainMenuView
-</span>10 <span style=''>import view.MainMenuView.DefaultUpdate
-</span>11 <span style=''>
-</span>12 <span style=''>import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
-</span>13 <span style=''>import scala.collection.mutable.ListBuffer
-</span>14 <span style=''>import scala.concurrent.duration.Duration
-</span>15 <span style=''>import scala.concurrent.{Await, Future, Promise}
-</span>16 <span style=''>import scala.util.Try
-</span>17 <span style=''>
-</span>18 <span style=''>/** Companion object of main menu controller */
-</span>19 <span style=''>object MainMenuController:
-</span>20 <span style=''>
-</span>21 <span style=''>  case object Select extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>22 <span style=''>  case object Statistics extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>23 <span style=''>  case object Settings extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>24 <span style=''>  case object Quit extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>25 <span style=''>
-</span>26 <span style=''>/** Defines the logic of the main menu page */
-</span>27 <span style=''>class MainMenuController extends PageController:
-</span>28 <span style=''>
-</span>29 <span style=''>  import MainMenuController.*
+</span>6 <span style=''>import model.stats.PlayerStats.removeUnusedStats
+</span>7 <span style=''>import utils.Timer
+</span>8 <span style=''>import utils.storage.ExportHandler
+</span>9 <span style=''>import view.View
+</span>10 <span style=''>import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+</span>11 <span style=''>import view.MainMenuView
+</span>12 <span style=''>import view.MainMenuView.DefaultUpdate
+</span>13 <span style=''>
+</span>14 <span style=''>import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
+</span>15 <span style=''>import scala.collection.mutable.ListBuffer
+</span>16 <span style=''>import scala.concurrent.duration.Duration
+</span>17 <span style=''>import scala.concurrent.{Await, Future, Promise}
+</span>18 <span style=''>import scala.util.Try
+</span>19 <span style=''>
+</span>20 <span style=''>/** Companion object of main menu controller */
+</span>21 <span style=''>object MainMenuController:
+</span>22 <span style=''>
+</span>23 <span style=''>  case object Select extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>24 <span style=''>  case object Statistics extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>25 <span style=''>  case object Settings extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>26 <span style=''>  case object Quit extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>27 <span style=''>
+</span>28 <span style=''>/** Defines the logic of the main menu page */
+</span>29 <span style=''>class MainMenuController extends PageController:
 </span>30 <span style=''>
-</span>31 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
-</span>32 <span style=''>    </span><span style='background: #F0ADAD'>case Select</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(SelectMenuAction)</span><span style=''>
-</span>33 <span style=''>    </span><span style='background: #F0ADAD'>case Statistics</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(StatisticsMenuAction)</span><span style=''>
-</span>34 <span style=''>    </span><span style='background: #F0ADAD'>case Settings</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(SettingsMenuAction)</span><span style=''>
-</span>35 <span style=''>    </span><span style='background: #F0ADAD'>case Quit</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>System.exit(0)</span><span style=''>
-</span>36 <span style=''>
-</span>37 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>38 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
+</span>31 <span style=''>  import MainMenuController.*
+</span>32 <span style=''>
+</span>33 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
+</span>34 <span style=''>    </span><span style='background: #F0ADAD'>case Select</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(SelectMenuAction)</span><span style=''>
+</span>35 <span style=''>    </span><span style='background: #F0ADAD'>case Statistics</span><span style=''> =&gt;
+</span>36 <span style=''>      // Remove unused player stats and export it
+</span>37 <span style=''>      </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(removeUnusedStats(session.savedCourses, session.playerStats))</span><span style=''>
+</span>38 <span style=''>      </span><span style='background: #F0ADAD'>AppController.handle(StatisticsMenuAction)</span><span style=''>
+</span>39 <span style=''>    </span><span style='background: #F0ADAD'>case Settings</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(SettingsMenuAction)</span><span style=''>
+</span>40 <span style=''>    </span><span style='background: #F0ADAD'>case Quit</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>System.exit(0)</span><span style=''>
+</span>41 <span style=''>
+</span>42 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
+</span>43 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -74,63 +79,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          20
-        </td>
-        <td>
-          335
-        </td>
-        <td>
-          657
-          -
-          676
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ParameterlessAction
-        </td>
-      </tr><tr>
-        <td>
-          21
-        </td>
-        <td>
-          336
-        </td>
-        <td>
-          710
-          -
-          729
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ParameterlessAction
-        </td>
-      </tr><tr>
-        <td>
           22
         </td>
         <td>
-          337
+          331
         </td>
         <td>
-          761
+          741
           -
-          780
+          760
         </td>
         <td>
           Apply
@@ -149,12 +106,12 @@
           23
         </td>
         <td>
-          338
+          332
         </td>
         <td>
-          808
+          794
           -
-          827
+          813
         </td>
         <td>
           Apply
@@ -170,15 +127,63 @@
         </td>
       </tr><tr>
         <td>
-          30
+          24
+        </td>
+        <td>
+          333
+        </td>
+        <td>
+          845
+          -
+          864
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ParameterlessAction
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          334
+        </td>
+        <td>
+          892
+          -
+          911
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ParameterlessAction
+        </td>
+      </tr><tr>
+        <td>
+          32
         </td>
         <td>
           347
         </td>
         <td>
-          959
+          1043
           -
-          978
+          1062
         </td>
         <td>
           DefDef
@@ -194,15 +199,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          33
         </td>
         <td>
-          340
+          336
         </td>
         <td>
-          1026
+          1110
           -
-          1037
+          1121
         </td>
         <td>
           Block
@@ -218,15 +223,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          33
         </td>
         <td>
-          339
+          335
         </td>
         <td>
-          1041
+          1125
           -
-          1079
+          1163
         </td>
         <td>
           Apply
@@ -242,15 +247,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          34
         </td>
         <td>
           342
         </td>
         <td>
-          1084
+          1168
           -
-          1099
+          1183
         </td>
         <td>
           Block
@@ -266,15 +271,111 @@
         </td>
       </tr><tr>
         <td>
-          32
+          36
+        </td>
+        <td>
+          340
+        </td>
+        <td>
+          1243
+          -
+          1348
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          exportDataToPersonalDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ExportHandler.exportDataToPersonalDirectory(removeUnusedStats(session.savedCourses, session.playerStats))
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          337
+        </td>
+        <td>
+          1305
+          -
+          1312
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          session
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          339
+        </td>
+        <td>
+          1287
+          -
+          1347
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          removeUnusedStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          removeUnusedStats(session.savedCourses, session.playerStats)
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          338
+        </td>
+        <td>
+          1327
+          -
+          1334
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          session
+        </td>
+      </tr><tr>
+        <td>
+          37
         </td>
         <td>
           341
         </td>
         <td>
-          1103
+          1355
           -
-          1145
+          1397
         </td>
         <td>
           Apply
@@ -290,15 +391,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          38
         </td>
         <td>
           343
         </td>
         <td>
-          1167
+          1419
           -
-          1207
+          1459
         </td>
         <td>
           Apply
@@ -314,15 +415,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          38
         </td>
         <td>
           344
         </td>
         <td>
-          1150
+          1402
           -
-          1163
+          1415
         </td>
         <td>
           Block
@@ -338,15 +439,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          39
         </td>
         <td>
           346
         </td>
         <td>
-          1212
+          1464
           -
-          1221
+          1473
         </td>
         <td>
           Block
@@ -362,15 +463,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          39
         </td>
         <td>
           345
         </td>
         <td>
-          1225
+          1477
           -
-          1239
+          1491
         </td>
         <td>
           Apply
@@ -386,15 +487,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          41
         </td>
         <td>
           349
         </td>
         <td>
-          1243
+          1495
           -
-          1269
+          1521
         </td>
         <td>
           DefDef
@@ -410,15 +511,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          42
         </td>
         <td>
           348
         </td>
         <td>
-          1284
+          1536
           -
-          1309
+          1561
         </td>
         <td>
           Apply
