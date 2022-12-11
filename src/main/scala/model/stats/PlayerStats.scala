@@ -143,9 +143,9 @@ object PlayerStats:
 
   // Merge two lists of CourseInStats
   private def mergeCourseInStatsLists(courseInStatsList: List[CourseInStats], newCourseInStatsList: List[CourseInStats]): List[CourseInStats] =
-    (courseInStatsList ::: newCourseInStatsList).groupMapReduce(c => c.course)(c => (c.quizInStatsList))(
-      (courseInStats, newCourseInStats) => mergeQuizInStatsLists(courseInStats, newCourseInStats)
-    ).map((k, v) => CourseInStats(k, v)).toList
+    (courseInStatsList ::: newCourseInStatsList).groupMapReduce(c => c.course.courseId)(c => c.quizInStatsList)(
+      (quizInStatsList, newQuizInStatsList) => mergeQuizInStatsLists(quizInStatsList, newQuizInStatsList)
+    ).map((k, v) => CourseInStats(Course(k), v)).toList
 
   // Merge two lists of QuizInStats and calculates the new values
   private def mergeQuizInStatsLists(quizInStatsList: List[QuizInStats], newQuizInStatsList: List[QuizInStats]): List[QuizInStats] =
