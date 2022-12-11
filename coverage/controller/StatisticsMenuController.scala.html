@@ -27,27 +27,52 @@
 </span>3 <span style=''>import controller.{AppController, PageController}
 </span>4 <span style=''>import controller.AppController.*
 </span>5 <span style=''>import controller.actions.{Action, BackAction, ParameterlessAction}
-</span>6 <span style=''>import view.View
-</span>7 <span style=''>import view.terminalUI.TerminalStatisticsMenu
-</span>8 <span style=''>import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-</span>9 <span style=''>import scala.collection.mutable.ListBuffer
-</span>10 <span style=''>import scala.concurrent.Await
-</span>11 <span style=''>import scala.concurrent.duration.Duration
-</span>12 <span style=''>import view.StatisticsMenuView.*
+</span>6 <span style=''>import model.Quiz.Quiz
+</span>7 <span style=''>import model.SavedCourse.SavedCourse
+</span>8 <span style=''>import model.stats.CourseInStats.CourseInStats
+</span>9 <span style=''>import model.stats.QuizInStats.QuizInStats
+</span>10 <span style=''>import view.View
+</span>11 <span style=''>import view.terminalUI.TerminalStatisticsMenu
+</span>12 <span style=''>import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 </span>13 <span style=''>
-</span>14 <span style=''>/** Companion object of statistics menu controller */
-</span>15 <span style=''>object StatisticsMenuController extends BackAction
-</span>16 <span style=''>
-</span>17 <span style=''>/** Defines the logic of the statistics page */
-</span>18 <span style=''>class StatisticsMenuController extends PageController :
-</span>19 <span style=''>
-</span>20 <span style=''>  import StatisticsMenuController.*
+</span>14 <span style=''>import scala.collection.mutable.ListBuffer
+</span>15 <span style=''>import scala.concurrent.Await
+</span>16 <span style=''>import scala.concurrent.duration.Duration
+</span>17 <span style=''>import view.StatisticsMenuView.*
+</span>18 <span style=''>
+</span>19 <span style=''>/** Companion object of statistics menu controller */
+</span>20 <span style=''>object StatisticsMenuController extends BackAction:
 </span>21 <span style=''>
-</span>22 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
-</span>23 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(MainMenuAction)</span><span style=''>
+</span>22 <span style=''>  /** Action to select a course in the statistics menu controller */
+</span>23 <span style=''>  case class SelectCourseAction(override val actionParameter: Option[CourseInStats]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
 </span>24 <span style=''>
-</span>25 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>26 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
+</span>25 <span style=''>  /** Action to select a quiz in the statistics menu controller */
+</span>26 <span style=''>  case class SelectQuizAction(override val actionParameter: Option[QuizInStats]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>27 <span style=''>
+</span>28 <span style=''>
+</span>29 <span style=''>/** Defines the logic of the statistics page */
+</span>30 <span style=''>class StatisticsMenuController extends PageController:
+</span>31 <span style=''>
+</span>32 <span style=''>  import StatisticsMenuController.*
+</span>33 <span style=''>
+</span>34 <span style=''>  var courseInStatsSelected: Option[CourseInStats] = </span><span style='background: #F0ADAD'>Option.empty</span><span style=''>
+</span>35 <span style=''>
+</span>36 <span style=''>  var quizInStatsSelected: Option[QuizInStats] = </span><span style='background: #F0ADAD'>Option.empty</span><span style=''>
+</span>37 <span style=''>
+</span>38 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
+</span>39 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(MainMenuAction)</span><span style=''>
+</span>40 <span style=''>    </span><span style='background: #F0ADAD'>case SelectCourseAction(actionParameter)</span><span style=''> =&gt;
+</span>41 <span style=''>      courseInStatsSelected = actionParameter
+</span>42 <span style=''>      quizInStatsSelected = None
+</span>43 <span style=''>    </span><span style='background: #F0ADAD'>case SelectQuizAction(actionParameter)</span><span style=''> =&gt; quizInStatsSelected = actionParameter
+</span>44 <span style=''>
+</span>45 <span style=''>  
+</span>46 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
+</span>47 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
+</span>48 <span style=''>    if </span><span style='background: #F0ADAD'>courseInStatsSelected.isEmpty</span><span style=''> then
+</span>49 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(CourseInStatsListUpdate(Option(AppController.session.playerStats.courseInStatsList)))</span><span style=''>
+</span>50 <span style=''>    else </span><span style='background: #F0ADAD'>if quizInStatsSelected.isEmpty then
+</span>51 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(QuizInStatsListUpdate(Option(courseInStatsSelected.get.quizInStatsList)))</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -62,15 +87,111 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          21
+          22
+        </td>
+        <td>
+          497
+        </td>
+        <td>
+          862
+          -
+          885
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Action(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          498
+        </td>
+        <td>
+          1043
+          -
+          1066
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Action(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          33
         </td>
         <td>
           499
         </td>
         <td>
-          692
+          1263
           -
-          711
+          1275
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option.empty
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          500
+        </td>
+        <td>
+          1326
+          -
+          1338
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option.empty
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          505
+        </td>
+        <td>
+          1342
+          -
+          1361
         </td>
         <td>
           DefDef
@@ -86,39 +207,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          38
         </td>
         <td>
-          498
+          501
         </td>
         <td>
-          759
+          1422
           -
-          768
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case Back
-        </td>
-      </tr><tr>
-        <td>
-          22
-        </td>
-        <td>
-          497
-        </td>
-        <td>
-          772
-          -
-          808
+          1458
         </td>
         <td>
           Apply
@@ -134,15 +231,87 @@
         </td>
       </tr><tr>
         <td>
-          24
+          38
         </td>
         <td>
-          501
+          502
         </td>
         <td>
-          812
+          1409
           -
-          838
+          1418
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Back
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          503
+        </td>
+        <td>
+          1463
+          -
+          1503
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case SelectCourseAction(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          504
+        </td>
+        <td>
+          1590
+          -
+          1628
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case SelectQuizAction(actionParameter)
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          518
+        </td>
+        <td>
+          1676
+          -
+          1702
         </td>
         <td>
           DefDef
@@ -158,15 +327,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          46
         </td>
         <td>
-          500
+          506
         </td>
         <td>
-          853
+          1717
           -
-          878
+          1742
         </td>
         <td>
           Apply
@@ -179,6 +348,271 @@
         </td>
         <td style="background: #F0ADAD">
           sendUpdate(DefaultUpdate)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          507
+        </td>
+        <td>
+          1750
+          -
+          1779
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isEmpty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseInStatsSelected.isEmpty
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          508
+        </td>
+        <td>
+          1833
+          -
+          1854
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          510
+        </td>
+        <td>
+          1791
+          -
+          1887
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendUpdate
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendUpdate(CourseInStatsListUpdate(Option(AppController.session.playerStats.courseInStatsList)))
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          509
+        </td>
+        <td>
+          1826
+          -
+          1885
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(AppController.session.playerStats.courseInStatsList)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          511
+        </td>
+        <td>
+          1791
+          -
+          1887
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendUpdate(CourseInStatsListUpdate(Option(AppController.session.playerStats.courseInStatsList)))
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          517
+        </td>
+        <td>
+          1897
+          -
+          2023
+        </td>
+        <td>
+          If
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          if quizInStatsSelected.isEmpty then
+      sendUpdate(QuizInStatsListUpdate(Option(courseInStatsSelected.get.quizInStatsList)))
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          512
+        </td>
+        <td>
+          1900
+          -
+          1927
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isEmpty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInStatsSelected.isEmpty
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          514
+        </td>
+        <td>
+          1972
+          -
+          2021
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(courseInStatsSelected.get.quizInStatsList)
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          516
+        </td>
+        <td>
+          1939
+          -
+          2023
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendUpdate(QuizInStatsListUpdate(Option(courseInStatsSelected.get.quizInStatsList)))
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          513
+        </td>
+        <td>
+          1979
+          -
+          2004
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseInStatsSelected.get
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          515
+        </td>
+        <td>
+          1939
+          -
+          2023
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendUpdate
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendUpdate(QuizInStatsListUpdate(Option(courseInStatsSelected.get.quizInStatsList)))
         </td>
       </tr>
     </table>

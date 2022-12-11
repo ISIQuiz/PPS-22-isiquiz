@@ -25,57 +25,168 @@
             <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package view.graphicUI
 </span>2 <span style=''>
 </span>3 <span style=''>import controller.AppController
-</span>4 <span style=''>import controller.StatisticsMenuController.Back
+</span>4 <span style=''>import controller.StatisticsMenuController.{Back, SelectQuizAction}
 </span>5 <span style=''>import javafx.application.Platform
 </span>6 <span style=''>import javafx.fxml.FXML
-</span>7 <span style=''>import javafx.stage.Stage
-</span>8 <span style=''>import javafx.scene.control.{Button, Label}
-</span>9 <span style=''>import model.stats.PlayerStats
-</span>10 <span style=''>import utils.GUILoader
-</span>11 <span style=''>import utils.GUILoader.loadGUI
-</span>12 <span style=''>import view.View.{GraphicView, sendEvent}
-</span>13 <span style=''>import view.updates.ViewUpdate
-</span>14 <span style=''>import view.StatisticsMenuView.*
-</span>15 <span style=''>
-</span>16 <span style=''>object GraphicStatisticsMenu
-</span>17 <span style=''>
-</span>18 <span style=''>/** Statistics menu graphic interface */
-</span>19 <span style=''>class GraphicStatisticsMenu(stage: Stage) extends GraphicView :
-</span>20 <span style=''>
-</span>21 <span style=''>  @FXML
-</span>22 <span style=''>  var backButton: Button = _
-</span>23 <span style=''>  
-</span>24 <span style=''>  @FXML
-</span>25 <span style=''>  var totalScoreLabel: Label = _
-</span>26 <span style=''>
-</span>27 <span style=''>  @FXML
-</span>28 <span style=''>  var totalAnsweredQuestionsLabel: Label = _
-</span>29 <span style=''>
-</span>30 <span style=''>  @FXML
-</span>31 <span style=''>  var totalCorrectAnswersLabel: Label = _
+</span>7 <span style=''>import javafx.scene.control.Alert.AlertType
+</span>8 <span style=''>import javafx.scene.control.{Alert, Button, ButtonBar, ButtonType, Label, ToggleGroup}
+</span>9 <span style=''>import javafx.stage.Stage
+</span>10 <span style=''>import javafx.scene.input.MouseEvent
+</span>11 <span style=''>import javafx.scene.layout.VBox
+</span>12 <span style=''>import model.stats.{PlayerStats, QuizInStats}
+</span>13 <span style=''>import model.stats.PlayerStats.{calculateTotalAnswerPrecision, initStats, updatePlayerStats}
+</span>14 <span style=''>import scalafx.scene.control.RadioButton
+</span>15 <span style=''>import utils.GUILoader
+</span>16 <span style=''>import utils.GUILoader.loadGUI
+</span>17 <span style=''>import utils.storage.ExportHandler
+</span>18 <span style=''>import view.View.{GraphicView, sendEvent}
+</span>19 <span style=''>import view.updates.ViewUpdate
+</span>20 <span style=''>import view.StatisticsMenuView.*
+</span>21 <span style=''>
+</span>22 <span style=''>import scala.util.Try
+</span>23 <span style=''>
+</span>24 <span style=''>object GraphicStatisticsMenu
+</span>25 <span style=''>
+</span>26 <span style=''>/** Statistics menu graphic interface */
+</span>27 <span style=''>class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
+</span>28 <span style=''>
+</span>29 <span style=''>  val toggleCourseInStatsGroup: ToggleGroup = </span><span style='background: #F0ADAD'>ToggleGroup()</span><span style=''>
+</span>30 <span style=''>
+</span>31 <span style=''>  val toggleQuizGroup: ToggleGroup = </span><span style='background: #F0ADAD'>ToggleGroup()</span><span style=''>
 </span>32 <span style=''>
-</span>33 <span style=''>  @FXML
-</span>34 <span style=''>  var totalAnswerPrecisionLabel: Label = _
+</span>33 <span style=''>  val yesButton = </span><span style='background: #F0ADAD'>ButtonType(&quot;Si&quot;, ButtonBar.ButtonData.YES)</span><span style=''>;
+</span>34 <span style=''>  val cancelButton = </span><span style='background: #F0ADAD'>ButtonType(&quot;Annulla&quot;, ButtonBar.ButtonData.CANCEL_CLOSE)</span><span style=''>;
 </span>35 <span style=''>
 </span>36 <span style=''>  @FXML
-</span>37 <span style=''>  var totalAverageTimeAnswerLabel: Label = _
+</span>37 <span style=''>  var coursesVBox: VBox = _
 </span>38 <span style=''>
-</span>39 <span style=''>
-</span>40 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>41 <span style=''></span><span style='background: #F0ADAD'>  def mainMenuClicked</span><span style=''>: Unit =
-</span>42 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
-</span>43 <span style=''>
-</span>44 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;statistics_menu.fxml&quot;)</span><span style=''>
-</span>45 <span style=''>
-</span>46 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
-</span>47 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
-</span>48 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater { () =&gt;
-</span>49 <span style=''></span><span style='background: #F0ADAD'>        totalScoreLabel.setText(AppController.session.playerStats.totalScore.toString)
-</span>50 <span style=''></span><span style='background: #F0ADAD'>        totalAnsweredQuestionsLabel.setText(AppController.session.playerStats.totalAnsweredQuestions.toString)
-</span>51 <span style=''></span><span style='background: #F0ADAD'>        totalCorrectAnswersLabel.setText(AppController.session.playerStats.totalCorrectAnswers.toString)
-</span>52 <span style=''></span><span style='background: #F0ADAD'>        totalAnswerPrecisionLabel.setText(AppController.session.playerStats.totalAnswerPrecision.toString + &quot; %&quot;)
-</span>53 <span style=''></span><span style='background: #F0ADAD'>        totalAverageTimeAnswerLabel.setText(AppController.session.playerStats.totalAverageTimeAnswer.toString)
-</span>54 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
+</span>39 <span style=''>  @FXML
+</span>40 <span style=''>  var quizVBox: VBox = _
+</span>41 <span style=''>
+</span>42 <span style=''>  @FXML
+</span>43 <span style=''>  var textLabel: Label = _
+</span>44 <span style=''>
+</span>45 <span style=''>  @FXML
+</span>46 <span style=''>  var backButton: Button = _
+</span>47 <span style=''>
+</span>48 <span style=''>  @FXML
+</span>49 <span style=''>  var resetStatsButton: Button = _
+</span>50 <span style=''>
+</span>51 <span style=''>  @FXML
+</span>52 <span style=''>  var totalScoreLabel: Label = _
+</span>53 <span style=''>
+</span>54 <span style=''>  @FXML
+</span>55 <span style=''>  var totalAnsweredQuestionsLabel: Label = _
+</span>56 <span style=''>
+</span>57 <span style=''>  @FXML
+</span>58 <span style=''>  var totalCorrectAnswersLabel: Label = _
+</span>59 <span style=''>
+</span>60 <span style=''>  @FXML
+</span>61 <span style=''>  var totalAnswerPrecisionLabel: Label = _
+</span>62 <span style=''>
+</span>63 <span style=''>  @FXML
+</span>64 <span style=''>  var totalAverageTimeAnswerLabel: Label = _
+</span>65 <span style=''>
+</span>66 <span style=''>  @FXML
+</span>67 <span style=''>  var globalTotalScoreLabel: Label = _
+</span>68 <span style=''>
+</span>69 <span style=''>  @FXML
+</span>70 <span style=''>  var globalTotalAnsweredQuestionsLabel: Label = _
+</span>71 <span style=''>
+</span>72 <span style=''>  @FXML
+</span>73 <span style=''>  var globalTotalCorrectAnswersLabel: Label = _
+</span>74 <span style=''>
+</span>75 <span style=''>  @FXML
+</span>76 <span style=''>  var globalTotalAnswerPrecisionLabel: Label = _
+</span>77 <span style=''>
+</span>78 <span style=''>  @FXML
+</span>79 <span style=''>  var globalTotalAverageTimeAnswerLabel: Label = _
+</span>80 <span style=''>
+</span>81 <span style=''>
+</span>82 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>83 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>: Unit =
+</span>84 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
+</span>85 <span style=''>
+</span>86 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>87 <span style=''></span><span style='background: #F0ADAD'>  def resetStatsButtonClicked</span><span style=''>: Unit =
+</span>88 <span style=''>    val alert: Alert = </span><span style='background: #F0ADAD'>Alert(AlertType.CONFIRMATION, &quot;&quot;, yesButton, cancelButton)</span><span style=''>
+</span>89 <span style=''>    </span><span style='background: #F0ADAD'>alert.setTitle(&quot;Reset statistiche&quot;)</span><span style=''>
+</span>90 <span style=''>    </span><span style='background: #F0ADAD'>alert.setHeaderText(&quot;Sei sicuro di voler azzerare tutte le statistiche?&quot;)</span><span style=''>
+</span>91 <span style=''>    </span><span style='background: #F0ADAD'>alert.showAndWait()</span><span style=''>;
+</span>92 <span style=''>    if (</span><span style='background: #F0ADAD'>alert.getResult</span><span style=''> == yesButton) </span><span style='background: #F0ADAD'>{
+</span>93 <span style=''></span><span style='background: #F0ADAD'>      AppController.changePlayerStats(initStats)
+</span>94 <span style=''></span><span style='background: #F0ADAD'>      ExportHandler.exportDataToPersonalDirectory(initStats)
+</span>95 <span style=''></span><span style='background: #F0ADAD'>      sendEvent(Back)
+</span>96 <span style=''></span><span style='background: #F0ADAD'>    }</span><span style=''>
+</span>97 <span style=''>
+</span>98 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;statistics_menu.fxml&quot;)</span><span style=''>
+</span>99 <span style=''>
+</span>100 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>101 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
+</span>102 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater { () =&gt;
+</span>103 <span style=''></span><span style='background: #F0ADAD'>        val p = AppController.session.playerStats
+</span>104 <span style=''></span><span style='background: #F0ADAD'>        globalTotalScoreLabel.setText(p.totalScore.toString)
+</span>105 <span style=''></span><span style='background: #F0ADAD'>        globalTotalAnsweredQuestionsLabel.setText(p.totalAnsweredQuestions.toString)
+</span>106 <span style=''></span><span style='background: #F0ADAD'>        globalTotalCorrectAnswersLabel.setText(p.totalCorrectAnswers.toString)
+</span>107 <span style=''></span><span style='background: #F0ADAD'>        globalTotalAnswerPrecisionLabel.setText(p.totalAnswerPrecision.toString + &quot; %&quot;)
+</span>108 <span style=''></span><span style='background: #F0ADAD'>        globalTotalAverageTimeAnswerLabel.setText(p.totalAverageTimeAnswer.toString + &quot; s&quot;)
+</span>109 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
+</span>110 <span style=''>    </span><span style='background: #F0ADAD'>case CourseInStatsListUpdate(updateParameter)</span><span style=''> =&gt;
+</span>111 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater { () =&gt;
+</span>112 <span style=''></span><span style='background: #F0ADAD'>        coursesVBox.getChildren.clear()
+</span>113 <span style=''></span><span style='background: #F0ADAD'>        updateParameter.get.foreach(courseInStats =&gt;
+</span>114 <span style=''></span><span style='background: #F0ADAD'>          val radioButton = RadioButton(s&quot;${courseInStats.course.courseId.courseName} (${courseInStats.quizInStatsList.size} quiz)&quot;);
+</span>115 <span style=''></span><span style='background: #F0ADAD'>          radioButton.setToggleGroup(toggleCourseInStatsGroup);
+</span>116 <span style=''></span><span style='background: #F0ADAD'>          radioButton.getStyleClass.add(&quot;label-dark&quot;);
+</span>117 <span style=''></span><span style='background: #F0ADAD'>          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+</span>118 <span style=''></span><span style='background: #F0ADAD'>            val playerStats = updatePlayerStats(List(courseInStats))
+</span>119 <span style=''></span><span style='background: #F0ADAD'>            setTextLabels(
+</span>120 <span style=''></span><span style='background: #F0ADAD'>              courseInStats.course.courseId.courseName,
+</span>121 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalScore,
+</span>122 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalAnsweredQuestions,
+</span>123 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalCorrectAnswers,
+</span>124 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalAnswerPrecision,
+</span>125 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalAverageTimeAnswer
+</span>126 <span style=''></span><span style='background: #F0ADAD'>            )
+</span>127 <span style=''></span><span style='background: #F0ADAD'>            import controller.StatisticsMenuController.SelectCourseAction
+</span>128 <span style=''></span><span style='background: #F0ADAD'>            sendEvent(SelectCourseAction(Option(courseInStats)));
+</span>129 <span style=''></span><span style='background: #F0ADAD'>          );
+</span>130 <span style=''></span><span style='background: #F0ADAD'>          coursesVBox.getChildren.addAll(radioButton)
+</span>131 <span style=''></span><span style='background: #F0ADAD'>        )
+</span>132 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
+</span>133 <span style=''>    </span><span style='background: #F0ADAD'>case QuizInStatsListUpdate(updateParameter)</span><span style=''> =&gt;
+</span>134 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater { () =&gt;
+</span>135 <span style=''></span><span style='background: #F0ADAD'>        quizVBox.getChildren.clear()
+</span>136 <span style=''></span><span style='background: #F0ADAD'>        updateParameter.get.foreach(quizInStats =&gt;
+</span>137 <span style=''></span><span style='background: #F0ADAD'>          val question = QuizInStats.getQuizQuestionById(quizInStats.quizId, AppController.session.savedCourses)
+</span>138 <span style=''></span><span style='background: #F0ADAD'>          val radioButton = RadioButton(question);
+</span>139 <span style=''></span><span style='background: #F0ADAD'>          radioButton.setToggleGroup(toggleQuizGroup);
+</span>140 <span style=''></span><span style='background: #F0ADAD'>          radioButton.getStyleClass.add(&quot;label-dark&quot;);
+</span>141 <span style=''></span><span style='background: #F0ADAD'>          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+</span>142 <span style=''></span><span style='background: #F0ADAD'>            setTextLabels(
+</span>143 <span style=''></span><span style='background: #F0ADAD'>              question,
+</span>144 <span style=''></span><span style='background: #F0ADAD'>              quizInStats.totalScore,
+</span>145 <span style=''></span><span style='background: #F0ADAD'>              quizInStats.totalSeen,
+</span>146 <span style=''></span><span style='background: #F0ADAD'>              quizInStats.totalRightAnswers,
+</span>147 <span style=''></span><span style='background: #F0ADAD'>              calculateTotalAnswerPrecision(quizInStats.totalSeen, quizInStats.totalRightAnswers),
+</span>148 <span style=''></span><span style='background: #F0ADAD'>              quizInStats.averageTimeAnswer
+</span>149 <span style=''></span><span style='background: #F0ADAD'>            )
+</span>150 <span style=''></span><span style='background: #F0ADAD'>            import controller.StatisticsMenuController.SelectQuizAction
+</span>151 <span style=''></span><span style='background: #F0ADAD'>            sendEvent(SelectQuizAction(Option(quizInStats)));
+</span>152 <span style=''></span><span style='background: #F0ADAD'>          );
+</span>153 <span style=''></span><span style='background: #F0ADAD'>          quizVBox.getChildren.addAll(radioButton)
+</span>154 <span style=''></span><span style='background: #F0ADAD'>        )
+</span>155 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
+</span>156 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
+</span>157 <span style=''>
+</span>158 <span style=''>
+</span>159 <span style=''>  </span><span style='background: #F0ADAD'>private def setTextLabels</span><span style=''>(title: String, totalScore: Int, totalAnsweredQuestions: Int, totalCorrectAnswers: Int, totalAnswerPrecision: Int, totalAverageTimeAnswer: Double): Unit =
+</span>160 <span style=''>    </span><span style='background: #F0ADAD'>textLabel.setText(title)</span><span style=''>
+</span>161 <span style=''>    </span><span style='background: #F0ADAD'>totalScoreLabel.setText(totalScore.toString)</span><span style=''>
+</span>162 <span style=''>    </span><span style='background: #F0ADAD'>totalAnsweredQuestionsLabel.setText(totalAnsweredQuestions.toString)</span><span style=''>
+</span>163 <span style=''>    </span><span style='background: #F0ADAD'>totalCorrectAnswersLabel.setText(totalCorrectAnswers.toString)</span><span style=''>
+</span>164 <span style=''>    </span><span style='background: #F0ADAD'>totalAnswerPrecisionLabel.setText(totalAnswerPrecision.toString + &quot; %&quot;)</span><span style=''>
+</span>165 <span style=''>    </span><span style='background: #F0ADAD'>totalAverageTimeAnswerLabel.setText(totalAverageTimeAnswer.toString +&quot; s&quot;)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -90,40 +201,136 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          40
+          28
         </td>
         <td>
-          2115
+          2145
         </td>
         <td>
-          857
+          989
           -
-          884
+          1002
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ToggleGroup()
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          2146
+        </td>
+        <td>
+          1041
+          -
+          1054
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ToggleGroup()
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          2147
+        </td>
+        <td>
+          1074
+          -
+          1116
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ButtonType(&quot;Si&quot;, ButtonBar.ButtonData.YES)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          2148
+        </td>
+        <td>
+          1139
+          -
+          1195
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ButtonType(&quot;Annulla&quot;, ButtonBar.ButtonData.CANCEL_CLOSE)
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          2150
+        </td>
+        <td>
+          1926
+          -
+          1955
         </td>
         <td>
           DefDef
         </td>
         <td>
-          mainMenuClicked
+          backButtonClicked
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
           @FXML
-  def mainMenuClicked
+  def backButtonClicked
         </td>
       </tr><tr>
         <td>
-          41
+          83
         </td>
         <td>
-          2114
+          2149
         </td>
         <td>
-          897
+          1968
           -
-          912
+          1983
         </td>
         <td>
           Apply
@@ -139,15 +346,308 @@
         </td>
       </tr><tr>
         <td>
-          43
+          86
         </td>
         <td>
-          2116
+          2162
         </td>
         <td>
-          916
+          1987
           -
-          960
+          2022
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          resetStatsButtonClicked
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          @FXML
+  def resetStatsButtonClicked
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          2151
+        </td>
+        <td>
+          2054
+          -
+          2112
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Alert(AlertType.CONFIRMATION, &quot;&quot;, yesButton, cancelButton)
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          2152
+        </td>
+        <td>
+          2117
+          -
+          2152
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setTitle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          alert.setTitle(&quot;Reset statistiche&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          2153
+        </td>
+        <td>
+          2157
+          -
+          2230
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setHeaderText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          alert.setHeaderText(&quot;Sei sicuro di voler azzerare tutte le statistiche?&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          2154
+        </td>
+        <td>
+          2235
+          -
+          2254
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          showAndWait
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          alert.showAndWait()
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          2155
+        </td>
+        <td>
+          2264
+          -
+          2279
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getResult
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          alert.getResult
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          2161
+        </td>
+        <td>
+          2294
+          -
+          2433
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          {
+      AppController.changePlayerStats(initStats)
+      ExportHandler.exportDataToPersonalDirectory(initStats)
+      sendEvent(Back)
+    }
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          2156
+        </td>
+        <td>
+          2334
+          -
+          2343
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          initStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          initStats
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          2157
+        </td>
+        <td>
+          2302
+          -
+          2344
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          changePlayerStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.changePlayerStats(initStats)
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          2158
+        </td>
+        <td>
+          2395
+          -
+          2404
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          initStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          initStats
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          2159
+        </td>
+        <td>
+          2351
+          -
+          2405
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          exportDataToPersonalDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ExportHandler.exportDataToPersonalDirectory(initStats)
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          2160
+        </td>
+        <td>
+          2412
+          -
+          2427
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Back)
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          2163
+        </td>
+        <td>
+          2437
+          -
+          2481
         </td>
         <td>
           Apply
@@ -163,15 +663,15 @@
         </td>
       </tr><tr>
         <td>
-          45
+          99
         </td>
         <td>
-          2130
+          2222
         </td>
         <td>
-          964
+          2485
           -
-          985
+          2506
         </td>
         <td>
           DefDef
@@ -187,15 +687,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          100
         </td>
         <td>
-          2129
+          2173
         </td>
         <td>
-          1039
+          2560
           -
-          1057
+          2578
         </td>
         <td>
           Block
@@ -211,15 +711,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          101
         </td>
         <td>
-          2128
+          2172
         </td>
         <td>
-          1067
+          2588
           -
-          1628
+          3076
         </td>
         <td>
           Apply
@@ -232,48 +732,25 @@
         </td>
         <td style="background: #F0ADAD">
           Platform.runLater { () =&gt;
-        totalScoreLabel.setText(AppController.session.playerStats.totalScore.toString)
-        totalAnsweredQuestionsLabel.setText(AppController.session.playerStats.totalAnsweredQuestions.toString)
-        totalCorrectAnswersLabel.setText(AppController.session.playerStats.totalCorrectAnswers.toString)
-        totalAnswerPrecisionLabel.setText(AppController.session.playerStats.totalAnswerPrecision.toString + &quot; %&quot;)
-        totalAverageTimeAnswerLabel.setText(AppController.session.playerStats.totalAverageTimeAnswer.toString)
+        val p = AppController.session.playerStats
+        globalTotalScoreLabel.setText(p.totalScore.toString)
+        globalTotalAnsweredQuestionsLabel.setText(p.totalAnsweredQuestions.toString)
+        globalTotalCorrectAnswersLabel.setText(p.totalCorrectAnswers.toString)
+        globalTotalAnswerPrecisionLabel.setText(p.totalAnswerPrecision.toString + &quot; %&quot;)
+        globalTotalAverageTimeAnswerLabel.setText(p.totalAverageTimeAnswer.toString + &quot; s&quot;)
       }
         </td>
       </tr><tr>
         <td>
-          48
+          102
         </td>
         <td>
-          2118
+          2164
         </td>
         <td>
-          1101
+          2630
           -
-          1179
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          setText
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          totalScoreLabel.setText(AppController.session.playerStats.totalScore.toString)
-        </td>
-      </tr><tr>
-        <td>
-          48
-        </td>
-        <td>
-          2117
-        </td>
-        <td>
-          1125
-          -
-          1146
+          2651
         </td>
         <td>
           Select
@@ -289,15 +766,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          103
         </td>
         <td>
-          2120
+          2165
         </td>
         <td>
-          1188
+          2672
           -
-          1290
+          2724
         </td>
         <td>
           Apply
@@ -309,43 +786,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          totalAnsweredQuestionsLabel.setText(AppController.session.playerStats.totalAnsweredQuestions.toString)
+          globalTotalScoreLabel.setText(p.totalScore.toString)
         </td>
       </tr><tr>
         <td>
-          49
+          104
         </td>
         <td>
-          2119
+          2166
         </td>
         <td>
-          1224
+          2733
           -
-          1245
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          session
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session
-        </td>
-      </tr><tr>
-        <td>
-          50
-        </td>
-        <td>
-          2122
-        </td>
-        <td>
-          1299
-          -
-          1395
+          2809
         </td>
         <td>
           Apply
@@ -357,43 +810,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          totalCorrectAnswersLabel.setText(AppController.session.playerStats.totalCorrectAnswers.toString)
+          globalTotalAnsweredQuestionsLabel.setText(p.totalAnsweredQuestions.toString)
         </td>
       </tr><tr>
         <td>
-          50
+          105
         </td>
         <td>
-          2121
+          2167
         </td>
         <td>
-          1332
+          2818
           -
-          1353
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          session
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session
-        </td>
-      </tr><tr>
-        <td>
-          51
-        </td>
-        <td>
-          2125
-        </td>
-        <td>
-          1404
-          -
-          1509
+          2888
         </td>
         <td>
           Apply
@@ -405,19 +834,43 @@
           
         </td>
         <td style="background: #F0ADAD">
-          totalAnswerPrecisionLabel.setText(AppController.session.playerStats.totalAnswerPrecision.toString + &quot; %&quot;)
+          globalTotalCorrectAnswersLabel.setText(p.totalCorrectAnswers.toString)
         </td>
       </tr><tr>
         <td>
-          51
+          106
         </td>
         <td>
-          2124
+          2169
         </td>
         <td>
-          1438
+          2897
           -
-          1508
+          2976
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          globalTotalAnswerPrecisionLabel.setText(p.totalAnswerPrecision.toString + &quot; %&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          2168
+        </td>
+        <td>
+          2937
+          -
+          2975
         </td>
         <td>
           Apply
@@ -429,43 +882,43 @@
           
         </td>
         <td style="background: #F0ADAD">
-          AppController.session.playerStats.totalAnswerPrecision.toString + &quot; %&quot;
+          p.totalAnswerPrecision.toString + &quot; %&quot;
         </td>
       </tr><tr>
         <td>
-          51
+          107
         </td>
         <td>
-          2123
+          2170
         </td>
         <td>
-          1438
+          3027
           -
-          1459
+          3067
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          session
+          +
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          AppController.session
+          p.totalAverageTimeAnswer.toString + &quot; s&quot;
         </td>
       </tr><tr>
         <td>
-          52
+          107
         </td>
         <td>
-          2127
+          2171
         </td>
         <td>
-          1518
+          2985
           -
-          1620
+          3068
         </td>
         <td>
           Apply
@@ -477,19 +930,884 @@
           
         </td>
         <td style="background: #F0ADAD">
-          totalAverageTimeAnswerLabel.setText(AppController.session.playerStats.totalAverageTimeAnswer.toString)
+          globalTotalAverageTimeAnswerLabel.setText(p.totalAverageTimeAnswer.toString + &quot; s&quot;)
         </td>
       </tr><tr>
         <td>
-          52
+          109
         </td>
         <td>
-          2126
+          2198
         </td>
         <td>
-          1554
+          3081
           -
-          1575
+          3126
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case CourseInStatsListUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          2197
+        </td>
+        <td>
+          3136
+          -
+          4203
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          runLater
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Platform.runLater { () =&gt;
+        coursesVBox.getChildren.clear()
+        updateParameter.get.foreach(courseInStats =&gt;
+          val radioButton = RadioButton(s&quot;${courseInStats.course.courseId.courseName} (${courseInStats.quizInStatsList.size} quiz)&quot;);
+          radioButton.setToggleGroup(toggleCourseInStatsGroup);
+          radioButton.getStyleClass.add(&quot;label-dark&quot;);
+          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+            val playerStats = updatePlayerStats(List(courseInStats))
+            setTextLabels(
+              courseInStats.course.courseId.courseName,
+              playerStats.totalScore,
+              playerStats.totalAnsweredQuestions,
+              playerStats.totalCorrectAnswers,
+              playerStats.totalAnswerPrecision,
+              playerStats.totalAverageTimeAnswer
+            )
+            import controller.StatisticsMenuController.SelectCourseAction
+            sendEvent(SelectCourseAction(Option(courseInStats)));
+          );
+          coursesVBox.getChildren.addAll(radioButton)
+        )
+      }
+        </td>
+      </tr><tr>
+        <td>
+          111
+        </td>
+        <td>
+          2175
+        </td>
+        <td>
+          3170
+          -
+          3201
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          clear
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren.clear()
+        </td>
+      </tr><tr>
+        <td>
+          111
+        </td>
+        <td>
+          2174
+        </td>
+        <td>
+          3170
+          -
+          3193
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          112
+        </td>
+        <td>
+          2176
+        </td>
+        <td>
+          3210
+          -
+          3229
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          112
+        </td>
+        <td>
+          2196
+        </td>
+        <td>
+          3210
+          -
+          4195
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get.foreach(courseInStats =&gt;
+          val radioButton = RadioButton(s&quot;${courseInStats.course.courseId.courseName} (${courseInStats.quizInStatsList.size} quiz)&quot;);
+          radioButton.setToggleGroup(toggleCourseInStatsGroup);
+          radioButton.getStyleClass.add(&quot;label-dark&quot;);
+          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+            val playerStats = updatePlayerStats(List(courseInStats))
+            setTextLabels(
+              courseInStats.course.courseId.courseName,
+              playerStats.totalScore,
+              playerStats.totalAnsweredQuestions,
+              playerStats.totalCorrectAnswers,
+              playerStats.totalAnswerPrecision,
+              playerStats.totalAverageTimeAnswer
+            )
+            import controller.StatisticsMenuController.SelectCourseAction
+            sendEvent(SelectCourseAction(Option(courseInStats)));
+          );
+          coursesVBox.getChildren.addAll(radioButton)
+        )
+        </td>
+      </tr><tr>
+        <td>
+          113
+        </td>
+        <td>
+          2179
+        </td>
+        <td>
+          3295
+          -
+          3386
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;${courseInStats.course.courseId.courseName} (${courseInStats.quizInStatsList.size} quiz)&quot;
+        </td>
+      </tr><tr>
+        <td>
+          113
+        </td>
+        <td>
+          2178
+        </td>
+        <td>
+          3344
+          -
+          3378
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseInStats.quizInStatsList.size
+        </td>
+      </tr><tr>
+        <td>
+          113
+        </td>
+        <td>
+          2177
+        </td>
+        <td>
+          3299
+          -
+          3328
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseInStats.course.courseId
+        </td>
+      </tr><tr>
+        <td>
+          113
+        </td>
+        <td>
+          2180
+        </td>
+        <td>
+          3283
+          -
+          3387
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          RadioButton(s&quot;${courseInStats.course.courseId.courseName} (${courseInStats.quizInStatsList.size} quiz)&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          114
+        </td>
+        <td>
+          2182
+        </td>
+        <td>
+          3399
+          -
+          3451
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setToggleGroup
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.setToggleGroup(toggleCourseInStatsGroup)
+        </td>
+      </tr><tr>
+        <td>
+          114
+        </td>
+        <td>
+          2181
+        </td>
+        <td>
+          3399
+          -
+          3410
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sfxRadioButton2jfx
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton
+        </td>
+      </tr><tr>
+        <td>
+          115
+        </td>
+        <td>
+          2185
+        </td>
+        <td>
+          3463
+          -
+          3506
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          add
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.getStyleClass.add(&quot;label-dark&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          115
+        </td>
+        <td>
+          2184
+        </td>
+        <td>
+          3463
+          -
+          3488
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getStyleClass
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.getStyleClass
+        </td>
+      </tr><tr>
+        <td>
+          115
+        </td>
+        <td>
+          2183
+        </td>
+        <td>
+          3463
+          -
+          3474
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sfxRadioButton2jfx
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton
+        </td>
+      </tr><tr>
+        <td>
+          116
+        </td>
+        <td>
+          2192
+        </td>
+        <td>
+          3518
+          -
+          4130
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addEventHandler
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+            val playerStats = updatePlayerStats(List(courseInStats))
+            setTextLabels(
+              courseInStats.course.courseId.courseName,
+              playerStats.totalScore,
+              playerStats.totalAnsweredQuestions,
+              playerStats.totalCorrectAnswers,
+              playerStats.totalAnswerPrecision,
+              playerStats.totalAverageTimeAnswer
+            )
+            import controller.StatisticsMenuController.SelectCourseAction
+            sendEvent(SelectCourseAction(Option(courseInStats)));
+          )
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          2187
+        </td>
+        <td>
+          3611
+          -
+          3649
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          updatePlayerStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updatePlayerStats(List(courseInStats))
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          2186
+        </td>
+        <td>
+          3629
+          -
+          3648
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          List(courseInStats)
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          2189
+        </td>
+        <td>
+          3662
+          -
+          3978
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setTextLabels
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          setTextLabels(
+              courseInStats.course.courseId.courseName,
+              playerStats.totalScore,
+              playerStats.totalAnsweredQuestions,
+              playerStats.totalCorrectAnswers,
+              playerStats.totalAnswerPrecision,
+              playerStats.totalAverageTimeAnswer
+            )
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          2188
+        </td>
+        <td>
+          3691
+          -
+          3720
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseInStats.course.courseId
+        </td>
+      </tr><tr>
+        <td>
+          127
+        </td>
+        <td>
+          2191
+        </td>
+        <td>
+          4065
+          -
+          4117
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(SelectCourseAction(Option(courseInStats)))
+        </td>
+      </tr><tr>
+        <td>
+          127
+        </td>
+        <td>
+          2190
+        </td>
+        <td>
+          4094
+          -
+          4115
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(courseInStats)
+        </td>
+      </tr><tr>
+        <td>
+          129
+        </td>
+        <td>
+          2194
+        </td>
+        <td>
+          4173
+          -
+          4184
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sfxRadioButton2jfx
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton
+        </td>
+      </tr><tr>
+        <td>
+          129
+        </td>
+        <td>
+          2193
+        </td>
+        <td>
+          4142
+          -
+          4165
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          129
+        </td>
+        <td>
+          2195
+        </td>
+        <td>
+          4142
+          -
+          4185
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addAll
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren.addAll(radioButton)
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          2220
+        </td>
+        <td>
+          4208
+          -
+          4251
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case QuizInStatsListUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          133
+        </td>
+        <td>
+          2219
+        </td>
+        <td>
+          4261
+          -
+          5265
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          runLater
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Platform.runLater { () =&gt;
+        quizVBox.getChildren.clear()
+        updateParameter.get.foreach(quizInStats =&gt;
+          val question = QuizInStats.getQuizQuestionById(quizInStats.quizId, AppController.session.savedCourses)
+          val radioButton = RadioButton(question);
+          radioButton.setToggleGroup(toggleQuizGroup);
+          radioButton.getStyleClass.add(&quot;label-dark&quot;);
+          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+            setTextLabels(
+              question,
+              quizInStats.totalScore,
+              quizInStats.totalSeen,
+              quizInStats.totalRightAnswers,
+              calculateTotalAnswerPrecision(quizInStats.totalSeen, quizInStats.totalRightAnswers),
+              quizInStats.averageTimeAnswer
+            )
+            import controller.StatisticsMenuController.SelectQuizAction
+            sendEvent(SelectQuizAction(Option(quizInStats)));
+          );
+          quizVBox.getChildren.addAll(radioButton)
+        )
+      }
+        </td>
+      </tr><tr>
+        <td>
+          134
+        </td>
+        <td>
+          2200
+        </td>
+        <td>
+          4295
+          -
+          4323
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          clear
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizVBox.getChildren.clear()
+        </td>
+      </tr><tr>
+        <td>
+          134
+        </td>
+        <td>
+          2199
+        </td>
+        <td>
+          4295
+          -
+          4315
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          2218
+        </td>
+        <td>
+          4332
+          -
+          5257
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get.foreach(quizInStats =&gt;
+          val question = QuizInStats.getQuizQuestionById(quizInStats.quizId, AppController.session.savedCourses)
+          val radioButton = RadioButton(question);
+          radioButton.setToggleGroup(toggleQuizGroup);
+          radioButton.getStyleClass.add(&quot;label-dark&quot;);
+          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+            setTextLabels(
+              question,
+              quizInStats.totalScore,
+              quizInStats.totalSeen,
+              quizInStats.totalRightAnswers,
+              calculateTotalAnswerPrecision(quizInStats.totalSeen, quizInStats.totalRightAnswers),
+              quizInStats.averageTimeAnswer
+            )
+            import controller.StatisticsMenuController.SelectQuizAction
+            sendEvent(SelectQuizAction(Option(quizInStats)));
+          );
+          quizVBox.getChildren.addAll(radioButton)
+        )
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          2201
+        </td>
+        <td>
+          4332
+          -
+          4351
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          2203
+        </td>
+        <td>
+          4400
+          -
+          4487
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getQuizQuestionById
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          QuizInStats.getQuizQuestionById(quizInStats.quizId, AppController.session.savedCourses)
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          2202
+        </td>
+        <td>
+          4452
+          -
+          4473
         </td>
         <td>
           Select
@@ -502,6 +1820,600 @@
         </td>
         <td style="background: #F0ADAD">
           AppController.session
+        </td>
+      </tr><tr>
+        <td>
+          137
+        </td>
+        <td>
+          2204
+        </td>
+        <td>
+          4516
+          -
+          4537
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          RadioButton(question)
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          2206
+        </td>
+        <td>
+          4549
+          -
+          4592
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setToggleGroup
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.setToggleGroup(toggleQuizGroup)
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          2205
+        </td>
+        <td>
+          4549
+          -
+          4560
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sfxRadioButton2jfx
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton
+        </td>
+      </tr><tr>
+        <td>
+          139
+        </td>
+        <td>
+          2209
+        </td>
+        <td>
+          4604
+          -
+          4647
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          add
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.getStyleClass.add(&quot;label-dark&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          139
+        </td>
+        <td>
+          2208
+        </td>
+        <td>
+          4604
+          -
+          4629
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getStyleClass
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.getStyleClass
+        </td>
+      </tr><tr>
+        <td>
+          139
+        </td>
+        <td>
+          2207
+        </td>
+        <td>
+          4604
+          -
+          4615
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sfxRadioButton2jfx
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton
+        </td>
+      </tr><tr>
+        <td>
+          140
+        </td>
+        <td>
+          2214
+        </td>
+        <td>
+          4659
+          -
+          5195
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addEventHandler
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+            setTextLabels(
+              question,
+              quizInStats.totalScore,
+              quizInStats.totalSeen,
+              quizInStats.totalRightAnswers,
+              calculateTotalAnswerPrecision(quizInStats.totalSeen, quizInStats.totalRightAnswers),
+              quizInStats.averageTimeAnswer
+            )
+            import controller.StatisticsMenuController.SelectQuizAction
+            sendEvent(SelectQuizAction(Option(quizInStats)));
+          )
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          2211
+        </td>
+        <td>
+          4734
+          -
+          5049
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setTextLabels
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          setTextLabels(
+              question,
+              quizInStats.totalScore,
+              quizInStats.totalSeen,
+              quizInStats.totalRightAnswers,
+              calculateTotalAnswerPrecision(quizInStats.totalSeen, quizInStats.totalRightAnswers),
+              quizInStats.averageTimeAnswer
+            )
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          2210
+        </td>
+        <td>
+          4907
+          -
+          4990
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          calculateTotalAnswerPrecision
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          calculateTotalAnswerPrecision(quizInStats.totalSeen, quizInStats.totalRightAnswers)
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          2212
+        </td>
+        <td>
+          5161
+          -
+          5180
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(quizInStats)
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          2213
+        </td>
+        <td>
+          5134
+          -
+          5182
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(SelectQuizAction(Option(quizInStats)))
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          2215
+        </td>
+        <td>
+          5207
+          -
+          5227
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          2217
+        </td>
+        <td>
+          5207
+          -
+          5247
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addAll
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizVBox.getChildren.addAll(radioButton)
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          2216
+        </td>
+        <td>
+          5235
+          -
+          5246
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sfxRadioButton2jfx
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton
+        </td>
+      </tr><tr>
+        <td>
+          155
+        </td>
+        <td>
+          2221
+        </td>
+        <td>
+          5270
+          -
+          5276
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case _
+        </td>
+      </tr><tr>
+        <td>
+          158
+        </td>
+        <td>
+          2231
+        </td>
+        <td>
+          5287
+          -
+          5312
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          setTextLabels
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          private def setTextLabels
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2223
+        </td>
+        <td>
+          5471
+          -
+          5495
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          textLabel.setText(title)
+        </td>
+      </tr><tr>
+        <td>
+          160
+        </td>
+        <td>
+          2224
+        </td>
+        <td>
+          5500
+          -
+          5544
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          totalScoreLabel.setText(totalScore.toString)
+        </td>
+      </tr><tr>
+        <td>
+          161
+        </td>
+        <td>
+          2225
+        </td>
+        <td>
+          5549
+          -
+          5617
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          totalAnsweredQuestionsLabel.setText(totalAnsweredQuestions.toString)
+        </td>
+      </tr><tr>
+        <td>
+          162
+        </td>
+        <td>
+          2226
+        </td>
+        <td>
+          5622
+          -
+          5684
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          totalCorrectAnswersLabel.setText(totalCorrectAnswers.toString)
+        </td>
+      </tr><tr>
+        <td>
+          163
+        </td>
+        <td>
+          2227
+        </td>
+        <td>
+          5723
+          -
+          5759
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          totalAnswerPrecision.toString + &quot; %&quot;
+        </td>
+      </tr><tr>
+        <td>
+          163
+        </td>
+        <td>
+          2228
+        </td>
+        <td>
+          5689
+          -
+          5760
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          totalAnswerPrecisionLabel.setText(totalAnswerPrecision.toString + &quot; %&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          164
+        </td>
+        <td>
+          2230
+        </td>
+        <td>
+          5765
+          -
+          5839
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          totalAverageTimeAnswerLabel.setText(totalAverageTimeAnswer.toString +&quot; s&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          164
+        </td>
+        <td>
+          2229
+        </td>
+        <td>
+          5801
+          -
+          5838
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          totalAverageTimeAnswer.toString +&quot; s&quot;
         </td>
       </tr>
     </table>
