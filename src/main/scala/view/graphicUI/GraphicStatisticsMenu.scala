@@ -85,12 +85,9 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
 
   @FXML
   def resetStatsButtonClicked: Unit =
-    val alert: Alert = Alert(
-      AlertType.CONFIRMATION,
-      "Sei sicuro di voler azzerare tutte le statistiche?",
-      yesButton,
-      cancelButton
-    )
+    val alert: Alert = Alert(AlertType.CONFIRMATION, "", yesButton, cancelButton)
+    alert.setTitle("Reset statistiche")
+    alert.setHeaderText("Sei sicuro di voler azzerare tutte le statistiche?")
     alert.showAndWait();
     if (alert.getResult == yesButton) {
       AppController.changePlayerStats(initStats)
