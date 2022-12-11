@@ -1,6 +1,6 @@
 package view.graphicUI
 
-import controller.SelectMenuController.{Back, Custom, Start, Selection}
+import controller.SelectMenuController.{Back, Blitz, Custom, Selection, Start}
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
 import utils.GUILoader
@@ -12,7 +12,7 @@ import javafx.stage.Stage
 import view.SelectMenuView.*
 import javafx.application.Platform
 import javafx.scene.input.MouseEvent
-import model.SavedCourse
+import model.SavedCourse.*
 
 import java.util
 import scala.collection.mutable.ListBuffer
@@ -32,7 +32,7 @@ class GraphicSelectMenu(stage: Stage) extends GraphicView:
   var standardGameButton: Button = _
 
   @FXML
-  var reviewGameButton: Button = _
+  var blitzGameButton: Button = _
 
   @FXML
   var customGameButton: Button = _
@@ -49,7 +49,8 @@ class GraphicSelectMenu(stage: Stage) extends GraphicView:
     if isCourseSelected then sendEvent(Start)
 
   @FXML
-  def reviewGameButtonClicked(): Unit = ???
+  def blitzGameButtonClicked(): Unit =
+    if isCourseSelected then sendEvent(Blitz)
 
   @FXML
   def customGameButtonClicked(): Unit =
@@ -60,16 +61,13 @@ class GraphicSelectMenu(stage: Stage) extends GraphicView:
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case DefaultUpdate =>
-      standardGameButton.setDisable(!isCourseSelected)
-      customGameButton.setDisable(!isCourseSelected)
+      setButtonEnable(standardGameButton, blitzGameButton, customGameButton)
     case CourseUpdate(updateParameter) =>
       if update.updateParameter.isDefined then
         val savedCourses: List[(SavedCourse, Boolean)] = updateParameter.get.asInstanceOf[List[(SavedCourse, Boolean)]]
         case class CourseToPrint(savedCourse: SavedCourse, isSelected: Boolean)
         var coursesToPrint: ListBuffer[CourseToPrint] = ListBuffer()
-
-        standardGameButton.setDisable(!isCourseSelected)
-        customGameButton.setDisable(!isCourseSelected)
+        setButtonEnable(standardGameButton, blitzGameButton, customGameButton)
 
         savedCourses.foreach(course =>
           coursesToPrint += CourseToPrint(course._1, course._2)
@@ -92,3 +90,5 @@ class GraphicSelectMenu(stage: Stage) extends GraphicView:
   /* function to check if at least one course is selected before starting a game */
   private def isCourseSelected: Boolean =
     checkBoxList.exists(checkBox => checkBox.isSelected)
+
+  private def setButtonEnable(buttons: Button*): Unit = buttons.foreach(button => button.setDisable(!isCourseSelected))

@@ -36,5 +36,5 @@ class TerminalCustomMenu extends TerminalView:
       print("Numero massimo di aiuti: ")
       val helpsNumber = readLine()
       checkControls(helpsNumber)
-      val gameSettings: GameSettings = StandardGameSettings(quizMaxTime.toInt, maxQuizzes.toInt, helpsNumber.toInt)
+      val gameSettings: GameSettings = StandardGameSettings(quizMaxTime.toInt, maxQuizzes.toInt)
       sendEvent(NewGameSettings(Option(gameSettings)))

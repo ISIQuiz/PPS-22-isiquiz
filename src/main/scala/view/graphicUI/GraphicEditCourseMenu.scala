@@ -1,6 +1,6 @@
 package view.graphicUI
 
-import controller.EditCourseMenuController.*
+import controller.EditCourseMenuController.Back
 import view.EditCourseMenuView.*
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -8,8 +8,8 @@ import javafx.scene.control.*
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
-import model.CourseIdentifier.CourseIdentifierImpl
-import model.SavedCourse.SavedCourseImpl
+import model.CourseIdentifier.CourseIdentifier
+import model.SavedCourse.SavedCourse
 import utils.GUILoader
 import utils.GUILoader.loadGUI
 import view.View.{GraphicView, sendEvent}
@@ -17,20 +17,23 @@ import view.updates.ViewUpdate
 
 object GraphicEditCourseMenu
 
-/** Default menu graphic interface  */
+/** edit course menu graphic interface  */
 class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
-
 
   val toggleGroup: ToggleGroup = ToggleGroup()
   
   @FXML
   var coursesVBox: VBox = _
+  
   @FXML
   var courseNameTextField: TextField = _
+  
   @FXML
   var degreeNameTextField: TextField = _
+  
   @FXML
   var universityNameTextField: TextField = _
+  
   @FXML
   var descriptionCourseTextField: TextField = _
 
@@ -44,8 +47,8 @@ class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
   @FXML
   def editCourseButtonClicked(): Unit =
     if checkInputs then
-      val course = SavedCourseImpl(
-        courseId = CourseIdentifierImpl(
+      val course = SavedCourse(
+        courseId = CourseIdentifier(
           courseName = courseNameTextField.getText,
           degreeName = degreeNameTextField.getText,
           universityName = universityNameTextField.getText
@@ -58,12 +61,20 @@ class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
       import controller.EditCourseMenuController.EditCourseAction
       sendEvent(EditCourseAction(Option(course)))
     else
-      feedbackLabel.setText("Nome mancante")
+      feedbackLabel.setText("Configurazione Invalida")
+
+  @FXML
+  def deleteCourseButtonClicked(): Unit =
+    if checkSelections then
+      import controller.EditCourseMenuController.EditCourseAction
+      sendEvent(EditCourseAction(Option.empty))
+    else
+      feedbackLabel.setText("Selezione Invalida")
 
   loadGUI(stage, this, "edit_course_menu.fxml")
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
-    case CourseUpdate(updateParameter) =>
+    case CourseListUpdate(updateParameter) =>
       Platform.runLater { () =>
         coursesVBox.getChildren.clear()
         updateParameter.get.foreach(savedCourse =>
@@ -77,19 +88,29 @@ class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
             descriptionCourseTextField.setText(savedCourse.description match
               case Some(text) => text
               case _ => ""
-            ); 
+            );
+            import controller.EditCourseMenuController.SelectCourseAction
             sendEvent(SelectCourseAction(Option(savedCourse)));
           );
           coursesVBox.getChildren.addAll(radioButton)
         )
       }
     case CourseEditedUpdate =>
-      feedbackLabel.setText("Corso Modificato!!!")
-      courseNameTextField.clear()
-      degreeNameTextField.clear()
-      universityNameTextField.clear()
-      descriptionCourseTextField.clear()
+      feedbackLabel.setText("Corso modificato")
+      clearAllFields()
+    case CourseDeletedUpdate =>
+      feedbackLabel.setText("Corso cancallato")
+      clearAllFields()
     case _ => {}
 
   private def checkInputs: Boolean =
-    courseNameTextField.getText.nonEmpty && toggleGroup.getToggles.removeIf(_.isSelected)
+    courseNameTextField.getText.nonEmpty && checkSelections
+
+  private def checkSelections: Boolean =
+    toggleGroup.getToggles.removeIf(_.isSelected)
+
+  private def clearAllFields(): Unit =
+    courseNameTextField.clear()
+    degreeNameTextField.clear()
+    universityNameTextField.clear()
+    descriptionCourseTextField.clear()

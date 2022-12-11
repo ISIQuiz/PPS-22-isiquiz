@@ -5,7 +5,7 @@ import controller.EditQuizMenuController.*
 import controller.actions.Action
 import model.Quiz.Quiz
 import model.SavedCourse
-import model.SavedCourse.SavedCourseImpl
+import model.SavedCourse.SavedCourse
 import view.EditQuizMenuView.*
 import view.View.*
 import view.updates.ViewUpdate
@@ -31,14 +31,14 @@ class TerminalEditQuizMenu extends TerminalView:
       println("Modifica Quiz")
     case CourseListUpdate(updateParameter) =>
       courseList = updateParameter.get
-    case AskCourseUpdate =>
+    case AskCourseSelectUpdate =>
       println("Seleziona il corso con il quiz da modificare")
       courseList.map(course => course.courseId.courseName).zipWithIndex.foreach { case (e, i) => println(i + "] " + e) }
       val courseIndex = readLine.toInt
       sendEvent(SelectCourseAction(courseList.lift(courseIndex)))
     case QuizListUpdate(updateParameter) =>
       quizList = updateParameter.get
-    case AskQuizUpdate =>
+    case AskQuizSelectUpdate =>
       println("Seleziona il quiz da modificare")
       quizList.map(quiz => quiz.question).zipWithIndex.foreach { case (e, i) => println(i + "] " + e) }
       val quizIndex = readLine.toInt

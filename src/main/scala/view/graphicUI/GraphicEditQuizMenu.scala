@@ -1,7 +1,7 @@
 package view.graphicUI
 
 import com.sun.javafx.scene.control.IntegerField
-import controller.EditQuizMenuController.*
+import controller.EditQuizMenuController.Back
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -10,9 +10,9 @@ import javafx.scene.input.MouseEvent
 import javafx.stage.Stage
 import model.Answer.Answer
 import scalafx.geometry.Insets
-import model.CourseIdentifier.CourseIdentifierImpl
+import model.CourseIdentifier.CourseIdentifier
 import model.Quiz.Quiz
-import model.SavedCourse.SavedCourseImpl
+import model.SavedCourse.SavedCourse
 import utils.GUILoader
 import utils.GUILoader.loadGUI
 import view.EditQuizMenuView.*
@@ -23,9 +23,8 @@ import scala.collection.mutable.ListBuffer
 
 object GraphicEditQuizMenu
 
-/** Default menu graphic interface  */
+/** edit quiz menu graphic interface  */
 class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
-
 
   val toggleCourseGroup: ToggleGroup = ToggleGroup()
 
@@ -33,6 +32,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
 
   @FXML
   var coursesVBox: VBox = _
+
   @FXML
   var quizVBox: VBox = _
 
@@ -43,14 +43,16 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
   var imagePathTextField: TextField = _
 
   @FXML
-  var scoreIntegerField: IntegerField = _
+  var scoreIntegerField: TextField = _
 
   @FXML
   var answersVBox: VBox = _
 
   @FXML
-  var feedbackLabel: Label = _
+  var answerTextField: TextField = _
 
+  @FXML
+  var feedbackLabel: Label = _
 
   @FXML
   def backButtonClicked(): Unit =
@@ -73,7 +75,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
         val answerCorrectCheckBox: CheckBox = hBox.asInstanceOf[HBox].getChildrenUnmodifiable.get(3).asInstanceOf[CheckBox]
           answerList += Answer(answerTextField.getText, answerCorrectCheckBox.isSelected)
       )
-      val quiz = Quiz(question = questionTextField.getText, answerList = answerList.toList, maxScore = scoreIntegerField.getValue, imagePath = imagePathTextField.getText match
+      val quiz = Quiz(question = questionTextField.getText, answerList = answerList.toList, maxScore = scoreIntegerField.getText.toInt, imagePath = imagePathTextField.getText match
         case "" => None
         case text => Some(text)
       )
@@ -82,6 +84,13 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
     else
       feedbackLabel.setText("Configurazione Invalida")
 
+  @FXML
+  def deleteQuizButtonClicked(): Unit =
+    if checkSelections then
+      import controller.EditQuizMenuController.EditQuizAction
+      sendEvent(EditQuizAction(Option.empty))
+    else
+      feedbackLabel.setText("Selezione Invalida")
 
   loadGUI(stage, this, "edit_quiz_menu.fxml")
 
@@ -95,6 +104,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
           radioButton.setToggleGroup(toggleCourseGroup);
           radioButton.getStyleClass.add("label-dark");
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
+            import controller.EditQuizMenuController.SelectCourseAction
             sendEvent(SelectCourseAction(Option(savedCourse)));
           );
           coursesVBox.getChildren.addAll(radioButton)
@@ -110,26 +120,36 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
             questionTextField.setText(quiz.question);
             imagePathTextField.setText(if quiz.imagePath.isDefined then quiz.imagePath.get else "");
-            scoreIntegerField.setValue(quiz.maxScore);
+            scoreIntegerField.setText(quiz.maxScore.toString);
             clearAllAnswers();
             quiz.answerList.foreach(ans => addAnswerGUI(Option(ans)));
+            import controller.EditQuizMenuController.SelectQuizAction
             sendEvent(SelectQuizAction(Option(quiz)));
           );
           quizVBox.getChildren.addAll(radioButton)
         )
       }
     case QuizEditedUpdate =>
-      feedbackLabel.setText("Quiz Modificato!!!")
-      quizVBox.getChildren.clear()
-      questionTextField.clear()
-      imagePathTextField.clear()
-      scoreIntegerField.setValue(10)
-      clearAllAnswers()
-      addAnswerGUI(None)
+      feedbackLabel.setText("Quiz modificato")
+      clearAllFields()
+    case QuizDeletedUpdate =>
+      feedbackLabel.setText("Quiz cancellato")
+      clearAllFields()
     case _ => {}
 
   private def checkInputs: Boolean =
-    questionTextField.getText.nonEmpty && toggleCourseGroup.getToggles.removeIf(_.isSelected) && toggleQuizGroup.getToggles.removeIf(_.isSelected)
+    questionTextField.getText.nonEmpty && checkSelections
+
+  private def checkSelections: Boolean =
+    toggleCourseGroup.getToggles.removeIf(_.isSelected) && toggleQuizGroup.getToggles.removeIf(_.isSelected)
+
+  private def clearAllFields():Unit =
+    quizVBox.getChildren.clear()
+    questionTextField.clear()
+    imagePathTextField.clear()
+    scoreIntegerField.setText("0")
+    clearAllAnswers()
+    addAnswerGUI(None)
 
   private def clearAllAnswers(): Unit =
     while answersVBox.getChildren.size() > 0 do answersVBox.getChildren.remove(0)
@@ -142,10 +162,12 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
       answerBox.setPadding(Insets.apply(10, 0, 0, 10))
       val textField: TextField = TextField(if opAnswer.nonEmpty then opAnswer.get.text else "")
       textField.setId("answerTextField" + idNum)
-      textField.setPrefWidth(650.0)
+      textField.getStyleClass.add("text-field-extra-large")
       val checkBox = CheckBox()
       checkBox.setSelected(if opAnswer.nonEmpty then opAnswer.get.isCorrect else false)
       checkBox.setId("answerCorrectCheckBox" + idNum)
-      answerBox.getChildren.addAll(Label("Risposta "), textField, Label(" Corretta "), checkBox)
+      checkBox.setText("corretta")
+      checkBox.getStyleClass.add("checkbox-dark")
+      answerBox.getChildren.addAll(textField, checkBox)
       answersVBox.getChildren.addAll(answerBox)
   }

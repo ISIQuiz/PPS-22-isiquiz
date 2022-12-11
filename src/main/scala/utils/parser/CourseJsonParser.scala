@@ -2,7 +2,9 @@ package utils.parser
 
 import model.Answer.Answer
 import model.Quiz.Quiz
-import model.{Course, CourseIdentifier, SavedCourse, Session}
+import model.SavedCourse.SavedCourse
+import model.CourseIdentifier.CourseIdentifier
+import model.{Course, Session}
 import play.api.libs.json.*
 import utils.parser.JsonLabels.*
 
@@ -65,6 +67,12 @@ object CourseJsonParser:
       } yield {
         deserializeObjectOfSavedCourse((jsonObject \ SavedCourseListLabel).as[JsArray], SavedCourseListLabel).asInstanceOf[List[SavedCourse]]
       }
+      
+      /* TODO
+      def mergeLists[T](list: T, newList: T): T = (list, newList) match
+        case (savedCourseList: List[SavedCourse], newSavedCourseList: List[SavedCourse]) => savedCourseList
+
+      */
 
     // Deserialize an object based on his type
     private def deserializeObjectOfSavedCourse(jsonArray: JsArray, label: String): List[SavedCourse] | List[Quiz] | List[Answer] =

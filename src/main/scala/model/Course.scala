@@ -1,5 +1,6 @@
 package model
 
+import model.CourseIdentifier.CourseIdentifier
 
 /**
  * Trait for a course
@@ -28,4 +29,3 @@ object Course:
    * @param courseId the course identifier
    */
   case class CourseImpl(override val courseId: CourseIdentifier) extends Course
-

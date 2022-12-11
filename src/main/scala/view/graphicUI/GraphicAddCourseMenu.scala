@@ -10,22 +10,24 @@ import utils.GUILoader
 import utils.GUILoader.loadGUI
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
-import model.SavedCourse.SavedCourseImpl
-import model.CourseIdentifier.CourseIdentifierImpl
+import model.SavedCourse.SavedCourse
+import model.CourseIdentifier.CourseIdentifier
 import model.Quiz.Quiz
 
 object GraphicAddCourseMenu
 
-/** Default menu graphic interface  */
+/** add course menu graphic interface  */
 class GraphicAddCourseMenu(stage: Stage) extends GraphicView:
-
 
   @FXML
   var courseNameTextField: TextField = _
+
   @FXML
   var degreeNameTextField: TextField = _
+
   @FXML
   var universityNameTextField: TextField = _
+
   @FXML
   var descriptionCourseTextField: TextField = _
 
@@ -39,8 +41,8 @@ class GraphicAddCourseMenu(stage: Stage) extends GraphicView:
   @FXML
   def addCourseButtonClicked(): Unit =
     if checkInputs then
-      val course = SavedCourseImpl(
-        courseId = CourseIdentifierImpl(
+      val course = SavedCourse(
+        courseId = CourseIdentifier(
           courseName = courseNameTextField.getText,
           degreeName = degreeNameTextField.getText,
           universityName = universityNameTextField.getText
@@ -59,7 +61,7 @@ class GraphicAddCourseMenu(stage: Stage) extends GraphicView:
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case CourseAddedUpdate =>
-      feedbackLabel.setText("Corso Aggiunto!!!")
+      feedbackLabel.setText("Corso aggiunto")
       courseNameTextField.clear()
       degreeNameTextField.clear()
       universityNameTextField.clear()

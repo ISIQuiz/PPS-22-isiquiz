@@ -1,21 +1,21 @@
 package view.terminalUI
 
 import controller.AddQuizMenuController
-import controller.AddQuizMenuController.Back
+import controller.AddQuizMenuController.*
 import controller.actions.Action
 import model.Answer.Answer
-import model.SavedCourse
+import model.SavedCourse.SavedCourse
 import view.View.*
 import view.updates.ViewUpdate
 import view.AddQuizMenuView.*
-
+import model.Quiz.*
 import java.util.UUID
 import scala.collection.mutable.Map
 import scala.io.StdIn.readLine
 
 object TerminalAddQuizMenu
 
-/** Add quiz terminal interface  */
+/** Add quiz menu terminal interface  */
 class TerminalAddQuizMenu extends TerminalView:
 
   var courseList:List[SavedCourse] = Nil
@@ -28,20 +28,18 @@ class TerminalAddQuizMenu extends TerminalView:
     case DefaultUpdate =>
       println("Menu aggiunta quiz:\n1) Menu principale")
       println("Aggiunta quiz:")
-    case CourseUpdate(updateParameter) =>
+    case CourseListUpdate(updateParameter) =>
       courseList = updateParameter.get
-    case AskCourseUpdate =>
+    case AskCourseSelectUpdate =>
       println("Seleziona il corso al quale aggiungere la domanda")
       courseList.map(course=>course.courseId.courseName).zipWithIndex.foreach{ case (e, i) => println(i+"] "+e) }
       val courseIndex = readLine.toInt
-      import controller.AddQuizMenuController.AddCourseAction
-      sendEvent(AddCourseAction(courseList.lift(courseIndex)))
+      sendEvent(SelectCourseAction(courseList.lift(courseIndex)))
     case AskQuizUpdate =>
       println("Inserisci domanda:")
       val question = readLine
       println("Inserisci score:")
       val score = readLine.toInt
-      import model.Answer.Answer
       var answerList:List[Answer] = Nil
       while {println("Vuoi aggiungere una risposta? S:si"); "s" == readLine.toLowerCase} do
         println("Inserisci riposta")
@@ -54,11 +52,8 @@ class TerminalAddQuizMenu extends TerminalView:
       if "s"==readLine.toLowerCase then
         println("inserisci image path:")
         imagePath = Some(readLine)
-      import controller.AddQuizMenuController.AddQuizAction
-      import model.Quiz.Quiz
       sendEvent(AddQuizAction(Option(Quiz(question = question, answerList = answerList, maxScore = score, imagePath = imagePath))))
     case QuizPrintUpdate(updateParameter) =>
-      import model.Quiz.*
       println(printQuizFull(updateParameter.get))
     case QuizAddedUpdate =>
       println("Quiz Aggiunto!")
