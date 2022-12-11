@@ -43,7 +43,9 @@ class SelectMenuController extends PageController:
 
   override def nextIteration(): Unit =
     sendUpdate(DefaultUpdate)
-    sendUpdate(CourseUpdate(Option(getSession.savedCourses.map(course => (course,gameStage.coursesInGame.contains(course))))))
+    sendUpdate(CourseUpdate(Option(getSession.savedCourses
+      .filter(course => course.quizList.nonEmpty)
+      .map(course => (course,gameStage.coursesInGame.contains(course))))))
 
   private def modifySelectedCourses[T](courseIndex: Option[T]): Unit =
     val selectedCourse = getSession.savedCourses(courseIndex.get.asInstanceOf[Int])
