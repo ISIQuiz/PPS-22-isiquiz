@@ -16,7 +16,7 @@ import view.updates.ViewUpdate
 
 object GraphicBlitzGameMenu
 
-/** Standard Game menu graphic interface */
+/** Blitz Game menu graphic interface */
 class GraphicBlitzGameMenu(stage: Stage) extends GraphicView:
 
   @FXML
@@ -87,6 +87,7 @@ class GraphicBlitzGameMenu(stage: Stage) extends GraphicView:
         val gameStage: GameStage = updateParameter.get
         courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
         quizLabel.setText(gameStage.quizInGame.quiz.question)
+        pointsLabel.setText(gameStage.quizInGame.quiz.maxScore + " punti")
         firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
         secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
         thirdAnswerButton.setText(gameStage.quizInGame.answers(2).text)
@@ -97,9 +98,4 @@ class GraphicBlitzGameMenu(stage: Stage) extends GraphicView:
       Platform.runLater(() => {
         timeRemainingLabel.setText(s"${timer.getRemainingTime.toInt}")
         timeProgressBar.setProgress(timer.getCompletionPercentage)
-      })
-    case QuizScoreUpdate(updateParameter) =>
-      Platform.runLater(() => {
-        val score: Int = updateParameter.get
-        pointsLabel.setText(score + " punti")
       })
