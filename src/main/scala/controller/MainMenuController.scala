@@ -3,7 +3,9 @@ package controller
 import controller.{AppController, PageController}
 import controller.AppController.*
 import controller.actions.{Action, ParameterlessAction}
+import model.stats.PlayerStats.removeUnusedStats
 import utils.Timer
+import utils.storage.ExportHandler
 import view.View
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import view.MainMenuView
@@ -30,7 +32,10 @@ class MainMenuController extends PageController:
 
   override def handle[T](action: Action[T]): Unit = action match
     case Select => AppController.handle(SelectMenuAction)
-    case Statistics => AppController.handle(StatisticsMenuAction)
+    case Statistics =>
+      // Remove unused player stats and export it
+      ExportHandler.exportDataToPersonalDirectory(removeUnusedStats(session.savedCourses, session.playerStats))
+      AppController.handle(StatisticsMenuAction)
     case Settings => AppController.handle(SettingsMenuAction)
     case Quit => System.exit(0)
 
