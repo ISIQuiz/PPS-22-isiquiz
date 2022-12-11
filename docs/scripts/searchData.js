@@ -67,6 +67,7 @@ pages = [{"l":"index.html#","e":false,"i":"","n":"root","t":"root","d":"","k":"s
 {"l":"controller/GameController.html#chooseQuiz-634","e":false,"i":"","n":"chooseQuiz","t":"chooseQuiz(course: SavedCourse): Quiz","d":"controller.GameController","k":"def"},
 {"l":"controller/GameController.html#endGame-fffffa13","e":false,"i":"","n":"endGame","t":"endGame(gameStage: GameStage): Unit","d":"controller.GameController","k":"def"},
 {"l":"controller/GameController.html#extractQuizInGame-8f8","e":false,"i":"","n":"extractQuizInGame","t":"extractQuizInGame(gameStage: GameStage): QuizInGame","d":"controller.GameController","k":"def"},
+{"l":"controller/GameController.html#gameStage-0","e":false,"i":"","n":"gameStage","t":"gameStage: GameStage","d":"controller.GameController","k":"val"},
 {"l":"controller/GameController.html#nextQuiz-94c","e":false,"i":"","n":"nextQuiz","t":"nextQuiz(): Unit","d":"controller.GameController","k":"def"},
 {"l":"controller/GameController.html#randomNumberGenerator-fffff472","e":false,"i":"","n":"randomNumberGenerator","t":"randomNumberGenerator(quantity: Int, range: Int): List[Int]","d":"controller.GameController","k":"def"},
 {"l":"controller/MainMenuController$.html#","e":false,"i":"","n":"MainMenuController","t":"MainMenuController","d":"controller","k":"object"},

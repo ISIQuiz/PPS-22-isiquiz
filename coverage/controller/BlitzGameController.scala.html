@@ -41,64 +41,65 @@
 </span>17 <span style=''>import scala.concurrent.duration.Duration
 </span>18 <span style=''>import scala.concurrent.{Await, Promise}
 </span>19 <span style=''>
-</span>20 <span style=''>/** Companion object of standard game controller */
+</span>20 <span style=''>/** Companion object of blitz game controller */
 </span>21 <span style=''>object BlitzGameController extends BackAction:
-</span>22 <span style=''>  /** action to select an answer in the controller of a standard game */
-</span>23 <span style=''>  case class SelectAnswer[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
-</span>24 <span style=''>  /** action to go to the next quiz in the controller of a standard game */
-</span>25 <span style=''>  case object NextQuiz extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
-</span>26 <span style=''>
-</span>27 <span style=''>  </span><span style='background: #F0ADAD'>def apply</span><span style=''>(game: GameStage): BlitzGameController =
-</span>28 <span style=''>    game.gameSettings = </span><span style='background: #F0ADAD'>BlitzGameSettings</span><span style=''>()
-</span>29 <span style=''>    val blitzGameController = </span><span style='background: #F0ADAD'>new BlitzGameController(game)</span><span style=''>
-</span>30 <span style=''>    blitzGameController.gameStage.quizInGame = </span><span style='background: #F0ADAD'>blitzGameController.extractQuizInGame(game)</span><span style=''>
-</span>31 <span style=''>    </span><span style='background: #F0ADAD'>blitzGameController.timer.startTimer()</span><span style=''>
-</span>32 <span style=''>    blitzGameController
-</span>33 <span style=''>
-</span>34 <span style=''>/** Defines the logic of the select page */
-</span>35 <span style=''>class BlitzGameController(val game: GameStage) extends PageController, GameController:
-</span>36 <span style=''>
-</span>37 <span style=''>  import BlitzGameController.*
+</span>22 <span style=''>
+</span>23 <span style=''>  /** action to select an answer in the controller of a blitz game */
+</span>24 <span style=''>  case class SelectAnswer[T](override val actionParameter: Option[T]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>25 <span style=''>
+</span>26 <span style=''>  /** action to go to the next quiz in the controller of a blitz game */
+</span>27 <span style=''>  case object NextQuiz extends </span><span style='background: #F0ADAD'>ParameterlessAction</span><span style=''>
+</span>28 <span style=''>
+</span>29 <span style=''>  </span><span style='background: #F0ADAD'>def apply</span><span style=''>(game: GameStage): BlitzGameController =
+</span>30 <span style=''>    game.gameSettings = </span><span style='background: #F0ADAD'>BlitzGameSettings</span><span style=''>()
+</span>31 <span style=''>    val blitzGameController = </span><span style='background: #F0ADAD'>new BlitzGameController(game)</span><span style=''>
+</span>32 <span style=''>    blitzGameController.gameStage.quizInGame = </span><span style='background: #F0ADAD'>blitzGameController.extractQuizInGame(game)</span><span style=''>
+</span>33 <span style=''>    </span><span style='background: #F0ADAD'>blitzGameController.timer.startTimer()</span><span style=''>
+</span>34 <span style=''>    blitzGameController
+</span>35 <span style=''>
+</span>36 <span style=''>/** Defines the logic of the select page */
+</span>37 <span style=''>class BlitzGameController(val game: GameStage) extends PageController, GameController:
 </span>38 <span style=''>
-</span>39 <span style=''>  val gameStage: GameStage = game
-</span>40 <span style=''>  val timer: Timer = </span><span style='background: #F0ADAD'>Timer.apply(gameStage.gameSettings.asInstanceOf[BlitzGameSettings].maxTime)</span><span style=''>
-</span>41 <span style=''>  var currentAnswer: Option[Answer] = None
-</span>42 <span style=''>  var currentScore: Int = 0
-</span>43 <span style=''>
-</span>44 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
-</span>45 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(MainMenuAction)</span><span style=''>
-</span>46 <span style=''>    </span><span style='background: #F0ADAD'>case SelectAnswer(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>selectAnswer(actionParameter)</span><span style=''>
-</span>47 <span style=''>    </span><span style='background: #F0ADAD'>case NextQuiz</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>nextQuiz()</span><span style=''>
-</span>48 <span style=''>
-</span>49 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>50 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
-</span>51 <span style=''>    if </span><span style='background: #F0ADAD'>timer.isExpired</span><span style=''> then
-</span>52 <span style=''>      </span><span style='background: #F0ADAD'>endGame(gameStage)</span><span style=''>
-</span>53 <span style=''>    else
-</span>54 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(CurrentGameUpdate(Option(gameStage)))
-</span>55 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(TimerUpdate(Option(timer)))</span><span style=''>
-</span>56 <span style=''>
-</span>57 <span style=''>
-</span>58 <span style=''>  </span><span style='background: #F0ADAD'>def selectAnswer</span><span style=''>[T](actionParameter: Option[T]): Unit =
-</span>59 <span style=''>    if </span><span style='background: #F0ADAD'>actionParameter.isDefined</span><span style=''> &amp;&amp; !</span><span style='background: #F0ADAD'>timer.isExpired</span><span style=''> then
-</span>60 <span style=''>      </span><span style='background: #F0ADAD'>actionParameter match
-</span>61 <span style=''></span><span style='background: #F0ADAD'>        case Some(selectedAnswerIndex:Int) =&gt;
-</span>62 <span style=''></span><span style='background: #F0ADAD'>          currentAnswer = Some(gameStage.quizInGame.answers(selectedAnswerIndex))
-</span>63 <span style=''></span><span style='background: #F0ADAD'>        case Some(selectedAnswer: Answer) =&gt;
-</span>64 <span style=''></span><span style='background: #F0ADAD'>          currentAnswer = Some(selectedAnswer)
-</span>65 <span style=''></span><span style='background: #F0ADAD'>        case _ =&gt; throw IllegalArgumentException()
-</span>66 <span style=''></span><span style='background: #F0ADAD'>      nextQuiz()</span><span style=''>
-</span>67 <span style=''>
-</span>68 <span style=''>  </span><span style='background: #F0ADAD'>override def nextQuiz</span><span style=''>(): Unit =
-</span>69 <span style=''>    currentAnswer match
-</span>70 <span style=''>      </span><span style='background: #F0ADAD'>case Some(ans)</span><span style=''> =&gt;
-</span>71 <span style=''>        </span><span style='background: #F0ADAD'>gameStage.addReviewQuizAnswer(ans, gameStage.quizInGame.quiz.maxScore, timer.getTime)</span><span style=''>
-</span>72 <span style=''>        </span><span style='background: #F0ADAD'>gameStage.addQuizToStats(ans.isCorrect, gameStage.quizInGame.quiz.maxScore, timer.getTime)</span><span style=''>
-</span>73 <span style=''>      </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt;
-</span>74 <span style=''>        </span><span style='background: #F0ADAD'>gameStage.addReviewQuizNotAnswered()</span><span style=''>
-</span>75 <span style=''>        </span><span style='background: #F0ADAD'>gameStage.addQuizToStats(false, 0, timer.maxTime)</span><span style=''>
-</span>76 <span style=''>    currentAnswer = None
-</span>77 <span style=''>    gameStage.quizInGame = </span><span style='background: #F0ADAD'>extractQuizInGame(gameStage)</span><span style=''>
+</span>39 <span style=''>  import BlitzGameController.*
+</span>40 <span style=''>
+</span>41 <span style=''>  val gameStage: GameStage = game
+</span>42 <span style=''>  val timer: Timer = </span><span style='background: #F0ADAD'>Timer.apply(gameStage.gameSettings.asInstanceOf[BlitzGameSettings].maxTime)</span><span style=''>
+</span>43 <span style=''>  var currentAnswer: Option[Answer] = None
+</span>44 <span style=''>  var currentScore: Int = 0
+</span>45 <span style=''>
+</span>46 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
+</span>47 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(MainMenuAction)</span><span style=''>
+</span>48 <span style=''>    </span><span style='background: #F0ADAD'>case SelectAnswer(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>selectAnswer(actionParameter)</span><span style=''>
+</span>49 <span style=''>    </span><span style='background: #F0ADAD'>case NextQuiz</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>nextQuiz()</span><span style=''>
+</span>50 <span style=''>
+</span>51 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
+</span>52 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
+</span>53 <span style=''>    if </span><span style='background: #F0ADAD'>timer.isExpired</span><span style=''> then
+</span>54 <span style=''>      </span><span style='background: #F0ADAD'>endGame(gameStage)</span><span style=''>
+</span>55 <span style=''>    else
+</span>56 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(CurrentGameUpdate(Option(gameStage)))
+</span>57 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(TimerUpdate(Option(timer)))</span><span style=''>
+</span>58 <span style=''>
+</span>59 <span style=''>  </span><span style='background: #F0ADAD'>def selectAnswer</span><span style=''>[T](actionParameter: Option[T]): Unit =
+</span>60 <span style=''>    if </span><span style='background: #F0ADAD'>actionParameter.isDefined</span><span style=''> &amp;&amp; !</span><span style='background: #F0ADAD'>timer.isExpired</span><span style=''> then
+</span>61 <span style=''>      </span><span style='background: #F0ADAD'>actionParameter match
+</span>62 <span style=''></span><span style='background: #F0ADAD'>        case Some(selectedAnswerIndex:Int) =&gt;
+</span>63 <span style=''></span><span style='background: #F0ADAD'>          currentAnswer = Some(gameStage.quizInGame.answers(selectedAnswerIndex))
+</span>64 <span style=''></span><span style='background: #F0ADAD'>        case Some(selectedAnswer: Answer) =&gt;
+</span>65 <span style=''></span><span style='background: #F0ADAD'>          currentAnswer = Some(selectedAnswer)
+</span>66 <span style=''></span><span style='background: #F0ADAD'>        case _ =&gt; throw IllegalArgumentException()
+</span>67 <span style=''></span><span style='background: #F0ADAD'>      nextQuiz()</span><span style=''>
+</span>68 <span style=''>
+</span>69 <span style=''>  </span><span style='background: #F0ADAD'>override def nextQuiz</span><span style=''>(): Unit =
+</span>70 <span style=''>    currentAnswer match
+</span>71 <span style=''>      </span><span style='background: #F0ADAD'>case Some(ans)</span><span style=''> =&gt;
+</span>72 <span style=''>        </span><span style='background: #F0ADAD'>gameStage.addReviewQuizAnswer(ans, gameStage.quizInGame.quiz.maxScore, timer.getTime)</span><span style=''>
+</span>73 <span style=''>        </span><span style='background: #F0ADAD'>gameStage.addQuizToStats(ans.isCorrect, gameStage.quizInGame.quiz.maxScore, timer.getTime)</span><span style=''>
+</span>74 <span style=''>      </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt;
+</span>75 <span style=''>        </span><span style='background: #F0ADAD'>gameStage.addReviewQuizNotAnswered()</span><span style=''>
+</span>76 <span style=''>        </span><span style='background: #F0ADAD'>gameStage.addQuizToStats(false, 0, timer.maxTime)</span><span style=''>
+</span>77 <span style=''>    currentAnswer = None
+</span>78 <span style=''>    gameStage.quizInGame = </span><span style='background: #F0ADAD'>extractQuizInGame(gameStage)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -113,15 +114,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          22
+          23
         </td>
         <td>
           154
         </td>
         <td>
-          868
+          863
           -
-          891
+          886
         </td>
         <td>
           Apply
@@ -137,15 +138,15 @@
         </td>
       </tr><tr>
         <td>
-          24
+          26
         </td>
         <td>
           155
         </td>
         <td>
-          999
+          992
           -
-          1018
+          1011
         </td>
         <td>
           Apply
@@ -161,15 +162,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          28
         </td>
         <td>
           160
         </td>
         <td>
-          1022
+          1015
           -
-          1031
+          1024
         </td>
         <td>
           DefDef
@@ -185,15 +186,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          29
         </td>
         <td>
           156
         </td>
         <td>
-          1096
+          1089
           -
-          1113
+          1106
         </td>
         <td>
           Select
@@ -209,15 +210,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          30
         </td>
         <td>
           157
         </td>
         <td>
-          1146
+          1139
           -
-          1175
+          1168
         </td>
         <td>
           Apply
@@ -233,15 +234,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          31
         </td>
         <td>
           158
         </td>
         <td>
-          1223
+          1216
           -
-          1266
+          1259
         </td>
         <td>
           Apply
@@ -257,15 +258,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          32
         </td>
         <td>
           159
         </td>
         <td>
-          1271
+          1264
           -
-          1309
+          1302
         </td>
         <td>
           Apply
@@ -281,15 +282,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          41
         </td>
         <td>
           162
         </td>
         <td>
-          1554
+          1547
           -
-          1629
+          1622
         </td>
         <td>
           Apply
@@ -305,15 +306,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          41
         </td>
         <td>
           161
         </td>
         <td>
-          1566
+          1559
           -
-          1628
+          1621
         </td>
         <td>
           Apply
@@ -329,15 +330,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          45
         </td>
         <td>
           169
         </td>
         <td>
-          1704
+          1697
           -
-          1723
+          1716
         </td>
         <td>
           DefDef
@@ -353,15 +354,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          46
         </td>
         <td>
           164
         </td>
         <td>
-          1771
+          1764
           -
-          1780
+          1773
         </td>
         <td>
           Block
@@ -377,15 +378,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          46
         </td>
         <td>
           163
         </td>
         <td>
-          1784
+          1777
           -
-          1820
+          1813
         </td>
         <td>
           Apply
@@ -401,15 +402,15 @@
         </td>
       </tr><tr>
         <td>
-          45
+          47
         </td>
         <td>
           166
         </td>
         <td>
-          1825
+          1818
           -
-          1859
+          1852
         </td>
         <td>
           Block
@@ -425,15 +426,15 @@
         </td>
       </tr><tr>
         <td>
-          45
+          47
         </td>
         <td>
           165
         </td>
         <td>
-          1863
+          1856
           -
-          1892
+          1885
         </td>
         <td>
           Apply
@@ -449,15 +450,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          48
         </td>
         <td>
           167
         </td>
         <td>
-          1914
+          1907
           -
-          1924
+          1917
         </td>
         <td>
           Apply
@@ -473,15 +474,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          48
         </td>
         <td>
           168
         </td>
         <td>
-          1897
+          1890
           -
-          1910
+          1903
         </td>
         <td>
           Block
@@ -497,15 +498,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          50
         </td>
         <td>
           179
         </td>
         <td>
-          1928
+          1921
           -
-          1954
+          1947
         </td>
         <td>
           DefDef
@@ -521,15 +522,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          51
         </td>
         <td>
           170
         </td>
         <td>
-          1969
+          1962
           -
-          1994
+          1987
         </td>
         <td>
           Apply
@@ -545,15 +546,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          52
         </td>
         <td>
           171
         </td>
         <td>
-          2002
+          1995
           -
-          2017
+          2010
         </td>
         <td>
           Select
@@ -569,15 +570,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          53
         </td>
         <td>
           173
         </td>
         <td>
-          2029
+          2022
           -
-          2047
+          2040
         </td>
         <td>
           Block
@@ -593,15 +594,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          53
         </td>
         <td>
           172
         </td>
         <td>
-          2029
+          2022
           -
-          2047
+          2040
         </td>
         <td>
           Apply
@@ -617,15 +618,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          55
         </td>
         <td>
           175
         </td>
         <td>
-          2063
+          2056
           -
-          2111
+          2104
         </td>
         <td>
           Apply
@@ -641,15 +642,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          55
         </td>
         <td>
           178
         </td>
         <td>
-          2063
+          2056
           -
-          2156
+          2149
         </td>
         <td>
           Block
@@ -666,15 +667,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          55
         </td>
         <td>
           174
         </td>
         <td>
-          2092
+          2085
           -
-          2109
+          2102
         </td>
         <td>
           Apply
@@ -690,15 +691,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          56
         </td>
         <td>
           176
         </td>
         <td>
-          2141
+          2134
           -
-          2154
+          2147
         </td>
         <td>
           Apply
@@ -714,15 +715,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          56
         </td>
         <td>
           177
         </td>
         <td>
-          2118
+          2111
           -
-          2156
+          2149
         </td>
         <td>
           Apply
@@ -738,15 +739,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          58
         </td>
         <td>
           190
         </td>
         <td>
-          2161
+          2153
           -
-          2177
+          2169
         </td>
         <td>
           DefDef
@@ -762,15 +763,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          59
         </td>
         <td>
           181
         </td>
         <td>
-          2254
+          2246
           -
-          2269
+          2261
         </td>
         <td>
           Select
@@ -786,15 +787,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          59
         </td>
         <td>
           180
         </td>
         <td>
-          2224
+          2216
           -
-          2249
+          2241
         </td>
         <td>
           Select
@@ -810,15 +811,15 @@
         </td>
       </tr><tr>
         <td>
-          59
+          60
         </td>
         <td>
           189
         </td>
         <td>
-          2281
+          2273
           -
-          2590
+          2582
         </td>
         <td>
           Block
@@ -840,15 +841,15 @@
         </td>
       </tr><tr>
         <td>
-          60
+          61
         </td>
         <td>
           183
         </td>
         <td>
-          2311
+          2303
           -
-          2345
+          2337
         </td>
         <td>
           Block
@@ -864,15 +865,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          62
         </td>
         <td>
           182
         </td>
         <td>
-          2380
+          2372
           -
-          2429
+          2421
         </td>
         <td>
           Apply
@@ -888,15 +889,15 @@
         </td>
       </tr><tr>
         <td>
-          62
+          63
         </td>
         <td>
           184
         </td>
         <td>
-          2439
+          2431
           -
-          2472
+          2464
         </td>
         <td>
           Block
@@ -912,15 +913,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          65
         </td>
         <td>
           185
         </td>
         <td>
-          2547
+          2539
           -
-          2573
+          2565
         </td>
         <td>
           Apply
@@ -936,15 +937,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          65
         </td>
         <td>
           187
         </td>
         <td>
-          2531
+          2523
           -
-          2537
+          2529
         </td>
         <td>
           Block
@@ -960,15 +961,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          65
         </td>
         <td>
           186
         </td>
         <td>
-          2541
+          2533
           -
-          2573
+          2565
         </td>
         <td>
           Apply
@@ -984,15 +985,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          66
         </td>
         <td>
           188
         </td>
         <td>
-          2580
+          2572
           -
-          2590
+          2582
         </td>
         <td>
           Apply
@@ -1008,15 +1009,15 @@
         </td>
       </tr><tr>
         <td>
-          67
+          68
         </td>
         <td>
           201
         </td>
         <td>
-          2594
+          2586
           -
-          2615
+          2607
         </td>
         <td>
           DefDef
@@ -1032,15 +1033,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          70
         </td>
         <td>
           195
         </td>
         <td>
-          2656
+          2648
           -
-          2670
+          2662
         </td>
         <td>
           Block
@@ -1056,15 +1057,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          71
         </td>
         <td>
           191
         </td>
         <td>
-          2753
+          2745
           -
-          2766
+          2758
         </td>
         <td>
           Select
@@ -1080,15 +1081,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          71
         </td>
         <td>
           192
         </td>
         <td>
-          2682
+          2674
           -
-          2767
+          2759
         </td>
         <td>
           Apply
@@ -1104,15 +1105,15 @@
         </td>
       </tr><tr>
         <td>
-          71
+          72
         </td>
         <td>
           194
         </td>
         <td>
-          2776
+          2768
           -
-          2866
+          2858
         </td>
         <td>
           Apply
@@ -1128,15 +1129,15 @@
         </td>
       </tr><tr>
         <td>
-          71
+          72
         </td>
         <td>
           193
         </td>
         <td>
-          2852
+          2844
           -
-          2865
+          2857
         </td>
         <td>
           Select
@@ -1152,15 +1153,15 @@
         </td>
       </tr><tr>
         <td>
-          72
+          73
         </td>
         <td>
           199
         </td>
         <td>
-          2873
+          2865
           -
-          2879
+          2871
         </td>
         <td>
           Block
@@ -1176,15 +1177,15 @@
         </td>
       </tr><tr>
         <td>
-          73
+          74
         </td>
         <td>
           196
         </td>
         <td>
-          2891
+          2883
           -
-          2927
+          2919
         </td>
         <td>
           Apply
@@ -1200,15 +1201,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          75
         </td>
         <td>
           198
         </td>
         <td>
-          2936
+          2928
           -
-          2985
+          2977
         </td>
         <td>
           Apply
@@ -1224,15 +1225,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          75
         </td>
         <td>
           197
         </td>
         <td>
-          2971
+          2963
           -
-          2984
+          2976
         </td>
         <td>
           Apply
@@ -1248,15 +1249,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          77
         </td>
         <td>
           200
         </td>
         <td>
-          3038
+          3030
           -
-          3066
+          3058
         </td>
         <td>
           Apply
