@@ -66,7 +66,8 @@ class PlayerStatsTest extends AnyFunSuite with Matchers:
     val newPlayerStats = PlayerStats(0, 0, 0, 0, 0, List(CourseInStats(Course(ci), List(quiz2))))
     val mergedList = mergePlayerStats(playerStats, newPlayerStats)
     println(mergedList)
-    val resultWanted = PlayerStats(6, 8, 6, 75, 3.0, List(CourseInStats(Course(ci), List(QuizInStats(UUID.fromString("00000000-0000-0000-0000-000000000002"), 8, 6, 6, 3.0)))))
+    // Derived from weighted average of totalRightAnswers and averageTimeAnswer
+    val resultWanted = PlayerStats(6, 8, 6, 75, 3.33, List(CourseInStats(Course(ci), List(QuizInStats(UUID.fromString("00000000-0000-0000-0000-000000000002"), 8, 6, 6, 3.33)))))
     assert(mergedList.equals(resultWanted))
   }
 

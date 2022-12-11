@@ -85,13 +85,13 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
       case Some(ans) =>
         if (!ans.isCorrect)
           currentScore = 0
-          currentTime = maxTime
+          currentTime = 0
         gameStage.addReviewQuizAnswer(ans, currentScore, currentTime)
         gameStage.addQuizToStats(ans.isCorrect, currentScore, currentTime)
 
       case _ =>
         gameStage.addReviewQuizNotAnswered()
-        gameStage.addQuizToStats(false, 0, maxTime)
+        gameStage.addQuizToStats(false, 0, 0)
 
     if gameStage.maxQuizzesReached then endGame(gameStage)
     currentAnswer = None

@@ -63,7 +63,7 @@ object AppController extends Controller:
 
     importSessionFromPersonalDirectory(session) match
       case Success(s) => _session = s
-      case Failure(f) => println("Impossibile importare!")
+      case Failure(f) => Failure(f)
 
     val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     scheduler.scheduleAtFixedRate(() => currentPage.pageController.nextIteration(), 0, 1000/10, TimeUnit.MILLISECONDS)
