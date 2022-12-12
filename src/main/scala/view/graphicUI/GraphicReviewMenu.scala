@@ -91,6 +91,6 @@ class GraphicReviewMenu(stage: Stage) extends GraphicView:
   private def getQuizDescriptionLabel(quizAnswered: QuizAnswered): String =
     val cond = Try(quizAnswered.answerPlayer.get.isCorrect).getOrElse(false)
     if (cond)
-      s"- (Tempo: ${quizAnswered.timeToAnswer}) "
+      s"- (Tempo: "+ f"${quizAnswered.timeToAnswer}%.2f" +") "
     else
       ""

@@ -11,8 +11,8 @@ import model.stats.PlayerStats.{PlayerStats, addQuizInGameToStats, initStats}
 /**
  * Case class for a quiz used during the game
  *
- * @param course the course of the quiz
- * @param quiz a quiz used during the game
+ * @param course  the course of the quiz
+ * @param quiz    a quiz used during the game
  * @param answers a list of answers of the quiz
  */
 case class QuizInGame(course: Course, quiz: Quiz, answers: List[Answer])
@@ -40,7 +40,10 @@ class GameStage(var coursesInGame: List[SavedCourse] = List(), var quizInGame: Q
   def addReviewQuizNotAnswered() = review.addQuizAnswered(QuizAnswered(quizInGame, None))
 
   def addReviewQuizAnswer(answer: Answer, score: Int, timeToAnswer: Double) =
-    review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer), score, timeToAnswer))
+    if (answer.isCorrect)
+      review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer), score, timeToAnswer))
+    else
+      review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer)))
 
   //Add a quiz in game to stats
   def addQuizToStats(isCorrect: Boolean, score: Int, timeToAnswer: Double): Unit =

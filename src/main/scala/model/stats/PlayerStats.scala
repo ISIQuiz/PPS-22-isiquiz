@@ -118,7 +118,7 @@ object PlayerStats:
   def addQuizInGameToStats(playerStats: PlayerStats, quizInGame: QuizInGame, isCorrect: Boolean, score: Int, timeToAnswer: Double): PlayerStats =
 
     val newQuizInStats = if (isCorrect)
-      QuizInStats(quizInGame.quiz.quizId, 1, score, 1, timeToAnswer)
+      QuizInStats(quizInGame.quiz.quizId, 1, score, 1, formatDouble(timeToAnswer))
     else
       QuizInStats(quizInGame.quiz.quizId, 1)
 
@@ -166,7 +166,7 @@ object PlayerStats:
       ((averageTimeAnswer * totalCorrectAnswers) + (newAverageTimeAnswer * newTotalCorrectAnswers)) / (totalCorrectAnswers + newTotalCorrectAnswers)
     else
       0
-    BigDecimal(c).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+    formatDouble(c)
 
   // Calculate total score
   private def calculateTotalScore(courseInStatsList: List[CourseInStats]): Int =
@@ -202,8 +202,7 @@ object PlayerStats:
     val totalCorrectAnswer = calculateTotalCorrectAnswer(courseInStatsList)
     if (courseInStatsList.nonEmpty && totalCorrectAnswer != 0)
       val totalAverageTimeAnswer = courseInStatsList.flatMap(c => c.quizInStatsList).map(q => q.averageTimeAnswer * q.totalRightAnswers).sum
-      val avg = totalAverageTimeAnswer / totalCorrectAnswer
-      BigDecimal(avg).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+      formatDouble(totalAverageTimeAnswer / totalCorrectAnswer)
     else
       0
 
@@ -231,4 +230,6 @@ object PlayerStats:
 
     updatePlayerStats(newCourseInStatsList)
 
-
+  // Round double to two decimal places
+  private def formatDouble(d: Double):Double =
+    BigDecimal(d).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble

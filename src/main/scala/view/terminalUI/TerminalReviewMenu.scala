@@ -32,7 +32,6 @@ class TerminalReviewMenu extends TerminalView:
       updateParameter.get.quizAnsweredList foreach (quizAnswered =>
         println(quizAnswered.quizInGame.quiz.question);
         println(s"(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) " +
-          s"- (Tempo: ${quizAnswered.timeToAnswer}) " +
           s"- ${quizAnswered.quizInGame.course.courseId.courseName}");
         quizAnswered.quizInGame.answers
           .filter(ans => showAllAnswers || ans.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == ans else false))
