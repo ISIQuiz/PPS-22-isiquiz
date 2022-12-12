@@ -10,13 +10,11 @@ import model.{Course, SavedCourse, Session}
 import play.api.libs.json.*
 import utils.parser.JsonLabels.*
 import utils.parser.JsonParser
-
 import java.util.UUID
 import scala.util.Try
 
 /** Trait for the [[StatsJsonParser]] parser */
 trait StatsJsonParser extends JsonParser[PlayerStats]
-
 
 /** Companion object of [[SavedCourse]] parser */
 object StatsJsonParser:

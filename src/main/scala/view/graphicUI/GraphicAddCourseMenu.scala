@@ -1,6 +1,5 @@
 package view.graphicUI
 
-
 import controller.AddCourseMenuController.{AddCourseAction, Back}
 import view.AddCourseMenuView.{CourseAddedUpdate, CoursePrintUpdate}
 import javafx.fxml.FXML

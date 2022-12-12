@@ -3,9 +3,6 @@ package utils.parser
 /** Object with Json Labels constants for CourseParser */
 object JsonLabels:
 
-  // Player
-  val PlayerNameLabel: String = "playerName"
-
   // PlayerStats
   val PlayerStatsLabel: String = "playerStats"
   val TotalScoreLabel: String = "totalScore"
@@ -13,11 +10,6 @@ object JsonLabels:
   val TotalCorrectAnswersLabel: String = "totalCorrectAnswers"
   val TotalAnswerPrecisionLabel: String = "totalAnswerPrecision"
   val TotalAverageTimeAnswerLabel: String = "totalAverageTimeAnswer"
-  val CourseInStatsListLabel: String = "courseInStatsList"
-
-  // CourseInStats
-  val CourseLabel: String = "course"
-  val QuizInStatsListLabel: String = "quizInStatsList"
 
   // QuizInStats
   val TotalSeenLabel: String = "totalSeen"
@@ -43,6 +35,3 @@ object JsonLabels:
   val AnswerListLabel: String = "answerList"
   val TextLabel: String = "text"
   val IsCorrectLabel: String = "isCorrect"
-
-
-

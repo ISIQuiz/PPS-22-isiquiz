@@ -19,13 +19,13 @@ import model.stats.PlayerStats
 import utils.storage.ExportHandler
 import utils.{TerminalInput, TerminalInputImpl, Timer}
 import view.terminalUI.TerminalStandardGameMenu
-
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
 /** Companion object of standard game controller */
 object StandardGameController extends BackAction :
+
   /** action to select an answer in the controller of a standard game */
   case class SelectAnswer[T](override val actionParameter: Option[T]) extends Action(actionParameter)
 
@@ -39,7 +39,7 @@ object StandardGameController extends BackAction :
     standardGameController
 
   def isGameStagePlayable(gameStage: GameStage): Boolean = gameStage.coursesInGame.nonEmpty && gameStage.coursesInGame.forall( course =>
-    course.quizList.nonEmpty && course.quizList.forall(quiz => 
+    course.quizList.nonEmpty && course.quizList.forall(quiz =>
     quiz.answerList.exists(_.isCorrect) && quiz.answerList.count(!_.isCorrect)>=3))
 
 /** Defines the logic of the select page */
@@ -71,7 +71,6 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
         currentScore = updateScore(timer.getRemainingTime.toInt, timer.maxTimeInSeconds, gameStage.quizInGame.quiz.maxScore)
         sendUpdate(QuizScoreUpdate(Option(currentScore)))
 
-
   def selectAnswer[T](actionParameter: Option[T]): Unit =
     currentTime = timer.getTime
     timer.stopTimer()
@@ -92,7 +91,6 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
       case _ =>
         gameStage.addReviewQuizNotAnswered()
         gameStage.addQuizToStats(false, 0, 0)
-
     if gameStage.maxQuizzesReached then endGame(gameStage)
     currentAnswer = None
     currentScore = 0

@@ -1,9 +1,10 @@
+package model
 
 import model.Answer.*
 import model.Quiz.Quiz
 import model.QuizInGame
 import model.QuizAnswered
-import model.Course 
+import model.Course
 import model.Review
 import model.GameStage
 import model.SavedCourse.SavedCourse

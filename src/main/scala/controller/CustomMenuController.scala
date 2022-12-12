@@ -8,7 +8,6 @@ import model.settings.GameSettings
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import view.View
 import view.CustomMenuView.*
-
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration

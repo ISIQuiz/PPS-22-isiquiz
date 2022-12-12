@@ -123,7 +123,6 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
     case TimeExpiredUpdate =>
       disableButton(answerButtons)
 
-
   def resetAnswerButton(buttons: List[Button]): Unit =
     buttons.foreach(button =>
       button.getStyleClass.remove("correct-answer");

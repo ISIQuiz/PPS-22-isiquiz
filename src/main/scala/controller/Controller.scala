@@ -2,7 +2,6 @@ package controller
 
 import controller.actions.Action
 import view.updates.ViewUpdate
-
 import concurrent.ExecutionContext.Implicits.global
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Promise

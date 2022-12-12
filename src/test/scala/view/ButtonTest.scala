@@ -8,5 +8,4 @@ trait ButtonTest:
 
   protected def testButton(button: Button, buttonText: String)(robot: FxRobot): Unit =
     Assertions.assertThat(button).isVisible
-    Assertions.assertThat(button).isEnabled
     Assertions.assertThat(button).hasText(buttonText)

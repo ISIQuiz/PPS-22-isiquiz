@@ -5,6 +5,7 @@ import model.SavedCourse.SavedCourse
 import view.updates.{DefaultUpdate, ParameterlessViewUpdate, ViewUpdate}
 
 object AddQuizMenuView extends DefaultUpdate:
+
   /** Update for the view containing the list of current curses  */
   case class CourseListUpdate(override val updateParameter: Option[List[SavedCourse]]) extends ViewUpdate(updateParameter)
 

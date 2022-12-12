@@ -26,13 +26,3 @@ class JsonParserTest extends AnyFunSuite:
       case Success(p) => p.equals(playerStats)
       case _ => fail()
   }
-
-  test("Test if JSON merge is correct"){
-    val merged = JsonParser.toString(JsonParser.merge(statsJsonParser.serialize(playerStats), courseJsonParser.serialize(savedCourseList)))
-    
-    statsJsonParser.deserialize(merged) match
-      case Success(p) => p.equals(playerStats)
-
-    courseJsonParser.deserialize(merged) match
-      case Success(s) => s.equals(savedCourseList)
-  }

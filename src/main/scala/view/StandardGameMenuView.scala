@@ -5,6 +5,7 @@ import utils.Timer
 import view.updates.{DefaultUpdate, ParameterlessViewUpdate, ViewUpdate}
 
 object StandardGameMenuView extends DefaultUpdate :
+
   /** Update for the view containing the current GameStage */
   case class CurrentGameUpdate(override val updateParameter: Option[GameStage]) extends ViewUpdate(updateParameter)
 

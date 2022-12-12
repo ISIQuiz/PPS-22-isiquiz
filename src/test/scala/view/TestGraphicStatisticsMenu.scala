@@ -42,7 +42,3 @@ class TestGraphicStatisticsMenu extends ViewTest with ButtonTest with LabelTest:
 
   @Test def testTotalAverageTimeAnswerLabel(robot: FxRobot): Unit =
     testLabel(graphicStatisticsMenu.totalAverageTimeAnswerLabel)(robot)
-
-
-
-

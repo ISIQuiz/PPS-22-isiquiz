@@ -23,11 +23,9 @@ class TestGraphicMainMenu extends ViewTest with ButtonTest:
     stage.scene = Scene(1280, 720)
     graphicMainMenu = new GraphicMainMenu(stage)
 
-
   @Test def testSelectButton(robot: FxRobot): Unit =
     testButton(graphicMainMenu.selectButton, "Gioca")(robot)
 
-  // TODO: Maybe remove
   @Test def testSelectButtonClick(robot: FxRobot): Unit =
     robot.clickOn(graphicMainMenu.selectButton)
 

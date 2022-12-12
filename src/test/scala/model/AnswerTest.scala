@@ -2,7 +2,6 @@ package model
 
 import model.Answer.*
 import org.scalatest.funsuite.AnyFunSuite
-
 import java.util.UUID
 
 /** Tests for the [[Answer]] object */

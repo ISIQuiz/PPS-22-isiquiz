@@ -14,7 +14,6 @@ import javafx.scene.layout.VBox
 import model.QuizAnswered
 import scalafx.geometry.Insets
 import scalafx.scene.layout.Pane
-
 import scala.util.Try
 
 object GraphicReviewMenu

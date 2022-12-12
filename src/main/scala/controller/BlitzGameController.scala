@@ -13,7 +13,6 @@ import view.StandardGameMenuView.*
 import view.View
 import view.terminalUI.TerminalStandardGameMenu
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Promise}

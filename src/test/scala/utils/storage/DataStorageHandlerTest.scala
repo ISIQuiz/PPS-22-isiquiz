@@ -9,7 +9,6 @@ import model.CourseIdentifier.*
 import org.scalatest.funsuite.AnyFunSuite
 import utils.storage.Configuration.{HomeDirectoryPath, PlayerCoursesFilePath}
 import utils.storage.DataStorageHandler
-
 import java.io.FileNotFoundException
 import java.util.UUID
 import scala.util.{Failure, Success}
@@ -95,4 +94,3 @@ class DataStorageHandlerTest extends AnyFunSuite:
     // Check
     assert(sclSolutionWanted.equals(sclJoined))
   }
-

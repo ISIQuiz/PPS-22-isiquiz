@@ -9,14 +9,13 @@ import model.stats.PlayerStats.{initStats, mergePlayerStats, removeUnusedStats}
 import model.stats.QuizInStats.QuizInStats
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
-
 import java.util.UUID
 
 class PlayerStatsTest extends AnyFunSuite with Matchers:
 
   val playerStats = initStats
-  val ci = CourseIdentifier("courseName", "degreeName", "universityName")
 
+  val ci = CourseIdentifier("courseName", "degreeName", "universityName")
 
   test("Test default PlayerStats") {
     playerStats shouldEqual initStats
@@ -38,7 +37,6 @@ class PlayerStatsTest extends AnyFunSuite with Matchers:
     playerStatsChanged.totalCorrectAnswers shouldEqual 3
   }
 
-
   test("Test change total answer precision") {
     val playerStatsChanged = PlayerStats.changeTotalAnswerPrecision(playerStats, 4)
     playerStatsChanged.totalAnswerPrecision shouldEqual 4
@@ -58,7 +56,6 @@ class PlayerStatsTest extends AnyFunSuite with Matchers:
   val quiz1 = QuizInStats(UUID.fromString("00000000-0000-0000-0000-000000000002"), totalSeen = 4, totalScore = 2, totalRightAnswers = 2, averageTimeAnswer = 2)
   val quiz2 = QuizInStats(UUID.fromString("00000000-0000-0000-0000-000000000002"), totalSeen = 4, totalScore = 4, totalRightAnswers = 4, averageTimeAnswer = 4)
 
-
   import model.stats.PlayerStats.PlayerStats
 
   test("Test derived stats and merge") {
@@ -71,9 +68,7 @@ class PlayerStatsTest extends AnyFunSuite with Matchers:
     assert(mergedList.equals(resultWanted))
   }
 
-
   val quiz3 = QuizInStats(UUID.fromString("00000000-0000-0000-0000-000000000003"), totalSeen = 6, totalScore = 1, totalRightAnswers = 2, averageTimeAnswer = 5)
-
 
   test("Test remove unused stats") {
 
@@ -87,6 +82,3 @@ class PlayerStatsTest extends AnyFunSuite with Matchers:
 
     newPlayerStats shouldEqual wantedResult
   }
-
-
-

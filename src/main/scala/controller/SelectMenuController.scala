@@ -10,7 +10,6 @@ import model.{GameStage, QuizInGame, Session}
 import model.Session.Session
 import model.GameStage.*
 import view.SelectMenuView.*
-
 import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.{Await, Promise}
@@ -33,13 +32,13 @@ class SelectMenuController extends PageController:
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(AppController.MainMenuAction)
-    case Start => if StandardGameController.isGameStagePlayable(gameStage) then 
+    case Start => if StandardGameController.isGameStagePlayable(gameStage) then
       AppController.handle(AppController.StandardGameAction(Option(gameStage)))
       else sendUpdate(CourseUnplayableUpdate)
-    case Blitz => if BlitzGameController.isGameStagePlayable(gameStage) then 
+    case Blitz => if BlitzGameController.isGameStagePlayable(gameStage) then
       AppController.handle(AppController.BlitzGameAction(Option(gameStage)))
       else sendUpdate(CourseUnplayableUpdate)
-    case Custom => if StandardGameController.isGameStagePlayable(gameStage) then 
+    case Custom => if StandardGameController.isGameStagePlayable(gameStage) then
       AppController.handle(AppController.CustomMenuAction(Option(gameStage)))
       else sendUpdate(CourseUnplayableUpdate)
     case Selection(actionParameter) => modifySelectedCourses(actionParameter)
