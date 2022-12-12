@@ -27,7 +27,7 @@
 </span>3 <span style=''>import model.Answer.Answer
 </span>4 <span style=''>import model.Quiz.Quiz
 </span>5 <span style=''>import model.SavedCourse.SavedCourse
-</span>6 <span style=''>import model.{Session}
+</span>6 <span style=''>import model.Session
 </span>7 <span style=''>import model.Session.*
 </span>8 <span style=''>import model.stats.PlayerStats.{PlayerStats, initStats}
 </span>9 <span style=''>import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
@@ -51,43 +51,40 @@
 </span>27 <span style=''>        val newSessionCourses = </span><span style='background: #AEF1AE'>Session.changeSavedCourses(session, savedCourseList)</span><span style=''> // update Session saved course list
 </span>28 <span style=''>        </span><span style='background: #AEF1AE'>importPlayerStatsFromPersonalDirectory(newSessionCourses)</span><span style=''>
 </span>29 <span style=''>      </span><span style='background: #F0ADAD'>case Failure(f)</span><span style=''> =&gt; // Failed to parse savedCourse from file, store passed session to file
-</span>30 <span style=''>        </span><span style='background: #F0ADAD'>println(&quot;courses and maybe stats do not exists, created default session&quot;)</span><span style=''>
-</span>31 <span style=''>        </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(session)</span><span style=''>
-</span>32 <span style=''>        Failure(f)
+</span>30 <span style=''>        </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(session)</span><span style=''>
+</span>31 <span style=''>        Failure(f)
+</span>32 <span style=''>
 </span>33 <span style=''>
-</span>34 <span style=''>
-</span>35 <span style=''>  /**
-</span>36 <span style=''>   * Import [[PlayerStats]] from personal directory.
-</span>37 <span style=''>   * Path and name are predetermined in [[Configuration]]
-</span>38 <span style=''>   *
-</span>39 <span style=''>   * @param session
-</span>40 <span style=''>   * @return an updated Try[Session]
-</span>41 <span style=''>   */
-</span>42 <span style=''>  </span><span style='background: #AEF1AE'>private def importPlayerStatsFromPersonalDirectory</span><span style=''>(session: Session): Try[Session] =
-</span>43 <span style=''>  // Load player stats and deserialize the JSON string in PlayerStats
-</span>44 <span style=''>    </span><span style='background: #AEF1AE'>loadDataFromFile(StatsJsonParser(), PlayerStatsFilePath)</span><span style=''> match
-</span>45 <span style=''>      </span><span style='background: #AEF1AE'>case Success(playerStats: PlayerStats)</span><span style=''> =&gt; // Success import courses and stats from file
-</span>46 <span style=''>        </span><span style='background: #AEF1AE'>println(&quot;courses and stats imported from player data&quot;)</span><span style=''>
-</span>47 <span style=''>        Success(</span><span style='background: #AEF1AE'>Session.changePlayerStats(session, playerStats)</span><span style=''>)
-</span>48 <span style=''>      </span><span style='background: #F0ADAD'>case Failure(f)</span><span style=''> =&gt; // Failed to parse player stats, reset player stats to 0
-</span>49 <span style=''>        </span><span style='background: #F0ADAD'>println(&quot;stats do not exist, created file with init stats to 0&quot;)</span><span style=''>
-</span>50 <span style=''>        </span><span style='background: #F0ADAD'>storeDataToPath(initStats, PlayerStatsFilePath)</span><span style=''>
-</span>51 <span style=''>        Failure(f)
-</span>52 <span style=''>
-</span>53 <span style=''>  /**
-</span>54 <span style=''>   * Import the list of [[SavedCourse]] from chosen file,
-</span>55 <span style=''>   * and merges it with the saved course list of the passed session.
-</span>56 <span style=''>   * Name of the file is predetermined in [[Configuration]]
-</span>57 <span style=''>   *
-</span>58 <span style=''>   * @param session
-</span>59 <span style=''>   * @param filePath
-</span>60 <span style=''>   * @return a Try of List[SavedCourse]
-</span>61 <span style=''>   */
-</span>62 <span style=''>  </span><span style='background: #AEF1AE'>def importSavedCourseListFromFile</span><span style=''>(session: Session, filePath: String): Try[List[SavedCourse]] =
-</span>63 <span style=''>    </span><span style='background: #AEF1AE'>for
-</span>64 <span style=''></span><span style='background: #AEF1AE'>      savedCourseList &lt;- loadDataFromFile(CourseJsonParser(), filePath)
-</span>65 <span style=''></span><span style='background: #AEF1AE'>    yield
-</span>66 <span style=''></span><span style='background: #AEF1AE'>      </span><span style='background: #F0ADAD'>DataStorageHandler.mergeSavedCourseLists(session.savedCourses, savedCourseList)</span><span style=''>
+</span>34 <span style=''>  /**
+</span>35 <span style=''>   * Import [[PlayerStats]] from personal directory.
+</span>36 <span style=''>   * Path and name are predetermined in [[Configuration]]
+</span>37 <span style=''>   *
+</span>38 <span style=''>   * @param session
+</span>39 <span style=''>   * @return an updated Try[Session]
+</span>40 <span style=''>   */
+</span>41 <span style=''>  </span><span style='background: #AEF1AE'>private def importPlayerStatsFromPersonalDirectory</span><span style=''>(session: Session): Try[Session] =
+</span>42 <span style=''>  // Load player stats and deserialize the JSON string in PlayerStats
+</span>43 <span style=''>    </span><span style='background: #AEF1AE'>loadDataFromFile(StatsJsonParser(), PlayerStatsFilePath)</span><span style=''> match
+</span>44 <span style=''>      </span><span style='background: #AEF1AE'>case Success(playerStats: PlayerStats)</span><span style=''> =&gt; // Success import courses and stats from file
+</span>45 <span style=''>        Success(</span><span style='background: #AEF1AE'>Session.changePlayerStats(session, playerStats)</span><span style=''>)
+</span>46 <span style=''>      </span><span style='background: #F0ADAD'>case Failure(f)</span><span style=''> =&gt; // Failed to parse player stats, reset player stats to 0
+</span>47 <span style=''>        </span><span style='background: #F0ADAD'>storeDataToPath(initStats, PlayerStatsFilePath)</span><span style=''>
+</span>48 <span style=''>        Failure(f)
+</span>49 <span style=''>
+</span>50 <span style=''>  /**
+</span>51 <span style=''>   * Import the list of [[SavedCourse]] from chosen file,
+</span>52 <span style=''>   * and merges it with the saved course list of the passed session.
+</span>53 <span style=''>   * Name of the file is predetermined in [[Configuration]]
+</span>54 <span style=''>   *
+</span>55 <span style=''>   * @param session
+</span>56 <span style=''>   * @param filePath
+</span>57 <span style=''>   * @return a Try of List[SavedCourse]
+</span>58 <span style=''>   */
+</span>59 <span style=''>  </span><span style='background: #AEF1AE'>def importSavedCourseListFromFile</span><span style=''>(session: Session, filePath: String): Try[List[SavedCourse]] =
+</span>60 <span style=''>    </span><span style='background: #AEF1AE'>for
+</span>61 <span style=''></span><span style='background: #AEF1AE'>      savedCourseList &lt;- loadDataFromFile(CourseJsonParser(), filePath)
+</span>62 <span style=''></span><span style='background: #AEF1AE'>    yield
+</span>63 <span style=''></span><span style='background: #AEF1AE'>      </span><span style='background: #F0ADAD'>DataStorageHandler.mergeSavedCourseLists(session.savedCourses, savedCourseList)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -105,12 +102,12 @@
           22
         </td>
         <td>
-          1271
+          1278
         </td>
         <td>
-          708
+          706
           -
-          746
+          744
         </td>
         <td>
           DefDef
@@ -129,12 +126,12 @@
           24
         </td>
         <td>
-          1264
+          1272
         </td>
         <td>
-          864
+          862
           -
-          923
+          921
         </td>
         <td>
           Apply
@@ -153,12 +150,12 @@
           24
         </td>
         <td>
-          1263
+          1271
         </td>
         <td>
-          881
+          879
           -
-          899
+          897
         </td>
         <td>
           Apply
@@ -177,12 +174,12 @@
           25
         </td>
         <td>
-          1267
+          1275
         </td>
         <td>
-          936
+          934
           -
-          984
+          982
         </td>
         <td>
           Block
@@ -201,12 +198,12 @@
           26
         </td>
         <td>
-          1265
+          1273
         </td>
         <td>
-          1054
+          1052
           -
-          1106
+          1104
         </td>
         <td>
           Apply
@@ -225,12 +222,12 @@
           27
         </td>
         <td>
-          1266
+          1274
         </td>
         <td>
-          1151
+          1149
           -
-          1208
+          1206
         </td>
         <td>
           Apply
@@ -249,12 +246,12 @@
           28
         </td>
         <td>
-          1270
+          1277
         </td>
         <td>
-          1215
+          1213
           -
-          1230
+          1228
         </td>
         <td>
           Block
@@ -273,36 +270,12 @@
           29
         </td>
         <td>
-          1268
+          1276
         </td>
         <td>
-          1313
+          1311
           -
-          1386
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          println
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          println(&quot;courses and maybe stats do not exists, created default session&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          1269
-        </td>
-        <td>
-          1395
-          -
-          1447
+          1363
         </td>
         <td>
           Apply
@@ -318,15 +291,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          40
         </td>
         <td>
-          1281
+          1286
         </td>
         <td>
-          1656
+          1572
           -
-          1706
+          1622
         </td>
         <td>
           DefDef
@@ -342,15 +315,39 @@
         </td>
       </tr><tr>
         <td>
-          43
+          42
         </td>
         <td>
-          1273
+          1279
         </td>
         <td>
-          1815
+          1748
           -
-          1871
+          1765
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          StatsJsonParser()
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          1280
+        </td>
+        <td>
+          1731
+          -
+          1787
         </td>
         <td>
           Apply
@@ -369,36 +366,12 @@
           43
         </td>
         <td>
-          1272
+          1282
         </td>
         <td>
-          1832
+          1800
           -
-          1849
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          StatsJsonParser()
-        </td>
-      </tr><tr>
-        <td>
-          44
-        </td>
-        <td>
-          1276
-        </td>
-        <td>
-          1884
-          -
-          1922
+          1838
         </td>
         <td>
           Block
@@ -414,39 +387,15 @@
         </td>
       </tr><tr>
         <td>
-          45
+          44
         </td>
         <td>
-          1274
+          1281
         </td>
         <td>
-          1980
+          1904
           -
-          2034
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          println
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          println(&quot;courses and stats imported from player data&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          1275
-        </td>
-        <td>
-          2051
-          -
-          2098
+          1951
         </td>
         <td>
           Apply
@@ -462,15 +411,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          45
         </td>
         <td>
-          1280
+          1285
         </td>
         <td>
-          2106
+          1959
           -
-          2121
+          1974
         </td>
         <td>
           Block
@@ -486,39 +435,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          46
         </td>
         <td>
-          1277
+          1284
         </td>
         <td>
-          2190
+          2043
           -
-          2254
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          println
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          println(&quot;stats do not exist, created file with init stats to 0&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          49
-        </td>
-        <td>
-          1279
-        </td>
-        <td>
-          2263
-          -
-          2310
+          2090
         </td>
         <td>
           Apply
@@ -534,15 +459,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          46
         </td>
         <td>
-          1278
+          1283
         </td>
         <td>
-          2279
+          2059
           -
-          2288
+          2068
         </td>
         <td>
           Ident
@@ -558,15 +483,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          58
         </td>
         <td>
-          1286
+          1291
         </td>
         <td>
-          2618
+          2398
           -
-          2651
+          2431
         </td>
         <td>
           DefDef
@@ -582,15 +507,15 @@
         </td>
       </tr><tr>
         <td>
-          62
+          59
         </td>
         <td>
-          1285
+          1290
         </td>
         <td>
-          2718
+          2498
           -
-          2889
+          2669
         </td>
         <td>
           Apply
@@ -609,39 +534,15 @@
         </td>
       </tr><tr>
         <td>
-          63
+          60
         </td>
         <td>
-          1282
+          1288
         </td>
         <td>
-          2764
+          2527
           -
-          2782
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          CourseJsonParser()
-        </td>
-      </tr><tr>
-        <td>
-          63
-        </td>
-        <td>
-          1283
-        </td>
-        <td>
-          2747
-          -
-          2793
+          2573
         </td>
         <td>
           Apply
@@ -657,15 +558,39 @@
         </td>
       </tr><tr>
         <td>
-          65
+          60
         </td>
         <td>
-          1284
+          1287
         </td>
         <td>
-          2810
+          2544
           -
-          2889
+          2562
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          CourseJsonParser()
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          1289
+        </td>
+        <td>
+          2590
+          -
+          2669
         </td>
         <td>
           Apply

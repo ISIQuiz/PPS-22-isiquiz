@@ -57,13 +57,15 @@
 </span>33 <span style=''>    </span><span style='background: #F0ADAD'>case Select</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(SelectMenuAction)</span><span style=''>
 </span>34 <span style=''>    </span><span style='background: #F0ADAD'>case Statistics</span><span style=''> =&gt;
 </span>35 <span style=''>      // Remove unused player stats and export it
-</span>36 <span style=''>      </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(removeUnusedStats(session.savedCourses, session.playerStats))</span><span style=''>
-</span>37 <span style=''>      </span><span style='background: #F0ADAD'>AppController.handle(StatisticsMenuAction)</span><span style=''>
-</span>38 <span style=''>    </span><span style='background: #F0ADAD'>case Settings</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(SettingsMenuAction)</span><span style=''>
-</span>39 <span style=''>    </span><span style='background: #F0ADAD'>case Quit</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>System.exit(0)</span><span style=''>
-</span>40 <span style=''>
-</span>41 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>42 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
+</span>36 <span style=''>      val cleanPlayerStats = </span><span style='background: #F0ADAD'>removeUnusedStats(session.savedCourses, session.playerStats)</span><span style=''>
+</span>37 <span style=''>      </span><span style='background: #F0ADAD'>AppController.changePlayerStats(cleanPlayerStats)</span><span style=''>
+</span>38 <span style=''>      </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(cleanPlayerStats)</span><span style=''>
+</span>39 <span style=''>      </span><span style='background: #F0ADAD'>AppController.handle(StatisticsMenuAction)</span><span style=''>
+</span>40 <span style=''>    </span><span style='background: #F0ADAD'>case Settings</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(SettingsMenuAction)</span><span style=''>
+</span>41 <span style=''>    </span><span style='background: #F0ADAD'>case Quit</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>System.exit(0)</span><span style=''>
+</span>42 <span style=''>
+</span>43 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
+</span>44 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -81,7 +83,7 @@
           21
         </td>
         <td>
-          339
+          345
         </td>
         <td>
           740
@@ -105,7 +107,7 @@
           22
         </td>
         <td>
-          340
+          346
         </td>
         <td>
           793
@@ -129,7 +131,7 @@
           23
         </td>
         <td>
-          341
+          347
         </td>
         <td>
           844
@@ -153,7 +155,7 @@
           24
         </td>
         <td>
-          342
+          348
         </td>
         <td>
           891
@@ -177,7 +179,7 @@
           31
         </td>
         <td>
-          355
+          362
         </td>
         <td>
           1042
@@ -201,7 +203,7 @@
           32
         </td>
         <td>
-          343
+          349
         </td>
         <td>
           1124
@@ -225,7 +227,7 @@
           32
         </td>
         <td>
-          344
+          350
         </td>
         <td>
           1109
@@ -249,7 +251,7 @@
           33
         </td>
         <td>
-          350
+          357
         </td>
         <td>
           1167
@@ -273,12 +275,12 @@
           35
         </td>
         <td>
-          346
+          352
         </td>
         <td>
-          1326
+          1305
           -
-          1333
+          1312
         </td>
         <td>
           Ident
@@ -297,12 +299,12 @@
           35
         </td>
         <td>
-          345
+          351
         </td>
         <td>
-          1304
+          1283
           -
-          1311
+          1290
         </td>
         <td>
           Ident
@@ -321,36 +323,12 @@
           35
         </td>
         <td>
-          348
+          353
         </td>
         <td>
-          1242
+          1265
           -
-          1347
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          exportDataToPersonalDirectory
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ExportHandler.exportDataToPersonalDirectory(removeUnusedStats(session.savedCourses, session.playerStats))
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          347
-        </td>
-        <td>
-          1286
-          -
-          1346
+          1325
         </td>
         <td>
           Apply
@@ -369,12 +347,60 @@
           36
         </td>
         <td>
-          349
+          354
         </td>
         <td>
-          1354
+          1332
           -
-          1396
+          1381
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          changePlayerStats
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.changePlayerStats(cleanPlayerStats)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          355
+        </td>
+        <td>
+          1388
+          -
+          1449
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          exportDataToPersonalDirectory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ExportHandler.exportDataToPersonalDirectory(cleanPlayerStats)
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          356
+        </td>
+        <td>
+          1456
+          -
+          1498
         </td>
         <td>
           Apply
@@ -390,39 +416,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          39
         </td>
         <td>
-          352
+          358
         </td>
         <td>
-          1401
+          1520
           -
-          1414
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case Settings
-        </td>
-      </tr><tr>
-        <td>
-          37
-        </td>
-        <td>
-          351
-        </td>
-        <td>
-          1418
-          -
-          1458
+          1560
         </td>
         <td>
           Apply
@@ -438,15 +440,39 @@
         </td>
       </tr><tr>
         <td>
-          38
+          39
         </td>
         <td>
-          354
+          359
         </td>
         <td>
-          1463
+          1503
           -
-          1472
+          1516
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case Settings
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          361
+        </td>
+        <td>
+          1565
+          -
+          1574
         </td>
         <td>
           Block
@@ -462,15 +488,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          40
         </td>
         <td>
-          353
+          360
         </td>
         <td>
-          1476
+          1578
           -
-          1490
+          1592
         </td>
         <td>
           Apply
@@ -486,15 +512,15 @@
         </td>
       </tr><tr>
         <td>
-          40
+          42
         </td>
         <td>
-          357
+          364
         </td>
         <td>
-          1494
+          1596
           -
-          1520
+          1622
         </td>
         <td>
           DefDef
@@ -510,15 +536,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          43
         </td>
         <td>
-          356
+          363
         </td>
         <td>
-          1535
+          1637
           -
-          1560
+          1662
         </td>
         <td>
           Apply
