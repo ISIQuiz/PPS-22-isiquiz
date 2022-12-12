@@ -6,7 +6,6 @@ import utils.storage.Configuration.PlayerCoursesFilePath
 import utils.storage.DefaultDataList.defaultCourseList
 import utils.parser.CourseJsonParser
 import utils.storage.{DefaultDataList, FileHandler}
-
 import scala.util.{Failure, Success, Try}
 
 /**

@@ -9,7 +9,6 @@ import model.SavedCourse.SavedCourse
 import utils.storage.ImportHandler.importSessionFromPersonalDirectory
 import view.View
 import view.View.{PageView, TerminalView, ViewFactory}
-
 import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
 import scala.concurrent.duration.TimeUnit
 import scala.util.{Failure, Success}
@@ -20,12 +19,12 @@ object AppController extends Controller:
   private var _currentPage: Page[PageController, PageView] = Page[PageController, PageView](new MainMenuController, ViewFactory.create(MainMenuAction))
   def currentPage: Page[PageController, PageView] = _currentPage
   def currentPage_(pageController: PageController, pageView: PageView): Unit = _currentPage = Page[PageController, PageView](pageController, pageView)
-  
+
   import model.Session.*
-  // Init var session with a default saved course list
+
   private var _session: Session = Session()
   def session: Session = _session
-  
+
   import model.Session
   def changeSavedCourses(savedCourses: List[SavedCourse]): Unit = _session = Session.changeSavedCourses(session, savedCourses)
   def changePlayerStats(playerStats: PlayerStats): Unit = _session = Session.changePlayerStats(session, playerStats)

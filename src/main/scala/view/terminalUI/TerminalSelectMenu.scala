@@ -42,7 +42,6 @@ class TerminalSelectMenu extends TerminalView:
           val courseSelection = if courseToPrint.isSelected then "X" else " "
           val courseName = courseToPrint.savedCourse.courseId.courseName
           val courseQuizzesNumber = courseToPrint.savedCourse.quizList.size
-
           println(s"${courseIndex}) [${courseSelection}] ${courseName} (${courseQuizzesNumber} quiz)")
           actionsMap += (courseIndex.toString -> SelectMenuController.Selection(Option(courseIndex)))
         )

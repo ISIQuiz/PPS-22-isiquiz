@@ -10,7 +10,9 @@ import org.scalatest.matchers.should.Matchers
 class ReviewTest extends AnyFunSuite with Matchers:
 
   val course: Course = Course(CourseIdentifier("courseName", "s", "s"))
+
   val quizInGame: QuizInGame = QuizInGame(course,Quiz(question = "question", List(Answer("ans", false)), maxScore = 10), List(Answer("ansSelected", true)))
+
   val quizAnswered: QuizAnswered = QuizAnswered(quizInGame,None)
 
   val review: Review = Review()
@@ -34,5 +36,4 @@ class ReviewTest extends AnyFunSuite with Matchers:
     val quizAnswered2: QuizAnswered = QuizAnswered(quizInGame,Option(Answer("ans", true)))
     review.addQuizAnswered(quizAnswered2)
     review.numberQuizAnswered shouldEqual 2
-
   }

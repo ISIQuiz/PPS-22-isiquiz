@@ -11,15 +11,16 @@ import model.GameStage.*
 import utils.storage.ExportHandler
 import view.AddQuizMenuView.*
 import view.updates.ViewUpdate
-
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.Duration
 
 /** Companion object of add quiz menu controller */
 object AddQuizMenuController extends BackAction:
+
   /** action to select a course in the add quiz controller */
   case class SelectCourseAction(override val actionParameter: Option[SavedCourse]) extends Action(actionParameter)
+
   /** action to add a quiz in the course selected in the add quiz controller */
   case class AddQuizAction(override val actionParameter: Option[Quiz]) extends Action(actionParameter)
 
@@ -53,4 +54,3 @@ class AddQuizMenuController extends PageController :
     sendUpdate(QuizPrintUpdate(quizToAdd))
     sendUpdate(QuizAddedUpdate)
     courseSelected = None
-

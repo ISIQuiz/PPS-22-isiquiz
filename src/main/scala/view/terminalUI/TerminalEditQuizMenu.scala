@@ -9,7 +9,6 @@ import model.SavedCourse.SavedCourse
 import view.EditQuizMenuView.*
 import view.View.*
 import view.updates.ViewUpdate
-
 import scala.collection.mutable.Map
 import scala.io.StdIn.readLine
 
@@ -20,7 +19,7 @@ class TerminalEditQuizMenu extends TerminalView:
 
   var courseList: List[SavedCourse] = Nil
   var quizList: List[Quiz] = Nil
-  
+
   override val actionsMap: Map[String, Action[Any]] = Map(
     "1" -> Back
   )

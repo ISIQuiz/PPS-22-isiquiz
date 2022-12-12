@@ -3,7 +3,6 @@ package model
 import model.CourseIdentifier.CourseIdentifier
 import model.Course.*
 import org.scalatest.funsuite.AnyFunSuite
-
 import java.util.UUID
 
 /** Tests for the [[Course]] object */

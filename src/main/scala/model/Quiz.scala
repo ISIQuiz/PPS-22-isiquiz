@@ -2,7 +2,6 @@ package model
 
 import model.Answer.*
 import model.Quiz.*
-
 import java.util.UUID
 
 /**

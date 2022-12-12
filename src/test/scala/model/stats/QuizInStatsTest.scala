@@ -16,7 +16,7 @@ class QuizInStatsTest extends AnyFunSuite with Matchers :
   }
 
   import model.stats.QuizInStats
-  
+
   test("Test change total seen") {
     val quizInStatsChanged = QuizInStats.changeTotalSeen(quizInStats, 1)
     quizInStatsChanged.totalSeen shouldEqual 1

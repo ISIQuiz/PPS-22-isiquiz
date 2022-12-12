@@ -29,7 +29,6 @@ object CancellableFuture:
           _.interrupt()
         }
       }
-//      p.tryFailure(new CancellationException)
       true
     })
   }

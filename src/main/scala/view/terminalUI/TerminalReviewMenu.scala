@@ -8,7 +8,6 @@ import model.SavedCourse
 import view.ReviewMenuView.*
 import view.View.*
 import view.updates.ViewUpdate
-
 import java.util.UUID
 import scala.io.StdIn.readLine
 import scala.collection.mutable.Map

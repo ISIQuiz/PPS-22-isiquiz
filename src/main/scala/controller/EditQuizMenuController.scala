@@ -9,7 +9,6 @@ import model.SavedCourse.*
 import utils.storage.ExportHandler
 import view.EditQuizMenuView.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration

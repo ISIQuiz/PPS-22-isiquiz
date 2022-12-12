@@ -5,7 +5,6 @@ import controller.StatisticsMenuController.*
 import controller.actions.Action
 import view.View.TerminalView
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-
 import scala.collection.mutable.Map
 
 object TerminalStatisticsMenu:

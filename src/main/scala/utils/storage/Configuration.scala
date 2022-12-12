@@ -5,14 +5,8 @@ import java.io.File
 /** Object containing some base configurations */
 object Configuration:
 
-  ///** Saved courses JSON file path */
-  //val PlayerCoursesFileResource: String = "sample_saved_courses.json"
-
   /** File separator */
   val FileSeparator: String = File.separator
-
-  ///** File name of the player data */
-  //val PlayerSessionFileName: String = "player_session.json"
 
   /** File name of the player courses */
   val PlayerCoursesFileName: String = "player_courses.json"
@@ -28,8 +22,6 @@ object Configuration:
 
   /** Current directory path */
   val CurrentDirectoryPath: String = System.getProperty("user.dir")
-  
-  //val SessionFilePath: String = CurrentDirectoryPath + FileSeparator + PlayerDataDirectoryName + FileSeparator + PlayerSessionFileName
 
   /** Directory path of the player data */
   val PlayerDataDirectoryPath: String = CurrentDirectoryPath + FileSeparator + PlayerDataDirectoryName

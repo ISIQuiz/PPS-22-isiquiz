@@ -13,7 +13,6 @@ import javafx.stage.FileChooser.ExtensionFilter
 import javafx.stage.{DirectoryChooser, FileChooser, Stage}
 import utils.storage.Configuration.{CurrentDirectoryPath, HomeDirectoryPath, PlayerCoursesFileName}
 import utils.storage.{ExportHandler, ImportHandler}
-
 import java.io.File
 import scala.util.{Failure, Success}
 

@@ -6,7 +6,7 @@ import model.CourseIdentifier.CourseIdentifier
  * Trait for a course
  */
 trait Course:
-  
+
   /**
    * @return the course identifier
    */

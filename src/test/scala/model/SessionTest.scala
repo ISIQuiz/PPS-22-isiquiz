@@ -12,6 +12,7 @@ import utils.storage.DefaultDataList
 class SessionTest extends AnyFunSuite with Matchers:
 
   import model.Session.*
+
   val session = Session(defaultCourseList, initStats)
 
   test("Creation Session") {

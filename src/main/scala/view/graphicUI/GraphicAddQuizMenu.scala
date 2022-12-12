@@ -1,6 +1,5 @@
 package view.graphicUI
 
-
 import com.sun.javafx.scene.control.IntegerField
 import controller.AddQuizMenuController.{SelectCourseAction, Back}
 import javafx.application.Platform
@@ -20,14 +19,12 @@ import utils.GUILoader.loadGUI
 import view.AddQuizMenuView.*
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
-
 import scala.collection.mutable.ListBuffer
 
 object GraphicAddQuizMenu
 
 /** add quiz menu graphic interface  */
 class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
-
 
   val toggleGroup: ToggleGroup = ToggleGroup()
 
@@ -106,7 +103,6 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
       while answersVBox.getChildren.size()>0 do answersVBox.getChildren.remove(0)
       addAnswerGUI()
     case _ => {}
-
 
   private def checkInputs: Boolean =
     questionTextField.getText.nonEmpty && scoreIntegerField.getText().toIntOption.nonEmpty && checkSelections

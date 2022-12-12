@@ -16,7 +16,7 @@ class SavedCourseTest extends AnyFunSuite with Matchers:
   val q2 = Quiz(question = "quiz2", answerList = ansList, maxScore = 13, imagePath = Some("image2.png"))
   val q3 = Quiz(question = "quiz3", answerList = ansList, maxScore = 8, imagePath = Some("image3.png"))
   val q4 = Quiz(question = "quiz4", answerList = ansList, maxScore = 20, imagePath = Some("image4.png"))
-  
+
   /* Simple list of SavedQuiz */
   val quizList = List(q1, q2, q3, q4)
 

@@ -10,7 +10,6 @@ import model.stats.QuizInStats.QuizInStats
 import view.View
 import view.terminalUI.TerminalStatisticsMenu
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -42,7 +41,6 @@ class StatisticsMenuController extends PageController:
       quizInStatsSelected = None
     case SelectQuizAction(actionParameter) => quizInStatsSelected = actionParameter
 
-  
   override def nextIteration(): Unit =
     sendUpdate(DefaultUpdate)
     if courseInStatsSelected.isEmpty then

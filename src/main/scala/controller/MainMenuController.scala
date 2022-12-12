@@ -10,7 +10,6 @@ import view.View
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
 import view.MainMenuView
 import view.MainMenuView.DefaultUpdate
-
 import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration.Duration

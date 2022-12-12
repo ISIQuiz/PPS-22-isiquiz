@@ -7,7 +7,6 @@ import utils.storage.ExportHandler
 import model.SavedCourse.SavedCourse
 import view.AddCourseMenuView.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration

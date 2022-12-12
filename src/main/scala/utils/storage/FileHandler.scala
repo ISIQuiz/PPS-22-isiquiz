@@ -4,7 +4,6 @@ import java.nio.file.{Files, Paths}
 import scala.io.Source
 import scala.util.{Try, Using}
 
-
 /** Object of [[FileHandler]] */
 object FileHandler:
 
@@ -16,15 +15,6 @@ object FileHandler:
    */
   def readFile(filePath: String): Try[String] =
     Using(Source.fromFile(filePath))(_.mkString)
-
-  /**
-   * Read resource file from path
-   *
-   * @param filePath a string with file path
-   * @return a Try[String] with the file content
-   */
-  def readResource(filePath: String): Try[String] =
-    Using(Source.fromResource(filePath))(_.mkString)
 
   /**
    * Write the string in a file

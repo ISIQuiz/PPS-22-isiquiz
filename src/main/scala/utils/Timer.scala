@@ -60,6 +60,3 @@ object Timer:
     override def isStopped: Boolean = stopTime != 0
 
     override def toString: String = s"Current timer: ${this.getTime} / ${this.maxTimeInSeconds}"
-
-
-

@@ -6,7 +6,6 @@ import controller.actions.{Action, ParameterlessAction}
 import model.GameStage
 import view.View.TerminalView
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-
 import scala.collection.mutable.Map
 
 object TerminalStandardGameMenu:

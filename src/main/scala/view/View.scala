@@ -17,7 +17,6 @@ import view.terminalUI.{TerminalAddCourseMenu, TerminalAddQuizMenu, TerminalCust
 import view.graphicUI.GraphicMainMenu.*
 import view.graphicUI.{GraphicAddCourseMenu, GraphicAddQuizMenu, GraphicBlitzGameMenu, GraphicCustomMenu, GraphicDefaultMenu, GraphicEditCourseMenu, GraphicEditQuizMenu, GraphicMainMenu, GraphicReviewMenu, GraphicSelectMenu, GraphicSettingsMenu, GraphicStandardGameMenu, GraphicStatisticsMenu}
 import view.updates.ViewUpdate
-
 import scala.io.StdIn.readLine
 import scala.collection.mutable.Map
 import concurrent.ExecutionContext.Implicits.global
@@ -27,7 +26,6 @@ import scalafx.Includes.jfxScene2sfx
 import scalafx.scene.SceneIncludes.jfxScene2sfx
 import scalafx.stage.Stage.sfxStage2jfx
 import view.View.ViewFactory.GUIType.*
-
 import scala.collection.mutable
 
 object View:
@@ -97,11 +95,14 @@ object View:
   trait GraphicView extends PageView
 
   trait TerminalView extends PageView:
+
     /**
      * Map between input and actions of the controllers
      */
     val actionsMap: mutable.Map[String, Action[Any]]
+
     def inputReader(): String = readLine
+
     var terminalInput: TerminalInput = TerminalInputImpl()
 
     def handleInput(): Unit =

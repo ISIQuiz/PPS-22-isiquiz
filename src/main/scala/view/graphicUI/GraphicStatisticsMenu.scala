@@ -18,7 +18,6 @@ import utils.storage.ExportHandler
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
 import view.StatisticsMenuView.*
-
 import scala.util.Try
 
 object GraphicStatisticsMenu
@@ -31,6 +30,7 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
   val toggleQuizGroup: ToggleGroup = ToggleGroup()
 
   val yesButton = ButtonType("Si", ButtonBar.ButtonData.YES);
+
   val cancelButton = ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
 
   @FXML
@@ -77,7 +77,6 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
 
   @FXML
   var globalTotalAverageTimeAnswerLabel: Label = _
-
 
   @FXML
   def backButtonClicked: Unit =
@@ -154,7 +153,6 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
         )
       }
     case _ => {}
-
 
   private def setTextLabels(title: String, totalScore: Int, totalAnsweredQuestions: Int, totalCorrectAnswers: Int, totalAnswerPrecision: Int, totalAverageTimeAnswer: Double): Unit =
     textLabel.setText(title)
