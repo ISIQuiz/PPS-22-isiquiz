@@ -41,6 +41,7 @@ pages = [{"l":"index.html#","e":false,"i":"","n":"root","t":"root","d":"","k":"s
 {"l":"controller/BlitzGameController.html#currentScore-0","e":false,"i":"","n":"currentScore","t":"currentScore: Int","d":"controller.BlitzGameController","k":"var"},
 {"l":"controller/BlitzGameController.html#game-0","e":false,"i":"","n":"game","t":"game: GameStage","d":"controller.BlitzGameController","k":"val"},
 {"l":"controller/BlitzGameController.html#gameStage-0","e":false,"i":"","n":"gameStage","t":"gameStage: GameStage","d":"controller.BlitzGameController","k":"val"},
+{"l":"controller/BlitzGameController.html#quizTime-0","e":false,"i":"","n":"quizTime","t":"quizTime: Double","d":"controller.BlitzGameController","k":"var"},
 {"l":"controller/BlitzGameController.html#selectAnswer-fffffcba","e":false,"i":"","n":"selectAnswer","t":"selectAnswer[T](actionParameter: Option[T]): Unit","d":"controller.BlitzGameController","k":"def"},
 {"l":"controller/BlitzGameController.html#timer-0","e":false,"i":"","n":"timer","t":"timer: Timer","d":"controller.BlitzGameController","k":"val"},
 {"l":"controller/Controller.html#","e":false,"i":"","n":"Controller","t":"Controller","d":"controller","k":"trait"},

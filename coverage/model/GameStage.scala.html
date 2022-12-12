@@ -35,8 +35,8 @@
 </span>11 <span style=''>/**
 </span>12 <span style=''> * Case class for a quiz used during the game
 </span>13 <span style=''> *
-</span>14 <span style=''> * @param course the course of the quiz
-</span>15 <span style=''> * @param quiz a quiz used during the game
+</span>14 <span style=''> * @param course  the course of the quiz
+</span>15 <span style=''> * @param quiz    a quiz used during the game
 </span>16 <span style=''> * @param answers a list of answers of the quiz
 </span>17 <span style=''> */
 </span>18 <span style=''>case class QuizInGame(course: Course, quiz: Quiz, answers: List[Answer])
@@ -64,17 +64,20 @@
 </span>40 <span style=''>  </span><span style='background: #AEF1AE'>def addReviewQuizNotAnswered</span><span style=''>() = </span><span style='background: #AEF1AE'>review.addQuizAnswered(QuizAnswered(quizInGame, None))</span><span style=''>
 </span>41 <span style=''>
 </span>42 <span style=''>  </span><span style='background: #AEF1AE'>def addReviewQuizAnswer</span><span style=''>(answer: Answer, score: Int, timeToAnswer: Double) =
-</span>43 <span style=''>    </span><span style='background: #AEF1AE'>review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer), score, timeToAnswer))</span><span style=''>
-</span>44 <span style=''>
-</span>45 <span style=''>  //Add a quiz in game to stats
-</span>46 <span style=''>  </span><span style='background: #AEF1AE'>def addQuizToStats</span><span style=''>(isCorrect: Boolean, score: Int, timeToAnswer: Double): Unit =
-</span>47 <span style=''>    playerStatsInGame = </span><span style='background: #AEF1AE'>addQuizInGameToStats(playerStatsInGame, quizInGame, isCorrect, score, timeToAnswer)</span><span style=''>
-</span>48 <span style=''>
-</span>49 <span style=''>  </span><span style='background: #AEF1AE'>def currentQuizNumber</span><span style=''>: Int = </span><span style='background: #AEF1AE'>review.numberQuizAnswered</span><span style=''> + 1
-</span>50 <span style=''>
-</span>51 <span style=''>  </span><span style='background: #AEF1AE'>def maxQuizzesReached</span><span style=''>: Boolean = gameSettings match
-</span>52 <span style=''>    </span><span style='background: #AEF1AE'>case StandardGameSettings(_, maxQuizzes)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>review.numberQuizAnswered</span><span style=''> &gt;= maxQuizzes
-</span>53 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; false
+</span>43 <span style=''>    if (answer.isCorrect)
+</span>44 <span style=''>      </span><span style='background: #AEF1AE'>review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer), score, timeToAnswer))</span><span style=''>
+</span>45 <span style=''>    else
+</span>46 <span style=''>      </span><span style='background: #F0ADAD'>review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer)))</span><span style=''>
+</span>47 <span style=''>
+</span>48 <span style=''>  //Add a quiz in game to stats
+</span>49 <span style=''>  </span><span style='background: #AEF1AE'>def addQuizToStats</span><span style=''>(isCorrect: Boolean, score: Int, timeToAnswer: Double): Unit =
+</span>50 <span style=''>    playerStatsInGame = </span><span style='background: #AEF1AE'>addQuizInGameToStats(playerStatsInGame, quizInGame, isCorrect, score, timeToAnswer)</span><span style=''>
+</span>51 <span style=''>
+</span>52 <span style=''>  </span><span style='background: #AEF1AE'>def currentQuizNumber</span><span style=''>: Int = </span><span style='background: #AEF1AE'>review.numberQuizAnswered</span><span style=''> + 1
+</span>53 <span style=''>
+</span>54 <span style=''>  </span><span style='background: #AEF1AE'>def maxQuizzesReached</span><span style=''>: Boolean = gameSettings match
+</span>55 <span style=''>    </span><span style='background: #AEF1AE'>case StandardGameSettings(_, maxQuizzes)</span><span style=''> =&gt; </span><span style='background: #AEF1AE'>review.numberQuizAnswered</span><span style=''> &gt;= maxQuizzes
+</span>56 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; false
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -95,9 +98,9 @@
           577
         </td>
         <td>
-          1155
+          1159
           -
-          1155
+          1159
         </td>
         <td>
           DefDef
@@ -119,9 +122,9 @@
           576
         </td>
         <td>
-          1155
+          1159
           -
-          1161
+          1165
         </td>
         <td>
           Apply
@@ -143,9 +146,9 @@
           585
         </td>
         <td>
-          1323
+          1327
           -
-          1323
+          1327
         </td>
         <td>
           DefDef
@@ -167,9 +170,9 @@
           579
         </td>
         <td>
-          1219
+          1223
           -
-          1225
+          1229
         </td>
         <td>
           Select
@@ -191,9 +194,9 @@
           582
         </td>
         <td>
-          1262
+          1266
           -
-          1282
+          1286
         </td>
         <td>
           Select
@@ -215,9 +218,9 @@
           581
         </td>
         <td>
-          1262
+          1266
           -
-          1282
+          1286
         </td>
         <td>
           Select
@@ -239,9 +242,9 @@
           584
         </td>
         <td>
-          1323
+          1327
           -
-          1332
+          1336
         </td>
         <td>
           Ident
@@ -263,9 +266,9 @@
           578
         </td>
         <td>
-          1192
+          1196
           -
-          1192
+          1196
         </td>
         <td>
           DefDef
@@ -287,9 +290,9 @@
           580
         </td>
         <td>
-          1219
+          1223
           -
-          1219
+          1223
         </td>
         <td>
           DefDef
@@ -311,9 +314,9 @@
           583
         </td>
         <td>
-          1262
+          1266
           -
-          1262
+          1266
         </td>
         <td>
           DefDef
@@ -332,12 +335,12 @@
           35
         </td>
         <td>
-          559
+          553
         </td>
         <td>
-          1434
+          1438
           -
-          1449
+          1453
         </td>
         <td>
           DefDef
@@ -356,12 +359,12 @@
           37
         </td>
         <td>
-          560
+          554
         </td>
         <td>
-          1505
+          1509
           -
-          1526
+          1530
         </td>
         <td>
           DefDef
@@ -380,36 +383,12 @@
           39
         </td>
         <td>
-          561
+          558
         </td>
         <td>
-          1633
+          1581
           -
-          1645
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          $lessinit$greater$default$3
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          QuizAnswered
-        </td>
-      </tr><tr>
-        <td>
-          39
-        </td>
-        <td>
-          564
-        </td>
-        <td>
-          1577
-          -
-          1605
+          1609
         </td>
         <td>
           DefDef
@@ -428,12 +407,36 @@
           39
         </td>
         <td>
-          563
+          555
         </td>
         <td>
-          1610
+          1637
           -
-          1664
+          1649
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          QuizAnswered
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          557
+        </td>
+        <td>
+          1614
+          -
+          1668
         </td>
         <td>
           Apply
@@ -452,12 +455,12 @@
           39
         </td>
         <td>
-          562
+          556
         </td>
         <td>
-          1633
+          1637
           -
-          1645
+          1649
         </td>
         <td>
           Select
@@ -479,9 +482,9 @@
           567
         </td>
         <td>
-          1668
+          1672
           -
-          1691
+          1695
         </td>
         <td>
           DefDef
@@ -497,39 +500,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          43
         </td>
         <td>
-          566
+          559
         </td>
         <td>
-          1748
+          1828
           -
-          1833
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          addQuizAnswered
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer), score, timeToAnswer))
-        </td>
-      </tr><tr>
-        <td>
-          42
-        </td>
-        <td>
-          565
-        </td>
-        <td>
-          1796
-          -
-          1810
+          1842
         </td>
         <td>
           Apply
@@ -545,15 +524,183 @@
         </td>
       </tr><tr>
         <td>
+          43
+        </td>
+        <td>
+          561
+        </td>
+        <td>
+          1780
+          -
+          1865
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer), score, timeToAnswer))
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          560
+        </td>
+        <td>
+          1780
+          -
+          1865
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addQuizAnswered
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer), score, timeToAnswer))
+        </td>
+      </tr><tr>
+        <td>
           45
+        </td>
+        <td>
+          564
+        </td>
+        <td>
+          1904
+          -
+          1916
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          QuizAnswered
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          563
+        </td>
+        <td>
+          1904
+          -
+          1916
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$3
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          QuizAnswered
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          566
+        </td>
+        <td>
+          1881
+          -
+          1945
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer)))
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          562
+        </td>
+        <td>
+          1929
+          -
+          1943
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(answer)
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          565
+        </td>
+        <td>
+          1881
+          -
+          1945
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addQuizAnswered
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          review.addQuizAnswered(QuizAnswered(quizInGame, Option(answer)))
+        </td>
+      </tr><tr>
+        <td>
+          48
         </td>
         <td>
           569
         </td>
         <td>
-          1869
+          1981
           -
-          1887
+          1999
         </td>
         <td>
           DefDef
@@ -569,15 +716,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          49
         </td>
         <td>
           568
         </td>
         <td>
-          1974
+          2086
           -
-          2057
+          2169
         </td>
         <td>
           Apply
@@ -593,15 +740,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          51
         </td>
         <td>
           570
         </td>
         <td>
-          2090
+          2202
           -
-          2115
+          2227
         </td>
         <td>
           Select
@@ -617,15 +764,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          51
         </td>
         <td>
           571
         </td>
         <td>
-          2061
+          2173
           -
-          2082
+          2194
         </td>
         <td>
           DefDef
@@ -641,15 +788,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          53
         </td>
         <td>
           575
         </td>
         <td>
-          2123
+          2235
           -
-          2144
+          2256
         </td>
         <td>
           DefDef
@@ -665,15 +812,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          54
         </td>
         <td>
           573
         </td>
         <td>
-          2179
+          2291
           -
-          2219
+          2331
         </td>
         <td>
           Block
@@ -689,15 +836,15 @@
         </td>
       </tr><tr>
         <td>
-          51
+          54
         </td>
         <td>
           572
         </td>
         <td>
-          2223
+          2335
           -
-          2248
+          2360
         </td>
         <td>
           Select
@@ -713,15 +860,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          55
         </td>
         <td>
           574
         </td>
         <td>
-          2267
+          2379
           -
-          2273
+          2385
         </td>
         <td>
           Block
