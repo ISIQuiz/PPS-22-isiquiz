@@ -1,0 +1,82 @@
+name: Release
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  Call-test-workflow:
+    uses: ./.github/workflows/Tests.yml
+  Assembly:
+    needs: [Call-test-workflow]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'sbt'
+      - name: Assembly uber jar
+        run: sbt assembly
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Artifacts
+          path: ./target/ISIQuiz.jar
+  UploadRelease:
+    needs: [Assembly]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone git repo
+        uses: actions/checkout@v3
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: Artifacts
+      - name: Extract Date
+        shell: bash
+        id: extract_date
+        run: |
+          echo "::set-output name=DATE::Release_$(cat VERSION.md)_$(date +%F_%H-%M)"
+      - name: Print Output Step
+        run: echo ${{ steps.extract_date.outputs.DATE }}
+      - name: Deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "${{ secrets.NAME }}"
+          git config --global user.email "${{ secrets.EMAIL }}"
+          TAG="${{ steps.extract_date.outputs.DATE }}"
+          MSG="${{ github.event.head_commit.message }}"
+          echo $TAG
+          hub release create -m "$TAG" "$TAG" || true
+          tree
+          ls
+          JAR="./ISIQuiz.jar"
+          gh release upload "$TAG" "$JAR" --clobber
+          rm $JAR
+  TelegramSuccessJob:
+    needs: [ UploadRelease ] #when finished successfully this job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send custom Telegram message
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.event_name }} event on
+            github.com/${{ github.repository }}, 
+            <b>${{ github.event.head_commit.message }}</b>
+            ✅ <b>RELEASE SUCCEDED</b> ✅
+          format: html
+          disable_web_page_preview: true
+          
+          
+          
+          
+          
+

@@ -1,0 +1,117 @@
+name: Website
+
+on:
+  push:
+    branches: [ "Improve-CI", "dev" ]
+  workflow_dispatch:
+  # called by another workflow
+  workflow_call:
+  
+jobs:
+  CreateArtifactReadme:      
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone git repo
+        uses: actions/checkout@v3
+      - name: Print Branch
+        run: |
+          git branch
+          tree
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ReadmeArtifacts
+          path: |
+            README.md
+  CreateArtifactDoc:      
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone git repo
+        uses: actions/checkout@v3
+      - name: Print Branch
+        run: |
+          git branch
+          tree
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'sbt'
+      - name: Generate documentation
+        run: sbt doc
+      - name: Create NoJekill
+        run: |
+          git branch
+          touch ./target/scala-3.2.0/api/.nojekyll
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: DocArtifacts
+          path: |
+            ./target/scala-3.2.0/api
+  CreateArtifactCov:      
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone git repo
+        uses: actions/checkout@v3
+      - name: Print Branch
+        run: |
+          git branch
+          tree
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'sbt'
+      - name: Generate Coverage
+        run: |
+          sbt +clean +coverage +test +coverageReport
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: CovArtifacts
+          path: |
+            ./target/scala-3.2.0/scoverage-report
+  DeployWebsite:      
+    needs: [CreateArtifactReadme, CreateArtifactDoc, CreateArtifactCov]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone git repo
+        uses: actions/checkout@v3
+      - name: Setup git repo 
+        run: |
+          git config user.name "${{ secrets.NAME }}"
+          git config user.email "${{ secrets.EMAIL }}"
+          git fetch --all
+      - name: Print Branch
+        run: |
+          git branch
+          tree
+      - name: Change Branch to gh-pages and delete everything
+        run: |
+          git checkout gh-pages
+          git rm -rf .
+      - name: Download Readme Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: ReadmeArtifacts
+          path: .
+      - name: Download Doc Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: DocArtifacts
+          path: ./docs/
+      - name: Download Coverage Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: CovArtifacts
+          path: ./coverage/
+      - name: Deploy Website
+        run: |
+          git status
+          git add .
+          git commit -m 'Updated gh-pages' || true
+          git push
+          
