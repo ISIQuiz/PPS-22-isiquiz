@@ -30,38 +30,37 @@
 </span>6 <span style=''>import model.GameStage
 </span>7 <span style=''>import view.View.TerminalView
 </span>8 <span style=''>import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-</span>9 <span style=''>
-</span>10 <span style=''>import scala.collection.mutable.Map
-</span>11 <span style=''>
-</span>12 <span style=''>object TerminalStandardGameMenu:
-</span>13 <span style=''>
-</span>14 <span style=''>  case object DefaultUpdate extends </span><span style='background: #F0ADAD'>ParameterlessViewUpdate</span><span style=''>
-</span>15 <span style=''>  case class NewQuizUpdate[T](override val updateParameter: Option[T]) extends </span><span style='background: #F0ADAD'>ViewUpdate[T](updateParameter)</span><span style=''>
-</span>16 <span style=''>  case class AnswerFeedbackUpdate[T](override val updateParameter: Option[T]) extends </span><span style='background: #F0ADAD'>ViewUpdate[T](updateParameter)</span><span style=''>
-</span>17 <span style=''>
-</span>18 <span style=''>/** Standard game terminal interface  */
-</span>19 <span style=''>class TerminalStandardGameMenu extends TerminalView:
-</span>20 <span style=''>
-</span>21 <span style=''>  override val actionsMap: Map[String, Action[Any]] = </span><span style='background: #F0ADAD'>Map(
-</span>22 <span style=''></span><span style='background: #F0ADAD'>    &quot;0&quot; -&gt; Back
-</span>23 <span style=''></span><span style='background: #F0ADAD'>  )</span><span style=''>
-</span>24 <span style=''>
-</span>25 <span style=''>  import TerminalStandardGameMenu.*
-</span>26 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
-</span>27 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
-</span>28 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Standard quiz:&quot;)</span><span style=''>
-</span>29 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;0) Termina quiz&quot;)</span><span style=''>
-</span>30 <span style=''>    </span><span style='background: #F0ADAD'>case NewQuizUpdate(updateParameter: Option[T])</span><span style=''> =&gt;
-</span>31 <span style=''>      if </span><span style='background: #F0ADAD'>updateParameter.isDefined</span><span style=''> then
-</span>32 <span style=''>        </span><span style='background: #F0ADAD'>val quizInGame = updateParameter.get.asInstanceOf[GameStage].quizInGame
-</span>33 <span style=''></span><span style='background: #F0ADAD'>        val printAnswers = quizInGame.answers.map(answer =&gt;
-</span>34 <span style=''></span><span style='background: #F0ADAD'>          s&quot;${quizInGame.answers.indexOf(answer) + 1}) ${answer.text}&quot;)
-</span>35 <span style=''></span><span style='background: #F0ADAD'>        println(quizInGame.quiz.question)
-</span>36 <span style=''></span><span style='background: #F0ADAD'>        quizInGame.answers.foreach(answer =&gt; actionsMap += ((quizInGame.answers.indexOf(answer) + 1).toString -&gt; SelectAnswer(Option(quizInGame.answers.indexOf(answer) + 1))))
-</span>37 <span style=''></span><span style='background: #F0ADAD'>        println(&quot;Seleziona una risposta:&quot;)
-</span>38 <span style=''></span><span style='background: #F0ADAD'>        printAnswers.foreach(answer =&gt; println(answer))</span><span style=''>
-</span>39 <span style=''>    </span><span style='background: #F0ADAD'>case AnswerFeedbackUpdate(updateParameter: Option[T])</span><span style=''> =&gt;
-</span>40 <span style=''>      </span><span style='background: #F0ADAD'>println(updateParameter.get)</span><span style=''>
+</span>9 <span style=''>import scala.collection.mutable.Map
+</span>10 <span style=''>
+</span>11 <span style=''>object TerminalStandardGameMenu:
+</span>12 <span style=''>
+</span>13 <span style=''>  case object DefaultUpdate extends </span><span style='background: #F0ADAD'>ParameterlessViewUpdate</span><span style=''>
+</span>14 <span style=''>  case class NewQuizUpdate[T](override val updateParameter: Option[T]) extends </span><span style='background: #F0ADAD'>ViewUpdate[T](updateParameter)</span><span style=''>
+</span>15 <span style=''>  case class AnswerFeedbackUpdate[T](override val updateParameter: Option[T]) extends </span><span style='background: #F0ADAD'>ViewUpdate[T](updateParameter)</span><span style=''>
+</span>16 <span style=''>
+</span>17 <span style=''>/** Standard game terminal interface  */
+</span>18 <span style=''>class TerminalStandardGameMenu extends TerminalView:
+</span>19 <span style=''>
+</span>20 <span style=''>  override val actionsMap: Map[String, Action[Any]] = </span><span style='background: #F0ADAD'>Map(
+</span>21 <span style=''></span><span style='background: #F0ADAD'>    &quot;0&quot; -&gt; Back
+</span>22 <span style=''></span><span style='background: #F0ADAD'>  )</span><span style=''>
+</span>23 <span style=''>
+</span>24 <span style=''>  import TerminalStandardGameMenu.*
+</span>25 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>26 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
+</span>27 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Standard quiz:&quot;)</span><span style=''>
+</span>28 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;0) Termina quiz&quot;)</span><span style=''>
+</span>29 <span style=''>    </span><span style='background: #F0ADAD'>case NewQuizUpdate(updateParameter: Option[T])</span><span style=''> =&gt;
+</span>30 <span style=''>      if </span><span style='background: #F0ADAD'>updateParameter.isDefined</span><span style=''> then
+</span>31 <span style=''>        </span><span style='background: #F0ADAD'>val quizInGame = updateParameter.get.asInstanceOf[GameStage].quizInGame
+</span>32 <span style=''></span><span style='background: #F0ADAD'>        val printAnswers = quizInGame.answers.map(answer =&gt;
+</span>33 <span style=''></span><span style='background: #F0ADAD'>          s&quot;${quizInGame.answers.indexOf(answer) + 1}) ${answer.text}&quot;)
+</span>34 <span style=''></span><span style='background: #F0ADAD'>        println(quizInGame.quiz.question)
+</span>35 <span style=''></span><span style='background: #F0ADAD'>        quizInGame.answers.foreach(answer =&gt; actionsMap += ((quizInGame.answers.indexOf(answer) + 1).toString -&gt; SelectAnswer(Option(quizInGame.answers.indexOf(answer) + 1))))
+</span>36 <span style=''></span><span style='background: #F0ADAD'>        println(&quot;Seleziona una risposta:&quot;)
+</span>37 <span style=''></span><span style='background: #F0ADAD'>        printAnswers.foreach(answer =&gt; println(answer))</span><span style=''>
+</span>38 <span style=''>    </span><span style='background: #F0ADAD'>case AnswerFeedbackUpdate(updateParameter: Option[T])</span><span style=''> =&gt;
+</span>39 <span style=''>      </span><span style='background: #F0ADAD'>println(updateParameter.get)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -76,15 +75,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          13
+          12
         </td>
         <td>
-          2567
+          2545
         </td>
         <td>
-          384
+          383
           -
-          407
+          406
         </td>
         <td>
           Apply
@@ -100,15 +99,39 @@
         </td>
       </tr><tr>
         <td>
+          13
+        </td>
+        <td>
+          2546
+        </td>
+        <td>
+          486
+          -
+          516
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ViewUpdate[T](updateParameter)
+        </td>
+      </tr><tr>
+        <td>
           14
         </td>
         <td>
-          2568
+          2547
         </td>
         <td>
-          487
+          603
           -
-          517
+          633
         </td>
         <td>
           Apply
@@ -124,39 +147,15 @@
         </td>
       </tr><tr>
         <td>
-          15
+          19
         </td>
         <td>
-          2569
+          2549
         </td>
         <td>
-          604
+          784
           -
-          634
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ViewUpdate[T](updateParameter)
-        </td>
-      </tr><tr>
-        <td>
-          20
-        </td>
-        <td>
-          2571
-        </td>
-        <td>
-          785
-          -
-          809
+          808
         </td>
         <td>
           Apply
@@ -174,15 +173,15 @@
         </td>
       </tr><tr>
         <td>
-          21
+          20
         </td>
         <td>
-          2570
+          2548
         </td>
         <td>
-          794
+          793
           -
-          805
+          804
         </td>
         <td>
           Apply
@@ -198,15 +197,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          24
         </td>
         <td>
-          2595
+          2573
         </td>
         <td>
-          849
+          848
           -
-          870
+          869
         </td>
         <td>
           DefDef
@@ -222,15 +221,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          25
         </td>
         <td>
-          2574
+          2552
         </td>
         <td>
-          924
+          923
           -
-          942
+          941
         </td>
         <td>
           Block
@@ -246,15 +245,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          26
         </td>
         <td>
-          2572
+          2550
         </td>
         <td>
-          952
+          951
           -
-          977
+          976
         </td>
         <td>
           Apply
@@ -270,15 +269,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          27
         </td>
         <td>
-          2573
+          2551
         </td>
         <td>
-          984
+          983
           -
-          1010
+          1009
         </td>
         <td>
           Apply
@@ -294,15 +293,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          28
         </td>
         <td>
-          2591
+          2569
         </td>
         <td>
-          1015
+          1014
           -
-          1061
+          1060
         </td>
         <td>
           Block
@@ -318,15 +317,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          29
         </td>
         <td>
-          2575
+          2553
         </td>
         <td>
-          1074
+          1073
           -
-          1099
+          1098
         </td>
         <td>
           Select
@@ -342,39 +341,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          30
         </td>
         <td>
-          2576
+          2568
         </td>
         <td>
-          1130
+          1112
           -
-          1149
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          get
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          updateParameter.get
-        </td>
-      </tr><tr>
-        <td>
-          31
-        </td>
-        <td>
-          2590
-        </td>
-        <td>
-          1113
-          -
-          1633
+          1632
         </td>
         <td>
           Block
@@ -396,15 +371,39 @@
         </td>
       </tr><tr>
         <td>
-          32
+          30
         </td>
         <td>
-          2579
+          2554
         </td>
         <td>
-          1212
+          1129
           -
-          1316
+          1148
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          2557
+        </td>
+        <td>
+          1211
+          -
+          1315
         </td>
         <td>
           Apply
@@ -421,39 +420,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          32
         </td>
         <td>
-          2577
+          2556
         </td>
         <td>
-          1259
+          1254
           -
-          1293
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          indexOf
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizInGame.answers.indexOf(answer)
-        </td>
-      </tr><tr>
-        <td>
-          33
-        </td>
-        <td>
-          2578
-        </td>
-        <td>
-          1255
-          -
-          1315
+          1314
         </td>
         <td>
           Apply
@@ -469,87 +444,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          32
         </td>
         <td>
-          2580
+          2555
         </td>
         <td>
-          1325
+          1258
           -
-          1358
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          println
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          println(quizInGame.quiz.question)
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          2583
-        </td>
-        <td>
-          1485
-          -
-          1531
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option(quizInGame.answers.indexOf(answer) + 1)
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          2586
-        </td>
-        <td>
-          1367
-          -
-          1534
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          foreach
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizInGame.answers.foreach(answer =&gt; actionsMap += ((quizInGame.answers.indexOf(answer) + 1).toString -&gt; SelectAnswer(Option(quizInGame.answers.indexOf(answer) + 1))))
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          2582
-        </td>
-        <td>
-          1492
-          -
-          1526
+          1292
         </td>
         <td>
           Apply
@@ -565,15 +468,159 @@
         </td>
       </tr><tr>
         <td>
-          35
+          33
         </td>
         <td>
-          2585
+          2558
         </td>
         <td>
-          1404
+          1324
           -
-          1532
+          1357
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          println
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          println(quizInGame.quiz.question)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          2559
+        </td>
+        <td>
+          1419
+          -
+          1453
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          indexOf
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInGame.answers.indexOf(answer)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          2562
+        </td>
+        <td>
+          1418
+          -
+          1531
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          -&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          (quizInGame.answers.indexOf(answer) + 1).toString -&gt; SelectAnswer(Option(quizInGame.answers.indexOf(answer) + 1))
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          2561
+        </td>
+        <td>
+          1484
+          -
+          1530
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Option(quizInGame.answers.indexOf(answer) + 1)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          2564
+        </td>
+        <td>
+          1366
+          -
+          1533
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInGame.answers.foreach(answer =&gt; actionsMap += ((quizInGame.answers.indexOf(answer) + 1).toString -&gt; SelectAnswer(Option(quizInGame.answers.indexOf(answer) + 1))))
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          2560
+        </td>
+        <td>
+          1491
+          -
+          1525
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          indexOf
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizInGame.answers.indexOf(answer)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          2563
+        </td>
+        <td>
+          1403
+          -
+          1531
         </td>
         <td>
           Apply
@@ -592,60 +639,12 @@
           35
         </td>
         <td>
-          2584
+          2565
         </td>
         <td>
-          1419
+          1542
           -
-          1532
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          -&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          (quizInGame.answers.indexOf(answer) + 1).toString -&gt; SelectAnswer(Option(quizInGame.answers.indexOf(answer) + 1))
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          2581
-        </td>
-        <td>
-          1420
-          -
-          1454
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          indexOf
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizInGame.answers.indexOf(answer)
-        </td>
-      </tr><tr>
-        <td>
-          36
-        </td>
-        <td>
-          2587
-        </td>
-        <td>
-          1543
-          -
-          1577
+          1576
         </td>
         <td>
           Apply
@@ -661,15 +660,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          36
         </td>
         <td>
-          2589
+          2567
         </td>
         <td>
-          1586
+          1585
           -
-          1633
+          1632
         </td>
         <td>
           Apply
@@ -685,15 +684,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          36
         </td>
         <td>
-          2588
+          2566
         </td>
         <td>
-          1617
+          1616
           -
-          1632
+          1631
         </td>
         <td>
           Apply
@@ -709,15 +708,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          37
         </td>
         <td>
-          2594
+          2572
         </td>
         <td>
-          1638
+          1637
           -
-          1691
+          1690
         </td>
         <td>
           Block
@@ -733,39 +732,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          38
         </td>
         <td>
-          2592
+          2571
         </td>
         <td>
-          1709
+          1700
           -
           1728
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          get
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          updateParameter.get
-        </td>
-      </tr><tr>
-        <td>
-          39
-        </td>
-        <td>
-          2593
-        </td>
-        <td>
-          1701
-          -
-          1729
         </td>
         <td>
           Apply
@@ -778,6 +753,30 @@
         </td>
         <td style="background: #F0ADAD">
           println(updateParameter.get)
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          2570
+        </td>
+        <td>
+          1708
+          -
+          1727
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
         </td>
       </tr>
     </table>

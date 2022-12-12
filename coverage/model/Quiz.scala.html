@@ -26,75 +26,74 @@
 </span>2 <span style=''>
 </span>3 <span style=''>import model.Answer.*
 </span>4 <span style=''>import model.Quiz.*
-</span>5 <span style=''>
-</span>6 <span style=''>import java.util.UUID
-</span>7 <span style=''>
-</span>8 <span style=''>/**
-</span>9 <span style=''> * Object for a quiz
-</span>10 <span style=''> */
-</span>11 <span style=''>object Quiz:
-</span>12 <span style=''>
-</span>13 <span style=''>  /**
-</span>14 <span style=''>   *  A quiz has an identifier, a question, some answers,
-</span>15 <span style=''>   *  a max score and optionally an image
-</span>16 <span style=''>   *
-</span>17 <span style=''>   * @param quizId a random UUID for the quiz
-</span>18 <span style=''>   * @param question the question of the quiz
-</span>19 <span style=''>   * @param answerList a list of answers
-</span>20 <span style=''>   * @param maxScore a max score
-</span>21 <span style=''>   * @param imagePath an image path (optional)
-</span>22 <span style=''>   */
-</span>23 <span style=''>  case class Quiz(quizId: UUID = </span><span style='background: #AEF1AE'>UUID.randomUUID()</span><span style=''>, question: String, answerList: List[Answer], maxScore:Int, imagePath:Option[String]=None) {
-</span>24 <span style=''>    </span><span style='background: #F0ADAD'>override def toString</span><span style=''>(): String = </span><span style='background: #F0ADAD'>printQuiz(this)</span><span style=''>
-</span>25 <span style=''>  }
-</span>26 <span style=''>
-</span>27 <span style=''>  val printQuiz: Quiz =&gt; String = quiz =&gt; </span><span style='background: #F0ADAD'>quiz.question + &quot;\n&quot; + quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${answer.text}&quot;)</span><span style=''>
-</span>28 <span style=''>  val printQuizFull: Quiz =&gt; String = quiz =&gt; </span><span style='background: #F0ADAD'>quiz.question + &quot;\n&quot; +
-</span>29 <span style=''></span><span style='background: #F0ADAD'>    quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${answer.text} ${answer.isCorrect}&quot;)</span><span style=''>
-</span>30 <span style=''>
-</span>31 <span style=''>  /**
-</span>32 <span style=''>   * Change max score of a quiz
-</span>33 <span style=''>   *
-</span>34 <span style=''>   * @param quiz the saved quiz to edit
-</span>35 <span style=''>   * @param maxScore a new quiz max score
-</span>36 <span style=''>   * @return Quiz
-</span>37 <span style=''>   */
-</span>38 <span style=''>  </span><span style='background: #AEF1AE'>def changeMaxScore</span><span style=''>(quiz: Quiz, maxScore: Int): Quiz = Quiz(quiz.quizId, quiz.question, quiz.answerList, maxScore, quiz.imagePath)
-</span>39 <span style=''>
-</span>40 <span style=''>  /**
-</span>41 <span style=''>   * Change image path of a quiz
-</span>42 <span style=''>   *
-</span>43 <span style=''>   * @param quiz the quiz to edit
-</span>44 <span style=''>   * @param imagePath a new quiz image path (optional)
-</span>45 <span style=''>   * @return Quiz
-</span>46 <span style=''>   */
-</span>47 <span style=''>  </span><span style='background: #AEF1AE'>def changeImagePath</span><span style=''>(quiz: Quiz, imagePath: Option[String]): Quiz = Quiz(quiz.quizId, quiz.question, quiz.answerList, quiz.maxScore, imagePath)
-</span>48 <span style=''>
-</span>49 <span style=''>  /**
-</span>50 <span style=''>   * Change question of a quiz
-</span>51 <span style=''>   *
-</span>52 <span style=''>   * @param quiz the quiz to edit
-</span>53 <span style=''>   * @param questionText a new quiz text question
-</span>54 <span style=''>   * @return Quiz
-</span>55 <span style=''>   */
-</span>56 <span style=''>  </span><span style='background: #AEF1AE'>def changeQuestion</span><span style=''>(quiz: Quiz, questionText: String): Quiz = Quiz(quiz.quizId, questionText, quiz.answerList, quiz.maxScore, quiz.imagePath)
-</span>57 <span style=''>
-</span>58 <span style=''>  /**
-</span>59 <span style=''>   * Change the list of answers
-</span>60 <span style=''>   *
-</span>61 <span style=''>   * @param quiz the quiz to edit
-</span>62 <span style=''>   * @param answerList a new answer list
-</span>63 <span style=''>   * @return Quiz
-</span>64 <span style=''>   */
-</span>65 <span style=''>  </span><span style='background: #AEF1AE'>def changeAnswerList</span><span style=''>(quiz: Quiz, answerList: List[Answer]): Quiz = Quiz(quiz.quizId, quiz.question, answerList, quiz.maxScore, quiz.imagePath)
-</span>66 <span style=''>
-</span>67 <span style=''>  /**
-</span>68 <span style=''>   * Return the list of the correct answers of the quiz
-</span>69 <span style=''>   *
-</span>70 <span style=''>   * @param quiz the quiz
-</span>71 <span style=''>   * @return List[Answer]
-</span>72 <span style=''>   */
-</span>73 <span style=''>  </span><span style='background: #AEF1AE'>def getCorrectAnswers</span><span style=''>(quiz: Quiz): List[Answer] = </span><span style='background: #AEF1AE'>quiz.answerList.filter(answer =&gt; answer.isCorrect)</span><span style=''>
+</span>5 <span style=''>import java.util.UUID
+</span>6 <span style=''>
+</span>7 <span style=''>/**
+</span>8 <span style=''> * Object for a quiz
+</span>9 <span style=''> */
+</span>10 <span style=''>object Quiz:
+</span>11 <span style=''>
+</span>12 <span style=''>  /**
+</span>13 <span style=''>   *  A quiz has an identifier, a question, some answers,
+</span>14 <span style=''>   *  a max score and optionally an image
+</span>15 <span style=''>   *
+</span>16 <span style=''>   * @param quizId a random UUID for the quiz
+</span>17 <span style=''>   * @param question the question of the quiz
+</span>18 <span style=''>   * @param answerList a list of answers
+</span>19 <span style=''>   * @param maxScore a max score
+</span>20 <span style=''>   * @param imagePath an image path (optional)
+</span>21 <span style=''>   */
+</span>22 <span style=''>  case class Quiz(quizId: UUID = </span><span style='background: #AEF1AE'>UUID.randomUUID()</span><span style=''>, question: String, answerList: List[Answer], maxScore:Int, imagePath:Option[String]=None) {
+</span>23 <span style=''>    </span><span style='background: #F0ADAD'>override def toString</span><span style=''>(): String = </span><span style='background: #F0ADAD'>printQuiz(this)</span><span style=''>
+</span>24 <span style=''>  }
+</span>25 <span style=''>
+</span>26 <span style=''>  val printQuiz: Quiz =&gt; String = quiz =&gt; </span><span style='background: #F0ADAD'>quiz.question + &quot;\n&quot; + quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${answer.text}&quot;)</span><span style=''>
+</span>27 <span style=''>  val printQuizFull: Quiz =&gt; String = quiz =&gt; </span><span style='background: #F0ADAD'>quiz.question + &quot;\n&quot; +
+</span>28 <span style=''></span><span style='background: #F0ADAD'>    quiz.answerList.map(answer =&gt; s&quot;${quiz.answerList.indexOf(answer)+1}) ${answer.text} ${answer.isCorrect}&quot;)</span><span style=''>
+</span>29 <span style=''>
+</span>30 <span style=''>  /**
+</span>31 <span style=''>   * Change max score of a quiz
+</span>32 <span style=''>   *
+</span>33 <span style=''>   * @param quiz the saved quiz to edit
+</span>34 <span style=''>   * @param maxScore a new quiz max score
+</span>35 <span style=''>   * @return Quiz
+</span>36 <span style=''>   */
+</span>37 <span style=''>  </span><span style='background: #AEF1AE'>def changeMaxScore</span><span style=''>(quiz: Quiz, maxScore: Int): Quiz = Quiz(quiz.quizId, quiz.question, quiz.answerList, maxScore, quiz.imagePath)
+</span>38 <span style=''>
+</span>39 <span style=''>  /**
+</span>40 <span style=''>   * Change image path of a quiz
+</span>41 <span style=''>   *
+</span>42 <span style=''>   * @param quiz the quiz to edit
+</span>43 <span style=''>   * @param imagePath a new quiz image path (optional)
+</span>44 <span style=''>   * @return Quiz
+</span>45 <span style=''>   */
+</span>46 <span style=''>  </span><span style='background: #AEF1AE'>def changeImagePath</span><span style=''>(quiz: Quiz, imagePath: Option[String]): Quiz = Quiz(quiz.quizId, quiz.question, quiz.answerList, quiz.maxScore, imagePath)
+</span>47 <span style=''>
+</span>48 <span style=''>  /**
+</span>49 <span style=''>   * Change question of a quiz
+</span>50 <span style=''>   *
+</span>51 <span style=''>   * @param quiz the quiz to edit
+</span>52 <span style=''>   * @param questionText a new quiz text question
+</span>53 <span style=''>   * @return Quiz
+</span>54 <span style=''>   */
+</span>55 <span style=''>  </span><span style='background: #AEF1AE'>def changeQuestion</span><span style=''>(quiz: Quiz, questionText: String): Quiz = Quiz(quiz.quizId, questionText, quiz.answerList, quiz.maxScore, quiz.imagePath)
+</span>56 <span style=''>
+</span>57 <span style=''>  /**
+</span>58 <span style=''>   * Change the list of answers
+</span>59 <span style=''>   *
+</span>60 <span style=''>   * @param quiz the quiz to edit
+</span>61 <span style=''>   * @param answerList a new answer list
+</span>62 <span style=''>   * @return Quiz
+</span>63 <span style=''>   */
+</span>64 <span style=''>  </span><span style='background: #AEF1AE'>def changeAnswerList</span><span style=''>(quiz: Quiz, answerList: List[Answer]): Quiz = Quiz(quiz.quizId, quiz.question, answerList, quiz.maxScore, quiz.imagePath)
+</span>65 <span style=''>
+</span>66 <span style=''>  /**
+</span>67 <span style=''>   * Return the list of the correct answers of the quiz
+</span>68 <span style=''>   *
+</span>69 <span style=''>   * @param quiz the quiz
+</span>70 <span style=''>   * @return List[Answer]
+</span>71 <span style=''>   */
+</span>72 <span style=''>  </span><span style='background: #AEF1AE'>def getCorrectAnswers</span><span style=''>(quiz: Quiz): List[Answer] = </span><span style='background: #AEF1AE'>quiz.answerList.filter(answer =&gt; answer.isCorrect)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -109,15 +108,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          22
+          21
         </td>
         <td>
           588
         </td>
         <td>
-          509
+          507
           -
-          526
+          524
         </td>
         <td>
           Apply
@@ -133,15 +132,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          21
         </td>
         <td>
           590
         </td>
         <td>
-          611
+          609
           -
-          611
+          609
         </td>
         <td>
           DefDef
@@ -157,15 +156,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          21
         </td>
         <td>
           589
         </td>
         <td>
-          509
+          507
           -
-          509
+          507
         </td>
         <td>
           DefDef
@@ -181,15 +180,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          22
         </td>
         <td>
           587
         </td>
         <td>
-          624
+          622
           -
-          645
+          643
         </td>
         <td>
           DefDef
@@ -205,15 +204,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          22
         </td>
         <td>
           586
         </td>
         <td>
-          658
+          656
           -
-          673
+          671
         </td>
         <td>
           Apply
@@ -229,15 +228,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          25
         </td>
         <td>
           594
         </td>
         <td>
-          747
+          745
           -
-          833
+          831
         </td>
         <td>
           Apply
@@ -253,15 +252,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          25
         </td>
         <td>
           591
         </td>
         <td>
-          724
+          722
           -
-          744
+          742
         </td>
         <td>
           Apply
@@ -277,15 +276,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          25
         </td>
         <td>
           593
         </td>
         <td>
-          777
+          775
           -
-          832
+          830
         </td>
         <td>
           Apply
@@ -301,15 +300,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          25
         </td>
         <td>
           595
         </td>
         <td>
-          724
+          722
           -
-          833
+          831
         </td>
         <td>
           Apply
@@ -325,15 +324,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          25
         </td>
         <td>
           592
         </td>
         <td>
-          781
+          779
           -
-          812
+          810
         </td>
         <td>
           Apply
@@ -349,15 +348,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          26
         </td>
         <td>
           600
         </td>
         <td>
-          881
+          879
           -
-          1015
+          1013
         </td>
         <td>
           Apply
@@ -374,15 +373,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          26
         </td>
         <td>
           596
         </td>
         <td>
-          881
+          879
           -
-          901
+          899
         </td>
         <td>
           Apply
@@ -398,15 +397,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          27
         </td>
         <td>
           597
         </td>
         <td>
-          943
+          941
           -
-          974
+          972
         </td>
         <td>
           Apply
@@ -422,15 +421,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          27
         </td>
         <td>
           599
         </td>
         <td>
-          909
+          907
           -
-          1015
+          1013
         </td>
         <td>
           Apply
@@ -446,15 +445,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          27
         </td>
         <td>
           598
         </td>
         <td>
-          939
+          937
           -
-          1014
+          1012
         </td>
         <td>
           Apply
@@ -470,15 +469,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          36
         </td>
         <td>
           601
         </td>
         <td>
-          1177
+          1175
           -
-          1195
+          1193
         </td>
         <td>
           DefDef
@@ -494,15 +493,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          45
         </td>
         <td>
           602
         </td>
         <td>
-          1476
+          1474
           -
-          1495
+          1493
         </td>
         <td>
           DefDef
@@ -518,15 +517,15 @@
         </td>
       </tr><tr>
         <td>
-          55
+          54
         </td>
         <td>
           603
         </td>
         <td>
-          1781
+          1779
           -
-          1799
+          1797
         </td>
         <td>
           DefDef
@@ -542,15 +541,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          63
         </td>
         <td>
           604
         </td>
         <td>
-          2076
+          2074
           -
-          2096
+          2094
         </td>
         <td>
           DefDef
@@ -566,15 +565,15 @@
         </td>
       </tr><tr>
         <td>
-          72
+          71
         </td>
         <td>
           606
         </td>
         <td>
-          2355
+          2353
           -
-          2376
+          2374
         </td>
         <td>
           DefDef
@@ -590,15 +589,15 @@
         </td>
       </tr><tr>
         <td>
-          72
+          71
         </td>
         <td>
           605
         </td>
         <td>
-          2405
+          2403
           -
-          2455
+          2453
         </td>
         <td>
           Apply

@@ -34,45 +34,43 @@
 </span>10 <span style=''>import view.View
 </span>11 <span style=''>import view.terminalUI.TerminalStatisticsMenu
 </span>12 <span style=''>import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-</span>13 <span style=''>
-</span>14 <span style=''>import scala.collection.mutable.ListBuffer
-</span>15 <span style=''>import scala.concurrent.Await
-</span>16 <span style=''>import scala.concurrent.duration.Duration
-</span>17 <span style=''>import view.StatisticsMenuView.*
-</span>18 <span style=''>
-</span>19 <span style=''>/** Companion object of statistics menu controller */
-</span>20 <span style=''>object StatisticsMenuController extends BackAction:
-</span>21 <span style=''>
-</span>22 <span style=''>  /** Action to select a course in the statistics menu controller */
-</span>23 <span style=''>  case class SelectCourseAction(override val actionParameter: Option[CourseInStats]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
-</span>24 <span style=''>
-</span>25 <span style=''>  /** Action to select a quiz in the statistics menu controller */
-</span>26 <span style=''>  case class SelectQuizAction(override val actionParameter: Option[QuizInStats]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>13 <span style=''>import scala.collection.mutable.ListBuffer
+</span>14 <span style=''>import scala.concurrent.Await
+</span>15 <span style=''>import scala.concurrent.duration.Duration
+</span>16 <span style=''>import view.StatisticsMenuView.*
+</span>17 <span style=''>
+</span>18 <span style=''>/** Companion object of statistics menu controller */
+</span>19 <span style=''>object StatisticsMenuController extends BackAction:
+</span>20 <span style=''>
+</span>21 <span style=''>  /** Action to select a course in the statistics menu controller */
+</span>22 <span style=''>  case class SelectCourseAction(override val actionParameter: Option[CourseInStats]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>23 <span style=''>
+</span>24 <span style=''>  /** Action to select a quiz in the statistics menu controller */
+</span>25 <span style=''>  case class SelectQuizAction(override val actionParameter: Option[QuizInStats]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>26 <span style=''>
 </span>27 <span style=''>
-</span>28 <span style=''>
-</span>29 <span style=''>/** Defines the logic of the statistics page */
-</span>30 <span style=''>class StatisticsMenuController extends PageController:
-</span>31 <span style=''>
-</span>32 <span style=''>  import StatisticsMenuController.*
-</span>33 <span style=''>
-</span>34 <span style=''>  var courseInStatsSelected: Option[CourseInStats] = </span><span style='background: #F0ADAD'>Option.empty</span><span style=''>
-</span>35 <span style=''>
-</span>36 <span style=''>  var quizInStatsSelected: Option[QuizInStats] = </span><span style='background: #F0ADAD'>Option.empty</span><span style=''>
-</span>37 <span style=''>
-</span>38 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
-</span>39 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(MainMenuAction)</span><span style=''>
-</span>40 <span style=''>    </span><span style='background: #F0ADAD'>case SelectCourseAction(actionParameter)</span><span style=''> =&gt;
-</span>41 <span style=''>      courseInStatsSelected = actionParameter
-</span>42 <span style=''>      quizInStatsSelected = None
-</span>43 <span style=''>    </span><span style='background: #F0ADAD'>case SelectQuizAction(actionParameter)</span><span style=''> =&gt; quizInStatsSelected = actionParameter
-</span>44 <span style=''>
-</span>45 <span style=''>  
-</span>46 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>47 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
-</span>48 <span style=''>    if </span><span style='background: #F0ADAD'>courseInStatsSelected.isEmpty</span><span style=''> then
-</span>49 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(CourseInStatsListUpdate(Option(AppController.session.playerStats.courseInStatsList)))</span><span style=''>
-</span>50 <span style=''>    else </span><span style='background: #F0ADAD'>if quizInStatsSelected.isEmpty then
-</span>51 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(QuizInStatsListUpdate(Option(courseInStatsSelected.get.quizInStatsList)))</span><span style=''>
+</span>28 <span style=''>/** Defines the logic of the statistics page */
+</span>29 <span style=''>class StatisticsMenuController extends PageController:
+</span>30 <span style=''>
+</span>31 <span style=''>  import StatisticsMenuController.*
+</span>32 <span style=''>
+</span>33 <span style=''>  var courseInStatsSelected: Option[CourseInStats] = </span><span style='background: #F0ADAD'>Option.empty</span><span style=''>
+</span>34 <span style=''>
+</span>35 <span style=''>  var quizInStatsSelected: Option[QuizInStats] = </span><span style='background: #F0ADAD'>Option.empty</span><span style=''>
+</span>36 <span style=''>
+</span>37 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
+</span>38 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(MainMenuAction)</span><span style=''>
+</span>39 <span style=''>    </span><span style='background: #F0ADAD'>case SelectCourseAction(actionParameter)</span><span style=''> =&gt;
+</span>40 <span style=''>      courseInStatsSelected = actionParameter
+</span>41 <span style=''>      quizInStatsSelected = None
+</span>42 <span style=''>    </span><span style='background: #F0ADAD'>case SelectQuizAction(actionParameter)</span><span style=''> =&gt; quizInStatsSelected = actionParameter
+</span>43 <span style=''>
+</span>44 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
+</span>45 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
+</span>46 <span style=''>    if </span><span style='background: #F0ADAD'>courseInStatsSelected.isEmpty</span><span style=''> then
+</span>47 <span style=''>      </span><span style='background: #F0ADAD'>sendUpdate(CourseInStatsListUpdate(Option(AppController.session.playerStats.courseInStatsList)))</span><span style=''>
+</span>48 <span style=''>    else </span><span style='background: #F0ADAD'>if quizInStatsSelected.isEmpty then
+</span>49 <span style=''></span><span style='background: #F0ADAD'>      sendUpdate(QuizInStatsListUpdate(Option(courseInStatsSelected.get.quizInStatsList)))</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -87,15 +85,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          22
+          21
         </td>
         <td>
           515
         </td>
         <td>
-          862
+          861
           -
-          885
+          884
         </td>
         <td>
           Apply
@@ -111,15 +109,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          24
         </td>
         <td>
           516
         </td>
         <td>
-          1043
+          1042
           -
-          1066
+          1065
         </td>
         <td>
           Apply
@@ -135,15 +133,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          32
         </td>
         <td>
           517
         </td>
         <td>
-          1263
+          1262
           -
-          1275
+          1274
         </td>
         <td>
           Select
@@ -159,15 +157,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          34
         </td>
         <td>
           518
         </td>
         <td>
-          1326
+          1325
           -
-          1338
+          1337
         </td>
         <td>
           Select
@@ -183,15 +181,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          36
         </td>
         <td>
           523
         </td>
         <td>
-          1342
+          1341
           -
-          1361
+          1360
         </td>
         <td>
           DefDef
@@ -207,15 +205,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          37
         </td>
         <td>
           519
         </td>
         <td>
-          1422
+          1421
           -
-          1458
+          1457
         </td>
         <td>
           Apply
@@ -231,15 +229,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          37
         </td>
         <td>
           520
         </td>
         <td>
-          1409
+          1408
           -
-          1418
+          1417
         </td>
         <td>
           Block
@@ -255,15 +253,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          38
         </td>
         <td>
           521
         </td>
         <td>
-          1463
+          1462
           -
-          1503
+          1502
         </td>
         <td>
           Block
@@ -279,15 +277,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          41
         </td>
         <td>
           522
         </td>
         <td>
-          1590
+          1589
           -
-          1628
+          1627
         </td>
         <td>
           Block
@@ -303,15 +301,15 @@
         </td>
       </tr><tr>
         <td>
-          45
+          43
         </td>
         <td>
           536
         </td>
         <td>
-          1676
+          1672
           -
-          1702
+          1698
         </td>
         <td>
           DefDef
@@ -327,15 +325,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          44
         </td>
         <td>
           524
         </td>
         <td>
-          1717
+          1713
           -
-          1742
+          1738
         </td>
         <td>
           Apply
@@ -351,15 +349,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          45
         </td>
         <td>
           525
         </td>
         <td>
-          1750
+          1746
           -
-          1779
+          1775
         </td>
         <td>
           Select
@@ -375,15 +373,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          46
         </td>
         <td>
           528
         </td>
         <td>
-          1791
+          1787
           -
-          1887
+          1883
         </td>
         <td>
           Apply
@@ -399,15 +397,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          46
         </td>
         <td>
           527
         </td>
         <td>
-          1826
+          1822
           -
-          1885
+          1881
         </td>
         <td>
           Apply
@@ -423,15 +421,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          46
         </td>
         <td>
           526
         </td>
         <td>
-          1833
+          1829
           -
-          1854
+          1850
         </td>
         <td>
           Select
@@ -447,15 +445,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          46
         </td>
         <td>
           529
         </td>
         <td>
-          1791
+          1787
           -
-          1887
+          1883
         </td>
         <td>
           Block
@@ -471,15 +469,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          47
         </td>
         <td>
           530
         </td>
         <td>
-          1900
+          1896
           -
-          1927
+          1923
         </td>
         <td>
           Select
@@ -495,15 +493,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          47
         </td>
         <td>
           535
         </td>
         <td>
-          1897
+          1893
           -
-          2023
+          2019
         </td>
         <td>
           If
@@ -520,15 +518,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          48
         </td>
         <td>
           532
         </td>
         <td>
-          1972
+          1968
           -
-          2021
+          2017
         </td>
         <td>
           Apply
@@ -544,15 +542,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          48
         </td>
         <td>
           534
         </td>
         <td>
-          1939
+          1935
           -
-          2023
+          2019
         </td>
         <td>
           Block
@@ -568,15 +566,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          48
         </td>
         <td>
           531
         </td>
         <td>
-          1979
+          1975
           -
-          2004
+          2000
         </td>
         <td>
           Select
@@ -592,15 +590,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          48
         </td>
         <td>
           533
         </td>
         <td>
-          1939
+          1935
           -
-          2023
+          2019
         </td>
         <td>
           Apply

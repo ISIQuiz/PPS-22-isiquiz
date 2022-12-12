@@ -33,60 +33,59 @@
 </span>9 <span style=''>import view.EditCourseMenuView.*
 </span>10 <span style=''>import view.View.*
 </span>11 <span style=''>import view.updates.ViewUpdate
-</span>12 <span style=''>
-</span>13 <span style=''>import scala.collection.mutable.Map
-</span>14 <span style=''>import scala.io.StdIn.readLine
-</span>15 <span style=''>
-</span>16 <span style=''>object TerminalEditCourseMenu
-</span>17 <span style=''>
-</span>18 <span style=''>/** Edit course menu terminal interface */
-</span>19 <span style=''>class TerminalEditCourseMenu extends TerminalView:
-</span>20 <span style=''>
-</span>21 <span style=''>  var courseList: List[SavedCourse] = </span><span style='background: #F0ADAD'>Nil</span><span style=''>
-</span>22 <span style=''>  
-</span>23 <span style=''>  override val actionsMap: Map[String, Action[Any]] = </span><span style='background: #F0ADAD'>Map(
-</span>24 <span style=''></span><span style='background: #F0ADAD'>    &quot;1&quot; -&gt; Back
-</span>25 <span style=''></span><span style='background: #F0ADAD'>  )</span><span style=''>
-</span>26 <span style=''>
-</span>27 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
-</span>28 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
-</span>29 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Menu modifica corso:\n1) Menu principale&quot;)</span><span style=''>
-</span>30 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Modifica Corso&quot;)</span><span style=''>
-</span>31 <span style=''>    </span><span style='background: #F0ADAD'>case CourseListUpdate(updateParameter)</span><span style=''> =&gt;
-</span>32 <span style=''>      courseList = </span><span style='background: #F0ADAD'>updateParameter.get</span><span style=''>
-</span>33 <span style=''>    </span><span style='background: #F0ADAD'>case AskCourseSelectUpdate</span><span style=''> =&gt;
-</span>34 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Seleziona il corso da modificare&quot;)</span><span style=''>
-</span>35 <span style=''>      </span><span style='background: #F0ADAD'>courseList.map(course =&gt; course.courseId.courseName).zipWithIndex.foreach { case (e, i) =&gt; println(i + &quot;] &quot; + e) }</span><span style=''>
-</span>36 <span style=''>      val courseIndex = </span><span style='background: #F0ADAD'>readLine.toInt</span><span style=''>
-</span>37 <span style=''>      </span><span style='background: #F0ADAD'>sendEvent(SelectCourseAction(courseList.lift(courseIndex)))</span><span style=''>
-</span>38 <span style=''>    </span><span style='background: #F0ADAD'>case AskCourseEditUpdate</span><span style=''> =&gt;
-</span>39 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Inserisci nome corso:&quot;)</span><span style=''>
-</span>40 <span style=''>      val courseNameIns = </span><span style='background: #F0ADAD'>readLine</span><span style=''>
-</span>41 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Inserisci nome corso di laurea:&quot;)</span><span style=''>
-</span>42 <span style=''>      val degreeNameIns = </span><span style='background: #F0ADAD'>readLine</span><span style=''>
-</span>43 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Inserisci nome università:&quot;)</span><span style=''>
-</span>44 <span style=''>      val universityNameIns = </span><span style='background: #F0ADAD'>readLine</span><span style=''>
-</span>45 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Vuoi aggiungere una descrizione del corso? S:si&quot;)</span><span style=''>
-</span>46 <span style=''>      var descriptionIns: Option[String] = None
-</span>47 <span style=''>      if &quot;s&quot; == </span><span style='background: #F0ADAD'>readLine.toLowerCase</span><span style=''> then
-</span>48 <span style=''>        </span><span style='background: #F0ADAD'>println(&quot;inserisci descrizione del corso:&quot;)
-</span>49 <span style=''></span><span style='background: #F0ADAD'>        descriptionIns = Some(readLine)</span><span style=''>
-</span>50 <span style=''>
-</span>51 <span style=''>      val course = SavedCourse(
-</span>52 <span style=''>        courseId = CourseIdentifier(
-</span>53 <span style=''>          courseName = courseNameIns,
-</span>54 <span style=''>          degreeName = degreeNameIns,
-</span>55 <span style=''>          universityName = universityNameIns
-</span>56 <span style=''>        ),
-</span>57 <span style=''>        description = descriptionIns,
-</span>58 <span style=''>        quizList = </span><span style='background: #F0ADAD'>Nil</span><span style=''>
-</span>59 <span style=''>      )
-</span>60 <span style=''>      </span><span style='background: #F0ADAD'>sendEvent(EditCourseAction(Option(course)))</span><span style=''>
-</span>61 <span style=''>    </span><span style='background: #F0ADAD'>case CoursePrintUpdate(course)</span><span style=''> =&gt;
-</span>62 <span style=''>      </span><span style='background: #F0ADAD'>println(course.get)</span><span style=''>
-</span>63 <span style=''>    </span><span style='background: #F0ADAD'>case CourseEditedUpdate</span><span style=''> =&gt;
-</span>64 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Corso Modificato!&quot;)</span><span style=''>
-</span>65 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
+</span>12 <span style=''>import scala.collection.mutable.Map
+</span>13 <span style=''>import scala.io.StdIn.readLine
+</span>14 <span style=''>
+</span>15 <span style=''>object TerminalEditCourseMenu
+</span>16 <span style=''>
+</span>17 <span style=''>/** Edit course menu terminal interface */
+</span>18 <span style=''>class TerminalEditCourseMenu extends TerminalView:
+</span>19 <span style=''>
+</span>20 <span style=''>  var courseList: List[SavedCourse] = </span><span style='background: #F0ADAD'>Nil</span><span style=''>
+</span>21 <span style=''>
+</span>22 <span style=''>  override val actionsMap: Map[String, Action[Any]] = </span><span style='background: #F0ADAD'>Map(
+</span>23 <span style=''></span><span style='background: #F0ADAD'>    &quot;1&quot; -&gt; Back
+</span>24 <span style=''></span><span style='background: #F0ADAD'>  )</span><span style=''>
+</span>25 <span style=''>
+</span>26 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>27 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
+</span>28 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Menu modifica corso:\n1) Menu principale&quot;)</span><span style=''>
+</span>29 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Modifica Corso&quot;)</span><span style=''>
+</span>30 <span style=''>    </span><span style='background: #F0ADAD'>case CourseListUpdate(updateParameter)</span><span style=''> =&gt;
+</span>31 <span style=''>      courseList = </span><span style='background: #F0ADAD'>updateParameter.get</span><span style=''>
+</span>32 <span style=''>    </span><span style='background: #F0ADAD'>case AskCourseSelectUpdate</span><span style=''> =&gt;
+</span>33 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Seleziona il corso da modificare&quot;)</span><span style=''>
+</span>34 <span style=''>      </span><span style='background: #F0ADAD'>courseList.map(course =&gt; course.courseId.courseName).zipWithIndex.foreach { case (e, i) =&gt; println(i + &quot;] &quot; + e) }</span><span style=''>
+</span>35 <span style=''>      val courseIndex = </span><span style='background: #F0ADAD'>readLine.toInt</span><span style=''>
+</span>36 <span style=''>      </span><span style='background: #F0ADAD'>sendEvent(SelectCourseAction(courseList.lift(courseIndex)))</span><span style=''>
+</span>37 <span style=''>    </span><span style='background: #F0ADAD'>case AskCourseEditUpdate</span><span style=''> =&gt;
+</span>38 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Inserisci nome corso:&quot;)</span><span style=''>
+</span>39 <span style=''>      val courseNameIns = </span><span style='background: #F0ADAD'>readLine</span><span style=''>
+</span>40 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Inserisci nome corso di laurea:&quot;)</span><span style=''>
+</span>41 <span style=''>      val degreeNameIns = </span><span style='background: #F0ADAD'>readLine</span><span style=''>
+</span>42 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Inserisci nome università:&quot;)</span><span style=''>
+</span>43 <span style=''>      val universityNameIns = </span><span style='background: #F0ADAD'>readLine</span><span style=''>
+</span>44 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Vuoi aggiungere una descrizione del corso? S:si&quot;)</span><span style=''>
+</span>45 <span style=''>      var descriptionIns: Option[String] = None
+</span>46 <span style=''>      if &quot;s&quot; == </span><span style='background: #F0ADAD'>readLine.toLowerCase</span><span style=''> then
+</span>47 <span style=''>        </span><span style='background: #F0ADAD'>println(&quot;inserisci descrizione del corso:&quot;)
+</span>48 <span style=''></span><span style='background: #F0ADAD'>        descriptionIns = Some(readLine)</span><span style=''>
+</span>49 <span style=''>
+</span>50 <span style=''>      val course = SavedCourse(
+</span>51 <span style=''>        courseId = CourseIdentifier(
+</span>52 <span style=''>          courseName = courseNameIns,
+</span>53 <span style=''>          degreeName = degreeNameIns,
+</span>54 <span style=''>          universityName = universityNameIns
+</span>55 <span style=''>        ),
+</span>56 <span style=''>        description = descriptionIns,
+</span>57 <span style=''>        quizList = </span><span style='background: #F0ADAD'>Nil</span><span style=''>
+</span>58 <span style=''>      )
+</span>59 <span style=''>      </span><span style='background: #F0ADAD'>sendEvent(EditCourseAction(Option(course)))</span><span style=''>
+</span>60 <span style=''>    </span><span style='background: #F0ADAD'>case CoursePrintUpdate(course)</span><span style=''> =&gt;
+</span>61 <span style=''>      </span><span style='background: #F0ADAD'>println(course.get)</span><span style=''>
+</span>62 <span style=''>    </span><span style='background: #F0ADAD'>case CourseEditedUpdate</span><span style=''> =&gt;
+</span>63 <span style=''>      </span><span style='background: #F0ADAD'>println(&quot;Corso Modificato!&quot;)</span><span style=''>
+</span>64 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -101,15 +100,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          20
+          19
         </td>
         <td>
-          2368
+          2346
         </td>
         <td>
-          569
+          568
           -
-          572
+          571
         </td>
         <td>
           Ident
@@ -125,15 +124,15 @@
         </td>
       </tr><tr>
         <td>
-          22
+          21
         </td>
         <td>
-          2370
+          2348
         </td>
         <td>
-          630
+          627
           -
-          654
+          651
         </td>
         <td>
           Apply
@@ -151,15 +150,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          22
         </td>
         <td>
-          2369
+          2347
         </td>
         <td>
-          639
+          636
           -
-          650
+          647
         </td>
         <td>
           Apply
@@ -175,15 +174,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          25
         </td>
         <td>
-          2412
+          2390
         </td>
         <td>
-          658
+          655
           -
-          679
+          676
         </td>
         <td>
           DefDef
@@ -199,15 +198,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          26
         </td>
         <td>
-          2373
+          2351
         </td>
         <td>
-          733
+          730
           -
-          751
+          748
         </td>
         <td>
           Block
@@ -223,15 +222,15 @@
         </td>
       </tr><tr>
         <td>
-          28
+          27
         </td>
         <td>
-          2371
+          2349
         </td>
         <td>
-          761
+          758
           -
-          812
+          809
         </td>
         <td>
           Apply
@@ -247,15 +246,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          28
         </td>
         <td>
-          2372
+          2350
         </td>
         <td>
-          819
+          816
           -
-          844
+          841
         </td>
         <td>
           Apply
@@ -271,15 +270,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          29
         </td>
         <td>
-          2375
+          2353
         </td>
         <td>
-          849
+          846
           -
-          887
+          884
         </td>
         <td>
           Block
@@ -295,15 +294,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          30
         </td>
         <td>
-          2374
+          2352
         </td>
         <td>
-          910
+          907
           -
-          929
+          926
         </td>
         <td>
           Select
@@ -319,15 +318,15 @@
         </td>
       </tr><tr>
         <td>
-          32
+          31
         </td>
         <td>
-          2389
+          2367
         </td>
         <td>
-          934
+          931
           -
-          960
+          957
         </td>
         <td>
           Block
@@ -343,15 +342,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          32
         </td>
         <td>
-          2376
+          2354
         </td>
         <td>
-          970
+          967
           -
-          1013
+          1010
         </td>
         <td>
           Apply
@@ -367,15 +366,63 @@
         </td>
       </tr><tr>
         <td>
-          34
+          33
         </td>
         <td>
-          2380
+          2356
         </td>
         <td>
-          1111
+          1017
           -
-          1132
+          1082
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          zipWithIndex
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseList.map(course =&gt; course.courseId.courseName).zipWithIndex
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          2359
+        </td>
+        <td>
+          1093
+          -
+          1104
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case (e, i)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          2358
+        </td>
+        <td>
+          1108
+          -
+          1129
         </td>
         <td>
           Apply
@@ -391,15 +438,39 @@
         </td>
       </tr><tr>
         <td>
-          34
+          33
         </td>
         <td>
-          2379
+          2355
         </td>
         <td>
-          1119
+          1017
           -
-          1131
+          1069
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseList.map(course =&gt; course.courseId.courseName)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          2357
+        </td>
+        <td>
+          1116
+          -
+          1128
         </td>
         <td>
           Apply
@@ -415,15 +486,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          33
         </td>
         <td>
-          2382
+          2360
         </td>
         <td>
-          1020
+          1017
           -
-          1134
+          1131
         </td>
         <td>
           Apply
@@ -442,84 +513,36 @@
           34
         </td>
         <td>
-          2381
+          2362
         </td>
         <td>
-          1096
+          1156
           -
-          1107
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case (e, i)
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          2378
-        </td>
-        <td>
-          1020
-          -
-          1085
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          zipWithIndex
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseList.map(course =&gt; course.courseId.courseName).zipWithIndex
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          2377
-        </td>
-        <td>
-          1020
-          -
-          1072
+          1164
         </td>
         <td>
           Apply
         </td>
         <td>
-          map
+          augmentString
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          courseList.map(course =&gt; course.courseId.courseName)
+          readLine
         </td>
       </tr><tr>
         <td>
-          35
+          34
         </td>
         <td>
-          2383
+          2361
         </td>
         <td>
-          1159
+          1156
           -
-          1167
+          1164
         </td>
         <td>
           Apply
@@ -535,15 +558,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          34
         </td>
         <td>
-          2385
+          2363
         </td>
         <td>
-          1159
+          1156
           -
-          1173
+          1170
         </td>
         <td>
           Select
@@ -562,36 +585,60 @@
           35
         </td>
         <td>
-          2384
+          2365
         </td>
         <td>
-          1159
+          1206
           -
-          1167
+          1234
         </td>
         <td>
           Apply
         </td>
         <td>
-          augmentString
+          apply
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          readLine
+          courseList.lift(courseIndex)
         </td>
       </tr><tr>
         <td>
-          36
+          35
         </td>
         <td>
-          2388
+          2364
         </td>
         <td>
-          1180
+          1206
           -
-          1239
+          1221
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          lift
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseList.lift
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2366
+        </td>
+        <td>
+          1177
+          -
+          1236
         </td>
         <td>
           Apply
@@ -610,60 +657,12 @@
           36
         </td>
         <td>
-          2387
+          2383
         </td>
         <td>
-          1209
+          1241
           -
-          1237
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseList.lift(courseIndex)
-        </td>
-      </tr><tr>
-        <td>
-          36
-        </td>
-        <td>
-          2386
-        </td>
-        <td>
-          1209
-          -
-          1224
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          lift
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseList.lift
-        </td>
-      </tr><tr>
-        <td>
-          37
-        </td>
-        <td>
-          2405
-        </td>
-        <td>
-          1244
-          -
-          1268
+          1265
         </td>
         <td>
           Block
@@ -679,15 +678,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          37
         </td>
         <td>
-          2390
+          2368
         </td>
         <td>
-          1278
+          1275
           -
-          1310
+          1307
         </td>
         <td>
           Apply
@@ -703,15 +702,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          38
         </td>
         <td>
-          2391
+          2369
         </td>
         <td>
-          1337
+          1334
           -
-          1345
+          1342
         </td>
         <td>
           Apply
@@ -727,15 +726,15 @@
         </td>
       </tr><tr>
         <td>
-          40
+          39
         </td>
         <td>
-          2392
+          2370
         </td>
         <td>
-          1352
+          1349
           -
-          1394
+          1391
         </td>
         <td>
           Apply
@@ -751,15 +750,15 @@
         </td>
       </tr><tr>
         <td>
-          41
+          40
         </td>
         <td>
-          2393
+          2371
         </td>
         <td>
-          1421
+          1418
           -
-          1429
+          1426
         </td>
         <td>
           Apply
@@ -775,15 +774,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          41
         </td>
         <td>
-          2394
+          2372
         </td>
         <td>
-          1436
+          1433
           -
-          1473
+          1470
         </td>
         <td>
           Apply
@@ -799,15 +798,15 @@
         </td>
       </tr><tr>
         <td>
-          43
+          42
         </td>
         <td>
-          2395
+          2373
         </td>
         <td>
-          1504
+          1501
           -
-          1512
+          1509
         </td>
         <td>
           Apply
@@ -823,15 +822,15 @@
         </td>
       </tr><tr>
         <td>
-          44
+          43
         </td>
         <td>
-          2396
+          2374
         </td>
         <td>
-          1519
+          1516
           -
-          1577
+          1574
         </td>
         <td>
           Apply
@@ -847,15 +846,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          45
         </td>
         <td>
-          2398
+          2376
         </td>
         <td>
-          1642
+          1639
           -
-          1662
+          1659
         </td>
         <td>
           Apply
@@ -871,15 +870,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          45
         </td>
         <td>
-          2397
+          2375
         </td>
         <td>
-          1642
+          1639
           -
-          1650
+          1647
         </td>
         <td>
           Apply
@@ -895,15 +894,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          46
         </td>
         <td>
-          2401
+          2379
         </td>
         <td>
-          1676
+          1673
           -
-          1759
+          1756
         </td>
         <td>
           Block
@@ -920,15 +919,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          46
         </td>
         <td>
-          2399
+          2377
         </td>
         <td>
-          1676
+          1673
           -
-          1719
+          1716
         </td>
         <td>
           Apply
@@ -944,15 +943,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          47
         </td>
         <td>
-          2400
+          2378
         </td>
         <td>
-          1750
+          1747
           -
-          1758
+          1755
         </td>
         <td>
           Apply
@@ -968,15 +967,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          56
         </td>
         <td>
-          2402
+          2380
         </td>
         <td>
-          2019
+          2016
           -
-          2022
+          2019
         </td>
         <td>
           Ident
@@ -992,15 +991,39 @@
         </td>
       </tr><tr>
         <td>
-          59
+          58
         </td>
         <td>
-          2403
+          2382
         </td>
         <td>
-          2064
+          2034
           -
-          2078
+          2077
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(EditCourseAction(Option(course)))
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          2381
+        </td>
+        <td>
+          2061
+          -
+          2075
         </td>
         <td>
           Apply
@@ -1019,36 +1042,12 @@
           59
         </td>
         <td>
-          2404
+          2386
         </td>
         <td>
-          2037
+          2082
           -
-          2080
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendEvent
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendEvent(EditCourseAction(Option(course)))
-        </td>
-      </tr><tr>
-        <td>
-          60
-        </td>
-        <td>
-          2408
-        </td>
-        <td>
-          2085
-          -
-          2115
+          2112
         </td>
         <td>
           Block
@@ -1064,15 +1063,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          60
         </td>
         <td>
-          2407
+          2385
         </td>
         <td>
-          2125
+          2122
           -
-          2144
+          2141
         </td>
         <td>
           Apply
@@ -1088,15 +1087,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          60
         </td>
         <td>
-          2406
+          2384
         </td>
         <td>
-          2133
+          2130
           -
-          2143
+          2140
         </td>
         <td>
           Select
@@ -1112,15 +1111,15 @@
         </td>
       </tr><tr>
         <td>
-          62
+          61
         </td>
         <td>
-          2410
+          2388
         </td>
         <td>
-          2149
+          2146
           -
-          2172
+          2169
         </td>
         <td>
           Block
@@ -1136,15 +1135,15 @@
         </td>
       </tr><tr>
         <td>
-          63
+          62
         </td>
         <td>
-          2409
+          2387
         </td>
         <td>
-          2182
+          2179
           -
-          2210
+          2207
         </td>
         <td>
           Apply
@@ -1160,15 +1159,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          63
         </td>
         <td>
-          2411
+          2389
         </td>
         <td>
-          2215
+          2212
           -
-          2221
+          2218
         </td>
         <td>
           Block

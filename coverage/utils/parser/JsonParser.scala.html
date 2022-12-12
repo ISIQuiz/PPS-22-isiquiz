@@ -27,90 +27,64 @@
 </span>3 <span style=''>import model.CourseIdentifier.CourseIdentifier
 </span>4 <span style=''>import play.api.libs.json.*
 </span>5 <span style=''>import utils.parser.JsonLabels.{CourseNameLabel, DegreeNameLabel, UniversityNameLabel}
-</span>6 <span style=''>
-</span>7 <span style=''>import scala.util.Try
-</span>8 <span style=''>
-</span>9 <span style=''>/** Trait for the [[JsonParser]] */
-</span>10 <span style=''>trait JsonParser[A]:
-</span>11 <span style=''>
-</span>12 <span style=''>  /**
-</span>13 <span style=''>   * Serialize a generic type in a JSON Object
-</span>14 <span style=''>   *
-</span>15 <span style=''>   * @param element generic element to serialize
-</span>16 <span style=''>   * @return JSON Object
-</span>17 <span style=''>   */
-</span>18 <span style=''>  def serialize(element: A): JsObject
-</span>19 <span style=''>
-</span>20 <span style=''>  /**
-</span>21 <span style=''>   * Deserialize the JSON string in a Try generic type
-</span>22 <span style=''>   *
-</span>23 <span style=''>   * @param string JSON string
-</span>24 <span style=''>   * @return a Try with the object deserialized
-</span>25 <span style=''>   */
-</span>26 <span style=''>  def deserialize(string: String): Try[A]
-</span>27 <span style=''>
-</span>28 <span style=''>  /**
-</span>29 <span style=''>   * Course identifier serializer
-</span>30 <span style=''>   * @param courseIdentifier course identifier
-</span>31 <span style=''>   * @return a JsObject
-</span>32 <span style=''>   */
-</span>33 <span style=''>  </span><span style='background: #AEF1AE'>def serializeCourseIdentifier</span><span style=''>(courseIdentifier: CourseIdentifier): JsObject =
-</span>34 <span style=''>    </span><span style='background: #AEF1AE'>JsObject(
-</span>35 <span style=''></span><span style='background: #AEF1AE'>      Seq(
-</span>36 <span style=''></span><span style='background: #AEF1AE'>        CourseNameLabel -&gt; JsString(courseIdentifier.courseName),
-</span>37 <span style=''></span><span style='background: #AEF1AE'>        DegreeNameLabel -&gt; JsString(courseIdentifier.degreeName),
-</span>38 <span style=''></span><span style='background: #AEF1AE'>        UniversityNameLabel -&gt; JsString(courseIdentifier.universityName)
-</span>39 <span style=''></span><span style='background: #AEF1AE'>      )
-</span>40 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
-</span>41 <span style=''>
-</span>42 <span style=''>  /**
-</span>43 <span style=''>   * Course identifier deserializer
-</span>44 <span style=''>   * @param jsonObject course identifier as JsOgject
-</span>45 <span style=''>   * @return a course identifier
-</span>46 <span style=''>   */
-</span>47 <span style=''>  </span><span style='background: #AEF1AE'>def deserializeCourseIdentifier</span><span style=''>(jsonObject: JsObject): CourseIdentifier =
-</span>48 <span style=''>    CourseIdentifier(
-</span>49 <span style=''>      courseName = </span><span style='background: #AEF1AE'>(jsonObject \ CourseNameLabel).as[String]</span><span style=''>,
-</span>50 <span style=''>      degreeName = </span><span style='background: #AEF1AE'>(jsonObject \ DegreeNameLabel).as[String]</span><span style=''>,
-</span>51 <span style=''>      universityName = </span><span style='background: #AEF1AE'>(jsonObject \ UniversityNameLabel).as[String]</span><span style=''>
-</span>52 <span style=''>    )
-</span>53 <span style=''>
-</span>54 <span style=''>
-</span>55 <span style=''>/** Companion object of [[JsonParser]] trait */
-</span>56 <span style=''>object JsonParser:
-</span>57 <span style=''>  /**
-</span>58 <span style=''>   * Merge the second object into the first object. It's similar to JSON play library [[JsObject.deepMerge]] method.
-</span>59 <span style=''>   * The key difference is that can merge nested JsArrays if starting JsObjects have a similar structure
-</span>60 <span style=''>   *
-</span>61 <span style=''>   * @param firstObject  first JsObject to be merged
-</span>62 <span style=''>   * @param secondObject second JsObject to be merged
-</span>63 <span style=''>   * @return a merged JsObject
-</span>64 <span style=''>   */
-</span>65 <span style=''>  </span><span style='background: #AEF1AE'>def merge</span><span style=''>(firstObject: JsObject, secondObject: JsObject): JsObject =
-</span>66 <span style=''>    val result = </span><span style='background: #AEF1AE'>firstObject.fields ++ secondObject.fields.map {
-</span>67 <span style=''></span><span style='background: #AEF1AE'>      case (secondKey, secondValue) =&gt;
-</span>68 <span style=''></span><span style='background: #AEF1AE'>        val maybeExistingValue = firstObject.value.get(secondKey)
-</span>69 <span style=''></span><span style='background: #AEF1AE'>        // if exist two value with same key do merge
-</span>70 <span style=''></span><span style='background: #AEF1AE'>        val newValue = (maybeExistingValue, secondValue) match {
-</span>71 <span style=''></span><span style='background: #AEF1AE'>          </span><span style='background: #F0ADAD'>case (Some(f: JsObject), s: JsObject)</span><span style='background: #AEF1AE'> =&gt; </span><span style='background: #F0ADAD'>merge(f, s)</span><span style='background: #AEF1AE'> // merge JsObjects
-</span>72 <span style=''></span><span style='background: #AEF1AE'>          case (Some(f: JsArray), s: JsArray) =&gt; JsArray(f.value.zip(s.value).map { // merge every JsObjects of JsArray
-</span>73 <span style=''></span><span style='background: #AEF1AE'>            </span><span style='background: #F0ADAD'>case (f: JsObject, s: JsObject)</span><span style='background: #AEF1AE'> =&gt; </span><span style='background: #F0ADAD'>merge(f, s)</span><span style='background: #AEF1AE'>
-</span>74 <span style=''></span><span style='background: #AEF1AE'>            </span><span style='background: #F0ADAD'>case _</span><span style='background: #AEF1AE'> =&gt; </span><span style='background: #F0ADAD'>JsObject.empty</span><span style='background: #AEF1AE'>
-</span>75 <span style=''></span><span style='background: #AEF1AE'>          })
-</span>76 <span style=''></span><span style='background: #AEF1AE'>          </span><span style='background: #F0ADAD'>case _</span><span style='background: #AEF1AE'> =&gt; secondValue
-</span>77 <span style=''></span><span style='background: #AEF1AE'>        }
-</span>78 <span style=''></span><span style='background: #AEF1AE'>        secondKey -&gt; newValue
-</span>79 <span style=''></span><span style='background: #AEF1AE'>    }</span><span style=''>
-</span>80 <span style=''>    </span><span style='background: #AEF1AE'>JsObject(result)</span><span style=''>
-</span>81 <span style=''>
-</span>82 <span style=''>  /**
-</span>83 <span style=''>   * A string formatter for generic JSON Value
-</span>84 <span style=''>   *
-</span>85 <span style=''>   * @param jsonValue the JSON Value to convert
-</span>86 <span style=''>   * @return a well formatted JSON string 
-</span>87 <span style=''>   */
-</span>88 <span style=''>  </span><span style='background: #AEF1AE'>def toString</span><span style=''>(jsonValue: JsValue): String =
-</span>89 <span style=''>    </span><span style='background: #AEF1AE'>Json.prettyPrint(jsonValue)</span><span style=''>
+</span>6 <span style=''>import scala.util.Try
+</span>7 <span style=''>
+</span>8 <span style=''>/** Trait for the [[JsonParser]] */
+</span>9 <span style=''>trait JsonParser[A]:
+</span>10 <span style=''>
+</span>11 <span style=''>  /**
+</span>12 <span style=''>   * Serialize a generic type in a JSON Object
+</span>13 <span style=''>   *
+</span>14 <span style=''>   * @param element generic element to serialize
+</span>15 <span style=''>   * @return JSON Object
+</span>16 <span style=''>   */
+</span>17 <span style=''>  def serialize(element: A): JsObject
+</span>18 <span style=''>
+</span>19 <span style=''>  /**
+</span>20 <span style=''>   * Deserialize the JSON string in a Try generic type
+</span>21 <span style=''>   *
+</span>22 <span style=''>   * @param string JSON string
+</span>23 <span style=''>   * @return a Try with the object deserialized
+</span>24 <span style=''>   */
+</span>25 <span style=''>  def deserialize(string: String): Try[A]
+</span>26 <span style=''>
+</span>27 <span style=''>  /**
+</span>28 <span style=''>   * Course identifier serializer
+</span>29 <span style=''>   * @param courseIdentifier course identifier
+</span>30 <span style=''>   * @return a JsObject
+</span>31 <span style=''>   */
+</span>32 <span style=''>  </span><span style='background: #AEF1AE'>def serializeCourseIdentifier</span><span style=''>(courseIdentifier: CourseIdentifier): JsObject =
+</span>33 <span style=''>    </span><span style='background: #AEF1AE'>JsObject(
+</span>34 <span style=''></span><span style='background: #AEF1AE'>      Seq(
+</span>35 <span style=''></span><span style='background: #AEF1AE'>        CourseNameLabel -&gt; JsString(courseIdentifier.courseName),
+</span>36 <span style=''></span><span style='background: #AEF1AE'>        DegreeNameLabel -&gt; JsString(courseIdentifier.degreeName),
+</span>37 <span style=''></span><span style='background: #AEF1AE'>        UniversityNameLabel -&gt; JsString(courseIdentifier.universityName)
+</span>38 <span style=''></span><span style='background: #AEF1AE'>      )
+</span>39 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>40 <span style=''>
+</span>41 <span style=''>  /**
+</span>42 <span style=''>   * Course identifier deserializer
+</span>43 <span style=''>   * @param jsonObject course identifier as JsOgject
+</span>44 <span style=''>   * @return a course identifier
+</span>45 <span style=''>   */
+</span>46 <span style=''>  </span><span style='background: #AEF1AE'>def deserializeCourseIdentifier</span><span style=''>(jsonObject: JsObject): CourseIdentifier =
+</span>47 <span style=''>    CourseIdentifier(
+</span>48 <span style=''>      courseName = </span><span style='background: #AEF1AE'>(jsonObject \ CourseNameLabel).as[String]</span><span style=''>,
+</span>49 <span style=''>      degreeName = </span><span style='background: #AEF1AE'>(jsonObject \ DegreeNameLabel).as[String]</span><span style=''>,
+</span>50 <span style=''>      universityName = </span><span style='background: #AEF1AE'>(jsonObject \ UniversityNameLabel).as[String]</span><span style=''>
+</span>51 <span style=''>    )
+</span>52 <span style=''>
+</span>53 <span style=''>/** Companion object of [[JsonParser]] trait */
+</span>54 <span style=''>object JsonParser:
+</span>55 <span style=''>
+</span>56 <span style=''>  /**
+</span>57 <span style=''>   * A string formatter for generic JSON Value
+</span>58 <span style=''>   *
+</span>59 <span style=''>   * @param jsonValue the JSON Value to convert
+</span>60 <span style=''>   * @return a well formatted JSON string
+</span>61 <span style=''>   */
+</span>62 <span style=''>  </span><span style='background: #AEF1AE'>def toString</span><span style=''>(jsonValue: JsValue): String =
+</span>63 <span style=''>    </span><span style='background: #AEF1AE'>Json.prettyPrint(jsonValue)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -125,15 +99,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          32
+          31
         </td>
         <td>
           955
         </td>
         <td>
-          756
+          755
           -
-          785
+          784
         </td>
         <td>
           DefDef
@@ -149,15 +123,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          32
         </td>
         <td>
           954
         </td>
         <td>
-          838
+          837
           -
-          1077
+          1076
         </td>
         <td>
           Apply
@@ -179,15 +153,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          33
         </td>
         <td>
           953
         </td>
         <td>
-          854
+          853
           -
-          1071
+          1070
         </td>
         <td>
           Apply
@@ -207,15 +181,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          34
         </td>
         <td>
           950
         </td>
         <td>
-          867
+          866
           -
-          923
+          922
         </td>
         <td>
           Apply
@@ -231,15 +205,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          35
         </td>
         <td>
           951
         </td>
         <td>
-          933
+          932
           -
-          989
+          988
         </td>
         <td>
           Apply
@@ -255,15 +229,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          36
         </td>
         <td>
           952
         </td>
         <td>
-          999
+          998
           -
-          1063
+          1062
         </td>
         <td>
           Apply
@@ -279,15 +253,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          45
         </td>
         <td>
           965
         </td>
         <td>
-          1215
+          1214
           -
-          1246
+          1245
         </td>
         <td>
           DefDef
@@ -303,15 +277,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          47
         </td>
         <td>
           956
         </td>
         <td>
-          1331
+          1330
           -
-          1341
+          1340
         </td>
         <td>
           Apply
@@ -327,15 +301,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          47
         </td>
         <td>
           958
         </td>
         <td>
-          1330
+          1329
           -
-          1371
+          1370
         </td>
         <td>
           Apply
@@ -351,15 +325,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          47
         </td>
         <td>
           957
         </td>
         <td>
-          1331
+          1330
           -
-          1359
+          1358
         </td>
         <td>
           Apply
@@ -375,15 +349,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          48
         </td>
         <td>
           959
         </td>
         <td>
-          1393
+          1392
           -
-          1403
+          1402
         </td>
         <td>
           Apply
@@ -399,15 +373,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          48
         </td>
         <td>
           961
         </td>
         <td>
-          1392
+          1391
           -
-          1433
+          1432
         </td>
         <td>
           Apply
@@ -423,15 +397,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          48
         </td>
         <td>
           960
         </td>
         <td>
-          1393
+          1392
           -
-          1421
+          1420
         </td>
         <td>
           Apply
@@ -447,15 +421,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          49
         </td>
         <td>
           962
         </td>
         <td>
-          1459
+          1458
           -
-          1469
+          1468
         </td>
         <td>
           Apply
@@ -471,15 +445,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          49
         </td>
         <td>
           964
         </td>
         <td>
-          1458
+          1457
           -
-          1503
+          1502
         </td>
         <td>
           Apply
@@ -495,15 +469,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          49
         </td>
         <td>
           963
         </td>
         <td>
-          1459
+          1458
           -
-          1491
+          1490
         </td>
         <td>
           Apply
@@ -519,524 +493,15 @@
         </td>
       </tr><tr>
         <td>
-          64
-        </td>
-        <td>
-          985
-        </td>
-        <td>
-          1958
-          -
-          1967
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          merge
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          def merge
-        </td>
-      </tr><tr>
-        <td>
-          65
-        </td>
-        <td>
-          983
-        </td>
-        <td>
-          2044
-          -
-          2703
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          ++
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          firstObject.fields ++ secondObject.fields.map {
-      case (secondKey, secondValue) =&gt;
-        val maybeExistingValue = firstObject.value.get(secondKey)
-        // if exist two value with same key do merge
-        val newValue = (maybeExistingValue, secondValue) match {
-          case (Some(f: JsObject), s: JsObject) =&gt; merge(f, s) // merge JsObjects
-          case (Some(f: JsArray), s: JsArray) =&gt; JsArray(f.value.zip(s.value).map { // merge every JsObjects of JsArray
-            case (f: JsObject, s: JsObject) =&gt; merge(f, s)
-            case _ =&gt; JsObject.empty
-          })
-          case _ =&gt; secondValue
-        }
-        secondKey -&gt; newValue
-    }
-        </td>
-      </tr><tr>
-        <td>
-          65
-        </td>
-        <td>
-          982
-        </td>
-        <td>
-          2066
-          -
-          2703
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          map
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          secondObject.fields.map {
-      case (secondKey, secondValue) =&gt;
-        val maybeExistingValue = firstObject.value.get(secondKey)
-        // if exist two value with same key do merge
-        val newValue = (maybeExistingValue, secondValue) match {
-          case (Some(f: JsObject), s: JsObject) =&gt; merge(f, s) // merge JsObjects
-          case (Some(f: JsArray), s: JsArray) =&gt; JsArray(f.value.zip(s.value).map { // merge every JsObjects of JsArray
-            case (f: JsObject, s: JsObject) =&gt; merge(f, s)
-            case _ =&gt; JsObject.empty
-          })
-          case _ =&gt; secondValue
-        }
-        secondKey -&gt; newValue
-    }
-        </td>
-      </tr><tr>
-        <td>
-          65
+          61
         </td>
         <td>
           967
         </td>
         <td>
-          2066
+          1734
           -
-          2085
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          fields
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          secondObject.fields
-        </td>
-      </tr><tr>
-        <td>
-          65
-        </td>
-        <td>
-          966
-        </td>
-        <td>
-          2044
-          -
-          2062
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          fields
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          firstObject.fields
-        </td>
-      </tr><tr>
-        <td>
-          66
-        </td>
-        <td>
-          981
-        </td>
-        <td>
-          2098
-          -
-          2127
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          case (secondKey, secondValue)
-        </td>
-      </tr><tr>
-        <td>
-          67
-        </td>
-        <td>
-          968
-        </td>
-        <td>
-          2164
-          -
-          2181
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          value
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          firstObject.value
-        </td>
-      </tr><tr>
-        <td>
-          67
-        </td>
-        <td>
-          969
-        </td>
-        <td>
-          2164
-          -
-          2196
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          get
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          firstObject.value.get(secondKey)
-        </td>
-      </tr><tr>
-        <td>
-          70
-        </td>
-        <td>
-          971
-        </td>
-        <td>
-          2325
-          -
-          2362
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case (Some(f: JsObject), s: JsObject)
-        </td>
-      </tr><tr>
-        <td>
-          70
-        </td>
-        <td>
-          970
-        </td>
-        <td>
-          2366
-          -
-          2377
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          merge
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          merge(f, s)
-        </td>
-      </tr><tr>
-        <td>
-          71
-        </td>
-        <td>
-          977
-        </td>
-        <td>
-          2454
-          -
-          2624
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          map
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          f.value.zip(s.value).map { // merge every JsObjects of JsArray
-            case (f: JsObject, s: JsObject) =&gt; merge(f, s)
-            case _ =&gt; JsObject.empty
-          }
-        </td>
-      </tr><tr>
-        <td>
-          71
-        </td>
-        <td>
-          978
-        </td>
-        <td>
-          2407
-          -
-          2442
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          case (Some(f: JsArray), s: JsArray)
-        </td>
-      </tr><tr>
-        <td>
-          71
-        </td>
-        <td>
-          972
-        </td>
-        <td>
-          2454
-          -
-          2474
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          zip
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          f.value.zip(s.value)
-        </td>
-      </tr><tr>
-        <td>
-          72
-        </td>
-        <td>
-          974
-        </td>
-        <td>
-          2529
-          -
-          2560
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case (f: JsObject, s: JsObject)
-        </td>
-      </tr><tr>
-        <td>
-          72
-        </td>
-        <td>
-          973
-        </td>
-        <td>
-          2564
-          -
-          2575
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          merge
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          merge(f, s)
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          976
-        </td>
-        <td>
-          2588
-          -
-          2594
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case _
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          975
-        </td>
-        <td>
-          2598
-          -
-          2612
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          empty
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          JsObject.empty
-        </td>
-      </tr><tr>
-        <td>
-          75
-        </td>
-        <td>
-          979
-        </td>
-        <td>
-          2636
-          -
-          2642
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case _
-        </td>
-      </tr><tr>
-        <td>
-          77
-        </td>
-        <td>
-          980
-        </td>
-        <td>
-          2676
-          -
-          2697
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          -&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          secondKey -&gt; newValue
-        </td>
-      </tr><tr>
-        <td>
-          79
-        </td>
-        <td>
-          984
-        </td>
-        <td>
-          2708
-          -
-          2724
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          JsObject(result)
-        </td>
-      </tr><tr>
-        <td>
-          87
-        </td>
-        <td>
-          987
-        </td>
-        <td>
-          2883
-          -
-          2895
+          1746
         </td>
         <td>
           DefDef
@@ -1052,15 +517,15 @@
         </td>
       </tr><tr>
         <td>
-          88
+          62
         </td>
         <td>
-          986
+          966
         </td>
         <td>
-          2930
+          1781
           -
-          2957
+          1808
         </td>
         <td>
           Apply

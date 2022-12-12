@@ -31,36 +31,35 @@
 </span>7 <span style=''>import model.SavedCourse.SavedCourse
 </span>8 <span style=''>import view.AddCourseMenuView.*
 </span>9 <span style=''>import view.updates.{ParameterlessViewUpdate, ViewUpdate}
-</span>10 <span style=''>
-</span>11 <span style=''>import scala.collection.mutable.ListBuffer
-</span>12 <span style=''>import scala.concurrent.Await
-</span>13 <span style=''>import scala.concurrent.duration.Duration
-</span>14 <span style=''>
-</span>15 <span style=''>/** Companion object of add course menu controller */
-</span>16 <span style=''>object AddCourseMenuController extends BackAction:
-</span>17 <span style=''>
-</span>18 <span style=''>  /** action to add a course in the add course controller */
-</span>19 <span style=''>  case class AddCourseAction(override val actionParameter: Option[SavedCourse]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
-</span>20 <span style=''>
-</span>21 <span style=''>/** Defines the logic of the add course page */
-</span>22 <span style=''>class AddCourseMenuController extends PageController:
-</span>23 <span style=''>
-</span>24 <span style=''>  import AddCourseMenuController.*
-</span>25 <span style=''>
-</span>26 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
-</span>27 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(SettingsMenuAction)</span><span style=''>
-</span>28 <span style=''>    </span><span style='background: #F0ADAD'>case AddCourseAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>addCourse(actionParameter)</span><span style=''>
-</span>29 <span style=''>
-</span>30 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
-</span>31 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
-</span>32 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(AskCourseUpdate)</span><span style=''>
-</span>33 <span style=''>
-</span>34 <span style=''>  </span><span style='background: #F0ADAD'>def addCourse</span><span style=''>(actionParameter:Option[SavedCourse]):Unit =
-</span>35 <span style=''>    val newListCourses = </span><span style='background: #F0ADAD'>AppController.session.savedCourses.appended(actionParameter.get)</span><span style=''>
-</span>36 <span style=''>    </span><span style='background: #F0ADAD'>AppController.changeSavedCourses(newListCourses)</span><span style=''>
-</span>37 <span style=''>    </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(newListCourses)</span><span style=''> // Export saved course list to personal directory
-</span>38 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CoursePrintUpdate(actionParameter))</span><span style=''>
-</span>39 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CourseAddedUpdate)</span><span style=''>
+</span>10 <span style=''>import scala.collection.mutable.ListBuffer
+</span>11 <span style=''>import scala.concurrent.Await
+</span>12 <span style=''>import scala.concurrent.duration.Duration
+</span>13 <span style=''>
+</span>14 <span style=''>/** Companion object of add course menu controller */
+</span>15 <span style=''>object AddCourseMenuController extends BackAction:
+</span>16 <span style=''>
+</span>17 <span style=''>  /** action to add a course in the add course controller */
+</span>18 <span style=''>  case class AddCourseAction(override val actionParameter: Option[SavedCourse]) extends </span><span style='background: #F0ADAD'>Action(actionParameter)</span><span style=''>
+</span>19 <span style=''>
+</span>20 <span style=''>/** Defines the logic of the add course page */
+</span>21 <span style=''>class AddCourseMenuController extends PageController:
+</span>22 <span style=''>
+</span>23 <span style=''>  import AddCourseMenuController.*
+</span>24 <span style=''>
+</span>25 <span style=''>  </span><span style='background: #F0ADAD'>override def handle</span><span style=''>[T](action: Action[T]): Unit = action match
+</span>26 <span style=''>    </span><span style='background: #F0ADAD'>case Back</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>AppController.handle(SettingsMenuAction)</span><span style=''>
+</span>27 <span style=''>    </span><span style='background: #F0ADAD'>case AddCourseAction(actionParameter)</span><span style=''> =&gt; </span><span style='background: #F0ADAD'>addCourse(actionParameter)</span><span style=''>
+</span>28 <span style=''>
+</span>29 <span style=''>  </span><span style='background: #F0ADAD'>override def nextIteration</span><span style=''>(): Unit =
+</span>30 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(DefaultUpdate)</span><span style=''>
+</span>31 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(AskCourseUpdate)</span><span style=''>
+</span>32 <span style=''>
+</span>33 <span style=''>  </span><span style='background: #F0ADAD'>def addCourse</span><span style=''>(actionParameter:Option[SavedCourse]):Unit =
+</span>34 <span style=''>    val newListCourses = </span><span style='background: #F0ADAD'>AppController.session.savedCourses.appended(actionParameter.get)</span><span style=''>
+</span>35 <span style=''>    </span><span style='background: #F0ADAD'>AppController.changeSavedCourses(newListCourses)</span><span style=''>
+</span>36 <span style=''>    </span><span style='background: #F0ADAD'>ExportHandler.exportDataToPersonalDirectory(newListCourses)</span><span style=''> // Export saved course list to personal directory
+</span>37 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CoursePrintUpdate(actionParameter))</span><span style=''>
+</span>38 <span style=''>    </span><span style='background: #F0ADAD'>sendUpdate(CourseAddedUpdate)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -75,15 +74,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          18
+          17
         </td>
         <td>
           2
         </td>
         <td>
-          706
+          705
           -
-          729
+          728
         </td>
         <td>
           Apply
@@ -99,15 +98,15 @@
         </td>
       </tr><tr>
         <td>
-          25
+          24
         </td>
         <td>
           7
         </td>
         <td>
-          872
+          871
           -
-          891
+          890
         </td>
         <td>
           DefDef
@@ -123,15 +122,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          25
         </td>
         <td>
           4
         </td>
         <td>
-          939
+          938
           -
-          948
+          947
         </td>
         <td>
           Block
@@ -147,15 +146,15 @@
         </td>
       </tr><tr>
         <td>
-          26
+          25
         </td>
         <td>
           3
         </td>
         <td>
-          952
+          951
           -
-          992
+          991
         </td>
         <td>
           Apply
@@ -171,15 +170,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          26
         </td>
         <td>
           5
         </td>
         <td>
-          1038
+          1037
           -
-          1064
+          1063
         </td>
         <td>
           Apply
@@ -195,15 +194,15 @@
         </td>
       </tr><tr>
         <td>
-          27
+          26
         </td>
         <td>
           6
         </td>
         <td>
-          997
+          996
           -
-          1034
+          1033
         </td>
         <td>
           Block
@@ -219,15 +218,15 @@
         </td>
       </tr><tr>
         <td>
-          29
+          28
         </td>
         <td>
           10
         </td>
         <td>
-          1068
+          1067
           -
-          1094
+          1093
         </td>
         <td>
           DefDef
@@ -243,15 +242,15 @@
         </td>
       </tr><tr>
         <td>
-          30
+          29
         </td>
         <td>
           8
         </td>
         <td>
-          1109
+          1108
           -
-          1134
+          1133
         </td>
         <td>
           Apply
@@ -267,15 +266,15 @@
         </td>
       </tr><tr>
         <td>
-          31
+          30
         </td>
         <td>
           9
         </td>
         <td>
-          1139
+          1138
           -
-          1166
+          1165
         </td>
         <td>
           Apply
@@ -291,15 +290,15 @@
         </td>
       </tr><tr>
         <td>
-          33
+          32
         </td>
         <td>
           18
         </td>
         <td>
-          1170
+          1169
           -
-          1183
+          1182
         </td>
         <td>
           DefDef
@@ -315,15 +314,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          33
         </td>
         <td>
           11
         </td>
         <td>
-          1253
+          1252
           -
-          1274
+          1273
         </td>
         <td>
           Select
@@ -339,15 +338,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          33
         </td>
         <td>
           13
         </td>
         <td>
-          1253
+          1252
           -
-          1317
+          1316
         </td>
         <td>
           Apply
@@ -363,15 +362,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          33
         </td>
         <td>
           12
         </td>
         <td>
-          1297
+          1296
           -
-          1316
+          1315
         </td>
         <td>
           Select
@@ -387,15 +386,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          34
         </td>
         <td>
           14
         </td>
         <td>
-          1322
+          1321
           -
-          1370
+          1369
         </td>
         <td>
           Apply
@@ -411,15 +410,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          35
         </td>
         <td>
           15
         </td>
         <td>
-          1375
+          1374
           -
-          1434
+          1433
         </td>
         <td>
           Apply
@@ -435,15 +434,15 @@
         </td>
       </tr><tr>
         <td>
-          37
+          36
         </td>
         <td>
           16
         </td>
         <td>
-          1489
+          1488
           -
-          1535
+          1534
         </td>
         <td>
           Apply
@@ -459,15 +458,15 @@
         </td>
       </tr><tr>
         <td>
-          38
+          37
         </td>
         <td>
           17
         </td>
         <td>
-          1540
+          1539
           -
-          1569
+          1568
         </td>
         <td>
           Apply

@@ -27,37 +27,30 @@
 </span>3 <span style=''>import CancellableFuture.*
 </span>4 <span style=''>import controller.AppController
 </span>5 <span style=''>import controller.StandardGameController.SelectAnswer
-</span>6 <span style=''>
-</span>7 <span style=''>import java.util.concurrent.{CountDownLatch, TimeUnit}
-</span>8 <span style=''>import scala.concurrent.{Future, Promise}
-</span>9 <span style=''>import concurrent.ExecutionContext.Implicits.global
-</span>10 <span style=''>import scala.io.StdIn.readLine
-</span>11 <span style=''>import scala.util.{Failure, Success}
-</span>12 <span style=''>
-</span>13 <span style=''>trait TerminalInput:
-</span>14 <span style=''>
-</span>15 <span style=''>  var cancellable: (Future[String], () =&gt; Boolean)
-</span>16 <span style=''>  def readInput(): Future[String]
-</span>17 <span style=''>  def stopInput(): Unit
-</span>18 <span style=''>
-</span>19 <span style=''>case class TerminalInputImpl() extends TerminalInput:
-</span>20 <span style=''>
-</span>21 <span style=''>  var cancellable: (Future[String], () =&gt; Boolean) = _
-</span>22 <span style=''>
-</span>23 <span style=''>  </span><span style='background: #F0ADAD'>override def readInput</span><span style=''>(): Future[String] =
-</span>24 <span style=''>    cancellable = </span><span style='background: #F0ADAD'>interruptableFuture[String] { () =&gt;
-</span>25 <span style=''></span><span style='background: #F0ADAD'>//      AppController.currentPage.pageController.handle(SelectAnswer(Option(readLine.toInt))).asInstanceOf[T]
-</span>26 <span style=''></span><span style='background: #F0ADAD'>      readLine()
-</span>27 <span style=''></span><span style='background: #F0ADAD'>    }</span><span style=''>
-</span>28 <span style=''>    </span><span style='background: #F0ADAD'>cancellable._1</span><span style=''>
-</span>29 <span style=''>
-</span>30 <span style=''>//    cancellable._1.onComplete( _ match
-</span>31 <span style=''>//      case Success(input) =&gt; input
-</span>32 <span style=''>//      case Failure(exception) =&gt; throw exception
-</span>33 <span style=''>//    )
-</span>34 <span style=''>
-</span>35 <span style=''>  </span><span style='background: #F0ADAD'>override def stopInput</span><span style=''>(): Unit =
-</span>36 <span style=''>    </span><span style='background: #F0ADAD'>cancellable._2.apply()</span><span style=''>
+</span>6 <span style=''>import java.util.concurrent.{CountDownLatch, TimeUnit}
+</span>7 <span style=''>import scala.concurrent.{Future, Promise}
+</span>8 <span style=''>import concurrent.ExecutionContext.Implicits.global
+</span>9 <span style=''>import scala.io.StdIn.readLine
+</span>10 <span style=''>import scala.util.{Failure, Success}
+</span>11 <span style=''>
+</span>12 <span style=''>trait TerminalInput:
+</span>13 <span style=''>
+</span>14 <span style=''>  var cancellable: (Future[String], () =&gt; Boolean)
+</span>15 <span style=''>  def readInput(): Future[String]
+</span>16 <span style=''>  def stopInput(): Unit
+</span>17 <span style=''>
+</span>18 <span style=''>case class TerminalInputImpl() extends TerminalInput:
+</span>19 <span style=''>
+</span>20 <span style=''>  var cancellable: (Future[String], () =&gt; Boolean) = _
+</span>21 <span style=''>
+</span>22 <span style=''>  </span><span style='background: #F0ADAD'>override def readInput</span><span style=''>(): Future[String] =
+</span>23 <span style=''>    cancellable = </span><span style='background: #F0ADAD'>interruptableFuture[String] { () =&gt;
+</span>24 <span style=''></span><span style='background: #F0ADAD'>      readLine()
+</span>25 <span style=''></span><span style='background: #F0ADAD'>    }</span><span style=''>
+</span>26 <span style=''>    </span><span style='background: #F0ADAD'>cancellable._1</span><span style=''>
+</span>27 <span style=''>
+</span>28 <span style=''>  </span><span style='background: #F0ADAD'>override def stopInput</span><span style=''>(): Unit =
+</span>29 <span style=''>    </span><span style='background: #F0ADAD'>cancellable._2.apply()</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -72,15 +65,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          22
+          21
         </td>
         <td>
           805
         </td>
         <td>
-          592
+          591
           -
-          614
+          613
         </td>
         <td>
           DefDef
@@ -96,15 +89,15 @@
         </td>
       </tr><tr>
         <td>
-          23
+          22
         </td>
         <td>
           803
         </td>
         <td>
-          653
+          652
           -
-          821
+          710
         </td>
         <td>
           Apply
@@ -117,21 +110,20 @@
         </td>
         <td style="background: #F0ADAD">
           interruptableFuture[String] { () =&gt;
-//      AppController.currentPage.pageController.handle(SelectAnswer(Option(readLine.toInt))).asInstanceOf[T]
       readLine()
     }
         </td>
       </tr><tr>
         <td>
-          27
+          25
         </td>
         <td>
           804
         </td>
         <td>
-          826
+          715
           -
-          840
+          729
         </td>
         <td>
           Select
@@ -147,15 +139,15 @@
         </td>
       </tr><tr>
         <td>
-          34
+          27
         </td>
         <td>
           808
         </td>
         <td>
-          982
+          733
           -
-          1004
+          755
         </td>
         <td>
           DefDef
@@ -171,15 +163,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          28
         </td>
         <td>
           806
         </td>
         <td>
-          1019
+          770
           -
-          1033
+          784
         </td>
         <td>
           Select
@@ -195,15 +187,15 @@
         </td>
       </tr><tr>
         <td>
-          35
+          28
         </td>
         <td>
           807
         </td>
         <td>
-          1019
+          770
           -
-          1041
+          792
         </td>
         <td>
           Apply

@@ -50,11 +50,12 @@ Per ciascuna tipologia di statistica ci sono:
 
 __Impostazioni__
 Per poter apportare modifiche nelle impostazioni generali:
-- Importa quiz: importa un file JSON dal file system contenente nuovi quiz
-- Esporta quiz: esporta il file JSON contenente i corsi con i relativi quiz
-- Modifica quiz
-- Aggiungi corso: inserisci un nuovo corso
-- Aggiungi quiz: inserisci nuovi quiz ad un determinato corso, così da poterti esercitare su più argomenti
+- importa quiz: importa un file JSON dal file system contenente nuovi quiz
+- esporta quiz: esporta il file JSON contenente i corsi con i relativi quiz
+- modifica quiz
+- aggiungi corso: inserisci un nuovo corso
+- modifica corso
+- aggiungi quiz: inserisci nuovi quiz ad un determinato corso, così da poterti esercitare su più argomenti
 
 __Esci__
 Per uscire dall'applicazione

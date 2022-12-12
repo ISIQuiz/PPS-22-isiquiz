@@ -28,57 +28,47 @@
 </span>4 <span style=''>import scala.io.Source
 </span>5 <span style=''>import scala.util.{Try, Using}
 </span>6 <span style=''>
-</span>7 <span style=''>
-</span>8 <span style=''>/** Object of [[FileHandler]] */
-</span>9 <span style=''>object FileHandler:
-</span>10 <span style=''>
-</span>11 <span style=''>  /**
-</span>12 <span style=''>   * Read file from path
-</span>13 <span style=''>   *
-</span>14 <span style=''>   * @param filePath a string with file path
-</span>15 <span style=''>   * @return a Try[String] with the file content
-</span>16 <span style=''>   */
-</span>17 <span style=''>  </span><span style='background: #AEF1AE'>def readFile</span><span style=''>(filePath: String): Try[String] =
-</span>18 <span style=''>    </span><span style='background: #AEF1AE'>Using(Source.fromFile(filePath))(_.mkString)</span><span style=''>
-</span>19 <span style=''>
-</span>20 <span style=''>  /**
-</span>21 <span style=''>   * Read resource file from path
-</span>22 <span style=''>   *
-</span>23 <span style=''>   * @param filePath a string with file path
-</span>24 <span style=''>   * @return a Try[String] with the file content
+</span>7 <span style=''>/** Object of [[FileHandler]] */
+</span>8 <span style=''>object FileHandler:
+</span>9 <span style=''>
+</span>10 <span style=''>  /**
+</span>11 <span style=''>   * Read file from path
+</span>12 <span style=''>   *
+</span>13 <span style=''>   * @param filePath a string with file path
+</span>14 <span style=''>   * @return a Try[String] with the file content
+</span>15 <span style=''>   */
+</span>16 <span style=''>  </span><span style='background: #AEF1AE'>def readFile</span><span style=''>(filePath: String): Try[String] =
+</span>17 <span style=''>    </span><span style='background: #AEF1AE'>Using(Source.fromFile(filePath))(_.mkString)</span><span style=''>
+</span>18 <span style=''>
+</span>19 <span style=''>  /**
+</span>20 <span style=''>   * Write the string in a file
+</span>21 <span style=''>   *
+</span>22 <span style=''>   * @param filePath    a string with file path
+</span>23 <span style=''>   * @param fileContent a string with file content
+</span>24 <span style=''>   * @return a Try[String] with the file path
 </span>25 <span style=''>   */
-</span>26 <span style=''>  </span><span style='background: #AEF1AE'>def readResource</span><span style=''>(filePath: String): Try[String] =
-</span>27 <span style=''>    </span><span style='background: #AEF1AE'>Using(Source.fromResource(filePath))(_.mkString)</span><span style=''>
-</span>28 <span style=''>
-</span>29 <span style=''>  /**
-</span>30 <span style=''>   * Write the string in a file
-</span>31 <span style=''>   *
-</span>32 <span style=''>   * @param filePath    a string with file path
-</span>33 <span style=''>   * @param fileContent a string with file content
-</span>34 <span style=''>   * @return a Try[String] with the file path
-</span>35 <span style=''>   */
-</span>36 <span style=''>  </span><span style='background: #AEF1AE'>def writeFile</span><span style=''>(filePath: String, fileContent: String): Try[String] =
-</span>37 <span style=''>    </span><span style='background: #AEF1AE'>Try {
-</span>38 <span style=''></span><span style='background: #AEF1AE'>      Files.writeString(Paths.get(filePath), fileContent)
-</span>39 <span style=''></span><span style='background: #AEF1AE'>      filePath
-</span>40 <span style=''></span><span style='background: #AEF1AE'>    }</span><span style=''>
-</span>41 <span style=''>
-</span>42 <span style=''>  /**
-</span>43 <span style=''>   * Creates a directory if not exists
-</span>44 <span style=''>   *
-</span>45 <span style=''>   * @param filePath a string with directory path
-</span>46 <span style=''>   */
-</span>47 <span style=''>  </span><span style='background: #AEF1AE'>def createDirectory</span><span style=''>(filePath: String): Unit =
-</span>48 <span style=''>    </span><span style='background: #AEF1AE'>Files.createDirectories(Paths.get(filePath))</span><span style=''>
-</span>49 <span style=''>
-</span>50 <span style=''>  /**
-</span>51 <span style=''>   * Check if file/directory exists
-</span>52 <span style=''>   *
-</span>53 <span style=''>   * @param filePath
-</span>54 <span style=''>   * @return a [[Boolean]]
-</span>55 <span style=''>   */
-</span>56 <span style=''>  </span><span style='background: #AEF1AE'>def checkFileExists</span><span style=''>(filePath: String): Boolean =
-</span>57 <span style=''>    </span><span style='background: #AEF1AE'>Files.exists(Paths.get(filePath))</span><span style=''>
+</span>26 <span style=''>  </span><span style='background: #AEF1AE'>def writeFile</span><span style=''>(filePath: String, fileContent: String): Try[String] =
+</span>27 <span style=''>    </span><span style='background: #AEF1AE'>Try {
+</span>28 <span style=''></span><span style='background: #AEF1AE'>      Files.writeString(Paths.get(filePath), fileContent)
+</span>29 <span style=''></span><span style='background: #AEF1AE'>      filePath
+</span>30 <span style=''></span><span style='background: #AEF1AE'>    }</span><span style=''>
+</span>31 <span style=''>
+</span>32 <span style=''>  /**
+</span>33 <span style=''>   * Creates a directory if not exists
+</span>34 <span style=''>   *
+</span>35 <span style=''>   * @param filePath a string with directory path
+</span>36 <span style=''>   */
+</span>37 <span style=''>  </span><span style='background: #AEF1AE'>def createDirectory</span><span style=''>(filePath: String): Unit =
+</span>38 <span style=''>    </span><span style='background: #AEF1AE'>Files.createDirectories(Paths.get(filePath))</span><span style=''>
+</span>39 <span style=''>
+</span>40 <span style=''>  /**
+</span>41 <span style=''>   * Check if file/directory exists
+</span>42 <span style=''>   *
+</span>43 <span style=''>   * @param filePath
+</span>44 <span style=''>   * @return a [[Boolean]]
+</span>45 <span style=''>   */
+</span>46 <span style=''>  </span><span style='background: #AEF1AE'>def checkFileExists</span><span style=''>(filePath: String): Boolean =
+</span>47 <span style=''>    </span><span style='background: #AEF1AE'>Files.exists(Paths.get(filePath))</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -93,15 +83,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          16
+          15
         </td>
         <td>
-          1274
+          1254
         </td>
         <td>
-          307
+          306
           -
-          319
+          318
         </td>
         <td>
           DefDef
@@ -117,15 +107,15 @@
         </td>
       </tr><tr>
         <td>
-          17
+          16
         </td>
         <td>
-          1273
+          1253
         </td>
         <td>
-          357
+          356
           -
-          401
+          400
         </td>
         <td>
           Apply
@@ -144,60 +134,12 @@
           25
         </td>
         <td>
-          1276
+          1256
         </td>
         <td>
-          550
+          598
           -
-          566
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          readResource
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          def readResource
-        </td>
-      </tr><tr>
-        <td>
-          26
-        </td>
-        <td>
-          1275
-        </td>
-        <td>
-          604
-          -
-          652
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          Using(Source.fromResource(filePath))(_.mkString)
-        </td>
-      </tr><tr>
-        <td>
-          35
-        </td>
-        <td>
-          1278
-        </td>
-        <td>
-          850
-          -
-          863
+          611
         </td>
         <td>
           DefDef
@@ -213,15 +155,15 @@
         </td>
       </tr><tr>
         <td>
-          36
+          26
         </td>
         <td>
-          1277
+          1255
         </td>
         <td>
-          922
+          670
           -
-          1006
+          754
         </td>
         <td>
           Apply
@@ -240,15 +182,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          36
         </td>
         <td>
-          1281
+          1259
         </td>
         <td>
-          1116
+          864
           -
-          1135
+          883
         </td>
         <td>
           DefDef
@@ -264,39 +206,15 @@
         </td>
       </tr><tr>
         <td>
-          47
+          37
         </td>
         <td>
-          1279
+          1258
         </td>
         <td>
-          1190
+          914
           -
-          1209
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          get
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          Paths.get(filePath)
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          1280
-        </td>
-        <td>
-          1166
-          -
-          1210
+          958
         </td>
         <td>
           Apply
@@ -312,39 +230,15 @@
         </td>
       </tr><tr>
         <td>
-          55
+          37
         </td>
         <td>
-          1284
+          1257
         </td>
         <td>
-          1315
+          938
           -
-          1334
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          checkFileExists
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #AEF1AE">
-          def checkFileExists
-        </td>
-      </tr><tr>
-        <td>
-          56
-        </td>
-        <td>
-          1282
-        </td>
-        <td>
-          1381
-          -
-          1400
+          957
         </td>
         <td>
           Apply
@@ -360,15 +254,39 @@
         </td>
       </tr><tr>
         <td>
-          56
+          45
         </td>
         <td>
-          1283
+          1262
         </td>
         <td>
-          1368
+          1063
           -
-          1401
+          1082
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          checkFileExists
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def checkFileExists
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          1261
+        </td>
+        <td>
+          1116
+          -
+          1149
         </td>
         <td>
           Apply
@@ -381,6 +299,30 @@
         </td>
         <td style="background: #AEF1AE">
           Files.exists(Paths.get(filePath))
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          1260
+        </td>
+        <td>
+          1129
+          -
+          1148
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Paths.get(filePath)
         </td>
       </tr>
     </table>
