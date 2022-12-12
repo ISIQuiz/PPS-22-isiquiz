@@ -61,7 +61,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
 
   @FXML
   def removeAnswerButtonClicked(): Unit =
-    if answersVBox.getChildren.size()>1 then answersVBox.getChildren.remove(answersVBox.getChildren.size()-1)
+    if answersVBox.getChildren.size()>0 then answersVBox.getChildren.remove(answersVBox.getChildren.size()-1)
 
   @FXML
   def editQuizButtonClicked(): Unit =
@@ -135,7 +135,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
     case _ => {}
 
   private def checkInputs: Boolean =
-    questionTextField.getText.nonEmpty && scoreIntegerField.getText().toIntOption.nonEmpty && answersVBox.getChildren.size()>0 && checkSelections
+    questionTextField.getText.nonEmpty && scoreIntegerField.getText().toIntOption.nonEmpty && checkSelections
 
   private def checkSelections: Boolean =
     toggleCourseGroup.getToggles.removeIf(_.isSelected) && toggleQuizGroup.getToggles.removeIf(_.isSelected)
