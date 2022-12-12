@@ -47,6 +47,7 @@ class BlitzGameController(val game: GameStage) extends PageController, GameContr
   val timer: Timer = Timer.apply(gameStage.gameSettings.asInstanceOf[BlitzGameSettings].maxTime)
   var currentAnswer: Option[Answer] = None
   var currentScore: Int = 0
+  var quizTime: Double = 0
 
   override def handle[T](action: Action[T]): Unit = action match
     case Back => AppController.handle(MainMenuAction)
@@ -64,7 +65,7 @@ class BlitzGameController(val game: GameStage) extends PageController, GameContr
   def selectAnswer[T](actionParameter: Option[T]): Unit =
     if actionParameter.isDefined && !timer.isExpired then
       actionParameter match
-        case Some(selectedAnswerIndex:Int) =>
+        case Some(selectedAnswerIndex: Int) =>
           currentAnswer = Some(gameStage.quizInGame.answers(selectedAnswerIndex))
         case Some(selectedAnswer: Answer) =>
           currentAnswer = Some(selectedAnswer)
@@ -72,12 +73,16 @@ class BlitzGameController(val game: GameStage) extends PageController, GameContr
       nextQuiz()
 
   override def nextQuiz(): Unit =
+    var currentTime = timer.getTime - quizTime
+    if (currentTime < 0) currentTime = 0
+    quizTime = timer.getTime
     currentAnswer match
       case Some(ans) =>
-        gameStage.addReviewQuizAnswer(ans, gameStage.quizInGame.quiz.maxScore, timer.getTime)
-        gameStage.addQuizToStats(ans.isCorrect, gameStage.quizInGame.quiz.maxScore, timer.getTime)
+        gameStage.addReviewQuizAnswer(ans, gameStage.quizInGame.quiz.maxScore, currentTime)
+        gameStage.addQuizToStats(ans.isCorrect, gameStage.quizInGame.quiz.maxScore, currentTime)
+        println
       case _ =>
         gameStage.addReviewQuizNotAnswered()
-        gameStage.addQuizToStats(false, 0, timer.maxTime)
+        gameStage.addQuizToStats(false, 0, 0)
     currentAnswer = None
     gameStage.quizInGame = extractQuizInGame(gameStage)

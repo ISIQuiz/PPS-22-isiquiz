@@ -73,7 +73,7 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
 
 
   def selectAnswer[T](actionParameter: Option[T]): Unit =
-    currentTime = BigDecimal(timer.getTime).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+    currentTime = timer.getTime
     timer.stopTimer()
     if actionParameter.isDefined && !timer.isExpired then
       actionParameter match
@@ -85,12 +85,8 @@ class StandardGameController(val game: GameStage) extends PageController, GameCo
       sendUpdate(AnswerFeedbackUpdate(Option((gameStage.quizInGame.answers.indexOf(currentAnswer.get), currentAnswer.get.isCorrect))))
 
   override def nextQuiz(): Unit =
-    val maxTime = timer.maxTimeInSeconds
     currentAnswer match
       case Some(ans) =>
-        if (!ans.isCorrect)
-          currentScore = 0
-          currentTime = 0
         gameStage.addReviewQuizAnswer(ans, currentScore, currentTime)
         gameStage.addQuizToStats(ans.isCorrect, currentScore, currentTime)
       case _ =>
