@@ -33,7 +33,9 @@ class MainMenuController extends PageController:
     case Select => AppController.handle(SelectMenuAction)
     case Statistics =>
       // Remove unused player stats and export it
-      ExportHandler.exportDataToPersonalDirectory(removeUnusedStats(session.savedCourses, session.playerStats))
+      val cleanPlayerStats = removeUnusedStats(session.savedCourses, session.playerStats)
+      AppController.changePlayerStats(cleanPlayerStats)
+      ExportHandler.exportDataToPersonalDirectory(cleanPlayerStats)
       AppController.handle(StatisticsMenuAction)
     case Settings => AppController.handle(SettingsMenuAction)
     case Quit => System.exit(0)

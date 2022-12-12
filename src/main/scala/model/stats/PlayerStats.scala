@@ -1,12 +1,13 @@
 package model.stats
 
+import model.CourseIdentifier.CourseIdentifier
 import model.{Course, GameStage, QuizAnswered, QuizInGame, Review, SavedCourse, Session, stats}
 import model.SavedCourse.SavedCourse
-import model.stats.CourseInStats.CourseInStats
+import model.stats.CourseInStats.{CourseInStats, changeCourse}
 import model.stats.QuizInStats.QuizInStats
 
 import java.util.UUID
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 /** Object for PlayerStats model */
 object PlayerStats:
@@ -227,13 +228,38 @@ object PlayerStats:
    * @return an updated [[PlayerStats]]
    */
   def removeUnusedStats(savedCourseList: List[SavedCourse], playerStats: PlayerStats): PlayerStats =
+
+    // check empty
+    val listSavedCourseId = savedCourseList.map(l => l.courseId)
     val listOfQuizId = savedCourseList.flatMap(c => c.quizList).map(q => q.quizId)
 
     val newCourseInStatsList = playerStats.courseInStatsList
-      .map(c => CourseInStats(c.course, c.quizInStatsList.filter(q => listOfQuizId.contains(q.quizId)))).filter(c => c.quizInStatsList.nonEmpty)
+      .map(c => CourseInStats(
+        c.course,
+        c.quizInStatsList.filter(q => listOfQuizId.contains(q.quizId))
+      )).filter(c => (listSavedCourseId.contains(c.course.courseId) && c.quizInStatsList.nonEmpty))
 
     updatePlayerStats(newCourseInStatsList)
 
   // Round double to two decimal places
   private def formatDouble(d: Double): Double =
     BigDecimal(d).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+
+  /**
+   * Update course in stats list in player stats
+   *
+   * @param oldCourseId
+   * @param updatedCourseId
+   * @param playerStats
+   * @return an updated [[PlayerStats]]
+   */
+  def updateCourseInStatsList(oldCourseId: CourseIdentifier, updatedCourseId: CourseIdentifier, playerStats: PlayerStats): PlayerStats =
+    Try(playerStats.courseInStatsList.filter(c => c.course.courseId == oldCourseId).head) match
+      case Success(c) =>
+        val cList: List[CourseInStats] = playerStats.courseInStatsList.filterNot(c => c.course.courseId == oldCourseId)
+        val newCourseInStats = CourseInStats(Course(updatedCourseId), c.quizInStatsList)
+        val newList = cList.appended(newCourseInStats)
+        changeCourseInStatsList(playerStats, newList)
+
+      case Failure(f) =>
+        playerStats
