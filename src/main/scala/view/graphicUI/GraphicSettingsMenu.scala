@@ -72,6 +72,7 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
       ImportHandler.importSavedCourseListFromFile(AppController.session, selectedFile.getPath) match
         case Success(savedCourseList) =>
           AppController.changeSavedCourses(savedCourseList)
+          ExportHandler.exportDataToPersonalDirectory(savedCourseList)
           showDialogAlert(
             AlertType.INFORMATION,
             "Importazione",
