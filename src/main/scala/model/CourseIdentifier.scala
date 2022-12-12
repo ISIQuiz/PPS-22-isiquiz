@@ -6,7 +6,7 @@ package model
 object CourseIdentifier:
 
   /**
-   * Case class for the course identifier model
+   * Case class for the CourseIdentifier model
    *
    * @param courseName     the name of the course (E.g. Paradigmi di Programmazione e Sviluppo)
    * @param degreeName     the name of the degree course (E.g. Laurea Magistrale in Ingegneria e Scienze Informatiche)

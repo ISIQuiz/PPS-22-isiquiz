@@ -154,6 +154,7 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
       }
     case _ => {}
 
+  // Set the text of the lables in stats
   private def setTextLabels(title: String, totalScore: Int, totalAnsweredQuestions: Int, totalCorrectAnswers: Int, totalAnswerPrecision: Int, totalAverageTimeAnswer: Double): Unit =
     textLabel.setText(title)
     totalScoreLabel.setText(totalScore.toString)
