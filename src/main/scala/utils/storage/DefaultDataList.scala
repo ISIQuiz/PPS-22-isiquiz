@@ -23,7 +23,6 @@ object DefaultDataList:
       description = Option("Descrizione Web1"),
       quizList = List(
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000001"),
           question = "Cos'è l'usabilità?",
           maxScore = 5,
           imagePath = Option.empty,
@@ -35,7 +34,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000002"),
           question = "Quali sono le principali novità introdotte da CSS3?",
           maxScore = 6,
           imagePath = Option.empty,
@@ -47,7 +45,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000003"),
           question = "Nell’architettura del Web",
           maxScore = 14,
           imagePath = Option.empty,
@@ -59,7 +56,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000004"),
           question = "Definizione del livello AA di accessibilità specificato nelle WCAG",
           maxScore = 12,
           imagePath = Option.empty,
@@ -83,7 +79,6 @@ object DefaultDataList:
       description = Option("Descrizione PPS"),
       quizList = List(
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000005"),
           question = "Quale ruolo ha il product owner?",
           maxScore = 5,
           imagePath = Option.empty,
@@ -95,7 +90,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000006"),
           question = "Cos'è lo Sprint Backlog?",
           maxScore = 12,
           imagePath = Option.empty,
@@ -119,7 +113,6 @@ object DefaultDataList:
       description = Option("Descrizione SI"),
       quizList = List(
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000007"),
           question = "Cos'è un sistema SCADA?",
           maxScore = 5,
           imagePath = Option.empty,
@@ -132,7 +125,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000008"),
           question = "Cosa si intende per CRM?",
           maxScore = 5,
           imagePath = Option.empty,
@@ -144,7 +136,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000009"),
           question = "Cosa modella un DFD?",
           maxScore = 12,
           imagePath = Option.empty,
@@ -168,7 +159,6 @@ object DefaultDataList:
       description = Option("Descrizione Web2"),
       quizList = List(
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000010"),
           question = "Quali tecnologie utilizza lo stack MERN?",
           maxScore = 7,
           imagePath = Option.empty,
@@ -180,7 +170,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000011"),
           question = "Quali sono i principi e le metodologie per lo sviluppo?",
           maxScore = 7,
           imagePath = Option.empty,
@@ -192,7 +181,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000012"),
           question = "Quali tecnologie utilizza lo stack LAMP?",
           maxScore = 4,
           imagePath = Option.empty,
@@ -205,7 +193,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000013"),
           question = "Qual è il linguaggio più popolare nel mondo?",
           maxScore = 12,
           imagePath = Option.empty,
@@ -217,7 +204,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000014"),
           question = "Che cosa sono le Euristiche di Nielsen?",
           maxScore = 12,
           imagePath = Option.empty,
@@ -229,7 +215,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000015"),
           question = "Quante sono le principali componenti di un browser?",
           maxScore = 13,
           imagePath = Option.empty,
@@ -241,7 +226,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000016"),
           question = "Che cosa sono i focus group?",
           maxScore = 13,
           imagePath = Option.empty,
@@ -264,7 +248,6 @@ object DefaultDataList:
       description = Option("Descrizione Reti2"),
       quizList = List(
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000017"),
           question = "Quale fra i seguenti è un indirizzo valido per un host in una rete IP con numerazione privata",
           maxScore = 7,
           imagePath = Option.empty,
@@ -277,7 +260,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000018"),
           question = "Un host connesso in rete utilizzando il protocollo IP",
           maxScore = 7,
           imagePath = Option.empty,
@@ -289,7 +271,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000019"),
           question = "Nell'intestazione (header) del datagramma IP il campo Time to live",
           maxScore = 7,
           imagePath = Option.empty,
@@ -301,7 +282,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000020"),
           question = "La modalità di instradamento dei datagrammi nella rete Internet",
           maxScore = 7,
           imagePath = Option.empty,
@@ -313,7 +293,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000021"),
           question = "Una rete IP di classe C",
           maxScore = 7,
           imagePath = Option.empty,
@@ -325,7 +304,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000022"),
           question = "Con il termine 'Direct Forwarding' si intende",
           maxScore = 7,
           imagePath = Option.empty,
@@ -337,7 +315,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000023"),
           question = "La tabella ARP in un host",
           maxScore = 7,
           imagePath = Option.empty,
@@ -349,7 +326,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000024"),
           question = "Per il corretto funzionamento dell'interfaccia di rete di un host vanno configurati almeno i seguenti parametri",
           maxScore = 7,
           imagePath = Option.empty,
@@ -361,7 +337,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000025"),
           question = "Nell'elaborazione del routing table lookup",
           maxScore = 7,
           imagePath = Option.empty,
@@ -373,7 +348,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000026"),
           question = "Un algoritmo di routing si dice statico quando",
           maxScore = 7,
           imagePath = Option.empty,
@@ -385,7 +359,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000027"),
           question = "Quali fra i protocolli elencati in seguito sono protocolli di Routing utilizzati in Internet",
           maxScore = 7,
           imagePath = Option.empty,
@@ -398,7 +371,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000028"),
           question = "Il messaggio DHCPACK",
           maxScore = 4,
           imagePath = Option.empty,
@@ -410,7 +382,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000029"),
           question = "Per l'organizzazione di Internet un Autonomous System",
           maxScore = 12,
           imagePath = Option.empty,
@@ -422,7 +393,6 @@ object DefaultDataList:
           )
         ),
         Quiz(
-          quizId = UUID.fromString("00000000-0000-0000-0000-000000000030"),
           question = "Qualora si utilizzi in una rete un protocollo di routing di tipo flooding",
           maxScore = 13,
           imagePath = Option.empty,
@@ -436,30 +406,3 @@ object DefaultDataList:
       )
     )
   )
-
- /* def defaultPlayerStatsTest =
-    PlayerStats(
-      totalScore = 11, totalAnsweredQuestions = 12, totalCorrectAnswers = 13,
-      courseInStatsList = List(
-        CourseInStats(
-          course = Course(
-            CourseIdentifier(
-              courseName = "Paradigmi di Programmazione e Sviluppo",
-              degreeName = "Laurea Magistrale in Ingegneria e Scienze Informatiche",
-              universityName = "Università di Bologna"
-            )
-          ),
-          quizInStatsList = List(QuizInStats(3, 2, 1), QuizInStats(3, 2, 1), QuizInStats(3, 2, 1), QuizInStats(3, 2, 1))
-        ),
-        CourseInStats(
-          course = Course(
-            CourseIdentifier(
-              courseName = "Sistemi Operativi",
-              degreeName = "Laurea in Ingegneria e Scienze Informatiche",
-              universityName = "Università di Bologna"
-            )
-          ),
-          quizInStatsList = List(QuizInStats(3, 2, 2), QuizInStats(3, 2, 2), QuizInStats(3, 2, 2), QuizInStats(3, 2, 2))
-        )
-      )
-    )*/

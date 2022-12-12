@@ -3,7 +3,7 @@ package utils.storage
 import model.Answer.Answer
 import model.Quiz.Quiz
 import model.SavedCourse.SavedCourse
-import model.{Session}
+import model.Session
 import model.Session.*
 import model.stats.PlayerStats.{PlayerStats, initStats}
 import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
@@ -27,7 +27,6 @@ object ImportHandler extends DataStorageHandler:
         val newSessionCourses = Session.changeSavedCourses(session, savedCourseList) // update Session saved course list
         importPlayerStatsFromPersonalDirectory(newSessionCourses)
       case Failure(f) => // Failed to parse savedCourse from file, store passed session to file
-        println("courses and maybe stats do not exists, created default session")
         ExportHandler.exportDataToPersonalDirectory(session)
         Failure(f)
 
@@ -43,10 +42,8 @@ object ImportHandler extends DataStorageHandler:
   // Load player stats and deserialize the JSON string in PlayerStats
     loadDataFromFile(StatsJsonParser(), PlayerStatsFilePath) match
       case Success(playerStats: PlayerStats) => // Success import courses and stats from file
-        println("courses and stats imported from player data")
         Success(Session.changePlayerStats(session, playerStats))
       case Failure(f) => // Failed to parse player stats, reset player stats to 0
-        println("stats do not exist, created file with init stats to 0")
         storeDataToPath(initStats, PlayerStatsFilePath)
         Failure(f)
 

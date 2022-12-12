@@ -59,7 +59,7 @@ class EditQuizMenuController extends PageController :
     var feedbackUpdate: ParameterlessViewUpdate = DefaultUpdate
     optionalQuizEdited match
       case Some(quiz) =>
-        newQuizList = newQuizList.appended(quiz)
+        newQuizList = newQuizList.appended(Quiz(quizSelected.get.quizId, quiz.question, quiz.answerList, quiz.maxScore, quiz.imagePath))
         feedbackUpdate = QuizEditedUpdate
       case _ =>
         feedbackUpdate = QuizDeletedUpdate

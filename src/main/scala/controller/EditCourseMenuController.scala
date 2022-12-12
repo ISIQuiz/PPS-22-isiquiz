@@ -6,8 +6,11 @@ import controller.{AppController, PageController}
 import model.SavedCourse
 import utils.storage.ExportHandler
 import model.SavedCourse.*
+import model.stats.PlayerStats
+import model.stats.PlayerStats.updateCourseInStatsList
 import view.EditCourseMenuView.*
 import view.updates.{ParameterlessViewUpdate, ViewUpdate}
+
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -48,6 +51,11 @@ class EditCourseMenuController extends PageController :
     optionalCourseEdited match
       case Some(course) =>
         newListCourses = newListCourses.appended(SavedCourse.changeQuizList(course, courseSelected.get.quizList))
+
+        val newStats = updateCourseInStatsList(courseSelected.get.courseId, course.courseId, AppController.session.playerStats)
+        AppController.changePlayerStats(newStats)
+        ExportHandler.exportDataToPersonalDirectory(newStats)
+
         feedbackUpdate = CourseEditedUpdate
       case _ =>
         feedbackUpdate = CourseDeletedUpdate

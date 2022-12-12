@@ -10,7 +10,7 @@ import model.Quiz.Quiz
 object SavedCourse:
 
   /**
-   * Case class for saved course model
+   * Case class for SavedCourse model
    * @param courseId course identifier
    * @param description description of the course (optional)
    * @param quizList quiz list of saved quiz

@@ -1,18 +1,19 @@
 package model.stats
 
+import model.CourseIdentifier.CourseIdentifier
 import model.{Course, GameStage, QuizAnswered, QuizInGame, Review, SavedCourse, Session, stats}
 import model.SavedCourse.SavedCourse
-import model.stats.CourseInStats.CourseInStats
+import model.stats.CourseInStats.{CourseInStats, changeCourse}
 import model.stats.QuizInStats.QuizInStats
 
 import java.util.UUID
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 /** Object for PlayerStats model */
 object PlayerStats:
 
   /**
-   * Create a new [[PlayerStats]]
+   * Case class for PlayerStats model
    *
    * @param totalScore             total user score
    * @param totalAnsweredQuestions total number of answered questions
@@ -20,7 +21,6 @@ object PlayerStats:
    * @param totalAnswerPrecision   total % answer precision
    * @param totalAverageTimeAnswer total average time to answer
    * @param courseInStatsList      the list of course in stats
-   * @return a [[PlayerStats]]
    */
   case class PlayerStats(totalScore: Int = initStats.totalScore,
                          totalAnsweredQuestions: Int = initStats.totalAnsweredQuestions,
@@ -34,7 +34,7 @@ object PlayerStats:
    *
    * @param playerStats
    * @param totalScore
-   * @return updated [[PlayerStats]]
+   * @return an updated [[PlayerStats]]
    */
   def changeTotalScore(playerStats: PlayerStats, totalScore: Int): PlayerStats =
     PlayerStats(totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, playerStats.totalAverageTimeAnswer, playerStats.courseInStatsList)
@@ -44,7 +44,7 @@ object PlayerStats:
    *
    * @param playerStats
    * @param totalAnsweredQuestions
-   * @return updated [[PlayerStats]]
+   * @return an updated [[PlayerStats]]
    */
   def changeTotalAnsweredQuestions(playerStats: PlayerStats, totalAnsweredQuestions: Int): PlayerStats =
     PlayerStats(playerStats.totalScore, totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, playerStats.totalAverageTimeAnswer, playerStats.courseInStatsList)
@@ -54,7 +54,7 @@ object PlayerStats:
    *
    * @param playerStats
    * @param totalCorrectAnswers
-   * @return updated [[PlayerStats]]
+   * @return an updated [[PlayerStats]]
    */
   def changeTotalCorrectAnswers(playerStats: PlayerStats, totalCorrectAnswers: Int): PlayerStats =
     PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, totalCorrectAnswers, playerStats.totalAnswerPrecision, playerStats.totalAverageTimeAnswer, playerStats.courseInStatsList)
@@ -64,7 +64,7 @@ object PlayerStats:
    *
    * @param playerStats
    * @param totalAnswerPrecision
-   * @return updated [[PlayerStats]]
+   * @return an updated [[PlayerStats]]
    */
   def changeTotalAnswerPrecision(playerStats: PlayerStats, totalAnswerPrecision: Int): PlayerStats =
     PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, totalAnswerPrecision, playerStats.totalAverageTimeAnswer, playerStats.courseInStatsList)
@@ -74,7 +74,7 @@ object PlayerStats:
    *
    * @param playerStats
    * @param totalAverageTimeAnswer
-   * @return updated [[PlayerStats]]
+   * @return an updated [[PlayerStats]]
    */
   def changeTotalAverageTimeAnswer(playerStats: PlayerStats, totalAverageTimeAnswer: Double): PlayerStats =
     PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, totalAverageTimeAnswer, playerStats.courseInStatsList)
@@ -84,7 +84,7 @@ object PlayerStats:
    *
    * @param playerStats
    * @param courseInStatsList
-   * @return updated [[PlayerStats]]
+   * @return an updated [[PlayerStats]]
    */
   def changeCourseInStatsList(playerStats: PlayerStats, courseInStatsList: List[CourseInStats]): PlayerStats =
     PlayerStats(playerStats.totalScore, playerStats.totalAnsweredQuestions, playerStats.totalCorrectAnswers, playerStats.totalAnswerPrecision, playerStats.totalAverageTimeAnswer, courseInStatsList)
@@ -100,7 +100,7 @@ object PlayerStats:
       totalScore = calculateTotalScore(courseInStatsList),
       totalAnsweredQuestions = calculateTotalAnsweredQuestions(courseInStatsList),
       totalCorrectAnswers = calculateTotalCorrectAnswer(courseInStatsList),
-      totalAnswerPrecision = calculateTotalAnswerPrecision(calculateTotalAnsweredQuestions(courseInStatsList),calculateTotalCorrectAnswer(courseInStatsList) ),
+      totalAnswerPrecision = calculateTotalAnswerPrecision(calculateTotalAnsweredQuestions(courseInStatsList), calculateTotalCorrectAnswer(courseInStatsList)),
       totalAverageTimeAnswer = calculateTotalAverageTimeAnswer(courseInStatsList),
       courseInStatsList = courseInStatsList
     )
@@ -192,7 +192,13 @@ object PlayerStats:
       ).sum
     ).sum
 
-  // Calculates total answer precision
+  /**
+   * Calculates total answer precision given two value
+   *
+   * @param totalAnswered
+   * @param totalCorrectAnswer
+   * @return an Int as percentage
+   */
   def calculateTotalAnswerPrecision(totalAnswered: Int, totalCorrectAnswer: Int): Int =
     val percentage = Try((totalCorrectAnswer * 100) / totalAnswered).getOrElse(0)
     if (percentage > 100) 100 else percentage
@@ -205,7 +211,6 @@ object PlayerStats:
       formatDouble(totalAverageTimeAnswer / totalCorrectAnswer)
     else
       0
-
 
   /**
    * Init player stats with default values
@@ -223,13 +228,38 @@ object PlayerStats:
    * @return an updated [[PlayerStats]]
    */
   def removeUnusedStats(savedCourseList: List[SavedCourse], playerStats: PlayerStats): PlayerStats =
+
+    // check empty
+    val listSavedCourseId = savedCourseList.map(l => l.courseId)
     val listOfQuizId = savedCourseList.flatMap(c => c.quizList).map(q => q.quizId)
 
     val newCourseInStatsList = playerStats.courseInStatsList
-      .map(c => CourseInStats(c.course, c.quizInStatsList.filter(q => listOfQuizId.contains(q.quizId)))).filter(c => c.quizInStatsList.nonEmpty)
+      .map(c => CourseInStats(
+        c.course,
+        c.quizInStatsList.filter(q => listOfQuizId.contains(q.quizId))
+      )).filter(c => (listSavedCourseId.contains(c.course.courseId) && c.quizInStatsList.nonEmpty))
 
     updatePlayerStats(newCourseInStatsList)
 
   // Round double to two decimal places
-  private def formatDouble(d: Double):Double =
+  private def formatDouble(d: Double): Double =
     BigDecimal(d).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+
+  /**
+   * Update course in stats list in player stats
+   *
+   * @param oldCourseId
+   * @param updatedCourseId
+   * @param playerStats
+   * @return an updated [[PlayerStats]]
+   */
+  def updateCourseInStatsList(oldCourseId: CourseIdentifier, updatedCourseId: CourseIdentifier, playerStats: PlayerStats): PlayerStats =
+    Try(playerStats.courseInStatsList.filter(c => c.course.courseId == oldCourseId).head) match
+      case Success(c) =>
+        val cList: List[CourseInStats] = playerStats.courseInStatsList.filterNot(c => c.course.courseId == oldCourseId)
+        val newCourseInStats = CourseInStats(Course(updatedCourseId), c.quizInStatsList)
+        val newList = cList.appended(newCourseInStats)
+        changeCourseInStatsList(playerStats, newList)
+
+      case Failure(f) =>
+        playerStats

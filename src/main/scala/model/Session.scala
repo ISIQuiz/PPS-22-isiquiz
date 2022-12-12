@@ -15,6 +15,7 @@ object Session:
 
   /**
    * Case class for session model
+   *
    * @param savedCourses list of saved course in session
    * @param playerStats
    */
@@ -22,6 +23,7 @@ object Session:
 
   /**
    * Change the saved course list in session
+   *
    * @param savedCourses the new saved course list
    * @return a [[Session]]
    */
@@ -29,6 +31,7 @@ object Session:
 
   /**
    * Change player stats in session
+   *
    * @param session
    * @param playerStats the new player stats
    * @return a [[Session]]

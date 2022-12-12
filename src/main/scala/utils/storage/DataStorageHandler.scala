@@ -3,7 +3,7 @@ package utils.storage
 import model.Answer.Answer
 import model.Quiz.Quiz
 import model.stats.PlayerStats.{PlayerStats, initStats}
-import model.{Session}
+import model.Session
 import model.SavedCourse.SavedCourse
 import play.api.libs.json.JsObject
 import utils.parser.{CourseJsonParser, JsonParser, StatsJsonParser}
