@@ -13,6 +13,8 @@ import view.SelectMenuView.*
 import javafx.application.Platform
 import javafx.scene.input.MouseEvent
 import model.SavedCourse.*
+import view.Vocabulary
+
 import java.util
 import scala.collection.mutable.ListBuffer
 
@@ -25,7 +27,10 @@ class GraphicSelectMenu(stage: Stage) extends GraphicView :
   var backButton: Button = _
 
   @FXML
-  var coursesScrollPane: ScrollPane = _
+  var menuLabel: Label = _
+
+  @FXML
+  var coursesVBox: VBox = _
 
   @FXML
   var standardGameButton: Button = _
@@ -37,7 +42,7 @@ class GraphicSelectMenu(stage: Stage) extends GraphicView :
   var customGameButton: Button = _
 
   @FXML
-  var coursesVBox: VBox = _
+  var selectCourseLabel: Label = _
 
   @FXML
   var feedbackLabel: Label = _
@@ -60,6 +65,12 @@ class GraphicSelectMenu(stage: Stage) extends GraphicView :
 
   var checkBoxList: ListBuffer[CheckBox] = ListBuffer()
   loadGUI(stage, this, "select_menu.fxml")
+  backButton.setText(Vocabulary.BACK)
+  menuLabel.setText(Vocabulary.GAME_MODE)
+  standardGameButton.setText(Vocabulary.STANDARD_GAME)
+  blitzGameButton.setText(Vocabulary.BLITZ_GAME)
+  customGameButton.setText(Vocabulary.CUSTOM_GAME)
+  selectCourseLabel.setText(Vocabulary.SELECT_AT_LEAST_A_COURSE)
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case DefaultUpdate =>
@@ -89,7 +100,7 @@ class GraphicSelectMenu(stage: Stage) extends GraphicView :
           )
         }
     case CourseUnplayableUpdate =>
-      feedbackLabel.setText("Corsi selezionati invalidi per la modalità di gioco")
+      feedbackLabel.setText(Vocabulary.INVALID_COURSES_SELECTED)
     case _ => {}
 
   /* function to check if at least one course is selected before starting a game */

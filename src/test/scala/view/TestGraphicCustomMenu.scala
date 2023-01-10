@@ -26,4 +26,4 @@ class TestGraphicCustomMenu extends ViewTest with ButtonTest:
     testButton(graphicCustomMenu.backButton, "Indietro")(robot)
 
   @Test def testImportButton(robot: FxRobot): Unit =
-    testButton(graphicCustomMenu.startButton, "Avvia")(robot)
+    testButton(graphicCustomMenu.startButton, "Gioca")(robot)
