@@ -17,6 +17,7 @@ import utils.GUILoader
 import utils.GUILoader.loadGUI
 import view.EditQuizMenuView.*
 import view.View.{GraphicView, sendEvent}
+import view.Vocabulary
 import view.updates.ViewUpdate
 
 import scala.collection.mutable.ListBuffer
@@ -31,16 +32,37 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
   val toggleQuizGroup: ToggleGroup = ToggleGroup()
 
   @FXML
+  var backButton: Button = _
+
+  @FXML
+  var menuLabel: Label = _
+  
+  @FXML
+  var selectCourseLabel: Label = _
+
+  @FXML
   var coursesVBox: VBox = _
+
+  @FXML
+  var selectQuizLabel: Label = _
 
   @FXML
   var quizVBox: VBox = _
 
   @FXML
+  var questionLabel: Label = _
+
+  @FXML
   var questionTextField: TextField = _
 
   @FXML
+  var imagePathLabel: Label = _
+
+  @FXML
   var imagePathTextField: TextField = _
+
+  @FXML
+  var scoreLabel: Label = _
 
   @FXML
   var scoreIntegerField: TextField = _
@@ -48,6 +70,24 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
   @FXML
   var answersVBox: VBox = _
 
+  @FXML
+  var answerLabel: Label = _
+
+  @FXML
+  var answerCorrectCheckBox0: CheckBox = _
+
+  @FXML
+  var addAnswerButton: Button = _
+
+  @FXML
+  var removeAnswerButton: Button = _
+
+  @FXML
+  var editQuizButton: Button = _
+  
+  @FXML
+  var deleteQuizButton: Button = _
+  
   @FXML
   var feedbackLabel: Label = _
 
@@ -79,7 +119,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
       import controller.EditQuizMenuController.EditQuizAction
       sendEvent(EditQuizAction(Option(quiz)))
     else
-      feedbackLabel.setText("Configurazione Invalida")
+      feedbackLabel.setText(Vocabulary.INVALID_CONFIGURATION)
 
   @FXML
   def deleteQuizButtonClicked(): Unit =
@@ -87,9 +127,22 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
       import controller.EditQuizMenuController.EditQuizAction
       sendEvent(EditQuizAction(Option.empty))
     else
-      feedbackLabel.setText("Selezione Invalida")
+      feedbackLabel.setText(Vocabulary.INVALID_SELECTION)
 
   loadGUI(stage, this, "edit_quiz_menu.fxml")
+  backButton.setText(Vocabulary.BACK)
+  menuLabel.setText(Vocabulary.EDIT_QUIZ)
+  selectCourseLabel.setText(Vocabulary.SELECT_COURSE)
+  selectQuizLabel.setText(Vocabulary.SELECT_QUIZ)
+  questionLabel.setText(Vocabulary.QUESTION)
+  imagePathLabel.setText(Vocabulary.IMAGE_PATH)
+  scoreLabel.setText(Vocabulary.POINTS)
+  answerLabel.setText(Vocabulary.ANSWER + " ")
+  answerCorrectCheckBox0.setText(Vocabulary.CORRECT)
+  addAnswerButton.setText(Vocabulary.ADD_ANSWER)
+  removeAnswerButton.setText(Vocabulary.REMOVE_ANSWER)
+  editQuizButton.setText(Vocabulary.EDIT_QUIZ)
+  deleteQuizButton.setText(Vocabulary.DELETE_QUIZ)
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case CourseListUpdate(updateParameter) =>
@@ -127,10 +180,10 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
         )
       }
     case QuizEditedUpdate =>
-      feedbackLabel.setText("Quiz modificato")
+      feedbackLabel.setText(Vocabulary.QUIZ_EDITED)
       clearAllFields()
     case QuizDeletedUpdate =>
-      feedbackLabel.setText("Quiz cancellato")
+      feedbackLabel.setText(Vocabulary.QUIZ_DELETED)
       clearAllFields()
     case _ => {}
 
@@ -163,8 +216,8 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
       val checkBox = CheckBox()
       checkBox.setSelected(if opAnswer.nonEmpty then opAnswer.get.isCorrect else false)
       checkBox.setId("answerCorrectCheckBox" + idNum)
-      checkBox.setText("Corretta")
+      checkBox.setText(Vocabulary.CORRECT)
       checkBox.getStyleClass.add("checkbox")
-      answerBox.getChildren.addAll(Label("Risposta "), textField, checkBox)
+      answerBox.getChildren.addAll(Label(Vocabulary.ANSWER+" "), textField, checkBox)
       answersVBox.getChildren.addAll(answerBox)
   }

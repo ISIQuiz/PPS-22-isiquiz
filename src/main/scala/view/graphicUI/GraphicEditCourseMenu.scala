@@ -13,6 +13,7 @@ import model.SavedCourse.SavedCourse
 import utils.GUILoader
 import utils.GUILoader.loadGUI
 import view.View.{GraphicView, sendEvent}
+import view.Vocabulary
 import view.updates.ViewUpdate
 
 object GraphicEditCourseMenu
@@ -23,19 +24,46 @@ class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
   val toggleGroup: ToggleGroup = ToggleGroup()
   
   @FXML
+  var backButton: Button = _
+
+  @FXML
+  var menuLabel: Label = _
+  
+  @FXML
+  var selectCourseLabel: Label = _
+  
+  @FXML
   var coursesVBox: VBox = _
   
+  @FXML
+  var courseNameLabel: Label = _
+
   @FXML
   var courseNameTextField: TextField = _
   
   @FXML
+  var degreeNameLabel: Label = _
+
+  @FXML
   var degreeNameTextField: TextField = _
   
+  @FXML
+  var universityNameLabel: Label = _
+
   @FXML
   var universityNameTextField: TextField = _
   
   @FXML
+  var descriptionCourseLabel: Label = _
+
+  @FXML
   var descriptionCourseTextField: TextField = _
+
+  @FXML
+  var editCourseButton: Button = _
+
+  @FXML
+  var deleteCourseButton: Button = _
 
   @FXML
   var feedbackLabel: Label = _
@@ -61,7 +89,7 @@ class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
       import controller.EditCourseMenuController.EditCourseAction
       sendEvent(EditCourseAction(Option(course)))
     else
-      feedbackLabel.setText("Configurazione Invalida")
+      feedbackLabel.setText(Vocabulary.INVALID_CONFIGURATION)
 
   @FXML
   def deleteCourseButtonClicked(): Unit =
@@ -69,9 +97,18 @@ class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
       import controller.EditCourseMenuController.EditCourseAction
       sendEvent(EditCourseAction(Option.empty))
     else
-      feedbackLabel.setText("Selezione Invalida")
+      feedbackLabel.setText(Vocabulary.SELECT_COURSE)
 
   loadGUI(stage, this, "edit_course_menu.fxml")
+  backButton.setText(Vocabulary.BACK)
+  menuLabel.setText(Vocabulary.EDIT_COURSE)
+  selectCourseLabel.setText(Vocabulary.SELECT_COURSE)
+  courseNameLabel.setText(Vocabulary.COURSE_NAME)
+  degreeNameLabel.setText(Vocabulary.DEGREE_NAME)
+  universityNameLabel.setText(Vocabulary.UNIVERSITY_NAME)
+  descriptionCourseLabel.setText(Vocabulary.DESCRIPTION_COURSE)
+  editCourseButton.setText(Vocabulary.EDIT_COURSE)
+  deleteCourseButton.setText(Vocabulary.DELETE_COURSE)
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case CourseListUpdate(updateParameter) =>
@@ -96,10 +133,10 @@ class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
         )
       }
     case CourseEditedUpdate =>
-      feedbackLabel.setText("Corso modificato")
+      feedbackLabel.setText(Vocabulary.COURSE_EDITED)
       clearAllFields()
     case CourseDeletedUpdate =>
-      feedbackLabel.setText("Corso cancallato")
+      feedbackLabel.setText(Vocabulary.COURSE_DELETED)
       clearAllFields()
     case _ => {}
 

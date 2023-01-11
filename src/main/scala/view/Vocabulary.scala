@@ -83,6 +83,14 @@ object Vocabulary:
     case IT => "Corso"
     case _ => "Course"
 
+  def ANSWER = LANGUAGE_SELECTED match
+    case IT => "Risposta"
+    case _ => "Answer"
+
+  def CORRECT = LANGUAGE_SELECTED match
+    case IT => "Corretta"
+    case _ => "Correct"
+
   def POINTS = LANGUAGE_SELECTED match
     case IT => "Punti"
     case _ => "Points"
@@ -155,3 +163,107 @@ object Vocabulary:
   def RESET_STATS = LANGUAGE_SELECTED match
     case IT => "Reset statistiche"
     case _ => "Reset stats"
+
+  def IMPORT_QUIZ = LANGUAGE_SELECTED match
+    case IT => "Importa quiz"
+    case _ => "Import quiz"
+
+  def EXPORT_QUIZ = LANGUAGE_SELECTED match
+    case IT => "Esporta quiz"
+    case _ => "Export quiz"
+
+  def ADD_COURSE = LANGUAGE_SELECTED match
+    case IT => "Aggiungi corso"
+    case _ => "Add course"
+
+  def COURSE_ADDED = LANGUAGE_SELECTED match
+    case IT => "Corso aggiunto"
+    case _ => "Course added"
+
+  def ADD_QUIZ = LANGUAGE_SELECTED match
+    case IT => "Aggiungi quiz"
+    case _ => "Add quiz"
+
+  def QUIZ_ADDED = LANGUAGE_SELECTED match
+      case IT => "Quiz aggiunto"
+      case _ => "Quiz added"
+
+  def EDIT_COURSE = LANGUAGE_SELECTED match
+      case IT => "Modifica corso"
+      case _ => "Edit course"
+
+  def COURSE_EDITED = LANGUAGE_SELECTED match
+    case IT => "Corso modificato"
+    case _ => "Course edited"
+
+  def EDIT_QUIZ = LANGUAGE_SELECTED match
+    case IT => "Modifica quiz"
+    case _ => "Edit quiz"
+
+  def QUIZ_EDITED = LANGUAGE_SELECTED match
+    case IT => "Quiz modificato"
+    case _ => "Quiz edited"
+
+  def DELETE_COURSE = LANGUAGE_SELECTED match
+    case IT => "Cancella corso"
+    case _ => "Delete course"
+
+  def COURSE_DELETED = LANGUAGE_SELECTED match
+    case IT => "Corso cancellato"
+    case _ => "Course deleted"
+
+  def DELETE_QUIZ = LANGUAGE_SELECTED match
+    case IT => "Cancella quiz"
+    case _ => "Delete quiz"
+
+  def QUIZ_DELETED = LANGUAGE_SELECTED match
+    case IT => "Quiz cancellato"
+    case _ => "Quiz deleted"
+
+  def OPERATION_SUCCEEDED = LANGUAGE_SELECTED match
+    case IT => "Operazione avvenuta con successo"
+    case _ => "Operation succeeded"
+
+  def ERROR_INVALID_FILE = LANGUAGE_SELECTED match
+    case IT => "Errore, file invalido."
+    case _ => "Error, invalid file."
+
+  def COURSE_NAME = LANGUAGE_SELECTED match
+    case IT => "Nome corso"
+    case _ => "Course name"
+
+  def DEGREE_NAME = LANGUAGE_SELECTED match
+    case IT => "Nome corso di laurea"
+    case _ => "Degree name"
+
+  def UNIVERSITY_NAME = LANGUAGE_SELECTED match
+    case IT => "Nome università"
+    case _ => "University name"
+
+  def DESCRIPTION_COURSE = LANGUAGE_SELECTED match
+    case IT => "Descrizione corso"
+    case _ => "Course description"
+
+  def NAME_MISSING = LANGUAGE_SELECTED match
+    case IT => "Nome mancante"
+    case _ => "Name missing"
+
+  def INVALID_CONFIGURATION = LANGUAGE_SELECTED match
+    case IT => "Congigurazione Invalida"
+    case _ => "Invalid configuration"
+
+  def INVALID_SELECTION = LANGUAGE_SELECTED match
+    case IT => "Selezione invalida"
+    case _ => "Invalid selection"
+
+  def IMAGE_PATH = LANGUAGE_SELECTED match
+    case IT => "Percorso immagine"
+    case _ => "Image path"
+
+  def ADD_ANSWER = LANGUAGE_SELECTED match
+    case IT => "Aggiungi risposta"
+    case _ => "Add answer"
+
+  def REMOVE_ANSWER = LANGUAGE_SELECTED match
+    case IT => "Rimuovi risposta"
+    case _ => "Remove answer"
