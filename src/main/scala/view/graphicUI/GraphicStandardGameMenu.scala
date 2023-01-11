@@ -13,6 +13,7 @@ import javafx.stage.Stage
 import model.GameStage
 import model.settings.StandardGameSettings
 import view.StandardGameMenuView.{AnswerFeedbackUpdate, CurrentGameUpdate, DefaultUpdate, QuizScoreUpdate, TimeExpiredUpdate, TimerUpdate}
+import view.Vocabulary
 
 object GraphicStandardGameMenu
 
@@ -85,6 +86,11 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
     sendEvent(NextQuiz)
 
   loadGUI(stage, this, "standard_game.fxml")
+  backButton.setText(Vocabulary.BACK)
+  nextButton.setText(Vocabulary.NEXT)
+  quizLabel.setText(Vocabulary.QUESTION)
+  courseLabel.setText(Vocabulary.COURSE)
+  
 
   val answerButtons: List[Button] = List(firstAnswerButton, secondAnswerButton, thirdAnswerButton, fourthAnswerButton)
 
@@ -117,7 +123,7 @@ class GraphicStandardGameMenu(stage: Stage) extends GraphicView:
     case QuizScoreUpdate(updateParameter) =>
       Platform.runLater(() => {
         val score: Int = updateParameter.get
-        pointsLabel.setText(score + " punti")
+        pointsLabel.setText(score + " " + Vocabulary.POINTS)
       })
 
     case TimeExpiredUpdate =>

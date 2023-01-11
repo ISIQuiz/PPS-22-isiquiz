@@ -14,6 +14,8 @@ import javafx.scene.layout.VBox
 import model.QuizAnswered
 import scalafx.geometry.Insets
 import scalafx.scene.layout.Pane
+import view.Vocabulary
+
 import scala.util.Try
 
 object GraphicReviewMenu
@@ -24,6 +26,9 @@ class GraphicReviewMenu(stage: Stage) extends GraphicView:
   var showAllAnswers = false
 
   @FXML
+  var revisionLabel: Label = _
+
+  @FXML
   var totRightAnswersLabel: Label = _
 
   @FXML
@@ -31,6 +36,9 @@ class GraphicReviewMenu(stage: Stage) extends GraphicView:
 
   @FXML
   var quizAnsweredVBox: VBox = _
+
+  @FXML
+  var filterButton: Button = _
 
   @FXML
   var endButton: Button = _
@@ -44,15 +52,20 @@ class GraphicReviewMenu(stage: Stage) extends GraphicView:
     showAllAnswers = !showAllAnswers
 
   loadGUI(stage, this, "review_menu.fxml")
+  revisionLabel.setText(Vocabulary.REVISION)
+  totRightAnswersLabel.setText(Vocabulary.TOT_RIGHT_ANSWERS)
+  totPointsLabel.setText(Vocabulary.TOTAL_POINTS)
+  filterButton.setText(Vocabulary.SHOW_ALL)
+  endButton.setText(Vocabulary.END)
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case TotalCorrectAnswersUpdate(updateParameter) => if updateParameter.isDefined then
       Platform.runLater(() => {
-        totRightAnswersLabel.textProperty().set(s"Risposte corrette: ${updateParameter.get}")
+        totRightAnswersLabel.textProperty().set(s"${Vocabulary.TOT_RIGHT_ANSWERS}: ${updateParameter.get}")
       })
     case TotalPointsUpdate(updateParameter) => if updateParameter.isDefined then
       Platform.runLater(() => {
-        totPointsLabel.textProperty().set(s"Punti totali: ${updateParameter.get}")
+        totPointsLabel.textProperty().set(s"${Vocabulary.TOTAL_POINTS}: ${updateParameter.get}")
       })
     case CurrentReviewUpdate(updateParameter) => if updateParameter.isDefined then
       fillAnswerBox(updateParameter.get.quizAnsweredList)
@@ -70,7 +83,7 @@ class GraphicReviewMenu(stage: Stage) extends GraphicView:
         quizQuestionLabel.getStyleClass.setAll("review-question")
         quizVBox.getChildren.addAll(quizQuestionLabel)
         val quizDescLabel = Label(
-          s"(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) " +
+          s"(${Vocabulary.POINTS}: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) " +
             getQuizDescriptionLabel(quizAnswered) +
             s"- ${quizAnswered.quizInGame.course.courseId.courseName}"
         );
@@ -90,6 +103,6 @@ class GraphicReviewMenu(stage: Stage) extends GraphicView:
   private def getQuizDescriptionLabel(quizAnswered: QuizAnswered): String =
     val cond = Try(quizAnswered.answerPlayer.get.isCorrect).getOrElse(false)
     if (cond)
-      s"- (Tempo: "+ f"${quizAnswered.timeToAnswer}%.2f" +") "
+      s"- (${Vocabulary.TIME}: "+ f"${quizAnswered.timeToAnswer}%.2f" +") "
     else
       ""

@@ -13,6 +13,8 @@ import javafx.stage.FileChooser.ExtensionFilter
 import javafx.stage.{DirectoryChooser, FileChooser, Stage}
 import utils.storage.Configuration.{CurrentDirectoryPath, HomeDirectoryPath, PlayerCoursesFileName}
 import utils.storage.{ExportHandler, ImportHandler}
+import view.Vocabulary
+
 import java.io.File
 import scala.util.{Failure, Success}
 
@@ -65,7 +67,7 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
     val extensionFilter: ExtensionFilter = ExtensionFilter("JSON file", "*.json")
     val fileChooser: FileChooser = FileChooser()
     fileChooser.getExtensionFilters.add(extensionFilter)
-    fileChooser.setTitle("Importa i corsi")
+    fileChooser.setTitle(Vocabulary.IMPORT_QUIZ)
     fileChooser.setInitialDirectory(File(CurrentDirectoryPath))
     val selectedFile = fileChooser.showOpenDialog(stage)
     if (selectedFile != null)
@@ -75,21 +77,21 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
           ExportHandler.exportDataToPersonalDirectory(savedCourseList)
           showDialogAlert(
             AlertType.INFORMATION,
-            "Importazione",
-            "Importazione avvenuta con successo!",
+            Vocabulary.IMPORT_QUIZ,
+            Vocabulary.OPERATION_SUCCEEDED,
             selectedFile.getPath
           )
         case Failure(f) =>
           showDialogAlert(
             AlertType.ERROR,
-            "Importazione",
-            "Errore! File non valido!"
+            Vocabulary.IMPORT_QUIZ,
+            Vocabulary.ERROR_INVALID_FILE
           )
 
   @FXML
   def exportButtonClicked(): Unit =
     val directoryChooser: DirectoryChooser = DirectoryChooser()
-    directoryChooser.setTitle("Esporta i corsi")
+    directoryChooser.setTitle(Vocabulary.EXPORT_QUIZ)
     directoryChooser.setInitialDirectory(File(HomeDirectoryPath))
     val selectedDirectory = directoryChooser.showDialog(stage)
     if (selectedDirectory != null)
@@ -97,15 +99,15 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
         case Success(path) =>
           showDialogAlert(
             AlertType.INFORMATION,
-            "Esportazione",
-            "Esportazione avvenuta con successo!",
+            Vocabulary.EXPORT_QUIZ,
+            Vocabulary.OPERATION_SUCCEEDED,
             path
           )
         case Failure(f) =>
           showDialogAlert(
             AlertType.ERROR,
-            "Esportazione",
-            "Errore! File non valido!"
+            Vocabulary.EXPORT_QUIZ,
+            Vocabulary.ERROR_INVALID_FILE
           )
 
   @FXML
@@ -125,5 +127,13 @@ class GraphicSettingsMenu(stage: Stage) extends GraphicView:
     sendEvent(EditQuiz)
 
   loadGUI(stage, this, "settings_menu.fxml")
+  backButton.setText(Vocabulary.BACK)
+  menuLabel.setText(Vocabulary.SETTINGS)
+  importButton.setText(Vocabulary.IMPORT_QUIZ)
+  exportButton.setText(Vocabulary.EXPORT_QUIZ)
+  addCourseButton.setText(Vocabulary.ADD_COURSE)
+  addQuizButton.setText(Vocabulary.ADD_QUIZ)
+  editCourseButton.setText(Vocabulary.EDIT_COURSE)
+  editQuizButton.setText(Vocabulary.EDIT_QUIZ)
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = {}

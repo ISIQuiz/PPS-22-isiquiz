@@ -1,4 +1,4 @@
-# PPS-22-ISIquiz
+# PPS-22-isiquiz
 
 Repository contenente il software ISIQuiz, un progetto accademico per il corso "Paradigmi di Programmazione e Sviluppo" dell'Università di Bologna A.A. 2021/2022.
 

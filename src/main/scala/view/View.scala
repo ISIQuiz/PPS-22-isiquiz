@@ -34,7 +34,7 @@ object View:
   private val _scene = Scene(1280, 720)
   private val _basePanel: Pane = Pane()
   _stage.title = "ISIQuiz"
-  _stage.resizable = false
+  _stage.resizable = true
   _stage.scene = _scene
   _stage.onCloseRequest = _ => System.exit(0)
   _stage.getIcons.add(new Image(View.getClass.getResourceAsStream("/images/favicon_265_text.png")));

@@ -12,6 +12,7 @@ import utils.GUILoader.loadGUI
 import utils.{GUILoader, Timer}
 import view.StandardGameMenuView.*
 import view.View.{GraphicView, sendEvent}
+import view.Vocabulary
 import view.updates.ViewUpdate
 
 object GraphicBlitzGameMenu
@@ -77,6 +78,11 @@ class GraphicBlitzGameMenu(stage: Stage) extends GraphicView:
     sendEvent(NextQuiz)
 
   loadGUI(stage, this, "blitz_game.fxml")
+  backButton.setText(Vocabulary.BACK)
+  nextButton.setText(Vocabulary.NEXT)
+  quizLabel.setText(Vocabulary.QUESTION)
+  courseLabel.setText(Vocabulary.COURSE)
+  
 
   val answerButtons: List[Button] = List(firstAnswerButton, secondAnswerButton, thirdAnswerButton, fourthAnswerButton)
 
@@ -87,7 +93,7 @@ class GraphicBlitzGameMenu(stage: Stage) extends GraphicView:
         val gameStage: GameStage = updateParameter.get
         courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
         quizLabel.setText(gameStage.quizInGame.quiz.question)
-        pointsLabel.setText(gameStage.quizInGame.quiz.maxScore + " punti")
+        pointsLabel.setText(gameStage.quizInGame.quiz.maxScore +" "+ Vocabulary.POINTS)
         firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
         secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
         thirdAnswerButton.setText(gameStage.quizInGame.answers(2).text)

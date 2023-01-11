@@ -26,15 +26,15 @@
     <RowConstraints percentHeight="5.0" vgrow="SOMETIMES" />
   </rowConstraints>
   <children>
-    <Button fx:id="backButton" mnemonicParsing="false" onMouseClicked="#backButtonClicked" styleClass="button-small" text="Indietro" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-    <Label fx:id="menuLabel" styleClass="title" text="Statistiche" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+    <Button fx:id="backButton" mnemonicParsing="false" onMouseClicked="#backButtonClicked" styleClass="button-small" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <Label fx:id="menuLabel" styleClass="title" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
     <VBox GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
       <children>
             <HBox alignment="CENTER">
                <children>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Seleziona un corso:" />
+                        <Label fx:id="selectCourseLabel"/>
                         <ScrollPane fx:id="coursesScrollPane" styleClass="edit-quiz-scroll-pane, select-scroll-pane" VBox.vgrow="ALWAYS">
                            <content>
                               <VBox fx:id="coursesVBox" />
@@ -45,7 +45,7 @@
                   <Separator />
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Seleziona un quiz:" />
+                        <Label fx:id="selectQuizLabel" />
                         <ScrollPane fx:id="quizScrollPane" styleClass="edit-quiz-scroll-pane, select-scroll-pane" VBox.vgrow="ALWAYS">
                            <content>
                               <VBox fx:id="quizVBox" />
@@ -55,7 +55,7 @@
                   </VBox>
                </children>
             </HBox>
-            <Label fx:id="textLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="23.0" styleClass="label-large" text="Nome delle statistiche specifiche">
+            <Label fx:id="textLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="23.0" styleClass="label-large" >
                <VBox.margin>
                   <Insets top="45.0" />
                </VBox.margin>
@@ -64,7 +64,7 @@
                <children>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Punti" />
+                        <Label fx:id="totalScoreTitleLabel"/>
                         <Label fx:id="totalScoreLabel" text="0" />
                      </children>
                      <HBox.margin>
@@ -76,7 +76,7 @@
                   </VBox>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Quiz risposti" />
+                        <Label fx:id="quizAnsweredLabel" />
                         <Label fx:id="totalAnsweredQuestionsLabel" text="0" />
                      </children>
                      <padding>
@@ -85,7 +85,7 @@
                   </VBox>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Risposte corrette" />
+                        <Label fx:id="correctAnswersLabel" />
                         <Label fx:id="totalCorrectAnswersLabel" text="0" />
                      </children>
                      <padding>
@@ -94,7 +94,7 @@
                   </VBox>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Precisione" />
+                        <Label fx:id="precisionLabel" />
                         <Label fx:id="totalAnswerPrecisionLabel" text="0" />
                      </children>
                      <padding>
@@ -103,7 +103,7 @@
                   </VBox>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Tempo medio di risposta" />
+                        <Label fx:id="averageTimeAnswerLabel" />
                         <Label fx:id="totalAverageTimeAnswerLabel" text="0" />
                      </children>
                      <padding>
@@ -114,7 +114,7 @@
             </HBox>
             <HBox alignment="CENTER">
                <children>
-                  <Label fx:id="textLabel2" alignment="CENTER" styleClass="label-large" text="Statistiche globali" />
+                  <Label fx:id="textLabel2" alignment="CENTER" styleClass="label-large" />
                </children>
                <VBox.margin>
                   <Insets top="5.0" />
@@ -124,7 +124,7 @@
                <children>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Punti" />
+                        <Label fx:id="globalTotalScoreTitleLabel" />
                         <Label fx:id="globalTotalScoreLabel" text="0" />
                      </children>
                      <padding>
@@ -133,7 +133,7 @@
                   </VBox>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Quiz risposti" />
+                        <Label fx:id="globalTotalAnsweredQuestionsTitleLabel" />
                         <Label fx:id="globalTotalAnsweredQuestionsLabel" text="0" />
                      </children>
                      <padding>
@@ -142,7 +142,7 @@
                   </VBox>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Risposte corrette" />
+                        <Label fx:id="globalTotalCorrectAnswersTitleLabel"  />
                         <Label fx:id="globalTotalCorrectAnswersLabel" text="0" />
                      </children>
                      <padding>
@@ -151,7 +151,7 @@
                   </VBox>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Precisione" />
+                        <Label fx:id="globalTotalAnswerPrecisionTitleLabel" />
                         <Label fx:id="globalTotalAnswerPrecisionLabel" text="0" />
                      </children>
                      <padding>
@@ -160,7 +160,7 @@
                   </VBox>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Tempo medio di risposta" />
+                        <Label fx:id="globalTotalAverageTimeAnswerTitleLabel" />
                         <Label fx:id="globalTotalAverageTimeAnswerLabel" text="0" />
                      </children>
                      <padding>
@@ -171,7 +171,7 @@
             </HBox>
             <HBox alignment="CENTER">
                <children>
-                  <Button fx:id="resetStatsButton" mnemonicParsing="false" onMouseClicked="#resetStatsButtonClicked" styleClass="button-large" text="Reset statistiche">
+                  <Button fx:id="resetStatsButton" mnemonicParsing="false" onMouseClicked="#resetStatsButtonClicked" styleClass="button-large">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>

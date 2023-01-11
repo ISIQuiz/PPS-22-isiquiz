@@ -3,10 +3,12 @@ package view.graphicUI
 import controller.MainMenuController.{Quit, Select, Settings, Statistics}
 import view.View.{GraphicView, sendEvent}
 import view.updates.ViewUpdate
+import view.Vocabulary
 import utils.GUILoader
 import utils.GUILoader.loadGUI
 import javafx.fxml.FXML
 import javafx.scene.control.Button
+import javafx.scene.image.ImageView
 import javafx.stage.Stage
 
 object GraphicMainMenu
@@ -27,6 +29,17 @@ class GraphicMainMenu(stage: Stage) extends GraphicView:
   var quitButton: Button = _
 
   @FXML
+  def itImageClicked(): Unit =
+    Vocabulary.LANGUAGE_SELECTED = Vocabulary.LANGUAGE_AVAILABLE.IT
+    reloadGUI()
+
+  @FXML
+  def enImageClicked(): Unit =
+    Vocabulary.LANGUAGE_SELECTED = Vocabulary.LANGUAGE_AVAILABLE.EN
+    reloadGUI()
+
+
+  @FXML
   def selectButtonClicked(): Unit =
     sendEvent(Select)
 
@@ -42,6 +55,14 @@ class GraphicMainMenu(stage: Stage) extends GraphicView:
   def quitButtonClicked(): Unit =
     sendEvent(Quit)
 
-  loadGUI(stage, this, "main.fxml")
+  reloadGUI()
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = {}
+
+  def reloadGUI(): Unit =
+    loadGUI(stage, this, "main.fxml")
+    selectButton.setText(Vocabulary.PLAY)
+    statisticsButton.setText(Vocabulary.STATISTICS)
+    settingsButton.setText(Vocabulary.SETTINGS)
+    quitButton.setText(Vocabulary.QUIT)
+
