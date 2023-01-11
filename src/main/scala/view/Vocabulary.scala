@@ -129,12 +129,12 @@ object Vocabulary:
 
 
   def SELECT_COURSE = LANGUAGE_SELECTED match
-    case IT => "Seleziona un corso:"
-    case _ => "Select a course:"
+    case IT => "Seleziona un corso"
+    case _ => "Select a course"
 
   def SELECT_QUIZ = LANGUAGE_SELECTED match
-    case IT => "Seleziona un quiz:"
-    case _ => "Select a quiz:"
+    case IT => "Seleziona un quiz"
+    case _ => "Select a quiz"
 
   def QUIZ_STATS = LANGUAGE_SELECTED match
     case IT => "Statistiche quiz"
@@ -185,12 +185,12 @@ object Vocabulary:
     case _ => "Add quiz"
 
   def QUIZ_ADDED = LANGUAGE_SELECTED match
-      case IT => "Quiz aggiunto"
-      case _ => "Quiz added"
+    case IT => "Quiz aggiunto"
+    case _ => "Quiz added"
 
   def EDIT_COURSE = LANGUAGE_SELECTED match
-      case IT => "Modifica corso"
-      case _ => "Edit course"
+    case IT => "Modifica corso"
+    case _ => "Edit course"
 
   def COURSE_EDITED = LANGUAGE_SELECTED match
     case IT => "Corso modificato"
