@@ -1,7 +1,7 @@
 package utils.storage
 
 import java.nio.file.{Files, Paths}
-import scala.io.Source
+import scala.io.{Codec, Source}
 import scala.util.{Try, Using}
 
 /** Object of [[FileHandler]] */
@@ -14,7 +14,7 @@ object FileHandler:
    * @return a Try[String] with the file content
    */
   def readFile(filePath: String): Try[String] =
-    Using(Source.fromFile(filePath))(_.mkString)
+    Using(Source.fromFile(filePath)(Codec.UTF8))(_.mkString)
 
   /**
    * Write the string in a file
