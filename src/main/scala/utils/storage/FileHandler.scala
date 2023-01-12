@@ -14,7 +14,7 @@ object FileHandler:
    * @return a Try[String] with the file content
    */
   def readFile(filePath: String): Try[String] =
-    Using(Source.fromFile(filePath)(Codec.UTF8))(_.mkString)
+    Using(Source.fromFile(filePath))(_.mkString)
 
   /**
    * Write the string in a file
@@ -25,7 +25,7 @@ object FileHandler:
    */
   def writeFile(filePath: String, fileContent: String): Try[String] =
     Try {
-      Files.writeString(Paths.get(filePath), fileContent)
+      Files.write(Paths.get(filePath), fileContent.getBytes())
       filePath
     }
 

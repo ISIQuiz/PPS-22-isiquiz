@@ -2,6 +2,8 @@ package controller
 
 import controller.Controller
 import controller.actions.{Action, ParameterlessAction}
+import javafx.scene.control.Alert
+import javafx.scene.control.Alert.AlertType
 import javafx.stage.Stage
 import model.GameStage
 import model.stats.PlayerStats.PlayerStats
@@ -58,11 +60,34 @@ object AppController extends Controller:
     case action: Action[T] => currentPage.pageController.handle(action)
     case null => throw new IllegalArgumentException
 
-  def startApp(): Unit =
+  def startApp(interface:String): Unit =
 
     importSessionFromPersonalDirectory(session) match
       case Success(s) => _session = s
-      case Failure(f) => Failure(f)
+      case _ => println("No session imported")
 
-    val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
-    scheduler.scheduleAtFixedRate(() => currentPage.pageController.nextIteration(), 0, 1000/10, TimeUnit.MILLISECONDS)
+    interface match
+      case "GUI" =>
+        val minJava = 8
+        println(s"Detected Java ${getJavaVersion}")
+        if getJavaVersion >= minJava then
+          val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
+          scheduler.scheduleAtFixedRate(() => currentPage.pageController.nextIteration(), 0, 1000/10, TimeUnit.MILLISECONDS)
+        else
+          val alert = Alert(AlertType.INFORMATION)
+          alert.setTitle("Java version outdated")
+          alert.setHeaderText(s"It looks like you have Java ${getJavaVersion} but the minimum required is ${minJava}")
+          alert.show()
+      case "CLI" =>
+        while true do
+          currentPage.pageController.nextIteration()
+      case _ => println("Interface specified not existing")
+
+  private def getJavaVersion =
+    var version = System.getProperty("java.version")
+    if version.startsWith("1.") then
+      version = version.substring(2, 3)
+    else
+      val dot = version.indexOf(".")
+      if (dot != -1) version = version.substring(0, dot)
+    version.toInt
