@@ -404,5 +404,248 @@ object DefaultDataList:
           )
         ),
       )
-    )
+    ),
+    // English B2
+    SavedCourse(
+      courseId = CourseIdentifier(
+        courseName = "English B2",
+        degreeName = "Laurea Magistrale in Ingegneria e Scienze Informatiche",
+        universityName = "Università di Bologna"
+      ),
+      description = Option("English Certification B2 Course"),
+      quizList = List(
+        Quiz(
+          question = "She's married and she has three ...........",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "Childs", false),
+            Answer(text = "Children", true),
+            Answer(text = "Child", false),
+            Answer(text = "Childrens", false),
+            Answer(text = "Daughter", false),
+            Answer(text = "Daughters", true),
+            Answer(text = "Chicken", false)
+          )
+        ),
+        Quiz(
+          question = ".......... to concerts?",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "Does Sally go", true),
+            Answer(text = "Do Sally go", false),
+            Answer(text = "Does Sally goes", false),
+            Answer(text = "Do Sally goes", false),
+            Answer(text = "Is Sally going", true),
+            Answer(text = "Sally go", false)
+          )
+        ),
+        Quiz(
+          question = "We always have snow .......... January.",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "in", true),
+            Answer(text = "at", false),
+            Answer(text = "on", false),
+            Answer(text = "for", false),
+            Answer(text = "from December to", true),
+            Answer(text = "from December at", false)
+          )
+        ),
+        Quiz(
+          question = "There isn't .......... sugar in this coffee!",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "any", true),
+            Answer(text = "no", false),
+            Answer(text = "none", false),
+            Answer(text = "some", false),
+            Answer(text = "a lot of", true),
+            Answer(text = "some lots of", false),
+            Answer(text = "not", false)
+          )
+        ),
+        Quiz(
+          question = "Is this .......... house?",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "your parents's", true),
+            Answer(text = "your parents", false),
+            Answer(text = "your parents'", false),
+            Answer(text = "your parenthesis", false)
+          )
+        ),
+        Quiz(
+          question = "You .......... smoke here as you .......... cause a fire.",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "mustn't, may", true),
+            Answer(text = "must, might", false),
+            Answer(text = "mustn't, have to", false),
+            Answer(text = "must not, may not", false),
+            Answer(text = "have to, should", false),
+            Answer(text = "should, could", false),
+            Answer(text = "shouldn't, might", true)
+          )
+        ),
+        Quiz(
+          question = ".......... I don't see you before, have a nice holiday.",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "Unless", false),
+            Answer(text = "In case", true),
+            Answer(text = "As soon as", false),
+            Answer(text = "I am hoping", false),
+            Answer(text = "Since", false),
+            Answer(text = "As long as", false)
+          )
+        ),
+        Quiz(
+          question = "......... any eggs for breakfast this morning",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "There weren't", true),
+            Answer(text = "There was", false),
+            Answer(text = "There were", false),
+            Answer(text = "There wasn't", false),
+            Answer(text = "There is", false),
+            Answer(text = "There are", true),
+            Answer(text = "There aren't", true)
+          )
+        ),
+        Quiz(
+          question = "I eat .......... chocolate.",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "too much", true),
+            Answer(text = "as many as", false),
+            Answer(text = "too many", false),
+            Answer(text = "a lot of", true),
+            Answer(text = "much piece of", false),
+            Answer(text = "many", false)
+          )
+        ),
+        Quiz(
+          question = "How long .......... her?",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "have you known", true),
+            Answer(text = "do you know", false),
+            Answer(text = "you have known", false),
+            Answer(text = "will you know", false),
+            Answer(text = "had you been knowing", false),
+            Answer(text = "you are going to know", false)
+          )
+        ),
+        Quiz(
+          question = "he doesn't read the newspaper every day. .......... I.",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "Neither do", true),
+            Answer(text = "Neither does", false),
+            Answer(text = "Neither doesn't", false),
+            Answer(text = "So do", false),
+            Answer(text = "Am", false),
+            Answer(text = "Not", false)
+          )
+        ),
+        Quiz(
+          question = "They .......... English when I saw them. They .......... TV!",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "weren't studying, were watching", true),
+            Answer(text = "weren't studying, are watching", false),
+            Answer(text = "aren't studying, were watching", false),
+            Answer(text = "are studying, are watching", false),
+            Answer(text = "weren't studying, are playing", false),
+            Answer(text = "were study, were eating the", false)
+          )
+        ),
+        Quiz(
+          question = "Why didn't they .......... the beds yesterday?",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "make", true),
+            Answer(text = "made", false),
+            Answer(text = "do", false),
+            Answer(text = "did", false),
+            Answer(text = "burnt", false),
+            Answer(text = "built", false)
+          )
+        ),
+        Quiz(
+          question = ".......... no meeting on Monday.",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "There will be", true),
+            Answer(text = "There won't be no", false),
+            Answer(text = "There isn't", false),
+            Answer(text = "There are", false)
+          )
+        ),
+        Quiz(
+          question = "She told me .......... him any money.",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "not to lend", true),
+            Answer(text = "to lend not", false),
+            Answer(text = "not lend to", false),
+            Answer(text = "to borrow", false),
+            Answer(text = "not to borrow", false),
+            Answer(text = "not to send", true),
+            Answer(text = "to not borrow", false)
+          )
+        ),
+        Quiz(
+          question = "If you ...... everything in a diary, you ... forget anything.",
+          maxScore = 12,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "did write, wouldn't", true),
+            Answer(text = "wrote, wouldn't", false),
+            Answer(text = "didn't write, would not", false),
+            Answer(text = "write, wouldn't", false),
+            Answer(text = "would write, didn't", false),
+            Answer(text = "would wrote, won't", false),
+            Answer(text = "will write, won't", true)
+          )
+        ),
+      )
+    ),
+    // Example of Your Course
+    SavedCourse(
+      courseId = CourseIdentifier(
+        courseName = "Your Course Example",
+        degreeName = "Degree Name",
+        universityName = "University Name"
+      ),
+      description = Option("Your optional Course Description"),
+      quizList = List(
+        Quiz(
+          question = "Your Question Example",
+          maxScore = 5,
+          imagePath = Option.empty,
+          answerList = List(
+            Answer(text = "A Wrong Answer Example", false),
+            Answer(text = "Another Wrong Answer Example", false),
+            Answer(text = "The Wrongest Answer Example", false),
+            Answer(text = "A Right Answer Example", true)
+          )
+        ),
+      )
+    ),
   )
