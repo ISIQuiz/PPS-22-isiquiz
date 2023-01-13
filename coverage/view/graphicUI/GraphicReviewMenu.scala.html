@@ -38,85 +38,98 @@
 </span>14 <span style=''>import model.QuizAnswered
 </span>15 <span style=''>import scalafx.geometry.Insets
 </span>16 <span style=''>import scalafx.scene.layout.Pane
-</span>17 <span style=''>import scala.util.Try
+</span>17 <span style=''>import view.Vocabulary
 </span>18 <span style=''>
-</span>19 <span style=''>object GraphicReviewMenu
+</span>19 <span style=''>import scala.util.Try
 </span>20 <span style=''>
-</span>21 <span style=''>/** Review menu graphic interface */
-</span>22 <span style=''>class GraphicReviewMenu(stage: Stage) extends GraphicView:
-</span>23 <span style=''>
-</span>24 <span style=''>  var showAllAnswers = false
+</span>21 <span style=''>object GraphicReviewMenu
+</span>22 <span style=''>
+</span>23 <span style=''>/** Review menu graphic interface */
+</span>24 <span style=''>class GraphicReviewMenu(stage: Stage) extends GraphicView:
 </span>25 <span style=''>
-</span>26 <span style=''>  @FXML
-</span>27 <span style=''>  var totRightAnswersLabel: Label = _
-</span>28 <span style=''>
-</span>29 <span style=''>  @FXML
-</span>30 <span style=''>  var totPointsLabel: Label = _
-</span>31 <span style=''>
-</span>32 <span style=''>  @FXML
-</span>33 <span style=''>  var quizAnsweredVBox: VBox = _
-</span>34 <span style=''>
-</span>35 <span style=''>  @FXML
-</span>36 <span style=''>  var endButton: Button = _
-</span>37 <span style=''>
-</span>38 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>39 <span style=''></span><span style='background: #F0ADAD'>  def endButtonClicked</span><span style=''>(): Unit =
-</span>40 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(End)</span><span style=''>
-</span>41 <span style=''>
-</span>42 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>43 <span style=''></span><span style='background: #F0ADAD'>  def filterButtonClicked</span><span style=''>(): Unit =
-</span>44 <span style=''>    showAllAnswers = !showAllAnswers
+</span>26 <span style=''>  var showAllAnswers = false
+</span>27 <span style=''>
+</span>28 <span style=''>  @FXML
+</span>29 <span style=''>  var revisionLabel: Label = _
+</span>30 <span style=''>
+</span>31 <span style=''>  @FXML
+</span>32 <span style=''>  var totRightAnswersLabel: Label = _
+</span>33 <span style=''>
+</span>34 <span style=''>  @FXML
+</span>35 <span style=''>  var totPointsLabel: Label = _
+</span>36 <span style=''>
+</span>37 <span style=''>  @FXML
+</span>38 <span style=''>  var quizAnsweredVBox: VBox = _
+</span>39 <span style=''>
+</span>40 <span style=''>  @FXML
+</span>41 <span style=''>  var filterButton: Button = _
+</span>42 <span style=''>
+</span>43 <span style=''>  @FXML
+</span>44 <span style=''>  var endButton: Button = _
 </span>45 <span style=''>
-</span>46 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;review_menu.fxml&quot;)</span><span style=''>
-</span>47 <span style=''>
-</span>48 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
-</span>49 <span style=''>    </span><span style='background: #F0ADAD'>case TotalCorrectAnswersUpdate(updateParameter)</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>updateParameter.isDefined</span><span style=''> then
-</span>50 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
-</span>51 <span style=''></span><span style='background: #F0ADAD'>        totRightAnswersLabel.textProperty().set(s&quot;Risposte corrette: ${updateParameter.get}&quot;)
-</span>52 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
-</span>53 <span style=''>    </span><span style='background: #F0ADAD'>case TotalPointsUpdate(updateParameter)</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>updateParameter.isDefined</span><span style=''> then
-</span>54 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
-</span>55 <span style=''></span><span style='background: #F0ADAD'>        totPointsLabel.textProperty().set(s&quot;Punti totali: ${updateParameter.get}&quot;)
-</span>56 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
-</span>57 <span style=''>    </span><span style='background: #F0ADAD'>case CurrentReviewUpdate(updateParameter)</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>updateParameter.isDefined</span><span style=''> then
-</span>58 <span style=''>      </span><span style='background: #F0ADAD'>fillAnswerBox(updateParameter.get.quizAnsweredList)</span><span style=''>
-</span>59 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
+</span>46 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>47 <span style=''></span><span style='background: #F0ADAD'>  def endButtonClicked</span><span style=''>(): Unit =
+</span>48 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(End)</span><span style=''>
+</span>49 <span style=''>
+</span>50 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>51 <span style=''></span><span style='background: #F0ADAD'>  def filterButtonClicked</span><span style=''>(): Unit =
+</span>52 <span style=''>    showAllAnswers = !showAllAnswers
+</span>53 <span style=''>
+</span>54 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;review_menu.fxml&quot;)</span><span style=''>
+</span>55 <span style=''>  </span><span style='background: #F0ADAD'>revisionLabel.setText(Vocabulary.REVISION)</span><span style=''>
+</span>56 <span style=''>  </span><span style='background: #F0ADAD'>totRightAnswersLabel.setText(Vocabulary.TOT_RIGHT_ANSWERS)</span><span style=''>
+</span>57 <span style=''>  </span><span style='background: #F0ADAD'>totPointsLabel.setText(Vocabulary.TOTAL_POINTS)</span><span style=''>
+</span>58 <span style=''>  </span><span style='background: #F0ADAD'>filterButton.setText(Vocabulary.SHOW_ALL)</span><span style=''>
+</span>59 <span style=''>  </span><span style='background: #F0ADAD'>endButton.setText(Vocabulary.END)</span><span style=''>
 </span>60 <span style=''>
-</span>61 <span style=''>  </span><span style='background: #F0ADAD'>def fillAnswerBox</span><span style=''>(quizAnsweredList: List[QuizAnswered]): Unit =
-</span>62 <span style=''>    </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
-</span>63 <span style=''></span><span style='background: #F0ADAD'>      quizAnsweredVBox.getChildren.clear()
-</span>64 <span style=''></span><span style='background: #F0ADAD'>      for
-</span>65 <span style=''></span><span style='background: #F0ADAD'>        quizAnswered &lt;- quizAnsweredList
-</span>66 <span style=''></span><span style='background: #F0ADAD'>      do
-</span>67 <span style=''></span><span style='background: #F0ADAD'>        val quizVBox = VBox()
-</span>68 <span style=''></span><span style='background: #F0ADAD'>        quizVBox.getStyleClass.setAll(&quot;review-quiz-box&quot;)
-</span>69 <span style=''></span><span style='background: #F0ADAD'>        val quizQuestionLabel = Label(quizAnswered.quizInGame.quiz.question)
-</span>70 <span style=''></span><span style='background: #F0ADAD'>        quizQuestionLabel.getStyleClass.setAll(&quot;review-question&quot;)
-</span>71 <span style=''></span><span style='background: #F0ADAD'>        quizVBox.getChildren.addAll(quizQuestionLabel)
-</span>72 <span style=''></span><span style='background: #F0ADAD'>        val quizDescLabel = Label(
-</span>73 <span style=''></span><span style='background: #F0ADAD'>          s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
-</span>74 <span style=''></span><span style='background: #F0ADAD'>            getQuizDescriptionLabel(quizAnswered) +
-</span>75 <span style=''></span><span style='background: #F0ADAD'>            s&quot;- ${quizAnswered.quizInGame.course.courseId.courseName}&quot;
-</span>76 <span style=''></span><span style='background: #F0ADAD'>        );
-</span>77 <span style=''></span><span style='background: #F0ADAD'>        quizDescLabel.getStyleClass.setAll(&quot;label-dark&quot;)
-</span>78 <span style=''></span><span style='background: #F0ADAD'>        quizVBox.getChildren.addAll(quizDescLabel)
-</span>79 <span style=''></span><span style='background: #F0ADAD'>        for
-</span>80 <span style=''></span><span style='background: #F0ADAD'>          answerQuiz &lt;- quizAnswered.quizInGame.answers;
-</span>81 <span style=''></span><span style='background: #F0ADAD'>          if (showAllAnswers || answerQuiz.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == answerQuiz else false))
-</span>82 <span style=''></span><span style='background: #F0ADAD'>        do
-</span>83 <span style=''></span><span style='background: #F0ADAD'>          val quizAnswerLabel = Label(s&quot;${answerQuiz.text}&quot;)
-</span>84 <span style=''></span><span style='background: #F0ADAD'>          if answerQuiz.isCorrect then quizAnswerLabel.getStyleClass.setAll(&quot;review-correct-answer&quot;) else quizAnswerLabel.getStyleClass.setAll(&quot;review-wrong-answer&quot;)
-</span>85 <span style=''></span><span style='background: #F0ADAD'>          quizVBox.getChildren.addAll(quizAnswerLabel);
-</span>86 <span style=''></span><span style='background: #F0ADAD'>        quizAnsweredVBox.setSpacing(10);
-</span>87 <span style=''></span><span style='background: #F0ADAD'>        quizAnsweredVBox.getChildren.addAll(quizVBox);
-</span>88 <span style=''></span><span style='background: #F0ADAD'>    })</span><span style=''>
-</span>89 <span style=''>
-</span>90 <span style=''>  </span><span style='background: #F0ADAD'>private def getQuizDescriptionLabel</span><span style=''>(quizAnswered: QuizAnswered): String =
-</span>91 <span style=''>    val cond = </span><span style='background: #F0ADAD'>Try(quizAnswered.answerPlayer.get.isCorrect).getOrElse(false)</span><span style=''>
-</span>92 <span style=''>    if (cond)
-</span>93 <span style=''>      </span><span style='background: #F0ADAD'>s&quot;- (Tempo: &quot;+ f&quot;${quizAnswered.timeToAnswer}%.2f&quot; +&quot;) &quot;</span><span style=''>
-</span>94 <span style=''>    else
-</span>95 <span style=''>      </span><span style='background: #F0ADAD'>&quot;&quot;</span><span style=''>
+</span>61 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>62 <span style=''>    </span><span style='background: #F0ADAD'>case TotalCorrectAnswersUpdate(updateParameter)</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>updateParameter.isDefined</span><span style=''> then
+</span>63 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
+</span>64 <span style=''></span><span style='background: #F0ADAD'>        totRightAnswersLabel.textProperty().set(s&quot;${Vocabulary.TOT_RIGHT_ANSWERS}: ${updateParameter.get}&quot;)
+</span>65 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
+</span>66 <span style=''>    </span><span style='background: #F0ADAD'>case TotalPointsUpdate(updateParameter)</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>updateParameter.isDefined</span><span style=''> then
+</span>67 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
+</span>68 <span style=''></span><span style='background: #F0ADAD'>        totPointsLabel.textProperty().set(s&quot;${Vocabulary.TOTAL_POINTS}: ${updateParameter.get}&quot;)
+</span>69 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
+</span>70 <span style=''>    </span><span style='background: #F0ADAD'>case CurrentReviewUpdate(updateParameter)</span><span style=''> =&gt; if </span><span style='background: #F0ADAD'>updateParameter.isDefined</span><span style=''> then
+</span>71 <span style=''>      </span><span style='background: #F0ADAD'>fillAnswerBox(updateParameter.get.quizAnsweredList)</span><span style=''>
+</span>72 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
+</span>73 <span style=''>
+</span>74 <span style=''>  </span><span style='background: #F0ADAD'>def fillAnswerBox</span><span style=''>(quizAnsweredList: List[QuizAnswered]): Unit =
+</span>75 <span style=''>    </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
+</span>76 <span style=''></span><span style='background: #F0ADAD'>      quizAnsweredVBox.getChildren.clear()
+</span>77 <span style=''></span><span style='background: #F0ADAD'>      for
+</span>78 <span style=''></span><span style='background: #F0ADAD'>        quizAnswered &lt;- quizAnsweredList
+</span>79 <span style=''></span><span style='background: #F0ADAD'>      do
+</span>80 <span style=''></span><span style='background: #F0ADAD'>        val quizVBox = VBox()
+</span>81 <span style=''></span><span style='background: #F0ADAD'>        quizVBox.getStyleClass.setAll(&quot;review-quiz-box&quot;)
+</span>82 <span style=''></span><span style='background: #F0ADAD'>        val quizQuestionLabel = Label(quizAnswered.quizInGame.quiz.question)
+</span>83 <span style=''></span><span style='background: #F0ADAD'>        quizQuestionLabel.getStyleClass.setAll(&quot;review-question&quot;)
+</span>84 <span style=''></span><span style='background: #F0ADAD'>        quizVBox.getChildren.addAll(quizQuestionLabel)
+</span>85 <span style=''></span><span style='background: #F0ADAD'>        val quizDescLabel = Label(
+</span>86 <span style=''></span><span style='background: #F0ADAD'>          s&quot;(${Vocabulary.POINTS}: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
+</span>87 <span style=''></span><span style='background: #F0ADAD'>            getQuizDescriptionLabel(quizAnswered) +
+</span>88 <span style=''></span><span style='background: #F0ADAD'>            s&quot;- ${quizAnswered.quizInGame.course.courseId.courseName}&quot;
+</span>89 <span style=''></span><span style='background: #F0ADAD'>        );
+</span>90 <span style=''></span><span style='background: #F0ADAD'>        quizDescLabel.getStyleClass.setAll(&quot;label-dark&quot;)
+</span>91 <span style=''></span><span style='background: #F0ADAD'>        quizVBox.getChildren.addAll(quizDescLabel)
+</span>92 <span style=''></span><span style='background: #F0ADAD'>        for
+</span>93 <span style=''></span><span style='background: #F0ADAD'>          answerQuiz &lt;- quizAnswered.quizInGame.answers;
+</span>94 <span style=''></span><span style='background: #F0ADAD'>          if (showAllAnswers || answerQuiz.isCorrect || (if quizAnswered.answerPlayer.isDefined then quizAnswered.answerPlayer.get == answerQuiz else false))
+</span>95 <span style=''></span><span style='background: #F0ADAD'>        do
+</span>96 <span style=''></span><span style='background: #F0ADAD'>          val quizAnswerLabel = Label(s&quot;${answerQuiz.text}&quot;)
+</span>97 <span style=''></span><span style='background: #F0ADAD'>          if answerQuiz.isCorrect then quizAnswerLabel.getStyleClass.setAll(&quot;review-correct-answer&quot;) else quizAnswerLabel.getStyleClass.setAll(&quot;review-wrong-answer&quot;)
+</span>98 <span style=''></span><span style='background: #F0ADAD'>          quizVBox.getChildren.addAll(quizAnswerLabel);
+</span>99 <span style=''></span><span style='background: #F0ADAD'>        quizAnsweredVBox.setSpacing(10);
+</span>100 <span style=''></span><span style='background: #F0ADAD'>        quizAnsweredVBox.getChildren.addAll(quizVBox);
+</span>101 <span style=''></span><span style='background: #F0ADAD'>    })</span><span style=''>
+</span>102 <span style=''>
+</span>103 <span style=''>  </span><span style='background: #F0ADAD'>private def getQuizDescriptionLabel</span><span style=''>(quizAnswered: QuizAnswered): String =
+</span>104 <span style=''>    val cond = </span><span style='background: #F0ADAD'>Try(quizAnswered.answerPlayer.get.isCorrect).getOrElse(false)</span><span style=''>
+</span>105 <span style=''>    if (cond)
+</span>106 <span style=''>      </span><span style='background: #F0ADAD'>s&quot;- (${Vocabulary.TIME}: &quot;+ f&quot;${quizAnswered.timeToAnswer}%.2f&quot; +&quot;) &quot;</span><span style=''>
+</span>107 <span style=''>    else
+</span>108 <span style=''>      </span><span style='background: #F0ADAD'>&quot;&quot;</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -131,15 +144,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          38
+          46
         </td>
         <td>
-          1860
+          2336
         </td>
         <td>
-          817
+          921
           -
-          845
+          949
         </td>
         <td>
           DefDef
@@ -156,15 +169,15 @@
         </td>
       </tr><tr>
         <td>
-          39
+          47
         </td>
         <td>
-          1859
+          2335
         </td>
         <td>
-          860
+          964
           -
-          874
+          978
         </td>
         <td>
           Apply
@@ -180,15 +193,15 @@
         </td>
       </tr><tr>
         <td>
-          42
+          50
         </td>
         <td>
-          1861
+          2337
         </td>
         <td>
-          878
+          982
           -
-          909
+          1013
         </td>
         <td>
           DefDef
@@ -205,15 +218,15 @@
         </td>
       </tr><tr>
         <td>
-          45
+          53
         </td>
         <td>
-          1862
+          2338
         </td>
         <td>
-          960
+          1064
           -
-          1000
+          1104
         </td>
         <td>
           Apply
@@ -229,15 +242,255 @@
         </td>
       </tr><tr>
         <td>
-          47
+          54
         </td>
         <td>
-          1885
+          2340
         </td>
         <td>
-          1004
+          1107
           -
-          1025
+          1149
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          revisionLabel.setText(Vocabulary.REVISION)
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          2339
+        </td>
+        <td>
+          1129
+          -
+          1148
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          REVISION
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.REVISION
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          2341
+        </td>
+        <td>
+          1181
+          -
+          1209
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          TOT_RIGHT_ANSWERS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.TOT_RIGHT_ANSWERS
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          2342
+        </td>
+        <td>
+          1152
+          -
+          1210
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          totRightAnswersLabel.setText(Vocabulary.TOT_RIGHT_ANSWERS)
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          2344
+        </td>
+        <td>
+          1213
+          -
+          1260
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          totPointsLabel.setText(Vocabulary.TOTAL_POINTS)
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          2343
+        </td>
+        <td>
+          1236
+          -
+          1259
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          TOTAL_POINTS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.TOTAL_POINTS
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          2346
+        </td>
+        <td>
+          1263
+          -
+          1304
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          filterButton.setText(Vocabulary.SHOW_ALL)
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          2345
+        </td>
+        <td>
+          1284
+          -
+          1303
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          SHOW_ALL
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.SHOW_ALL
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          2347
+        </td>
+        <td>
+          1325
+          -
+          1339
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          END
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.END
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          2348
+        </td>
+        <td>
+          1307
+          -
+          1340
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          endButton.setText(Vocabulary.END)
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          2373
+        </td>
+        <td>
+          1344
+          -
+          1365
         </td>
         <td>
           DefDef
@@ -253,15 +506,39 @@
         </td>
       </tr><tr>
         <td>
-          48
+          61
         </td>
         <td>
-          1870
+          2349
         </td>
         <td>
-          1079
+          1473
           -
-          1126
+          1498
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isDefined
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.isDefined
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          2357
+        </td>
+        <td>
+          1419
+          -
+          1466
         </td>
         <td>
           Block
@@ -277,65 +554,15 @@
         </td>
       </tr><tr>
         <td>
-          48
+          62
         </td>
         <td>
-          1863
+          2356
         </td>
         <td>
-          1133
+          1510
           -
-          1158
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          isDefined
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          updateParameter.isDefined
-        </td>
-      </tr><tr>
-        <td>
-          49
-        </td>
-        <td>
-          1868
-        </td>
-        <td>
-          1170
-          -
-          1298
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          runLater
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Platform.runLater(() =&gt; {
-        totRightAnswersLabel.textProperty().set(s&quot;Risposte corrette: ${updateParameter.get}&quot;)
-      })
-        </td>
-      </tr><tr>
-        <td>
-          49
-        </td>
-        <td>
-          1869
-        </td>
-        <td>
-          1170
-          -
-          1298
+          1652
         </td>
         <td>
           Block
@@ -348,44 +575,70 @@
         </td>
         <td style="background: #F0ADAD">
           Platform.runLater(() =&gt; {
-        totRightAnswersLabel.textProperty().set(s&quot;Risposte corrette: ${updateParameter.get}&quot;)
+        totRightAnswersLabel.textProperty().set(s&quot;${Vocabulary.TOT_RIGHT_ANSWERS}: ${updateParameter.get}&quot;)
       })
         </td>
       </tr><tr>
         <td>
-          50
+          62
         </td>
         <td>
-          1865
+          2355
         </td>
         <td>
-          1267
+          1510
           -
-          1286
+          1652
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          get
+          runLater
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          updateParameter.get
+          Platform.runLater(() =&gt; {
+        totRightAnswersLabel.textProperty().set(s&quot;${Vocabulary.TOT_RIGHT_ANSWERS}: ${updateParameter.get}&quot;)
+      })
         </td>
       </tr><tr>
         <td>
-          50
+          63
         </td>
         <td>
-          1864
+          2353
         </td>
         <td>
-          1204
+          1584
           -
-          1239
+          1642
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;${Vocabulary.TOT_RIGHT_ANSWERS}: ${updateParameter.get}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          2350
+        </td>
+        <td>
+          1544
+          -
+          1579
         </td>
         <td>
           Apply
@@ -401,15 +654,39 @@
         </td>
       </tr><tr>
         <td>
-          50
+          63
         </td>
         <td>
-          1867
+          2352
         </td>
         <td>
-          1204
+          1621
           -
-          1289
+          1640
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          2354
+        </td>
+        <td>
+          1544
+          -
+          1643
         </td>
         <td>
           Apply
@@ -421,43 +698,43 @@
           
         </td>
         <td style="background: #F0ADAD">
-          totRightAnswersLabel.textProperty().set(s&quot;Risposte corrette: ${updateParameter.get}&quot;)
+          totRightAnswersLabel.textProperty().set(s&quot;${Vocabulary.TOT_RIGHT_ANSWERS}: ${updateParameter.get}&quot;)
         </td>
       </tr><tr>
         <td>
-          50
+          63
         </td>
         <td>
-          1866
+          2351
         </td>
         <td>
-          1244
+          1588
           -
-          1288
+          1616
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          s
+          TOT_RIGHT_ANSWERS
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          s&quot;Risposte corrette: ${updateParameter.get}&quot;
+          Vocabulary.TOT_RIGHT_ANSWERS
         </td>
       </tr><tr>
         <td>
-          52
+          65
         </td>
         <td>
-          1871
+          2358
         </td>
         <td>
-          1349
+          1703
           -
-          1374
+          1728
         </td>
         <td>
           Select
@@ -473,15 +750,15 @@
         </td>
       </tr><tr>
         <td>
-          52
+          65
         </td>
         <td>
-          1878
+          2366
         </td>
         <td>
-          1303
+          1657
           -
-          1342
+          1696
         </td>
         <td>
           Block
@@ -497,15 +774,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          66
         </td>
         <td>
-          1877
+          2365
         </td>
         <td>
-          1386
+          1740
           -
-          1503
+          1871
         </td>
         <td>
           Block
@@ -518,20 +795,20 @@
         </td>
         <td style="background: #F0ADAD">
           Platform.runLater(() =&gt; {
-        totPointsLabel.textProperty().set(s&quot;Punti totali: ${updateParameter.get}&quot;)
+        totPointsLabel.textProperty().set(s&quot;${Vocabulary.TOTAL_POINTS}: ${updateParameter.get}&quot;)
       })
         </td>
       </tr><tr>
         <td>
-          53
+          66
         </td>
         <td>
-          1876
+          2364
         </td>
         <td>
-          1386
+          1740
           -
-          1503
+          1871
         </td>
         <td>
           Apply
@@ -544,20 +821,20 @@
         </td>
         <td style="background: #F0ADAD">
           Platform.runLater(() =&gt; {
-        totPointsLabel.textProperty().set(s&quot;Punti totali: ${updateParameter.get}&quot;)
+        totPointsLabel.textProperty().set(s&quot;${Vocabulary.TOTAL_POINTS}: ${updateParameter.get}&quot;)
       })
         </td>
       </tr><tr>
         <td>
-          54
+          67
         </td>
         <td>
-          1874
+          2362
         </td>
         <td>
-          1454
+          1808
           -
-          1493
+          1861
         </td>
         <td>
           Apply
@@ -569,43 +846,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          s&quot;Punti totali: ${updateParameter.get}&quot;
+          s&quot;${Vocabulary.TOTAL_POINTS}: ${updateParameter.get}&quot;
         </td>
       </tr><tr>
         <td>
-          54
+          67
         </td>
         <td>
-          1873
+          2359
         </td>
         <td>
-          1472
+          1774
           -
-          1491
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          get
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          updateParameter.get
-        </td>
-      </tr><tr>
-        <td>
-          54
-        </td>
-        <td>
-          1872
-        </td>
-        <td>
-          1420
-          -
-          1449
+          1803
         </td>
         <td>
           Apply
@@ -621,87 +874,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          67
         </td>
         <td>
-          1875
+          2361
         </td>
         <td>
-          1420
+          1840
           -
-          1494
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          set
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          totPointsLabel.textProperty().set(s&quot;Punti totali: ${updateParameter.get}&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          56
-        </td>
-        <td>
-          1883
-        </td>
-        <td>
-          1508
-          -
-          1549
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          case CurrentReviewUpdate(updateParameter)
-        </td>
-      </tr><tr>
-        <td>
-          56
-        </td>
-        <td>
-          1879
-        </td>
-        <td>
-          1556
-          -
-          1581
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          isDefined
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          updateParameter.isDefined
-        </td>
-      </tr><tr>
-        <td>
-          57
-        </td>
-        <td>
-          1880
-        </td>
-        <td>
-          1607
-          -
-          1626
+          1859
         </td>
         <td>
           Select
@@ -717,15 +898,135 @@
         </td>
       </tr><tr>
         <td>
-          57
+          67
         </td>
         <td>
-          1882
+          2363
         </td>
         <td>
-          1593
+          1774
           -
-          1644
+          1862
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          set
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          totPointsLabel.textProperty().set(s&quot;${Vocabulary.TOTAL_POINTS}: ${updateParameter.get}&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          2360
+        </td>
+        <td>
+          1812
+          -
+          1835
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          TOTAL_POINTS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.TOTAL_POINTS
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          2371
+        </td>
+        <td>
+          1876
+          -
+          1917
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          case CurrentReviewUpdate(updateParameter)
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          2367
+        </td>
+        <td>
+          1924
+          -
+          1949
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isDefined
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.isDefined
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          2368
+        </td>
+        <td>
+          1975
+          -
+          1994
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          2370
+        </td>
+        <td>
+          1961
+          -
+          2012
         </td>
         <td>
           Block
@@ -741,15 +1042,15 @@
         </td>
       </tr><tr>
         <td>
-          57
+          70
         </td>
         <td>
-          1881
+          2369
         </td>
         <td>
-          1593
+          1961
           -
-          1644
+          2012
         </td>
         <td>
           Apply
@@ -765,15 +1066,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          71
         </td>
         <td>
-          1884
+          2372
         </td>
         <td>
-          1649
+          2017
           -
-          1655
+          2023
         </td>
         <td>
           Block
@@ -789,15 +1090,15 @@
         </td>
       </tr><tr>
         <td>
-          60
+          73
         </td>
         <td>
-          1928
+          2417
         </td>
         <td>
-          1665
+          2033
           -
-          1682
+          2050
         </td>
         <td>
           DefDef
@@ -813,15 +1114,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          74
         </td>
         <td>
-          1927
+          2416
         </td>
         <td>
-          1733
+          2101
           -
-          3135
+          3518
         </td>
         <td>
           Apply
@@ -844,7 +1145,7 @@
         quizQuestionLabel.getStyleClass.setAll(&quot;review-question&quot;)
         quizVBox.getChildren.addAll(quizQuestionLabel)
         val quizDescLabel = Label(
-          s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
+          s&quot;(${Vocabulary.POINTS}: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
             getQuizDescriptionLabel(quizAnswered) +
             s&quot;- ${quizAnswered.quizInGame.course.courseId.courseName}&quot;
         );
@@ -863,15 +1164,15 @@
         </td>
       </tr><tr>
         <td>
-          62
+          75
         </td>
         <td>
-          1886
+          2374
         </td>
         <td>
-          1765
+          2133
           -
-          1793
+          2161
         </td>
         <td>
           Apply
@@ -887,15 +1188,15 @@
         </td>
       </tr><tr>
         <td>
-          62
+          75
         </td>
         <td>
-          1887
+          2375
         </td>
         <td>
-          1765
+          2133
           -
-          1801
+          2169
         </td>
         <td>
           Apply
@@ -911,15 +1212,15 @@
         </td>
       </tr><tr>
         <td>
-          63
+          76
         </td>
         <td>
-          1926
+          2415
         </td>
         <td>
-          1808
+          2176
           -
-          3128
+          3511
         </td>
         <td>
           Apply
@@ -940,7 +1241,7 @@
         quizQuestionLabel.getStyleClass.setAll(&quot;review-question&quot;)
         quizVBox.getChildren.addAll(quizQuestionLabel)
         val quizDescLabel = Label(
-          s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
+          s&quot;(${Vocabulary.POINTS}: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
             getQuizDescriptionLabel(quizAnswered) +
             s&quot;- ${quizAnswered.quizInGame.course.courseId.courseName}&quot;
         );
@@ -958,15 +1259,15 @@
         </td>
       </tr><tr>
         <td>
-          66
+          79
         </td>
         <td>
-          1888
+          2376
         </td>
         <td>
-          1885
+          2253
           -
-          1891
+          2259
         </td>
         <td>
           Apply
@@ -982,39 +1283,15 @@
         </td>
       </tr><tr>
         <td>
-          67
+          80
         </td>
         <td>
-          1889
+          2378
         </td>
         <td>
-          1900
+          2268
           -
-          1922
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getStyleClass
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizVBox.getStyleClass
-        </td>
-      </tr><tr>
-        <td>
-          67
-        </td>
-        <td>
-          1890
-        </td>
-        <td>
-          1900
-          -
-          1948
+          2316
         </td>
         <td>
           Apply
@@ -1030,15 +1307,39 @@
         </td>
       </tr><tr>
         <td>
-          68
+          80
         </td>
         <td>
-          1891
+          2377
         </td>
         <td>
-          1981
+          2268
           -
-          2025
+          2290
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getStyleClass
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizVBox.getStyleClass
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          2379
+        </td>
+        <td>
+          2349
+          -
+          2393
         </td>
         <td>
           Apply
@@ -1054,15 +1355,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          82
         </td>
         <td>
-          1892
+          2380
         </td>
         <td>
-          2034
+          2402
           -
-          2065
+          2433
         </td>
         <td>
           Apply
@@ -1078,15 +1379,15 @@
         </td>
       </tr><tr>
         <td>
-          69
+          82
         </td>
         <td>
-          1893
+          2381
         </td>
         <td>
-          2034
+          2402
           -
-          2091
+          2459
         </td>
         <td>
           Apply
@@ -1102,15 +1403,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          83
         </td>
         <td>
-          1895
+          2383
         </td>
         <td>
-          2100
+          2468
           -
-          2146
+          2514
         </td>
         <td>
           Apply
@@ -1126,15 +1427,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          83
         </td>
         <td>
-          1894
+          2382
         </td>
         <td>
-          2100
+          2468
           -
-          2120
+          2488
         </td>
         <td>
           Apply
@@ -1150,15 +1451,15 @@
         </td>
       </tr><tr>
         <td>
-          71
+          84
         </td>
         <td>
-          1902
+          2391
         </td>
         <td>
-          2175
+          2543
           -
-          2402
+          2785
         </td>
         <td>
           Apply
@@ -1171,73 +1472,22 @@
         </td>
         <td style="background: #F0ADAD">
           Label(
-          s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
+          s&quot;(${Vocabulary.POINTS}: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
             getQuizDescriptionLabel(quizAnswered) +
             s&quot;- ${quizAnswered.quizInGame.course.courseId.courseName}&quot;
         )
         </td>
       </tr><tr>
         <td>
-          72
+          85
         </td>
         <td>
-          1901
+          2385
         </td>
         <td>
-          2192
+          2560
           -
-          2392
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          +
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
-            getQuizDescriptionLabel(quizAnswered) +
-            s&quot;- ${quizAnswered.quizInGame.course.courseId.courseName}&quot;
-        </td>
-      </tr><tr>
-        <td>
-          72
-        </td>
-        <td>
-          1898
-        </td>
-        <td>
-          2192
-          -
-          2319
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          +
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
-            getQuizDescriptionLabel(quizAnswered)
-        </td>
-      </tr><tr>
-        <td>
-          72
-        </td>
-        <td>
-          1896
-        </td>
-        <td>
-          2192
-          -
-          2267
+          2650
         </td>
         <td>
           Apply
@@ -1249,19 +1499,94 @@
           
         </td>
         <td style="background: #F0ADAD">
-          s&quot;(Punti: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot;
+          s&quot;(${Vocabulary.POINTS}: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot;
         </td>
       </tr><tr>
         <td>
-          73
+          85
         </td>
         <td>
-          1897
+          2390
         </td>
         <td>
-          2282
+          2560
           -
-          2319
+          2775
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;(${Vocabulary.POINTS}: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
+            getQuizDescriptionLabel(quizAnswered) +
+            s&quot;- ${quizAnswered.quizInGame.course.courseId.courseName}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          2384
+        </td>
+        <td>
+          2565
+          -
+          2582
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          POINTS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.POINTS
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          2387
+        </td>
+        <td>
+          2560
+          -
+          2702
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;(${Vocabulary.POINTS}: ${quizAnswered.score}/${quizAnswered.quizInGame.quiz.maxScore}) &quot; +
+            getQuizDescriptionLabel(quizAnswered)
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          2386
+        </td>
+        <td>
+          2665
+          -
+          2702
         </td>
         <td>
           Apply
@@ -1277,15 +1602,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          87
         </td>
         <td>
-          1900
+          2389
         </td>
         <td>
-          2334
+          2717
           -
-          2392
+          2775
         </td>
         <td>
           Apply
@@ -1301,15 +1626,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          87
         </td>
         <td>
-          1899
+          2388
         </td>
         <td>
-          2340
+          2723
           -
-          2379
+          2762
         </td>
         <td>
           Select
@@ -1325,39 +1650,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          89
         </td>
         <td>
-          1904
+          2392
         </td>
         <td>
-          2412
+          2795
           -
-          2460
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          setAll
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizDescLabel.getStyleClass.setAll(&quot;label-dark&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          76
-        </td>
-        <td>
-          1903
-        </td>
-        <td>
-          2412
-          -
-          2439
+          2822
         </td>
         <td>
           Apply
@@ -1373,39 +1674,39 @@
         </td>
       </tr><tr>
         <td>
-          77
+          89
         </td>
         <td>
-          1906
+          2393
         </td>
         <td>
-          2469
+          2795
           -
-          2511
+          2843
         </td>
         <td>
           Apply
         </td>
         <td>
-          addAll
+          setAll
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          quizVBox.getChildren.addAll(quizDescLabel)
+          quizDescLabel.getStyleClass.setAll(&quot;label-dark&quot;)
         </td>
       </tr><tr>
         <td>
-          77
+          90
         </td>
         <td>
-          1905
+          2394
         </td>
         <td>
-          2469
+          2852
           -
-          2489
+          2872
         </td>
         <td>
           Apply
@@ -1421,15 +1722,39 @@
         </td>
       </tr><tr>
         <td>
-          78
+          90
         </td>
         <td>
-          1922
+          2395
         </td>
         <td>
-          2520
+          2852
           -
-          3032
+          2894
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addAll
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizVBox.getChildren.addAll(quizDescLabel)
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          2411
+        </td>
+        <td>
+          2903
+          -
+          3415
         </td>
         <td>
           Apply
@@ -1451,15 +1776,15 @@
         </td>
       </tr><tr>
         <td>
-          79
+          92
         </td>
         <td>
-          1911
+          2400
         </td>
         <td>
-          2534
+          2917
           -
-          2738
+          3121
         </td>
         <td>
           Apply
@@ -1476,63 +1801,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          93
         </td>
         <td>
-          1910
+          2398
         </td>
         <td>
-          2731
+          3065
           -
-          2736
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          false
-        </td>
-      </tr><tr>
-        <td>
-          80
-        </td>
-        <td>
-          1907
-        </td>
-        <td>
-          2641
-          -
-          2676
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          isDefined
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizAnswered.answerPlayer.isDefined
-        </td>
-      </tr><tr>
-        <td>
-          80
-        </td>
-        <td>
-          1909
-        </td>
-        <td>
-          2682
-          -
-          2725
+          3108
         </td>
         <td>
           Apply
@@ -1548,15 +1825,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          93
         </td>
         <td>
-          1908
+          2397
         </td>
         <td>
-          2682
+          3065
           -
-          2711
+          3094
         </td>
         <td>
           Select
@@ -1572,39 +1849,63 @@
         </td>
       </tr><tr>
         <td>
-          82
+          93
         </td>
         <td>
-          1913
+          2399
         </td>
         <td>
-          2782
+          3114
           -
-          2810
+          3119
         </td>
         <td>
-          Apply
+          Literal
         </td>
         <td>
-          &lt;init&gt;
+          &lt;none&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          Label(s&quot;${answerQuiz.text}&quot;)
+          false
         </td>
       </tr><tr>
         <td>
-          82
+          93
         </td>
         <td>
-          1912
+          2396
         </td>
         <td>
-          2788
+          3024
           -
-          2809
+          3059
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isDefined
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizAnswered.answerPlayer.isDefined
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          2401
+        </td>
+        <td>
+          3171
+          -
+          3192
         </td>
         <td>
           Apply
@@ -1620,87 +1921,39 @@
         </td>
       </tr><tr>
         <td>
-          83
+          95
         </td>
         <td>
-          1919
+          2402
         </td>
         <td>
-          2917
+          3165
           -
-          2976
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizAnswerLabel.getStyleClass.setAll(&quot;review-wrong-answer&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          83
-        </td>
-        <td>
-          1916
-        </td>
-        <td>
-          2850
-          -
-          2911
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          quizAnswerLabel.getStyleClass.setAll(&quot;review-correct-answer&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          83
-        </td>
-        <td>
-          1915
-        </td>
-        <td>
-          2850
-          -
-          2911
+          3193
         </td>
         <td>
           Apply
         </td>
         <td>
-          setAll
+          &lt;init&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          quizAnswerLabel.getStyleClass.setAll(&quot;review-correct-answer&quot;)
+          Label(s&quot;${answerQuiz.text}&quot;)
         </td>
       </tr><tr>
         <td>
-          83
+          96
         </td>
         <td>
-          1918
+          2407
         </td>
         <td>
-          2917
+          3300
           -
-          2976
+          3359
         </td>
         <td>
           Apply
@@ -1716,15 +1969,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          96
         </td>
         <td>
-          1914
+          2403
         </td>
         <td>
-          2850
+          3233
           -
-          2879
+          3262
         </td>
         <td>
           Apply
@@ -1740,15 +1993,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          96
         </td>
         <td>
-          1917
+          2406
         </td>
         <td>
-          2917
+          3300
           -
-          2946
+          3329
         </td>
         <td>
           Apply
@@ -1764,15 +2017,87 @@
         </td>
       </tr><tr>
         <td>
-          84
+          96
         </td>
         <td>
-          1921
+          2408
         </td>
         <td>
-          2987
+          3300
           -
-          3031
+          3359
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizAnswerLabel.getStyleClass.setAll(&quot;review-wrong-answer&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          2405
+        </td>
+        <td>
+          3233
+          -
+          3294
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizAnswerLabel.getStyleClass.setAll(&quot;review-correct-answer&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          2404
+        </td>
+        <td>
+          3233
+          -
+          3294
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setAll
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizAnswerLabel.getStyleClass.setAll(&quot;review-correct-answer&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          2410
+        </td>
+        <td>
+          3370
+          -
+          3414
         </td>
         <td>
           Apply
@@ -1788,15 +2113,15 @@
         </td>
       </tr><tr>
         <td>
-          84
+          97
         </td>
         <td>
-          1920
+          2409
         </td>
         <td>
-          2987
+          3370
           -
-          3007
+          3390
         </td>
         <td>
           Apply
@@ -1812,15 +2137,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          98
         </td>
         <td>
-          1923
+          2412
         </td>
         <td>
-          3041
+          3424
           -
-          3072
+          3455
         </td>
         <td>
           Apply
@@ -1836,15 +2161,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          99
         </td>
         <td>
-          1925
+          2414
         </td>
         <td>
-          3082
+          3465
           -
-          3127
+          3510
         </td>
         <td>
           Apply
@@ -1860,15 +2185,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          99
         </td>
         <td>
-          1924
+          2413
         </td>
         <td>
-          3082
+          3465
           -
-          3110
+          3493
         </td>
         <td>
           Apply
@@ -1884,15 +2209,15 @@
         </td>
       </tr><tr>
         <td>
-          89
+          102
         </td>
         <td>
-          1937
+          2427
         </td>
         <td>
-          3139
+          3522
           -
-          3174
+          3557
         </td>
         <td>
           DefDef
@@ -1908,15 +2233,15 @@
         </td>
       </tr><tr>
         <td>
-          90
+          103
         </td>
         <td>
-          1930
+          2419
         </td>
         <td>
-          3228
+          3611
           -
-          3289
+          3672
         </td>
         <td>
           Apply
@@ -1932,15 +2257,15 @@
         </td>
       </tr><tr>
         <td>
-          90
+          103
         </td>
         <td>
-          1929
+          2418
         </td>
         <td>
-          3228
+          3611
           -
-          3272
+          3655
         </td>
         <td>
           Apply
@@ -1956,39 +2281,39 @@
         </td>
       </tr><tr>
         <td>
-          92
+          105
         </td>
         <td>
-          1934
+          2425
         </td>
         <td>
-          3310
+          3693
           -
-          3366
+          3762
         </td>
         <td>
-          Apply
+          Block
         </td>
         <td>
-          +
+          &lt;none&gt;
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          s&quot;- (Tempo: &quot;+ f&quot;${quizAnswered.timeToAnswer}%.2f&quot; +&quot;) &quot;
+          s&quot;- (${Vocabulary.TIME}: &quot;+ f&quot;${quizAnswered.timeToAnswer}%.2f&quot; +&quot;) &quot;
         </td>
       </tr><tr>
         <td>
-          92
+          105
         </td>
         <td>
-          1931
+          2421
         </td>
         <td>
-          3310
+          3693
           -
-          3323
+          3719
         </td>
         <td>
           Apply
@@ -2000,19 +2325,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          s&quot;- (Tempo: &quot;
+          s&quot;- (${Vocabulary.TIME}: &quot;
         </td>
       </tr><tr>
         <td>
-          92
+          105
         </td>
         <td>
-          1933
+          2424
         </td>
         <td>
-          3310
+          3693
           -
-          3360
+          3762
         </td>
         <td>
           Apply
@@ -2024,19 +2349,67 @@
           
         </td>
         <td style="background: #F0ADAD">
-          s&quot;- (Tempo: &quot;+ f&quot;${quizAnswered.timeToAnswer}%.2f&quot;
+          s&quot;- (${Vocabulary.TIME}: &quot;+ f&quot;${quizAnswered.timeToAnswer}%.2f&quot; +&quot;) &quot;
         </td>
       </tr><tr>
         <td>
-          92
+          105
         </td>
         <td>
-          1932
+          2423
         </td>
         <td>
-          3325
+          3693
           -
-          3360
+          3756
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;- (${Vocabulary.TIME}: &quot;+ f&quot;${quizAnswered.timeToAnswer}%.2f&quot;
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          2420
+        </td>
+        <td>
+          3700
+          -
+          3715
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          TIME
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.TIME
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          2422
+        </td>
+        <td>
+          3721
+          -
+          3756
         </td>
         <td>
           Apply
@@ -2052,39 +2425,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          107
         </td>
         <td>
-          1935
+          2426
         </td>
         <td>
-          3310
+          3778
           -
-          3366
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          s&quot;- (Tempo: &quot;+ f&quot;${quizAnswered.timeToAnswer}%.2f&quot; +&quot;) &quot;
-        </td>
-      </tr><tr>
-        <td>
-          94
-        </td>
-        <td>
-          1936
-        </td>
-        <td>
-          3382
-          -
-          3384
+          3780
         </td>
         <td>
           Literal

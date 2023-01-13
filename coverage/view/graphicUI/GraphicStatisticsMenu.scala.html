@@ -42,150 +42,211 @@
 </span>18 <span style=''>import view.View.{GraphicView, sendEvent}
 </span>19 <span style=''>import view.updates.ViewUpdate
 </span>20 <span style=''>import view.StatisticsMenuView.*
-</span>21 <span style=''>import scala.util.Try
+</span>21 <span style=''>import view.Vocabulary
 </span>22 <span style=''>
-</span>23 <span style=''>object GraphicStatisticsMenu
+</span>23 <span style=''>import scala.util.Try
 </span>24 <span style=''>
-</span>25 <span style=''>/** Statistics menu graphic interface */
-</span>26 <span style=''>class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
-</span>27 <span style=''>
-</span>28 <span style=''>  val toggleCourseInStatsGroup: ToggleGroup = </span><span style='background: #F0ADAD'>ToggleGroup()</span><span style=''>
+</span>25 <span style=''>object GraphicStatisticsMenu
+</span>26 <span style=''>
+</span>27 <span style=''>/** Statistics menu graphic interface */
+</span>28 <span style=''>class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
 </span>29 <span style=''>
-</span>30 <span style=''>  val toggleQuizGroup: ToggleGroup = </span><span style='background: #F0ADAD'>ToggleGroup()</span><span style=''>
+</span>30 <span style=''>  val toggleCourseInStatsGroup: ToggleGroup = </span><span style='background: #F0ADAD'>ToggleGroup()</span><span style=''>
 </span>31 <span style=''>
-</span>32 <span style=''>  val yesButton = </span><span style='background: #F0ADAD'>ButtonType(&quot;Si&quot;, ButtonBar.ButtonData.YES)</span><span style=''>;
+</span>32 <span style=''>  val toggleQuizGroup: ToggleGroup = </span><span style='background: #F0ADAD'>ToggleGroup()</span><span style=''>
 </span>33 <span style=''>
-</span>34 <span style=''>  val cancelButton = </span><span style='background: #F0ADAD'>ButtonType(&quot;Annulla&quot;, ButtonBar.ButtonData.CANCEL_CLOSE)</span><span style=''>;
+</span>34 <span style=''>  val yesButton = </span><span style='background: #F0ADAD'>ButtonType(Vocabulary.YES, ButtonBar.ButtonData.YES)</span><span style=''>;
 </span>35 <span style=''>
-</span>36 <span style=''>  @FXML
-</span>37 <span style=''>  var coursesVBox: VBox = _
-</span>38 <span style=''>
-</span>39 <span style=''>  @FXML
-</span>40 <span style=''>  var quizVBox: VBox = _
-</span>41 <span style=''>
-</span>42 <span style=''>  @FXML
-</span>43 <span style=''>  var textLabel: Label = _
-</span>44 <span style=''>
-</span>45 <span style=''>  @FXML
-</span>46 <span style=''>  var backButton: Button = _
-</span>47 <span style=''>
-</span>48 <span style=''>  @FXML
-</span>49 <span style=''>  var resetStatsButton: Button = _
-</span>50 <span style=''>
-</span>51 <span style=''>  @FXML
-</span>52 <span style=''>  var totalScoreLabel: Label = _
-</span>53 <span style=''>
-</span>54 <span style=''>  @FXML
-</span>55 <span style=''>  var totalAnsweredQuestionsLabel: Label = _
-</span>56 <span style=''>
-</span>57 <span style=''>  @FXML
-</span>58 <span style=''>  var totalCorrectAnswersLabel: Label = _
-</span>59 <span style=''>
-</span>60 <span style=''>  @FXML
-</span>61 <span style=''>  var totalAnswerPrecisionLabel: Label = _
-</span>62 <span style=''>
-</span>63 <span style=''>  @FXML
-</span>64 <span style=''>  var totalAverageTimeAnswerLabel: Label = _
-</span>65 <span style=''>
-</span>66 <span style=''>  @FXML
-</span>67 <span style=''>  var globalTotalScoreLabel: Label = _
-</span>68 <span style=''>
-</span>69 <span style=''>  @FXML
-</span>70 <span style=''>  var globalTotalAnsweredQuestionsLabel: Label = _
-</span>71 <span style=''>
-</span>72 <span style=''>  @FXML
-</span>73 <span style=''>  var globalTotalCorrectAnswersLabel: Label = _
-</span>74 <span style=''>
-</span>75 <span style=''>  @FXML
-</span>76 <span style=''>  var globalTotalAnswerPrecisionLabel: Label = _
-</span>77 <span style=''>
-</span>78 <span style=''>  @FXML
-</span>79 <span style=''>  var globalTotalAverageTimeAnswerLabel: Label = _
-</span>80 <span style=''>
-</span>81 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>82 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>: Unit =
-</span>83 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
-</span>84 <span style=''>
-</span>85 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>86 <span style=''></span><span style='background: #F0ADAD'>  def resetStatsButtonClicked</span><span style=''>: Unit =
-</span>87 <span style=''>    val alert: Alert = </span><span style='background: #F0ADAD'>Alert(AlertType.CONFIRMATION, &quot;&quot;, yesButton, cancelButton)</span><span style=''>
-</span>88 <span style=''>    </span><span style='background: #F0ADAD'>alert.setTitle(&quot;Reset statistiche&quot;)</span><span style=''>
-</span>89 <span style=''>    </span><span style='background: #F0ADAD'>alert.setHeaderText(&quot;Sei sicuro di voler azzerare tutte le statistiche?&quot;)</span><span style=''>
-</span>90 <span style=''>    </span><span style='background: #F0ADAD'>alert.showAndWait()</span><span style=''>;
-</span>91 <span style=''>    if (</span><span style='background: #F0ADAD'>alert.getResult</span><span style=''> == yesButton) </span><span style='background: #F0ADAD'>{
-</span>92 <span style=''></span><span style='background: #F0ADAD'>      AppController.changePlayerStats(initStats)
-</span>93 <span style=''></span><span style='background: #F0ADAD'>      ExportHandler.exportDataToPersonalDirectory(initStats)
-</span>94 <span style=''></span><span style='background: #F0ADAD'>      sendEvent(Back)
-</span>95 <span style=''></span><span style='background: #F0ADAD'>    }</span><span style=''>
-</span>96 <span style=''>
-</span>97 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;statistics_menu.fxml&quot;)</span><span style=''>
-</span>98 <span style=''>
-</span>99 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
-</span>100 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
-</span>101 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater { () =&gt;
-</span>102 <span style=''></span><span style='background: #F0ADAD'>        val p = AppController.session.playerStats
-</span>103 <span style=''></span><span style='background: #F0ADAD'>        globalTotalScoreLabel.setText(p.totalScore.toString)
-</span>104 <span style=''></span><span style='background: #F0ADAD'>        globalTotalAnsweredQuestionsLabel.setText(p.totalAnsweredQuestions.toString)
-</span>105 <span style=''></span><span style='background: #F0ADAD'>        globalTotalCorrectAnswersLabel.setText(p.totalCorrectAnswers.toString)
-</span>106 <span style=''></span><span style='background: #F0ADAD'>        globalTotalAnswerPrecisionLabel.setText(p.totalAnswerPrecision.toString + &quot; %&quot;)
-</span>107 <span style=''></span><span style='background: #F0ADAD'>        globalTotalAverageTimeAnswerLabel.setText(p.totalAverageTimeAnswer.toString + &quot; s&quot;)
-</span>108 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
-</span>109 <span style=''>    </span><span style='background: #F0ADAD'>case CourseInStatsListUpdate(updateParameter)</span><span style=''> =&gt;
-</span>110 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater { () =&gt;
-</span>111 <span style=''></span><span style='background: #F0ADAD'>        coursesVBox.getChildren.clear()
-</span>112 <span style=''></span><span style='background: #F0ADAD'>        updateParameter.get.foreach(courseInStats =&gt;
-</span>113 <span style=''></span><span style='background: #F0ADAD'>          val radioButton = RadioButton(s&quot;${courseInStats.course.courseId.courseName} (${courseInStats.quizInStatsList.size} quiz)&quot;);
-</span>114 <span style=''></span><span style='background: #F0ADAD'>          radioButton.setToggleGroup(toggleCourseInStatsGroup);
-</span>115 <span style=''></span><span style='background: #F0ADAD'>          radioButton.getStyleClass.add(&quot;label-dark&quot;);
-</span>116 <span style=''></span><span style='background: #F0ADAD'>          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
-</span>117 <span style=''></span><span style='background: #F0ADAD'>            val playerStats = updatePlayerStats(List(courseInStats))
-</span>118 <span style=''></span><span style='background: #F0ADAD'>            setTextLabels(
-</span>119 <span style=''></span><span style='background: #F0ADAD'>              courseInStats.course.courseId.courseName,
-</span>120 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalScore,
-</span>121 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalAnsweredQuestions,
-</span>122 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalCorrectAnswers,
-</span>123 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalAnswerPrecision,
-</span>124 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalAverageTimeAnswer
-</span>125 <span style=''></span><span style='background: #F0ADAD'>            )
-</span>126 <span style=''></span><span style='background: #F0ADAD'>            import controller.StatisticsMenuController.SelectCourseAction
-</span>127 <span style=''></span><span style='background: #F0ADAD'>            sendEvent(SelectCourseAction(Option(courseInStats)));
-</span>128 <span style=''></span><span style='background: #F0ADAD'>          );
-</span>129 <span style=''></span><span style='background: #F0ADAD'>          coursesVBox.getChildren.addAll(radioButton)
-</span>130 <span style=''></span><span style='background: #F0ADAD'>        )
-</span>131 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
-</span>132 <span style=''>    </span><span style='background: #F0ADAD'>case QuizInStatsListUpdate(updateParameter)</span><span style=''> =&gt;
-</span>133 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater { () =&gt;
-</span>134 <span style=''></span><span style='background: #F0ADAD'>        quizVBox.getChildren.clear()
-</span>135 <span style=''></span><span style='background: #F0ADAD'>        updateParameter.get.foreach(quizInStats =&gt;
-</span>136 <span style=''></span><span style='background: #F0ADAD'>          val question = QuizInStats.getQuizQuestionById(quizInStats.quizId, AppController.session.savedCourses)
-</span>137 <span style=''></span><span style='background: #F0ADAD'>          val radioButton = RadioButton(question);
-</span>138 <span style=''></span><span style='background: #F0ADAD'>          radioButton.setToggleGroup(toggleQuizGroup);
-</span>139 <span style=''></span><span style='background: #F0ADAD'>          radioButton.getStyleClass.add(&quot;label-dark&quot;);
-</span>140 <span style=''></span><span style='background: #F0ADAD'>          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
-</span>141 <span style=''></span><span style='background: #F0ADAD'>            setTextLabels(
-</span>142 <span style=''></span><span style='background: #F0ADAD'>              question,
-</span>143 <span style=''></span><span style='background: #F0ADAD'>              quizInStats.totalScore,
-</span>144 <span style=''></span><span style='background: #F0ADAD'>              quizInStats.totalSeen,
-</span>145 <span style=''></span><span style='background: #F0ADAD'>              quizInStats.totalRightAnswers,
-</span>146 <span style=''></span><span style='background: #F0ADAD'>              calculateTotalAnswerPrecision(quizInStats.totalSeen, quizInStats.totalRightAnswers),
-</span>147 <span style=''></span><span style='background: #F0ADAD'>              quizInStats.averageTimeAnswer
-</span>148 <span style=''></span><span style='background: #F0ADAD'>            )
-</span>149 <span style=''></span><span style='background: #F0ADAD'>            import controller.StatisticsMenuController.SelectQuizAction
-</span>150 <span style=''></span><span style='background: #F0ADAD'>            sendEvent(SelectQuizAction(Option(quizInStats)));
-</span>151 <span style=''></span><span style='background: #F0ADAD'>          );
-</span>152 <span style=''></span><span style='background: #F0ADAD'>          quizVBox.getChildren.addAll(radioButton)
-</span>153 <span style=''></span><span style='background: #F0ADAD'>        )
-</span>154 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
-</span>155 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
-</span>156 <span style=''>
-</span>157 <span style=''>  // Set the text of the lables in stats
-</span>158 <span style=''>  </span><span style='background: #F0ADAD'>private def setTextLabels</span><span style=''>(title: String, totalScore: Int, totalAnsweredQuestions: Int, totalCorrectAnswers: Int, totalAnswerPrecision: Int, totalAverageTimeAnswer: Double): Unit =
-</span>159 <span style=''>    </span><span style='background: #F0ADAD'>textLabel.setText(title)</span><span style=''>
-</span>160 <span style=''>    </span><span style='background: #F0ADAD'>totalScoreLabel.setText(totalScore.toString)</span><span style=''>
-</span>161 <span style=''>    </span><span style='background: #F0ADAD'>totalAnsweredQuestionsLabel.setText(totalAnsweredQuestions.toString)</span><span style=''>
-</span>162 <span style=''>    </span><span style='background: #F0ADAD'>totalCorrectAnswersLabel.setText(totalCorrectAnswers.toString)</span><span style=''>
-</span>163 <span style=''>    </span><span style='background: #F0ADAD'>totalAnswerPrecisionLabel.setText(totalAnswerPrecision.toString + &quot; %&quot;)</span><span style=''>
-</span>164 <span style=''>    </span><span style='background: #F0ADAD'>totalAverageTimeAnswerLabel.setText(totalAverageTimeAnswer.toString +&quot; s&quot;)</span><span style=''>
+</span>36 <span style=''>  val cancelButton = </span><span style='background: #F0ADAD'>ButtonType(Vocabulary.CANCEL, ButtonBar.ButtonData.CANCEL_CLOSE)</span><span style=''>;
+</span>37 <span style=''>
+</span>38 <span style=''>  @FXML
+</span>39 <span style=''>  var coursesVBox: VBox = _
+</span>40 <span style=''>
+</span>41 <span style=''>  @FXML
+</span>42 <span style=''>  var quizVBox: VBox = _
+</span>43 <span style=''>
+</span>44 <span style=''>  @FXML
+</span>45 <span style=''>  var backButton: Button = _
+</span>46 <span style=''>
+</span>47 <span style=''>  @FXML
+</span>48 <span style=''>  var menuLabel: Label = _
+</span>49 <span style=''>
+</span>50 <span style=''>  @FXML
+</span>51 <span style=''>  var selectCourseLabel: Label = _
+</span>52 <span style=''>
+</span>53 <span style=''>  @FXML
+</span>54 <span style=''>  var selectQuizLabel: Label = _
+</span>55 <span style=''>
+</span>56 <span style=''>  @FXML
+</span>57 <span style=''>  var textLabel: Label = _
+</span>58 <span style=''>
+</span>59 <span style=''>  @FXML
+</span>60 <span style=''>  var totalScoreTitleLabel: Label = _
+</span>61 <span style=''>
+</span>62 <span style=''>  @FXML
+</span>63 <span style=''>  var totalScoreLabel: Label = _
+</span>64 <span style=''>
+</span>65 <span style=''>  @FXML
+</span>66 <span style=''>  var quizAnsweredLabel: Label = _
+</span>67 <span style=''>
+</span>68 <span style=''>  @FXML
+</span>69 <span style=''>  var totalAnsweredQuestionsLabel: Label = _
+</span>70 <span style=''>
+</span>71 <span style=''>  @FXML
+</span>72 <span style=''>  var correctAnswersLabel: Label = _
+</span>73 <span style=''>
+</span>74 <span style=''>  @FXML
+</span>75 <span style=''>  var totalCorrectAnswersLabel: Label = _
+</span>76 <span style=''>
+</span>77 <span style=''>  @FXML
+</span>78 <span style=''>  var precisionLabel: Label = _
+</span>79 <span style=''>
+</span>80 <span style=''>  @FXML
+</span>81 <span style=''>  var totalAnswerPrecisionLabel: Label = _
+</span>82 <span style=''>
+</span>83 <span style=''>  @FXML
+</span>84 <span style=''>  var averageTimeAnswerLabel: Label = _
+</span>85 <span style=''>
+</span>86 <span style=''>  @FXML
+</span>87 <span style=''>  var totalAverageTimeAnswerLabel: Label = _
+</span>88 <span style=''>
+</span>89 <span style=''>  @FXML
+</span>90 <span style=''>  var textLabel2: Label = _
+</span>91 <span style=''>
+</span>92 <span style=''>  @FXML
+</span>93 <span style=''>  var globalTotalScoreTitleLabel: Label = _
+</span>94 <span style=''>
+</span>95 <span style=''>  @FXML
+</span>96 <span style=''>  var globalTotalScoreLabel: Label = _
+</span>97 <span style=''>
+</span>98 <span style=''>  @FXML
+</span>99 <span style=''>  var globalTotalAnsweredQuestionsTitleLabel: Label = _
+</span>100 <span style=''>
+</span>101 <span style=''>  @FXML
+</span>102 <span style=''>  var globalTotalAnsweredQuestionsLabel: Label = _
+</span>103 <span style=''>
+</span>104 <span style=''>  @FXML
+</span>105 <span style=''>  var globalTotalCorrectAnswersTitleLabel: Label = _
+</span>106 <span style=''>
+</span>107 <span style=''>  @FXML
+</span>108 <span style=''>  var globalTotalCorrectAnswersLabel: Label = _
+</span>109 <span style=''>
+</span>110 <span style=''>  @FXML
+</span>111 <span style=''>  var globalTotalAnswerPrecisionTitleLabel:Label = _
+</span>112 <span style=''>
+</span>113 <span style=''>  @FXML
+</span>114 <span style=''>  var globalTotalAnswerPrecisionLabel: Label = _
+</span>115 <span style=''>
+</span>116 <span style=''>  @FXML
+</span>117 <span style=''>  var globalTotalAverageTimeAnswerTitleLabel: Label = _
+</span>118 <span style=''>
+</span>119 <span style=''>  @FXML
+</span>120 <span style=''>  var globalTotalAverageTimeAnswerLabel: Label = _
+</span>121 <span style=''>
+</span>122 <span style=''>  @FXML
+</span>123 <span style=''>  var resetStatsButton: Button = _
+</span>124 <span style=''>
+</span>125 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>126 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>: Unit =
+</span>127 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
+</span>128 <span style=''>
+</span>129 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>130 <span style=''></span><span style='background: #F0ADAD'>  def resetStatsButtonClicked</span><span style=''>: Unit =
+</span>131 <span style=''>    val alert: Alert = </span><span style='background: #F0ADAD'>Alert(AlertType.CONFIRMATION, &quot;&quot;, yesButton, cancelButton)</span><span style=''>
+</span>132 <span style=''>    </span><span style='background: #F0ADAD'>alert.setTitle(&quot;Reset statistiche&quot;)</span><span style=''>
+</span>133 <span style=''>    </span><span style='background: #F0ADAD'>alert.setHeaderText(&quot;Sei sicuro di voler azzerare tutte le statistiche?&quot;)</span><span style=''>
+</span>134 <span style=''>    </span><span style='background: #F0ADAD'>alert.showAndWait()</span><span style=''>;
+</span>135 <span style=''>    if (</span><span style='background: #F0ADAD'>alert.getResult</span><span style=''> == yesButton) </span><span style='background: #F0ADAD'>{
+</span>136 <span style=''></span><span style='background: #F0ADAD'>      AppController.changePlayerStats(initStats)
+</span>137 <span style=''></span><span style='background: #F0ADAD'>      ExportHandler.exportDataToPersonalDirectory(initStats)
+</span>138 <span style=''></span><span style='background: #F0ADAD'>      sendEvent(Back)
+</span>139 <span style=''></span><span style='background: #F0ADAD'>    }</span><span style=''>
+</span>140 <span style=''>
+</span>141 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;statistics_menu.fxml&quot;)</span><span style=''>
+</span>142 <span style=''>  </span><span style='background: #F0ADAD'>backButton.setText(Vocabulary.BACK)</span><span style=''>
+</span>143 <span style=''>  </span><span style='background: #F0ADAD'>menuLabel.setText(Vocabulary.STATISTICS)</span><span style=''>
+</span>144 <span style=''>  </span><span style='background: #F0ADAD'>selectCourseLabel.setText(Vocabulary.SELECT_COURSE)</span><span style=''>
+</span>145 <span style=''>  </span><span style='background: #F0ADAD'>selectQuizLabel.setText(Vocabulary.SELECT_QUIZ)</span><span style=''>
+</span>146 <span style=''>  </span><span style='background: #F0ADAD'>textLabel.setText(Vocabulary.QUIZ_STATS)</span><span style=''>
+</span>147 <span style=''>  </span><span style='background: #F0ADAD'>totalScoreTitleLabel.setText(Vocabulary.POINTS)</span><span style=''>
+</span>148 <span style=''>  </span><span style='background: #F0ADAD'>quizAnsweredLabel.setText(Vocabulary.QUIZ_ANSWERED)</span><span style=''>
+</span>149 <span style=''>  </span><span style='background: #F0ADAD'>correctAnswersLabel.setText(Vocabulary.CORRECT_ANSWERS)</span><span style=''>
+</span>150 <span style=''>  </span><span style='background: #F0ADAD'>precisionLabel.setText(Vocabulary.PRECISION)</span><span style=''>
+</span>151 <span style=''>  </span><span style='background: #F0ADAD'>averageTimeAnswerLabel.setText(Vocabulary.AVERAGE_TIME_ANSWER)</span><span style=''>
+</span>152 <span style=''>  </span><span style='background: #F0ADAD'>textLabel2.setText(Vocabulary.GLOBAL_STATS)</span><span style=''>
+</span>153 <span style=''>  </span><span style='background: #F0ADAD'>globalTotalScoreTitleLabel.setText(Vocabulary.POINTS)</span><span style=''>
+</span>154 <span style=''>  </span><span style='background: #F0ADAD'>globalTotalAnsweredQuestionsTitleLabel.setText(Vocabulary.QUIZ_ANSWERED)</span><span style=''>
+</span>155 <span style=''>  </span><span style='background: #F0ADAD'>globalTotalCorrectAnswersTitleLabel.setText(Vocabulary.CORRECT_ANSWERS)</span><span style=''>
+</span>156 <span style=''>  </span><span style='background: #F0ADAD'>globalTotalAnswerPrecisionTitleLabel.setText(Vocabulary.PRECISION)</span><span style=''>
+</span>157 <span style=''>  </span><span style='background: #F0ADAD'>globalTotalAverageTimeAnswerTitleLabel.setText(Vocabulary.AVERAGE_TIME_ANSWER)</span><span style=''>
+</span>158 <span style=''>  </span><span style='background: #F0ADAD'>resetStatsButton.setText(Vocabulary.RESET_STATS)</span><span style=''>
+</span>159 <span style=''>
+</span>160 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>161 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
+</span>162 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater { () =&gt;
+</span>163 <span style=''></span><span style='background: #F0ADAD'>        val p = AppController.session.playerStats
+</span>164 <span style=''></span><span style='background: #F0ADAD'>        globalTotalScoreLabel.setText(p.totalScore.toString)
+</span>165 <span style=''></span><span style='background: #F0ADAD'>        globalTotalAnsweredQuestionsLabel.setText(p.totalAnsweredQuestions.toString)
+</span>166 <span style=''></span><span style='background: #F0ADAD'>        globalTotalCorrectAnswersLabel.setText(p.totalCorrectAnswers.toString)
+</span>167 <span style=''></span><span style='background: #F0ADAD'>        globalTotalAnswerPrecisionLabel.setText(p.totalAnswerPrecision.toString + &quot; %&quot;)
+</span>168 <span style=''></span><span style='background: #F0ADAD'>        globalTotalAverageTimeAnswerLabel.setText(p.totalAverageTimeAnswer.toString + &quot; s&quot;)
+</span>169 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
+</span>170 <span style=''>    </span><span style='background: #F0ADAD'>case CourseInStatsListUpdate(updateParameter)</span><span style=''> =&gt;
+</span>171 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater { () =&gt;
+</span>172 <span style=''></span><span style='background: #F0ADAD'>        coursesVBox.getChildren.clear()
+</span>173 <span style=''></span><span style='background: #F0ADAD'>        updateParameter.get.foreach(courseInStats =&gt;
+</span>174 <span style=''></span><span style='background: #F0ADAD'>          val radioButton = RadioButton(s&quot;${courseInStats.course.courseId.courseName} (${courseInStats.quizInStatsList.size} quiz)&quot;);
+</span>175 <span style=''></span><span style='background: #F0ADAD'>          radioButton.setToggleGroup(toggleCourseInStatsGroup);
+</span>176 <span style=''></span><span style='background: #F0ADAD'>          radioButton.getStyleClass.add(&quot;label-dark&quot;);
+</span>177 <span style=''></span><span style='background: #F0ADAD'>          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+</span>178 <span style=''></span><span style='background: #F0ADAD'>            val playerStats = updatePlayerStats(List(courseInStats))
+</span>179 <span style=''></span><span style='background: #F0ADAD'>            setTextLabels(
+</span>180 <span style=''></span><span style='background: #F0ADAD'>              courseInStats.course.courseId.courseName,
+</span>181 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalScore,
+</span>182 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalAnsweredQuestions,
+</span>183 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalCorrectAnswers,
+</span>184 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalAnswerPrecision,
+</span>185 <span style=''></span><span style='background: #F0ADAD'>              playerStats.totalAverageTimeAnswer
+</span>186 <span style=''></span><span style='background: #F0ADAD'>            )
+</span>187 <span style=''></span><span style='background: #F0ADAD'>            import controller.StatisticsMenuController.SelectCourseAction
+</span>188 <span style=''></span><span style='background: #F0ADAD'>            sendEvent(SelectCourseAction(Option(courseInStats)));
+</span>189 <span style=''></span><span style='background: #F0ADAD'>          );
+</span>190 <span style=''></span><span style='background: #F0ADAD'>          coursesVBox.getChildren.addAll(radioButton)
+</span>191 <span style=''></span><span style='background: #F0ADAD'>        )
+</span>192 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
+</span>193 <span style=''>    </span><span style='background: #F0ADAD'>case QuizInStatsListUpdate(updateParameter)</span><span style=''> =&gt;
+</span>194 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater { () =&gt;
+</span>195 <span style=''></span><span style='background: #F0ADAD'>        quizVBox.getChildren.clear()
+</span>196 <span style=''></span><span style='background: #F0ADAD'>        updateParameter.get.foreach(quizInStats =&gt;
+</span>197 <span style=''></span><span style='background: #F0ADAD'>          val question = QuizInStats.getQuizQuestionById(quizInStats.quizId, AppController.session.savedCourses)
+</span>198 <span style=''></span><span style='background: #F0ADAD'>          val radioButton = RadioButton(question);
+</span>199 <span style=''></span><span style='background: #F0ADAD'>          radioButton.setToggleGroup(toggleQuizGroup);
+</span>200 <span style=''></span><span style='background: #F0ADAD'>          radioButton.getStyleClass.add(&quot;label-dark&quot;);
+</span>201 <span style=''></span><span style='background: #F0ADAD'>          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+</span>202 <span style=''></span><span style='background: #F0ADAD'>            setTextLabels(
+</span>203 <span style=''></span><span style='background: #F0ADAD'>              question,
+</span>204 <span style=''></span><span style='background: #F0ADAD'>              quizInStats.totalScore,
+</span>205 <span style=''></span><span style='background: #F0ADAD'>              quizInStats.totalSeen,
+</span>206 <span style=''></span><span style='background: #F0ADAD'>              quizInStats.totalRightAnswers,
+</span>207 <span style=''></span><span style='background: #F0ADAD'>              calculateTotalAnswerPrecision(quizInStats.totalSeen, quizInStats.totalRightAnswers),
+</span>208 <span style=''></span><span style='background: #F0ADAD'>              quizInStats.averageTimeAnswer
+</span>209 <span style=''></span><span style='background: #F0ADAD'>            )
+</span>210 <span style=''></span><span style='background: #F0ADAD'>            import controller.StatisticsMenuController.SelectQuizAction
+</span>211 <span style=''></span><span style='background: #F0ADAD'>            sendEvent(SelectQuizAction(Option(quizInStats)));
+</span>212 <span style=''></span><span style='background: #F0ADAD'>          );
+</span>213 <span style=''></span><span style='background: #F0ADAD'>          quizVBox.getChildren.addAll(radioButton)
+</span>214 <span style=''></span><span style='background: #F0ADAD'>        )
+</span>215 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
+</span>216 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
+</span>217 <span style=''>
+</span>218 <span style=''>  // Set the text of the labels in stats
+</span>219 <span style=''>  </span><span style='background: #F0ADAD'>private def setTextLabels</span><span style=''>(title: String, totalScore: Int, totalAnsweredQuestions: Int, totalCorrectAnswers: Int, totalAnswerPrecision: Int, totalAverageTimeAnswer: Double): Unit =
+</span>220 <span style=''>    </span><span style='background: #F0ADAD'>textLabel.setText(title)</span><span style=''>
+</span>221 <span style=''>    </span><span style='background: #F0ADAD'>totalScoreLabel.setText(totalScore.toString)</span><span style=''>
+</span>222 <span style=''>    </span><span style='background: #F0ADAD'>totalAnsweredQuestionsLabel.setText(totalAnsweredQuestions.toString)</span><span style=''>
+</span>223 <span style=''>    </span><span style='background: #F0ADAD'>totalCorrectAnswersLabel.setText(totalCorrectAnswers.toString)</span><span style=''>
+</span>224 <span style=''>    </span><span style='background: #F0ADAD'>totalAnswerPrecisionLabel.setText(totalAnswerPrecision.toString + &quot; %&quot;)</span><span style=''>
+</span>225 <span style=''>    </span><span style='background: #F0ADAD'>totalAverageTimeAnswerLabel.setText(totalAverageTimeAnswer.toString +&quot; s&quot;)</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -200,39 +261,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          27
-        </td>
-        <td>
-          2154
-        </td>
-        <td>
-          988
-          -
-          1001
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ToggleGroup()
-        </td>
-      </tr><tr>
-        <td>
           29
         </td>
         <td>
-          2155
+          2693
         </td>
         <td>
-          1040
+          1012
           -
-          1053
+          1025
         </td>
         <td>
           Apply
@@ -251,12 +288,12 @@
           31
         </td>
         <td>
-          2156
+          2694
         </td>
         <td>
-          1073
+          1064
           -
-          1115
+          1077
         </td>
         <td>
           Apply
@@ -268,19 +305,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          ButtonType(&quot;Si&quot;, ButtonBar.ButtonData.YES)
+          ToggleGroup()
         </td>
       </tr><tr>
         <td>
           33
         </td>
         <td>
-          2157
+          2696
         </td>
         <td>
-          1139
+          1097
           -
-          1195
+          1149
         </td>
         <td>
           Apply
@@ -292,19 +329,91 @@
           
         </td>
         <td style="background: #F0ADAD">
-          ButtonType(&quot;Annulla&quot;, ButtonBar.ButtonData.CANCEL_CLOSE)
+          ButtonType(Vocabulary.YES, ButtonBar.ButtonData.YES)
         </td>
       </tr><tr>
         <td>
-          81
+          33
         </td>
         <td>
-          2159
+          2695
         </td>
         <td>
-          1925
+          1108
           -
-          1954
+          1122
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          YES
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.YES
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2697
+        </td>
+        <td>
+          1184
+          -
+          1201
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          CANCEL
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.CANCEL
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2698
+        </td>
+        <td>
+          1173
+          -
+          1237
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ButtonType(Vocabulary.CANCEL, ButtonBar.ButtonData.CANCEL_CLOSE)
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          2700
+        </td>
+        <td>
+          2660
+          -
+          2689
         </td>
         <td>
           DefDef
@@ -321,15 +430,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          126
         </td>
         <td>
-          2158
+          2699
         </td>
         <td>
-          1967
+          2702
           -
-          1982
+          2717
         </td>
         <td>
           Apply
@@ -345,15 +454,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          129
         </td>
         <td>
-          2171
+          2712
         </td>
         <td>
-          1986
+          2721
           -
-          2021
+          2756
         </td>
         <td>
           DefDef
@@ -370,15 +479,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          130
         </td>
         <td>
-          2160
+          2701
         </td>
         <td>
-          2053
+          2788
           -
-          2111
+          2846
         </td>
         <td>
           Apply
@@ -394,15 +503,15 @@
         </td>
       </tr><tr>
         <td>
-          87
+          131
         </td>
         <td>
-          2161
+          2702
         </td>
         <td>
-          2116
+          2851
           -
-          2151
+          2886
         </td>
         <td>
           Apply
@@ -418,15 +527,15 @@
         </td>
       </tr><tr>
         <td>
-          88
+          132
         </td>
         <td>
-          2162
+          2703
         </td>
         <td>
-          2156
+          2891
           -
-          2229
+          2964
         </td>
         <td>
           Apply
@@ -442,15 +551,15 @@
         </td>
       </tr><tr>
         <td>
-          89
+          133
         </td>
         <td>
-          2163
+          2704
         </td>
         <td>
-          2234
+          2969
           -
-          2253
+          2988
         </td>
         <td>
           Apply
@@ -466,39 +575,15 @@
         </td>
       </tr><tr>
         <td>
-          90
+          134
         </td>
         <td>
-          2164
+          2711
         </td>
         <td>
-          2263
+          3028
           -
-          2278
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getResult
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          alert.getResult
-        </td>
-      </tr><tr>
-        <td>
-          90
-        </td>
-        <td>
-          2170
-        </td>
-        <td>
-          2293
-          -
-          2432
+          3167
         </td>
         <td>
           Block
@@ -518,15 +603,39 @@
         </td>
       </tr><tr>
         <td>
-          91
+          134
         </td>
         <td>
-          2165
+          2705
         </td>
         <td>
-          2333
+          2998
           -
-          2342
+          3013
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getResult
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          alert.getResult
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          2706
+        </td>
+        <td>
+          3068
+          -
+          3077
         </td>
         <td>
           Ident
@@ -542,15 +651,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          135
         </td>
         <td>
-          2166
+          2707
         </td>
         <td>
-          2301
+          3036
           -
-          2343
+          3078
         </td>
         <td>
           Apply
@@ -566,15 +675,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          136
         </td>
         <td>
-          2167
+          2708
         </td>
         <td>
-          2394
+          3129
           -
-          2403
+          3138
         </td>
         <td>
           Ident
@@ -590,15 +699,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          136
         </td>
         <td>
-          2168
+          2709
         </td>
         <td>
-          2350
+          3085
           -
-          2404
+          3139
         </td>
         <td>
           Apply
@@ -614,15 +723,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          137
         </td>
         <td>
-          2169
+          2710
         </td>
         <td>
-          2411
+          3146
           -
-          2426
+          3161
         </td>
         <td>
           Apply
@@ -638,15 +747,15 @@
         </td>
       </tr><tr>
         <td>
-          96
+          140
         </td>
         <td>
-          2172
+          2713
         </td>
         <td>
-          2436
+          3171
           -
-          2480
+          3215
         </td>
         <td>
           Apply
@@ -662,15 +771,831 @@
         </td>
       </tr><tr>
         <td>
-          98
+          141
         </td>
         <td>
-          2231
+          2715
         </td>
         <td>
-          2484
+          3218
           -
-          2505
+          3253
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          backButton.setText(Vocabulary.BACK)
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          2714
+        </td>
+        <td>
+          3237
+          -
+          3252
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          BACK
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.BACK
+        </td>
+      </tr><tr>
+        <td>
+          142
+        </td>
+        <td>
+          2717
+        </td>
+        <td>
+          3256
+          -
+          3296
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          menuLabel.setText(Vocabulary.STATISTICS)
+        </td>
+      </tr><tr>
+        <td>
+          142
+        </td>
+        <td>
+          2716
+        </td>
+        <td>
+          3274
+          -
+          3295
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          STATISTICS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.STATISTICS
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          2719
+        </td>
+        <td>
+          3299
+          -
+          3350
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          selectCourseLabel.setText(Vocabulary.SELECT_COURSE)
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          2718
+        </td>
+        <td>
+          3325
+          -
+          3349
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          SELECT_COURSE
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.SELECT_COURSE
+        </td>
+      </tr><tr>
+        <td>
+          144
+        </td>
+        <td>
+          2721
+        </td>
+        <td>
+          3353
+          -
+          3400
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          selectQuizLabel.setText(Vocabulary.SELECT_QUIZ)
+        </td>
+      </tr><tr>
+        <td>
+          144
+        </td>
+        <td>
+          2720
+        </td>
+        <td>
+          3377
+          -
+          3399
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          SELECT_QUIZ
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.SELECT_QUIZ
+        </td>
+      </tr><tr>
+        <td>
+          145
+        </td>
+        <td>
+          2723
+        </td>
+        <td>
+          3403
+          -
+          3443
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          textLabel.setText(Vocabulary.QUIZ_STATS)
+        </td>
+      </tr><tr>
+        <td>
+          145
+        </td>
+        <td>
+          2722
+        </td>
+        <td>
+          3421
+          -
+          3442
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          QUIZ_STATS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.QUIZ_STATS
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          2724
+        </td>
+        <td>
+          3475
+          -
+          3492
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          POINTS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.POINTS
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          2725
+        </td>
+        <td>
+          3446
+          -
+          3493
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          totalScoreTitleLabel.setText(Vocabulary.POINTS)
+        </td>
+      </tr><tr>
+        <td>
+          147
+        </td>
+        <td>
+          2726
+        </td>
+        <td>
+          3522
+          -
+          3546
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          QUIZ_ANSWERED
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.QUIZ_ANSWERED
+        </td>
+      </tr><tr>
+        <td>
+          147
+        </td>
+        <td>
+          2727
+        </td>
+        <td>
+          3496
+          -
+          3547
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizAnsweredLabel.setText(Vocabulary.QUIZ_ANSWERED)
+        </td>
+      </tr><tr>
+        <td>
+          148
+        </td>
+        <td>
+          2729
+        </td>
+        <td>
+          3550
+          -
+          3605
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          correctAnswersLabel.setText(Vocabulary.CORRECT_ANSWERS)
+        </td>
+      </tr><tr>
+        <td>
+          148
+        </td>
+        <td>
+          2728
+        </td>
+        <td>
+          3578
+          -
+          3604
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          CORRECT_ANSWERS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.CORRECT_ANSWERS
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2730
+        </td>
+        <td>
+          3631
+          -
+          3651
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          PRECISION
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.PRECISION
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2731
+        </td>
+        <td>
+          3608
+          -
+          3652
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          precisionLabel.setText(Vocabulary.PRECISION)
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          2733
+        </td>
+        <td>
+          3655
+          -
+          3717
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          averageTimeAnswerLabel.setText(Vocabulary.AVERAGE_TIME_ANSWER)
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          2732
+        </td>
+        <td>
+          3686
+          -
+          3716
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          AVERAGE_TIME_ANSWER
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.AVERAGE_TIME_ANSWER
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          2735
+        </td>
+        <td>
+          3720
+          -
+          3763
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          textLabel2.setText(Vocabulary.GLOBAL_STATS)
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          2734
+        </td>
+        <td>
+          3739
+          -
+          3762
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          GLOBAL_STATS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.GLOBAL_STATS
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          2737
+        </td>
+        <td>
+          3766
+          -
+          3819
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          globalTotalScoreTitleLabel.setText(Vocabulary.POINTS)
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          2736
+        </td>
+        <td>
+          3801
+          -
+          3818
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          POINTS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.POINTS
+        </td>
+      </tr><tr>
+        <td>
+          153
+        </td>
+        <td>
+          2739
+        </td>
+        <td>
+          3822
+          -
+          3894
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          globalTotalAnsweredQuestionsTitleLabel.setText(Vocabulary.QUIZ_ANSWERED)
+        </td>
+      </tr><tr>
+        <td>
+          153
+        </td>
+        <td>
+          2738
+        </td>
+        <td>
+          3869
+          -
+          3893
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          QUIZ_ANSWERED
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.QUIZ_ANSWERED
+        </td>
+      </tr><tr>
+        <td>
+          154
+        </td>
+        <td>
+          2741
+        </td>
+        <td>
+          3897
+          -
+          3968
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          globalTotalCorrectAnswersTitleLabel.setText(Vocabulary.CORRECT_ANSWERS)
+        </td>
+      </tr><tr>
+        <td>
+          154
+        </td>
+        <td>
+          2740
+        </td>
+        <td>
+          3941
+          -
+          3967
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          CORRECT_ANSWERS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.CORRECT_ANSWERS
+        </td>
+      </tr><tr>
+        <td>
+          155
+        </td>
+        <td>
+          2742
+        </td>
+        <td>
+          4016
+          -
+          4036
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          PRECISION
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.PRECISION
+        </td>
+      </tr><tr>
+        <td>
+          155
+        </td>
+        <td>
+          2743
+        </td>
+        <td>
+          3971
+          -
+          4037
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          globalTotalAnswerPrecisionTitleLabel.setText(Vocabulary.PRECISION)
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          2744
+        </td>
+        <td>
+          4087
+          -
+          4117
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          AVERAGE_TIME_ANSWER
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.AVERAGE_TIME_ANSWER
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          2745
+        </td>
+        <td>
+          4040
+          -
+          4118
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          globalTotalAverageTimeAnswerTitleLabel.setText(Vocabulary.AVERAGE_TIME_ANSWER)
+        </td>
+      </tr><tr>
+        <td>
+          157
+        </td>
+        <td>
+          2747
+        </td>
+        <td>
+          4121
+          -
+          4169
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          resetStatsButton.setText(Vocabulary.RESET_STATS)
+        </td>
+      </tr><tr>
+        <td>
+          157
+        </td>
+        <td>
+          2746
+        </td>
+        <td>
+          4146
+          -
+          4168
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          RESET_STATS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.RESET_STATS
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2806
+        </td>
+        <td>
+          4173
+          -
+          4194
         </td>
         <td>
           DefDef
@@ -686,15 +1611,15 @@
         </td>
       </tr><tr>
         <td>
-          99
+          160
         </td>
         <td>
-          2182
+          2757
         </td>
         <td>
-          2559
+          4248
           -
-          2577
+          4266
         </td>
         <td>
           Block
@@ -710,15 +1635,15 @@
         </td>
       </tr><tr>
         <td>
-          100
+          161
         </td>
         <td>
-          2181
+          2756
         </td>
         <td>
-          2587
+          4276
           -
-          3075
+          4764
         </td>
         <td>
           Apply
@@ -741,15 +1666,15 @@
         </td>
       </tr><tr>
         <td>
-          101
+          162
         </td>
         <td>
-          2173
+          2748
         </td>
         <td>
-          2629
+          4318
           -
-          2650
+          4339
         </td>
         <td>
           Select
@@ -765,15 +1690,15 @@
         </td>
       </tr><tr>
         <td>
-          102
+          163
         </td>
         <td>
-          2174
+          2749
         </td>
         <td>
-          2671
+          4360
           -
-          2723
+          4412
         </td>
         <td>
           Apply
@@ -789,15 +1714,15 @@
         </td>
       </tr><tr>
         <td>
-          103
+          164
         </td>
         <td>
-          2175
+          2750
         </td>
         <td>
-          2732
+          4421
           -
-          2808
+          4497
         </td>
         <td>
           Apply
@@ -813,15 +1738,15 @@
         </td>
       </tr><tr>
         <td>
-          104
+          165
         </td>
         <td>
-          2176
+          2751
         </td>
         <td>
-          2817
+          4506
           -
-          2887
+          4576
         </td>
         <td>
           Apply
@@ -837,15 +1762,15 @@
         </td>
       </tr><tr>
         <td>
-          105
+          166
         </td>
         <td>
-          2178
+          2753
         </td>
         <td>
-          2896
+          4585
           -
-          2975
+          4664
         </td>
         <td>
           Apply
@@ -861,15 +1786,15 @@
         </td>
       </tr><tr>
         <td>
-          105
+          166
         </td>
         <td>
-          2177
+          2752
         </td>
         <td>
-          2936
+          4625
           -
-          2974
+          4663
         </td>
         <td>
           Apply
@@ -885,39 +1810,15 @@
         </td>
       </tr><tr>
         <td>
-          106
+          167
         </td>
         <td>
-          2179
+          2755
         </td>
         <td>
-          3026
+          4673
           -
-          3066
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          +
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          p.totalAverageTimeAnswer.toString + &quot; s&quot;
-        </td>
-      </tr><tr>
-        <td>
-          106
-        </td>
-        <td>
-          2180
-        </td>
-        <td>
-          2984
-          -
-          3067
+          4756
         </td>
         <td>
           Apply
@@ -933,15 +1834,39 @@
         </td>
       </tr><tr>
         <td>
-          108
+          167
         </td>
         <td>
-          2207
+          2754
         </td>
         <td>
-          3080
+          4715
           -
-          3125
+          4755
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          p.totalAverageTimeAnswer.toString + &quot; s&quot;
+        </td>
+      </tr><tr>
+        <td>
+          169
+        </td>
+        <td>
+          2782
+        </td>
+        <td>
+          4769
+          -
+          4814
         </td>
         <td>
           Block
@@ -957,15 +1882,15 @@
         </td>
       </tr><tr>
         <td>
-          109
+          170
         </td>
         <td>
-          2206
+          2781
         </td>
         <td>
-          3135
+          4824
           -
-          4202
+          5891
         </td>
         <td>
           Apply
@@ -1002,15 +1927,15 @@
         </td>
       </tr><tr>
         <td>
-          110
+          171
         </td>
         <td>
-          2184
+          2759
         </td>
         <td>
-          3169
+          4858
           -
-          3200
+          4889
         </td>
         <td>
           Apply
@@ -1026,15 +1951,15 @@
         </td>
       </tr><tr>
         <td>
-          110
+          171
         </td>
         <td>
-          2183
+          2758
         </td>
         <td>
-          3169
+          4858
           -
-          3192
+          4881
         </td>
         <td>
           Apply
@@ -1050,39 +1975,15 @@
         </td>
       </tr><tr>
         <td>
-          111
+          172
         </td>
         <td>
-          2185
+          2780
         </td>
         <td>
-          3209
+          4898
           -
-          3228
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          get
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          updateParameter.get
-        </td>
-      </tr><tr>
-        <td>
-          111
-        </td>
-        <td>
-          2205
-        </td>
-        <td>
-          3209
-          -
-          4194
+          5883
         </td>
         <td>
           Apply
@@ -1116,39 +2017,39 @@
         </td>
       </tr><tr>
         <td>
-          112
+          172
         </td>
         <td>
-          2188
+          2760
         </td>
         <td>
-          3294
+          4898
           -
-          3385
+          4917
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          s
+          get
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          s&quot;${courseInStats.course.courseId.courseName} (${courseInStats.quizInStatsList.size} quiz)&quot;
+          updateParameter.get
         </td>
       </tr><tr>
         <td>
-          112
+          173
         </td>
         <td>
-          2187
+          2762
         </td>
         <td>
-          3343
+          5032
           -
-          3377
+          5066
         </td>
         <td>
           Select
@@ -1164,39 +2065,15 @@
         </td>
       </tr><tr>
         <td>
-          112
+          173
         </td>
         <td>
-          2186
+          2764
         </td>
         <td>
-          3298
+          4971
           -
-          3327
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          courseId
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseInStats.course.courseId
-        </td>
-      </tr><tr>
-        <td>
-          112
-        </td>
-        <td>
-          2189
-        </td>
-        <td>
-          3282
-          -
-          3386
+          5075
         </td>
         <td>
           Apply
@@ -1212,15 +2089,63 @@
         </td>
       </tr><tr>
         <td>
-          113
+          173
         </td>
         <td>
-          2191
+          2761
         </td>
         <td>
-          3398
+          4987
           -
-          3450
+          5016
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          courseId
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseInStats.course.courseId
+        </td>
+      </tr><tr>
+        <td>
+          173
+        </td>
+        <td>
+          2763
+        </td>
+        <td>
+          4983
+          -
+          5074
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          s&quot;${courseInStats.course.courseId.courseName} (${courseInStats.quizInStatsList.size} quiz)&quot;
+        </td>
+      </tr><tr>
+        <td>
+          174
+        </td>
+        <td>
+          2766
+        </td>
+        <td>
+          5087
+          -
+          5139
         </td>
         <td>
           Apply
@@ -1236,15 +2161,15 @@
         </td>
       </tr><tr>
         <td>
-          113
+          174
         </td>
         <td>
-          2190
+          2765
         </td>
         <td>
-          3398
+          5087
           -
-          3409
+          5098
         </td>
         <td>
           Apply
@@ -1260,39 +2185,15 @@
         </td>
       </tr><tr>
         <td>
-          114
+          175
         </td>
         <td>
-          2194
+          2768
         </td>
         <td>
-          3462
+          5151
           -
-          3505
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          add
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          radioButton.getStyleClass.add(&quot;label-dark&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          114
-        </td>
-        <td>
-          2193
-        </td>
-        <td>
-          3462
-          -
-          3487
+          5176
         </td>
         <td>
           Apply
@@ -1308,15 +2209,15 @@
         </td>
       </tr><tr>
         <td>
-          114
+          175
         </td>
         <td>
-          2192
+          2767
         </td>
         <td>
-          3462
+          5151
           -
-          3473
+          5162
         </td>
         <td>
           Apply
@@ -1332,15 +2233,39 @@
         </td>
       </tr><tr>
         <td>
-          115
+          175
         </td>
         <td>
-          2201
+          2769
         </td>
         <td>
-          3517
+          5151
           -
-          4129
+          5194
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          add
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.getStyleClass.add(&quot;label-dark&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          176
+        </td>
+        <td>
+          2776
+        </td>
+        <td>
+          5206
+          -
+          5818
         </td>
         <td>
           Apply
@@ -1368,15 +2293,15 @@
         </td>
       </tr><tr>
         <td>
-          116
+          177
         </td>
         <td>
-          2196
+          2771
         </td>
         <td>
-          3610
+          5299
           -
-          3648
+          5337
         </td>
         <td>
           Apply
@@ -1392,15 +2317,15 @@
         </td>
       </tr><tr>
         <td>
-          116
+          177
         </td>
         <td>
-          2195
+          2770
         </td>
         <td>
-          3628
+          5317
           -
-          3647
+          5336
         </td>
         <td>
           Apply
@@ -1416,15 +2341,15 @@
         </td>
       </tr><tr>
         <td>
-          117
+          178
         </td>
         <td>
-          2198
+          2773
         </td>
         <td>
-          3661
+          5350
           -
-          3977
+          5666
         </td>
         <td>
           Apply
@@ -1447,15 +2372,15 @@
         </td>
       </tr><tr>
         <td>
-          118
+          179
         </td>
         <td>
-          2197
+          2772
         </td>
         <td>
-          3690
+          5379
           -
-          3719
+          5408
         </td>
         <td>
           Select
@@ -1471,15 +2396,15 @@
         </td>
       </tr><tr>
         <td>
-          126
+          187
         </td>
         <td>
-          2200
+          2775
         </td>
         <td>
-          4064
+          5753
           -
-          4116
+          5805
         </td>
         <td>
           Apply
@@ -1495,15 +2420,15 @@
         </td>
       </tr><tr>
         <td>
-          126
+          187
         </td>
         <td>
-          2199
+          2774
         </td>
         <td>
-          4093
+          5782
           -
-          4114
+          5803
         </td>
         <td>
           Apply
@@ -1519,39 +2444,15 @@
         </td>
       </tr><tr>
         <td>
-          128
+          189
         </td>
         <td>
-          2203
+          2777
         </td>
         <td>
-          4172
+          5830
           -
-          4183
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sfxRadioButton2jfx
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          radioButton
-        </td>
-      </tr><tr>
-        <td>
-          128
-        </td>
-        <td>
-          2202
-        </td>
-        <td>
-          4141
-          -
-          4164
+          5853
         </td>
         <td>
           Apply
@@ -1567,15 +2468,15 @@
         </td>
       </tr><tr>
         <td>
-          128
+          189
         </td>
         <td>
-          2204
+          2779
         </td>
         <td>
-          4141
+          5830
           -
-          4184
+          5873
         </td>
         <td>
           Apply
@@ -1591,15 +2492,39 @@
         </td>
       </tr><tr>
         <td>
-          131
+          189
         </td>
         <td>
-          2229
+          2778
         </td>
         <td>
-          4207
+          5861
           -
-          4250
+          5872
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sfxRadioButton2jfx
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton
+        </td>
+      </tr><tr>
+        <td>
+          192
+        </td>
+        <td>
+          2804
+        </td>
+        <td>
+          5896
+          -
+          5939
         </td>
         <td>
           Block
@@ -1615,15 +2540,15 @@
         </td>
       </tr><tr>
         <td>
-          132
+          193
         </td>
         <td>
-          2228
+          2803
         </td>
         <td>
-          4260
+          5949
           -
-          5264
+          6953
         </td>
         <td>
           Apply
@@ -1660,15 +2585,15 @@
         </td>
       </tr><tr>
         <td>
-          133
+          194
         </td>
         <td>
-          2209
+          2784
         </td>
         <td>
-          4294
+          5983
           -
-          4322
+          6011
         </td>
         <td>
           Apply
@@ -1684,15 +2609,15 @@
         </td>
       </tr><tr>
         <td>
-          133
+          194
         </td>
         <td>
-          2208
+          2783
         </td>
         <td>
-          4294
+          5983
           -
-          4314
+          6003
         </td>
         <td>
           Apply
@@ -1708,15 +2633,15 @@
         </td>
       </tr><tr>
         <td>
-          134
+          195
         </td>
         <td>
-          2227
+          2802
         </td>
         <td>
-          4331
+          6020
           -
-          5256
+          6945
         </td>
         <td>
           Apply
@@ -1750,15 +2675,15 @@
         </td>
       </tr><tr>
         <td>
-          134
+          195
         </td>
         <td>
-          2210
+          2785
         </td>
         <td>
-          4331
+          6020
           -
-          4350
+          6039
         </td>
         <td>
           Select
@@ -1774,39 +2699,15 @@
         </td>
       </tr><tr>
         <td>
-          135
+          196
         </td>
         <td>
-          2212
+          2786
         </td>
         <td>
-          4399
+          6140
           -
-          4486
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getQuizQuestionById
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          QuizInStats.getQuizQuestionById(quizInStats.quizId, AppController.session.savedCourses)
-        </td>
-      </tr><tr>
-        <td>
-          135
-        </td>
-        <td>
-          2211
-        </td>
-        <td>
-          4451
-          -
-          4472
+          6161
         </td>
         <td>
           Select
@@ -1822,15 +2723,39 @@
         </td>
       </tr><tr>
         <td>
-          136
+          196
         </td>
         <td>
-          2213
+          2787
         </td>
         <td>
-          4515
+          6088
           -
-          4536
+          6175
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getQuizQuestionById
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          QuizInStats.getQuizQuestionById(quizInStats.quizId, AppController.session.savedCourses)
+        </td>
+      </tr><tr>
+        <td>
+          197
+        </td>
+        <td>
+          2788
+        </td>
+        <td>
+          6204
+          -
+          6225
         </td>
         <td>
           Apply
@@ -1846,15 +2771,39 @@
         </td>
       </tr><tr>
         <td>
-          137
+          198
         </td>
         <td>
-          2215
+          2789
         </td>
         <td>
-          4548
+          6237
           -
-          4591
+          6248
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sfxRadioButton2jfx
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton
+        </td>
+      </tr><tr>
+        <td>
+          198
+        </td>
+        <td>
+          2790
+        </td>
+        <td>
+          6237
+          -
+          6280
         </td>
         <td>
           Apply
@@ -1870,39 +2819,15 @@
         </td>
       </tr><tr>
         <td>
-          137
+          199
         </td>
         <td>
-          2214
+          2793
         </td>
         <td>
-          4548
+          6292
           -
-          4559
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sfxRadioButton2jfx
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          radioButton
-        </td>
-      </tr><tr>
-        <td>
-          138
-        </td>
-        <td>
-          2218
-        </td>
-        <td>
-          4603
-          -
-          4646
+          6335
         </td>
         <td>
           Apply
@@ -1918,15 +2843,15 @@
         </td>
       </tr><tr>
         <td>
-          138
+          199
         </td>
         <td>
-          2217
+          2792
         </td>
         <td>
-          4603
+          6292
           -
-          4628
+          6317
         </td>
         <td>
           Apply
@@ -1942,15 +2867,15 @@
         </td>
       </tr><tr>
         <td>
-          138
+          199
         </td>
         <td>
-          2216
+          2791
         </td>
         <td>
-          4603
+          6292
           -
-          4614
+          6303
         </td>
         <td>
           Apply
@@ -1966,15 +2891,15 @@
         </td>
       </tr><tr>
         <td>
-          139
+          200
         </td>
         <td>
-          2223
+          2798
         </td>
         <td>
-          4658
+          6347
           -
-          5194
+          6883
         </td>
         <td>
           Apply
@@ -2001,15 +2926,15 @@
         </td>
       </tr><tr>
         <td>
-          140
+          201
         </td>
         <td>
-          2220
+          2795
         </td>
         <td>
-          4733
+          6422
           -
-          5048
+          6737
         </td>
         <td>
           Apply
@@ -2032,15 +2957,15 @@
         </td>
       </tr><tr>
         <td>
-          145
+          206
         </td>
         <td>
-          2219
+          2794
         </td>
         <td>
-          4906
+          6595
           -
-          4989
+          6678
         </td>
         <td>
           Apply
@@ -2056,39 +2981,15 @@
         </td>
       </tr><tr>
         <td>
-          149
+          210
         </td>
         <td>
-          2221
+          2797
         </td>
         <td>
-          5160
+          6822
           -
-          5179
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          apply
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Option(quizInStats)
-        </td>
-      </tr><tr>
-        <td>
-          149
-        </td>
-        <td>
-          2222
-        </td>
-        <td>
-          5133
-          -
-          5181
+          6870
         </td>
         <td>
           Apply
@@ -2104,39 +3005,39 @@
         </td>
       </tr><tr>
         <td>
-          151
+          210
         </td>
         <td>
-          2224
+          2796
         </td>
         <td>
-          5206
+          6849
           -
-          5226
+          6868
         </td>
         <td>
           Apply
         </td>
         <td>
-          getChildren
+          apply
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          quizVBox.getChildren
+          Option(quizInStats)
         </td>
       </tr><tr>
         <td>
-          151
+          212
         </td>
         <td>
-          2226
+          2801
         </td>
         <td>
-          5206
+          6895
           -
-          5246
+          6935
         </td>
         <td>
           Apply
@@ -2152,15 +3053,15 @@
         </td>
       </tr><tr>
         <td>
-          151
+          212
         </td>
         <td>
-          2225
+          2800
         </td>
         <td>
-          5234
+          6923
           -
-          5245
+          6934
         </td>
         <td>
           Apply
@@ -2176,15 +3077,39 @@
         </td>
       </tr><tr>
         <td>
-          154
+          212
         </td>
         <td>
-          2230
+          2799
         </td>
         <td>
-          5269
+          6895
           -
-          5275
+          6915
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getChildren
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizVBox.getChildren
+        </td>
+      </tr><tr>
+        <td>
+          215
+        </td>
+        <td>
+          2805
+        </td>
+        <td>
+          6958
+          -
+          6964
         </td>
         <td>
           Block
@@ -2200,15 +3125,15 @@
         </td>
       </tr><tr>
         <td>
-          157
+          218
         </td>
         <td>
-          2240
+          2815
         </td>
         <td>
-          5326
+          7015
           -
-          5351
+          7040
         </td>
         <td>
           DefDef
@@ -2224,15 +3149,15 @@
         </td>
       </tr><tr>
         <td>
-          158
+          219
         </td>
         <td>
-          2232
+          2807
         </td>
         <td>
-          5510
+          7199
           -
-          5534
+          7223
         </td>
         <td>
           Apply
@@ -2248,15 +3173,15 @@
         </td>
       </tr><tr>
         <td>
-          159
+          220
         </td>
         <td>
-          2233
+          2808
         </td>
         <td>
-          5539
+          7228
           -
-          5583
+          7272
         </td>
         <td>
           Apply
@@ -2272,15 +3197,15 @@
         </td>
       </tr><tr>
         <td>
-          160
+          221
         </td>
         <td>
-          2234
+          2809
         </td>
         <td>
-          5588
+          7277
           -
-          5656
+          7345
         </td>
         <td>
           Apply
@@ -2296,15 +3221,15 @@
         </td>
       </tr><tr>
         <td>
-          161
+          222
         </td>
         <td>
-          2235
+          2810
         </td>
         <td>
-          5661
+          7350
           -
-          5723
+          7412
         </td>
         <td>
           Apply
@@ -2320,39 +3245,15 @@
         </td>
       </tr><tr>
         <td>
-          162
+          223
         </td>
         <td>
-          2236
+          2812
         </td>
         <td>
-          5762
+          7417
           -
-          5798
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          +
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          totalAnswerPrecision.toString + &quot; %&quot;
-        </td>
-      </tr><tr>
-        <td>
-          162
-        </td>
-        <td>
-          2237
-        </td>
-        <td>
-          5728
-          -
-          5799
+          7488
         </td>
         <td>
           Apply
@@ -2368,39 +3269,39 @@
         </td>
       </tr><tr>
         <td>
-          163
+          223
         </td>
         <td>
-          2239
+          2811
         </td>
         <td>
-          5804
+          7451
           -
-          5878
+          7487
         </td>
         <td>
           Apply
         </td>
         <td>
-          setText
+          +
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          totalAverageTimeAnswerLabel.setText(totalAverageTimeAnswer.toString +&quot; s&quot;)
+          totalAnswerPrecision.toString + &quot; %&quot;
         </td>
       </tr><tr>
         <td>
-          163
+          224
         </td>
         <td>
-          2238
+          2813
         </td>
         <td>
-          5840
+          7529
           -
-          5877
+          7566
         </td>
         <td>
           Apply
@@ -2413,6 +3314,30 @@
         </td>
         <td style="background: #F0ADAD">
           totalAverageTimeAnswer.toString +&quot; s&quot;
+        </td>
+      </tr><tr>
+        <td>
+          224
+        </td>
+        <td>
+          2814
+        </td>
+        <td>
+          7493
+          -
+          7567
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          totalAverageTimeAnswerLabel.setText(totalAverageTimeAnswer.toString +&quot; s&quot;)
         </td>
       </tr>
     </table>

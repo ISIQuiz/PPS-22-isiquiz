@@ -37,120 +37,130 @@
 </span>13 <span style=''>import javafx.stage.{DirectoryChooser, FileChooser, Stage}
 </span>14 <span style=''>import utils.storage.Configuration.{CurrentDirectoryPath, HomeDirectoryPath, PlayerCoursesFileName}
 </span>15 <span style=''>import utils.storage.{ExportHandler, ImportHandler}
-</span>16 <span style=''>import java.io.File
-</span>17 <span style=''>import scala.util.{Failure, Success}
-</span>18 <span style=''>
-</span>19 <span style=''>object GraphicSettingsMenu
+</span>16 <span style=''>import view.Vocabulary
+</span>17 <span style=''>
+</span>18 <span style=''>import java.io.File
+</span>19 <span style=''>import scala.util.{Failure, Success}
 </span>20 <span style=''>
-</span>21 <span style=''>/** Settings menu graphic interface */
-</span>22 <span style=''>class GraphicSettingsMenu(stage: Stage) extends GraphicView:
-</span>23 <span style=''>
-</span>24 <span style=''>  val alert = </span><span style='background: #F0ADAD'>Alert(AlertType.NONE)</span><span style=''>
+</span>21 <span style=''>object GraphicSettingsMenu
+</span>22 <span style=''>
+</span>23 <span style=''>/** Settings menu graphic interface */
+</span>24 <span style=''>class GraphicSettingsMenu(stage: Stage) extends GraphicView:
 </span>25 <span style=''>
-</span>26 <span style=''>  @FXML
-</span>27 <span style=''>  var backButton: Button = _
-</span>28 <span style=''>
-</span>29 <span style=''>  @FXML
-</span>30 <span style=''>  var menuLabel: Label = _
-</span>31 <span style=''>
-</span>32 <span style=''>  @FXML
-</span>33 <span style=''>  var usernameTextField: TextField = _
-</span>34 <span style=''>
-</span>35 <span style=''>  @FXML
-</span>36 <span style=''>  var importButton: Button = _
-</span>37 <span style=''>
-</span>38 <span style=''>  @FXML
-</span>39 <span style=''>  var exportButton: Button = _
-</span>40 <span style=''>
-</span>41 <span style=''>  @FXML
-</span>42 <span style=''>  var addCourseButton: Button = _
-</span>43 <span style=''>
-</span>44 <span style=''>  @FXML
-</span>45 <span style=''>  var addQuizButton: Button = _
-</span>46 <span style=''>
-</span>47 <span style=''>  @FXML
-</span>48 <span style=''>  var editCourseButton: Button = _
-</span>49 <span style=''>
-</span>50 <span style=''>  @FXML
-</span>51 <span style=''>  var editQuizButton: Button = _
-</span>52 <span style=''>
-</span>53 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>54 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
-</span>55 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
-</span>56 <span style=''>
-</span>57 <span style=''>  </span><span style='background: #F0ADAD'>private def showDialogAlert</span><span style=''>(alertType: AlertType, title: String, headerText: String, path: String = &quot;&quot;): Unit =
-</span>58 <span style=''>    </span><span style='background: #F0ADAD'>alert.setAlertType(alertType)</span><span style=''>
-</span>59 <span style=''>    </span><span style='background: #F0ADAD'>alert.setTitle(title)</span><span style=''>
-</span>60 <span style=''>    </span><span style='background: #F0ADAD'>alert.setHeaderText(headerText + &quot;\n&quot; + path)</span><span style=''>
-</span>61 <span style=''>    </span><span style='background: #F0ADAD'>alert.show()</span><span style=''>
-</span>62 <span style=''>
-</span>63 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>64 <span style=''></span><span style='background: #F0ADAD'>  def importButtonClicked</span><span style=''>(): Unit =
-</span>65 <span style=''>    val extensionFilter: ExtensionFilter = </span><span style='background: #F0ADAD'>ExtensionFilter(&quot;JSON file&quot;, &quot;*.json&quot;)</span><span style=''>
-</span>66 <span style=''>    val fileChooser: FileChooser = </span><span style='background: #F0ADAD'>FileChooser()</span><span style=''>
-</span>67 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.getExtensionFilters.add(extensionFilter)</span><span style=''>
-</span>68 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.setTitle(&quot;Importa i corsi&quot;)</span><span style=''>
-</span>69 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.setInitialDirectory(File(CurrentDirectoryPath))</span><span style=''>
-</span>70 <span style=''>    val selectedFile = </span><span style='background: #F0ADAD'>fileChooser.showOpenDialog(stage)</span><span style=''>
-</span>71 <span style=''>    if (selectedFile != null)
-</span>72 <span style=''>      </span><span style='background: #F0ADAD'>ImportHandler.importSavedCourseListFromFile(AppController.session, selectedFile.getPath) match
-</span>73 <span style=''></span><span style='background: #F0ADAD'>        case Success(savedCourseList) =&gt;
-</span>74 <span style=''></span><span style='background: #F0ADAD'>          AppController.changeSavedCourses(savedCourseList)
-</span>75 <span style=''></span><span style='background: #F0ADAD'>          ExportHandler.exportDataToPersonalDirectory(savedCourseList)
-</span>76 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
-</span>77 <span style=''></span><span style='background: #F0ADAD'>            AlertType.INFORMATION,
-</span>78 <span style=''></span><span style='background: #F0ADAD'>            &quot;Importazione&quot;,
-</span>79 <span style=''></span><span style='background: #F0ADAD'>            &quot;Importazione avvenuta con successo!&quot;,
-</span>80 <span style=''></span><span style='background: #F0ADAD'>            selectedFile.getPath
-</span>81 <span style=''></span><span style='background: #F0ADAD'>          )
-</span>82 <span style=''></span><span style='background: #F0ADAD'>        case Failure(f) =&gt;
-</span>83 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
-</span>84 <span style=''></span><span style='background: #F0ADAD'>            AlertType.ERROR,
-</span>85 <span style=''></span><span style='background: #F0ADAD'>            &quot;Importazione&quot;,
-</span>86 <span style=''></span><span style='background: #F0ADAD'>            &quot;Errore! File non valido!&quot;
-</span>87 <span style=''></span><span style='background: #F0ADAD'>          )</span><span style=''>
-</span>88 <span style=''>
-</span>89 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>90 <span style=''></span><span style='background: #F0ADAD'>  def exportButtonClicked</span><span style=''>(): Unit =
-</span>91 <span style=''>    val directoryChooser: DirectoryChooser = </span><span style='background: #F0ADAD'>DirectoryChooser()</span><span style=''>
-</span>92 <span style=''>    </span><span style='background: #F0ADAD'>directoryChooser.setTitle(&quot;Esporta i corsi&quot;)</span><span style=''>
-</span>93 <span style=''>    </span><span style='background: #F0ADAD'>directoryChooser.setInitialDirectory(File(HomeDirectoryPath))</span><span style=''>
-</span>94 <span style=''>    val selectedDirectory = </span><span style='background: #F0ADAD'>directoryChooser.showDialog(stage)</span><span style=''>
-</span>95 <span style=''>    if (selectedDirectory != null)
-</span>96 <span style=''>      </span><span style='background: #F0ADAD'>ExportHandler.exportSavedCoursesToPath(AppController.session.savedCourses, selectedDirectory.toString) match
-</span>97 <span style=''></span><span style='background: #F0ADAD'>        case Success(path) =&gt;
-</span>98 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
-</span>99 <span style=''></span><span style='background: #F0ADAD'>            AlertType.INFORMATION,
-</span>100 <span style=''></span><span style='background: #F0ADAD'>            &quot;Esportazione&quot;,
-</span>101 <span style=''></span><span style='background: #F0ADAD'>            &quot;Esportazione avvenuta con successo!&quot;,
-</span>102 <span style=''></span><span style='background: #F0ADAD'>            path
-</span>103 <span style=''></span><span style='background: #F0ADAD'>          )
-</span>104 <span style=''></span><span style='background: #F0ADAD'>        case Failure(f) =&gt;
-</span>105 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
-</span>106 <span style=''></span><span style='background: #F0ADAD'>            AlertType.ERROR,
-</span>107 <span style=''></span><span style='background: #F0ADAD'>            &quot;Esportazione&quot;,
-</span>108 <span style=''></span><span style='background: #F0ADAD'>            &quot;Errore! File non valido!&quot;
-</span>109 <span style=''></span><span style='background: #F0ADAD'>          )</span><span style=''>
-</span>110 <span style=''>
-</span>111 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>112 <span style=''></span><span style='background: #F0ADAD'>  def addCourseButtonClicked</span><span style=''>(): Unit =
-</span>113 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(AddCourse)</span><span style=''>
-</span>114 <span style=''>
-</span>115 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>116 <span style=''></span><span style='background: #F0ADAD'>  def addQuizButtonClicked</span><span style=''>(): Unit =
-</span>117 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(AddQuiz)</span><span style=''>
-</span>118 <span style=''>
-</span>119 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>120 <span style=''></span><span style='background: #F0ADAD'>  def editCourseButtonClicked</span><span style=''>(): Unit =
-</span>121 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(EditCourse)</span><span style=''>
-</span>122 <span style=''>
-</span>123 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>124 <span style=''></span><span style='background: #F0ADAD'>  def editQuizButtonClicked</span><span style=''>(): Unit =
-</span>125 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(EditQuiz)</span><span style=''>
-</span>126 <span style=''>
-</span>127 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;settings_menu.fxml&quot;)</span><span style=''>
+</span>26 <span style=''>  val alert = </span><span style='background: #F0ADAD'>Alert(AlertType.NONE)</span><span style=''>
+</span>27 <span style=''>
+</span>28 <span style=''>  @FXML
+</span>29 <span style=''>  var backButton: Button = _
+</span>30 <span style=''>
+</span>31 <span style=''>  @FXML
+</span>32 <span style=''>  var menuLabel: Label = _
+</span>33 <span style=''>
+</span>34 <span style=''>  @FXML
+</span>35 <span style=''>  var usernameTextField: TextField = _
+</span>36 <span style=''>
+</span>37 <span style=''>  @FXML
+</span>38 <span style=''>  var importButton: Button = _
+</span>39 <span style=''>
+</span>40 <span style=''>  @FXML
+</span>41 <span style=''>  var exportButton: Button = _
+</span>42 <span style=''>
+</span>43 <span style=''>  @FXML
+</span>44 <span style=''>  var addCourseButton: Button = _
+</span>45 <span style=''>
+</span>46 <span style=''>  @FXML
+</span>47 <span style=''>  var addQuizButton: Button = _
+</span>48 <span style=''>
+</span>49 <span style=''>  @FXML
+</span>50 <span style=''>  var editCourseButton: Button = _
+</span>51 <span style=''>
+</span>52 <span style=''>  @FXML
+</span>53 <span style=''>  var editQuizButton: Button = _
+</span>54 <span style=''>
+</span>55 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>56 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
+</span>57 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
+</span>58 <span style=''>
+</span>59 <span style=''>  </span><span style='background: #F0ADAD'>private def showDialogAlert</span><span style=''>(alertType: AlertType, title: String, headerText: String, path: String = &quot;&quot;): Unit =
+</span>60 <span style=''>    </span><span style='background: #F0ADAD'>alert.setAlertType(alertType)</span><span style=''>
+</span>61 <span style=''>    </span><span style='background: #F0ADAD'>alert.setTitle(title)</span><span style=''>
+</span>62 <span style=''>    </span><span style='background: #F0ADAD'>alert.setHeaderText(headerText + &quot;\n&quot; + path)</span><span style=''>
+</span>63 <span style=''>    </span><span style='background: #F0ADAD'>alert.show()</span><span style=''>
+</span>64 <span style=''>
+</span>65 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>66 <span style=''></span><span style='background: #F0ADAD'>  def importButtonClicked</span><span style=''>(): Unit =
+</span>67 <span style=''>    val extensionFilter: ExtensionFilter = </span><span style='background: #F0ADAD'>ExtensionFilter(&quot;JSON file&quot;, &quot;*.json&quot;)</span><span style=''>
+</span>68 <span style=''>    val fileChooser: FileChooser = </span><span style='background: #F0ADAD'>FileChooser()</span><span style=''>
+</span>69 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.getExtensionFilters.add(extensionFilter)</span><span style=''>
+</span>70 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.setTitle(Vocabulary.IMPORT_QUIZ)</span><span style=''>
+</span>71 <span style=''>    </span><span style='background: #F0ADAD'>fileChooser.setInitialDirectory(File(CurrentDirectoryPath))</span><span style=''>
+</span>72 <span style=''>    val selectedFile = </span><span style='background: #F0ADAD'>fileChooser.showOpenDialog(stage)</span><span style=''>
+</span>73 <span style=''>    if (selectedFile != null)
+</span>74 <span style=''>      </span><span style='background: #F0ADAD'>ImportHandler.importSavedCourseListFromFile(AppController.session, selectedFile.getPath) match
+</span>75 <span style=''></span><span style='background: #F0ADAD'>        case Success(savedCourseList) =&gt;
+</span>76 <span style=''></span><span style='background: #F0ADAD'>          AppController.changeSavedCourses(savedCourseList)
+</span>77 <span style=''></span><span style='background: #F0ADAD'>          ExportHandler.exportDataToPersonalDirectory(savedCourseList)
+</span>78 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
+</span>79 <span style=''></span><span style='background: #F0ADAD'>            AlertType.INFORMATION,
+</span>80 <span style=''></span><span style='background: #F0ADAD'>            Vocabulary.IMPORT_QUIZ,
+</span>81 <span style=''></span><span style='background: #F0ADAD'>            Vocabulary.OPERATION_SUCCEEDED,
+</span>82 <span style=''></span><span style='background: #F0ADAD'>            selectedFile.getPath
+</span>83 <span style=''></span><span style='background: #F0ADAD'>          )
+</span>84 <span style=''></span><span style='background: #F0ADAD'>        case Failure(f) =&gt;
+</span>85 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
+</span>86 <span style=''></span><span style='background: #F0ADAD'>            AlertType.ERROR,
+</span>87 <span style=''></span><span style='background: #F0ADAD'>            Vocabulary.IMPORT_QUIZ,
+</span>88 <span style=''></span><span style='background: #F0ADAD'>            Vocabulary.ERROR_INVALID_FILE
+</span>89 <span style=''></span><span style='background: #F0ADAD'>          )</span><span style=''>
+</span>90 <span style=''>
+</span>91 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>92 <span style=''></span><span style='background: #F0ADAD'>  def exportButtonClicked</span><span style=''>(): Unit =
+</span>93 <span style=''>    val directoryChooser: DirectoryChooser = </span><span style='background: #F0ADAD'>DirectoryChooser()</span><span style=''>
+</span>94 <span style=''>    </span><span style='background: #F0ADAD'>directoryChooser.setTitle(Vocabulary.EXPORT_QUIZ)</span><span style=''>
+</span>95 <span style=''>    </span><span style='background: #F0ADAD'>directoryChooser.setInitialDirectory(File(HomeDirectoryPath))</span><span style=''>
+</span>96 <span style=''>    val selectedDirectory = </span><span style='background: #F0ADAD'>directoryChooser.showDialog(stage)</span><span style=''>
+</span>97 <span style=''>    if (selectedDirectory != null)
+</span>98 <span style=''>      </span><span style='background: #F0ADAD'>ExportHandler.exportSavedCoursesToPath(AppController.session.savedCourses, selectedDirectory.toString) match
+</span>99 <span style=''></span><span style='background: #F0ADAD'>        case Success(path) =&gt;
+</span>100 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
+</span>101 <span style=''></span><span style='background: #F0ADAD'>            AlertType.INFORMATION,
+</span>102 <span style=''></span><span style='background: #F0ADAD'>            Vocabulary.EXPORT_QUIZ,
+</span>103 <span style=''></span><span style='background: #F0ADAD'>            Vocabulary.OPERATION_SUCCEEDED,
+</span>104 <span style=''></span><span style='background: #F0ADAD'>            path
+</span>105 <span style=''></span><span style='background: #F0ADAD'>          )
+</span>106 <span style=''></span><span style='background: #F0ADAD'>        case Failure(f) =&gt;
+</span>107 <span style=''></span><span style='background: #F0ADAD'>          showDialogAlert(
+</span>108 <span style=''></span><span style='background: #F0ADAD'>            AlertType.ERROR,
+</span>109 <span style=''></span><span style='background: #F0ADAD'>            Vocabulary.EXPORT_QUIZ,
+</span>110 <span style=''></span><span style='background: #F0ADAD'>            Vocabulary.ERROR_INVALID_FILE
+</span>111 <span style=''></span><span style='background: #F0ADAD'>          )</span><span style=''>
+</span>112 <span style=''>
+</span>113 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>114 <span style=''></span><span style='background: #F0ADAD'>  def addCourseButtonClicked</span><span style=''>(): Unit =
+</span>115 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(AddCourse)</span><span style=''>
+</span>116 <span style=''>
+</span>117 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>118 <span style=''></span><span style='background: #F0ADAD'>  def addQuizButtonClicked</span><span style=''>(): Unit =
+</span>119 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(AddQuiz)</span><span style=''>
+</span>120 <span style=''>
+</span>121 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>122 <span style=''></span><span style='background: #F0ADAD'>  def editCourseButtonClicked</span><span style=''>(): Unit =
+</span>123 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(EditCourse)</span><span style=''>
+</span>124 <span style=''>
+</span>125 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>126 <span style=''></span><span style='background: #F0ADAD'>  def editQuizButtonClicked</span><span style=''>(): Unit =
+</span>127 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(EditQuiz)</span><span style=''>
 </span>128 <span style=''>
-</span>129 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = {}
+</span>129 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;settings_menu.fxml&quot;)</span><span style=''>
+</span>130 <span style=''>  </span><span style='background: #F0ADAD'>backButton.setText(Vocabulary.BACK)</span><span style=''>
+</span>131 <span style=''>  </span><span style='background: #F0ADAD'>menuLabel.setText(Vocabulary.SETTINGS)</span><span style=''>
+</span>132 <span style=''>  </span><span style='background: #F0ADAD'>importButton.setText(Vocabulary.IMPORT_QUIZ)</span><span style=''>
+</span>133 <span style=''>  </span><span style='background: #F0ADAD'>exportButton.setText(Vocabulary.EXPORT_QUIZ)</span><span style=''>
+</span>134 <span style=''>  </span><span style='background: #F0ADAD'>addCourseButton.setText(Vocabulary.ADD_COURSE)</span><span style=''>
+</span>135 <span style=''>  </span><span style='background: #F0ADAD'>addQuizButton.setText(Vocabulary.ADD_QUIZ)</span><span style=''>
+</span>136 <span style=''>  </span><span style='background: #F0ADAD'>editCourseButton.setText(Vocabulary.EDIT_COURSE)</span><span style=''>
+</span>137 <span style=''>  </span><span style='background: #F0ADAD'>editQuizButton.setText(Vocabulary.EDIT_QUIZ)</span><span style=''>
+</span>138 <span style=''>
+</span>139 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = {}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -165,15 +175,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          23
+          25
         </td>
         <td>
-          1996
+          2499
         </td>
         <td>
-          816
+          840
           -
-          837
+          861
         </td>
         <td>
           Apply
@@ -189,15 +199,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          55
         </td>
         <td>
-          1998
+          2501
         </td>
         <td>
-          1213
+          1237
           -
-          1242
+          1266
         </td>
         <td>
           DefDef
@@ -214,15 +224,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          56
         </td>
         <td>
-          1997
+          2500
         </td>
         <td>
-          1257
+          1281
           -
-          1272
+          1296
         </td>
         <td>
           Apply
@@ -238,39 +248,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          58
         </td>
         <td>
-          2006
+          2508
         </td>
         <td>
-          1376
+          1300
           -
-          1376
-        </td>
-        <td>
-          DefDef
-        </td>
-        <td>
-          showDialogAlert$default$4
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          
-        </td>
-      </tr><tr>
-        <td>
-          56
-        </td>
-        <td>
-          2005
-        </td>
-        <td>
-          1276
-          -
-          1303
+          1327
         </td>
         <td>
           DefDef
@@ -286,15 +272,39 @@
         </td>
       </tr><tr>
         <td>
-          57
+          58
         </td>
         <td>
-          1999
+          2509
         </td>
         <td>
-          1392
+          1400
           -
-          1421
+          1400
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          showDialogAlert$default$4
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          2502
+        </td>
+        <td>
+          1416
+          -
+          1445
         </td>
         <td>
           Apply
@@ -310,15 +320,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          60
         </td>
         <td>
-          2000
+          2503
         </td>
         <td>
-          1426
+          1450
           -
-          1447
+          1471
         </td>
         <td>
           Apply
@@ -334,39 +344,15 @@
         </td>
       </tr><tr>
         <td>
-          59
+          61
         </td>
         <td>
-          2003
+          2505
         </td>
         <td>
-          1452
-          -
-          1497
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          setHeaderText
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          alert.setHeaderText(headerText + &quot;\n&quot; + path)
-        </td>
-      </tr><tr>
-        <td>
-          59
-        </td>
-        <td>
-          2002
-        </td>
-        <td>
-          1472
-          -
           1496
+          -
+          1520
         </td>
         <td>
           Apply
@@ -382,15 +368,15 @@
         </td>
       </tr><tr>
         <td>
-          59
+          61
         </td>
         <td>
-          2001
+          2504
         </td>
         <td>
-          1472
+          1496
           -
-          1489
+          1513
         </td>
         <td>
           Apply
@@ -406,15 +392,39 @@
         </td>
       </tr><tr>
         <td>
-          60
+          61
         </td>
         <td>
-          2004
+          2506
         </td>
         <td>
-          1502
+          1476
           -
-          1514
+          1521
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setHeaderText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          alert.setHeaderText(headerText + &quot;\n&quot; + path)
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          2507
+        </td>
+        <td>
+          1526
+          -
+          1538
         </td>
         <td>
           Apply
@@ -430,15 +440,15 @@
         </td>
       </tr><tr>
         <td>
-          63
+          65
         </td>
         <td>
-          2027
+          2535
         </td>
         <td>
-          1518
+          1542
           -
-          1549
+          1573
         </td>
         <td>
           DefDef
@@ -455,15 +465,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          66
         </td>
         <td>
-          2007
+          2510
         </td>
         <td>
-          1603
+          1627
           -
-          1641
+          1665
         </td>
         <td>
           Apply
@@ -479,15 +489,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          67
         </td>
         <td>
-          2008
+          2511
         </td>
         <td>
-          1677
+          1701
           -
-          1690
+          1714
         </td>
         <td>
           Apply
@@ -503,39 +513,15 @@
         </td>
       </tr><tr>
         <td>
-          66
+          68
         </td>
         <td>
-          2009
+          2513
         </td>
         <td>
-          1695
+          1719
           -
-          1726
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getExtensionFilters
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          fileChooser.getExtensionFilters
-        </td>
-      </tr><tr>
-        <td>
-          66
-        </td>
-        <td>
-          2010
-        </td>
-        <td>
-          1695
-          -
-          1747
+          1771
         </td>
         <td>
           Apply
@@ -551,15 +537,63 @@
         </td>
       </tr><tr>
         <td>
-          67
+          68
         </td>
         <td>
-          2011
+          2512
         </td>
         <td>
-          1752
+          1719
           -
-          1791
+          1750
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getExtensionFilters
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          fileChooser.getExtensionFilters
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          2514
+        </td>
+        <td>
+          1797
+          -
+          1819
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          IMPORT_QUIZ
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.IMPORT_QUIZ
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          2515
+        </td>
+        <td>
+          1776
+          -
+          1820
         </td>
         <td>
           Apply
@@ -571,43 +605,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          fileChooser.setTitle(&quot;Importa i corsi&quot;)
+          fileChooser.setTitle(Vocabulary.IMPORT_QUIZ)
         </td>
       </tr><tr>
         <td>
-          68
+          70
         </td>
         <td>
-          2012
+          2517
         </td>
         <td>
-          1828
+          1825
           -
-          1854
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          File(CurrentDirectoryPath)
-        </td>
-      </tr><tr>
-        <td>
-          68
-        </td>
-        <td>
-          2013
-        </td>
-        <td>
-          1796
-          -
-          1855
+          1884
         </td>
         <td>
           Apply
@@ -623,15 +633,39 @@
         </td>
       </tr><tr>
         <td>
-          69
+          70
         </td>
         <td>
-          2014
+          2516
         </td>
         <td>
-          1879
+          1857
           -
-          1912
+          1883
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          File(CurrentDirectoryPath)
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          2518
+        </td>
+        <td>
+          1908
+          -
+          1941
         </td>
         <td>
           Apply
@@ -647,63 +681,39 @@
         </td>
       </tr><tr>
         <td>
-          71
+          73
         </td>
         <td>
-          2015
+          2520
         </td>
         <td>
-          1993
+          2045
           -
-          2014
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          session
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session
-        </td>
-      </tr><tr>
-        <td>
-          71
-        </td>
-        <td>
-          2017
-        </td>
-        <td>
-          1949
-          -
-          2037
+          2065
         </td>
         <td>
           Apply
         </td>
         <td>
-          importSavedCourseListFromFile
+          getPath
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          ImportHandler.importSavedCourseListFromFile(AppController.session, selectedFile.getPath)
+          selectedFile.getPath
         </td>
       </tr><tr>
         <td>
-          71
+          73
         </td>
         <td>
-          2026
+          2534
         </td>
         <td>
-          1949
+          1978
           -
-          2563
+          2604
         </td>
         <td>
           Match
@@ -721,52 +731,76 @@
           ExportHandler.exportDataToPersonalDirectory(savedCourseList)
           showDialogAlert(
             AlertType.INFORMATION,
-            &quot;Importazione&quot;,
-            &quot;Importazione avvenuta con successo!&quot;,
+            Vocabulary.IMPORT_QUIZ,
+            Vocabulary.OPERATION_SUCCEEDED,
             selectedFile.getPath
           )
         case Failure(f) =&gt;
           showDialogAlert(
             AlertType.ERROR,
-            &quot;Importazione&quot;,
-            &quot;Errore! File non valido!&quot;
+            Vocabulary.IMPORT_QUIZ,
+            Vocabulary.ERROR_INVALID_FILE
           )
         </td>
       </tr><tr>
         <td>
-          71
+          73
         </td>
         <td>
-          2016
+          2519
         </td>
         <td>
-          2016
+          2022
           -
-          2036
+          2043
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          getPath
+          session
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          selectedFile.getPath
+          AppController.session
         </td>
       </tr><tr>
         <td>
-          72
+          73
         </td>
         <td>
-          2022
+          2521
         </td>
         <td>
-          2052
+          1978
           -
+          2066
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          importSavedCourseListFromFile
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ImportHandler.importSavedCourseListFromFile(AppController.session, selectedFile.getPath)
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          2528
+        </td>
+        <td>
           2081
+          -
+          2110
         </td>
         <td>
           Block
@@ -782,15 +816,15 @@
         </td>
       </tr><tr>
         <td>
-          73
+          75
         </td>
         <td>
-          2018
+          2522
         </td>
         <td>
-          2095
+          2124
           -
-          2144
+          2173
         </td>
         <td>
           Apply
@@ -806,15 +840,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          76
         </td>
         <td>
-          2019
+          2523
         </td>
         <td>
-          2155
+          2184
           -
-          2215
+          2244
         </td>
         <td>
           Apply
@@ -830,15 +864,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          77
         </td>
         <td>
-          2021
+          2527
         </td>
         <td>
-          2226
+          2255
           -
-          2401
+          2431
         </td>
         <td>
           Apply
@@ -852,8 +886,8 @@
         <td style="background: #F0ADAD">
           showDialogAlert(
             AlertType.INFORMATION,
-            &quot;Importazione&quot;,
-            &quot;Importazione avvenuta con successo!&quot;,
+            Vocabulary.IMPORT_QUIZ,
+            Vocabulary.OPERATION_SUCCEEDED,
             selectedFile.getPath
           )
         </td>
@@ -862,12 +896,60 @@
           79
         </td>
         <td>
-          2020
+          2524
         </td>
         <td>
-          2369
+          2319
           -
-          2389
+          2341
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          IMPORT_QUIZ
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.IMPORT_QUIZ
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          2525
+        </td>
+        <td>
+          2355
+          -
+          2385
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          OPERATION_SUCCEEDED
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.OPERATION_SUCCEEDED
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          2526
+        </td>
+        <td>
+          2399
+          -
+          2419
         </td>
         <td>
           Apply
@@ -883,15 +965,15 @@
         </td>
       </tr><tr>
         <td>
-          81
+          83
         </td>
         <td>
-          2025
+          2533
         </td>
         <td>
-          2410
+          2440
           -
-          2425
+          2455
         </td>
         <td>
           Block
@@ -907,15 +989,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          84
         </td>
         <td>
-          2024
+          2532
         </td>
         <td>
-          2439
+          2469
           -
-          2563
+          2604
         </td>
         <td>
           Apply
@@ -929,21 +1011,21 @@
         <td style="background: #F0ADAD">
           showDialogAlert(
             AlertType.ERROR,
-            &quot;Importazione&quot;,
-            &quot;Errore! File non valido!&quot;
+            Vocabulary.IMPORT_QUIZ,
+            Vocabulary.ERROR_INVALID_FILE
           )
         </td>
       </tr><tr>
         <td>
-          82
+          84
         </td>
         <td>
-          2023
+          2531
         </td>
         <td>
-          2439
+          2469
           -
-          2454
+          2484
         </td>
         <td>
           Select
@@ -959,15 +1041,63 @@
         </td>
       </tr><tr>
         <td>
-          89
+          86
         </td>
         <td>
-          2042
+          2529
         </td>
         <td>
-          2567
+          2527
           -
-          2598
+          2549
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          IMPORT_QUIZ
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.IMPORT_QUIZ
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          2530
+        </td>
+        <td>
+          2563
+          -
+          2592
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          ERROR_INVALID_FILE
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.ERROR_INVALID_FILE
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          2555
+        </td>
+        <td>
+          2608
+          -
+          2639
         </td>
         <td>
           DefDef
@@ -984,15 +1114,15 @@
         </td>
       </tr><tr>
         <td>
-          90
+          92
         </td>
         <td>
-          2028
+          2536
         </td>
         <td>
-          2654
+          2695
           -
-          2672
+          2713
         </td>
         <td>
           Apply
@@ -1008,15 +1138,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          93
         </td>
         <td>
-          2029
+          2538
         </td>
         <td>
-          2677
+          2718
           -
-          2721
+          2767
         </td>
         <td>
           Apply
@@ -1028,43 +1158,43 @@
           
         </td>
         <td style="background: #F0ADAD">
-          directoryChooser.setTitle(&quot;Esporta i corsi&quot;)
+          directoryChooser.setTitle(Vocabulary.EXPORT_QUIZ)
         </td>
       </tr><tr>
         <td>
-          92
+          93
         </td>
         <td>
-          2030
+          2537
         </td>
         <td>
-          2763
+          2744
           -
-          2786
+          2766
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          &lt;init&gt;
+          EXPORT_QUIZ
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          File(HomeDirectoryPath)
+          Vocabulary.EXPORT_QUIZ
         </td>
       </tr><tr>
         <td>
-          92
+          94
         </td>
         <td>
-          2031
+          2540
         </td>
         <td>
-          2726
+          2772
           -
-          2787
+          2833
         </td>
         <td>
           Apply
@@ -1080,15 +1210,39 @@
         </td>
       </tr><tr>
         <td>
-          93
+          94
         </td>
         <td>
-          2032
+          2539
         </td>
         <td>
-          2816
+          2809
           -
-          2850
+          2832
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          File(HomeDirectoryPath)
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          2541
+        </td>
+        <td>
+          2862
+          -
+          2896
         </td>
         <td>
           Apply
@@ -1104,39 +1258,15 @@
         </td>
       </tr><tr>
         <td>
-          95
+          97
         </td>
         <td>
-          2033
+          2544
         </td>
         <td>
-          2931
+          2938
           -
-          2952
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          session
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          AppController.session
-        </td>
-      </tr><tr>
-        <td>
-          95
-        </td>
-        <td>
-          2035
-        </td>
-        <td>
-          2892
-          -
-          2994
+          3040
         </td>
         <td>
           Apply
@@ -1152,52 +1282,15 @@
         </td>
       </tr><tr>
         <td>
-          95
+          97
         </td>
         <td>
-          2041
+          2543
         </td>
         <td>
-          2892
+          3013
           -
-          3362
-        </td>
-        <td>
-          Match
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          ExportHandler.exportSavedCoursesToPath(AppController.session.savedCourses, selectedDirectory.toString) match
-        case Success(path) =&gt;
-          showDialogAlert(
-            AlertType.INFORMATION,
-            &quot;Esportazione&quot;,
-            &quot;Esportazione avvenuta con successo!&quot;,
-            path
-          )
-        case Failure(f) =&gt;
-          showDialogAlert(
-            AlertType.ERROR,
-            &quot;Esportazione&quot;,
-            &quot;Errore! File non valido!&quot;
-          )
-        </td>
-      </tr><tr>
-        <td>
-          95
-        </td>
-        <td>
-          2034
-        </td>
-        <td>
-          2967
-          -
-          2993
+          3039
         </td>
         <td>
           Apply
@@ -1213,15 +1306,76 @@
         </td>
       </tr><tr>
         <td>
-          96
+          97
         </td>
         <td>
-          2037
+          2542
         </td>
         <td>
-          3009
+          2977
           -
-          3027
+          2998
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          session
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          AppController.session
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          2554
+        </td>
+        <td>
+          2938
+          -
+          3420
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          ExportHandler.exportSavedCoursesToPath(AppController.session.savedCourses, selectedDirectory.toString) match
+        case Success(path) =&gt;
+          showDialogAlert(
+            AlertType.INFORMATION,
+            Vocabulary.EXPORT_QUIZ,
+            Vocabulary.OPERATION_SUCCEEDED,
+            path
+          )
+        case Failure(f) =&gt;
+          showDialogAlert(
+            AlertType.ERROR,
+            Vocabulary.EXPORT_QUIZ,
+            Vocabulary.ERROR_INVALID_FILE
+          )
+        </td>
+      </tr><tr>
+        <td>
+          98
+        </td>
+        <td>
+          2548
+        </td>
+        <td>
+          3055
+          -
+          3073
         </td>
         <td>
           Block
@@ -1237,15 +1391,15 @@
         </td>
       </tr><tr>
         <td>
-          97
+          99
         </td>
         <td>
-          2036
+          2547
         </td>
         <td>
-          3041
+          3087
           -
-          3200
+          3247
         </td>
         <td>
           Apply
@@ -1259,22 +1413,70 @@
         <td style="background: #F0ADAD">
           showDialogAlert(
             AlertType.INFORMATION,
-            &quot;Esportazione&quot;,
-            &quot;Esportazione avvenuta con successo!&quot;,
+            Vocabulary.EXPORT_QUIZ,
+            Vocabulary.OPERATION_SUCCEEDED,
             path
           )
         </td>
       </tr><tr>
         <td>
-          103
+          101
         </td>
         <td>
-          2040
+          2545
         </td>
         <td>
-          3209
+          3151
           -
-          3224
+          3173
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          EXPORT_QUIZ
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.EXPORT_QUIZ
+        </td>
+      </tr><tr>
+        <td>
+          102
+        </td>
+        <td>
+          2546
+        </td>
+        <td>
+          3187
+          -
+          3217
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          OPERATION_SUCCEEDED
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.OPERATION_SUCCEEDED
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          2553
+        </td>
+        <td>
+          3256
+          -
+          3271
         </td>
         <td>
           Block
@@ -1290,15 +1492,15 @@
         </td>
       </tr><tr>
         <td>
-          104
+          106
         </td>
         <td>
-          2039
+          2552
         </td>
         <td>
-          3238
+          3285
           -
-          3362
+          3420
         </td>
         <td>
           Apply
@@ -1312,21 +1514,21 @@
         <td style="background: #F0ADAD">
           showDialogAlert(
             AlertType.ERROR,
-            &quot;Esportazione&quot;,
-            &quot;Errore! File non valido!&quot;
+            Vocabulary.EXPORT_QUIZ,
+            Vocabulary.ERROR_INVALID_FILE
           )
         </td>
       </tr><tr>
         <td>
-          104
+          106
         </td>
         <td>
-          2038
+          2551
         </td>
         <td>
-          3238
+          3285
           -
-          3253
+          3300
         </td>
         <td>
           Select
@@ -1342,15 +1544,63 @@
         </td>
       </tr><tr>
         <td>
-          111
+          108
         </td>
         <td>
-          2044
+          2549
         </td>
         <td>
-          3366
+          3343
           -
-          3400
+          3365
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          EXPORT_QUIZ
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.EXPORT_QUIZ
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          2550
+        </td>
+        <td>
+          3379
+          -
+          3408
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          ERROR_INVALID_FILE
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.ERROR_INVALID_FILE
+        </td>
+      </tr><tr>
+        <td>
+          113
+        </td>
+        <td>
+          2557
+        </td>
+        <td>
+          3424
+          -
+          3458
         </td>
         <td>
           DefDef
@@ -1367,15 +1617,15 @@
         </td>
       </tr><tr>
         <td>
-          112
+          114
         </td>
         <td>
-          2043
+          2556
         </td>
         <td>
-          3415
+          3473
           -
-          3435
+          3493
         </td>
         <td>
           Apply
@@ -1391,15 +1641,15 @@
         </td>
       </tr><tr>
         <td>
-          115
+          117
         </td>
         <td>
-          2046
+          2559
         </td>
         <td>
-          3439
+          3497
           -
-          3471
+          3529
         </td>
         <td>
           DefDef
@@ -1416,15 +1666,15 @@
         </td>
       </tr><tr>
         <td>
-          116
+          118
         </td>
         <td>
-          2045
+          2558
         </td>
         <td>
-          3486
+          3544
           -
-          3504
+          3562
         </td>
         <td>
           Apply
@@ -1440,15 +1690,15 @@
         </td>
       </tr><tr>
         <td>
-          119
+          121
         </td>
         <td>
-          2048
+          2561
         </td>
         <td>
-          3508
+          3566
           -
-          3543
+          3601
         </td>
         <td>
           DefDef
@@ -1465,15 +1715,15 @@
         </td>
       </tr><tr>
         <td>
-          120
+          122
         </td>
         <td>
-          2047
+          2560
         </td>
         <td>
-          3558
+          3616
           -
-          3579
+          3637
         </td>
         <td>
           Apply
@@ -1489,15 +1739,15 @@
         </td>
       </tr><tr>
         <td>
-          123
+          125
         </td>
         <td>
-          2050
+          2563
         </td>
         <td>
-          3583
+          3641
           -
-          3616
+          3674
         </td>
         <td>
           DefDef
@@ -1514,15 +1764,15 @@
         </td>
       </tr><tr>
         <td>
-          124
+          126
         </td>
         <td>
-          2049
+          2562
         </td>
         <td>
-          3631
+          3689
           -
-          3650
+          3708
         </td>
         <td>
           Apply
@@ -1538,15 +1788,15 @@
         </td>
       </tr><tr>
         <td>
-          126
+          128
         </td>
         <td>
-          2051
+          2564
         </td>
         <td>
-          3654
+          3712
           -
-          3696
+          3754
         </td>
         <td>
           Apply
@@ -1562,15 +1812,399 @@
         </td>
       </tr><tr>
         <td>
-          128
+          129
         </td>
         <td>
-          2052
+          2565
         </td>
         <td>
-          3700
+          3776
           -
-          3721
+          3791
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          BACK
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.BACK
+        </td>
+      </tr><tr>
+        <td>
+          129
+        </td>
+        <td>
+          2566
+        </td>
+        <td>
+          3757
+          -
+          3792
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          backButton.setText(Vocabulary.BACK)
+        </td>
+      </tr><tr>
+        <td>
+          130
+        </td>
+        <td>
+          2568
+        </td>
+        <td>
+          3795
+          -
+          3833
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          menuLabel.setText(Vocabulary.SETTINGS)
+        </td>
+      </tr><tr>
+        <td>
+          130
+        </td>
+        <td>
+          2567
+        </td>
+        <td>
+          3813
+          -
+          3832
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          SETTINGS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.SETTINGS
+        </td>
+      </tr><tr>
+        <td>
+          131
+        </td>
+        <td>
+          2570
+        </td>
+        <td>
+          3836
+          -
+          3880
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          importButton.setText(Vocabulary.IMPORT_QUIZ)
+        </td>
+      </tr><tr>
+        <td>
+          131
+        </td>
+        <td>
+          2569
+        </td>
+        <td>
+          3857
+          -
+          3879
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          IMPORT_QUIZ
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.IMPORT_QUIZ
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          2571
+        </td>
+        <td>
+          3904
+          -
+          3926
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          EXPORT_QUIZ
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.EXPORT_QUIZ
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          2572
+        </td>
+        <td>
+          3883
+          -
+          3927
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          exportButton.setText(Vocabulary.EXPORT_QUIZ)
+        </td>
+      </tr><tr>
+        <td>
+          133
+        </td>
+        <td>
+          2574
+        </td>
+        <td>
+          3930
+          -
+          3976
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          addCourseButton.setText(Vocabulary.ADD_COURSE)
+        </td>
+      </tr><tr>
+        <td>
+          133
+        </td>
+        <td>
+          2573
+        </td>
+        <td>
+          3954
+          -
+          3975
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          ADD_COURSE
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.ADD_COURSE
+        </td>
+      </tr><tr>
+        <td>
+          134
+        </td>
+        <td>
+          2576
+        </td>
+        <td>
+          3979
+          -
+          4021
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          addQuizButton.setText(Vocabulary.ADD_QUIZ)
+        </td>
+      </tr><tr>
+        <td>
+          134
+        </td>
+        <td>
+          2575
+        </td>
+        <td>
+          4001
+          -
+          4020
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          ADD_QUIZ
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.ADD_QUIZ
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          2577
+        </td>
+        <td>
+          4049
+          -
+          4071
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          EDIT_COURSE
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.EDIT_COURSE
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          2578
+        </td>
+        <td>
+          4024
+          -
+          4072
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          editCourseButton.setText(Vocabulary.EDIT_COURSE)
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          2580
+        </td>
+        <td>
+          4075
+          -
+          4119
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          editQuizButton.setText(Vocabulary.EDIT_QUIZ)
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          2579
+        </td>
+        <td>
+          4098
+          -
+          4118
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          EDIT_QUIZ
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.EDIT_QUIZ
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          2581
+        </td>
+        <td>
+          4123
+          -
+          4144
         </td>
         <td>
           DefDef

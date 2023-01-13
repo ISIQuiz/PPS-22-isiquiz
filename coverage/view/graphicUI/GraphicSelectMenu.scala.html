@@ -37,90 +37,101 @@
 </span>13 <span style=''>import javafx.application.Platform
 </span>14 <span style=''>import javafx.scene.input.MouseEvent
 </span>15 <span style=''>import model.SavedCourse.*
-</span>16 <span style=''>import java.util
-</span>17 <span style=''>import scala.collection.mutable.ListBuffer
-</span>18 <span style=''>
-</span>19 <span style=''>object GraphicSelectMenu
+</span>16 <span style=''>import view.Vocabulary
+</span>17 <span style=''>
+</span>18 <span style=''>import java.util
+</span>19 <span style=''>import scala.collection.mutable.ListBuffer
 </span>20 <span style=''>
-</span>21 <span style=''>/** Select menu graphic interface */
-</span>22 <span style=''>class GraphicSelectMenu(stage: Stage) extends GraphicView :
-</span>23 <span style=''>
-</span>24 <span style=''>  @FXML
-</span>25 <span style=''>  var backButton: Button = _
-</span>26 <span style=''>
-</span>27 <span style=''>  @FXML
-</span>28 <span style=''>  var coursesScrollPane: ScrollPane = _
-</span>29 <span style=''>
-</span>30 <span style=''>  @FXML
-</span>31 <span style=''>  var standardGameButton: Button = _
-</span>32 <span style=''>
-</span>33 <span style=''>  @FXML
-</span>34 <span style=''>  var blitzGameButton: Button = _
-</span>35 <span style=''>
-</span>36 <span style=''>  @FXML
-</span>37 <span style=''>  var customGameButton: Button = _
-</span>38 <span style=''>
-</span>39 <span style=''>  @FXML
-</span>40 <span style=''>  var coursesVBox: VBox = _
-</span>41 <span style=''>
-</span>42 <span style=''>  @FXML
-</span>43 <span style=''>  var feedbackLabel: Label = _
-</span>44 <span style=''>
-</span>45 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>46 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
-</span>47 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
-</span>48 <span style=''>
-</span>49 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>50 <span style=''></span><span style='background: #F0ADAD'>  def standardGameButtonClicked</span><span style=''>(): Unit =
-</span>51 <span style=''>    if </span><span style='background: #F0ADAD'>isCourseSelected</span><span style=''> then </span><span style='background: #F0ADAD'>sendEvent(Start)</span><span style=''>
-</span>52 <span style=''>
-</span>53 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>54 <span style=''></span><span style='background: #F0ADAD'>  def blitzGameButtonClicked</span><span style=''>(): Unit =
-</span>55 <span style=''>    if </span><span style='background: #F0ADAD'>isCourseSelected</span><span style=''> then </span><span style='background: #F0ADAD'>sendEvent(Blitz)</span><span style=''>
-</span>56 <span style=''>
-</span>57 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>58 <span style=''></span><span style='background: #F0ADAD'>  def customGameButtonClicked</span><span style=''>(): Unit =
-</span>59 <span style=''>    if </span><span style='background: #F0ADAD'>isCourseSelected</span><span style=''> then </span><span style='background: #F0ADAD'>sendEvent(Custom)</span><span style=''>
-</span>60 <span style=''>
-</span>61 <span style=''>  var checkBoxList: ListBuffer[CheckBox] = </span><span style='background: #F0ADAD'>ListBuffer()</span><span style=''>
-</span>62 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;select_menu.fxml&quot;)</span><span style=''>
-</span>63 <span style=''>
-</span>64 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
-</span>65 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
-</span>66 <span style=''>      </span><span style='background: #F0ADAD'>setButtonEnable(standardGameButton, blitzGameButton, customGameButton)</span><span style=''>
-</span>67 <span style=''>    </span><span style='background: #F0ADAD'>case CourseUpdate(updateParameter)</span><span style=''> =&gt;
-</span>68 <span style=''>      if </span><span style='background: #F0ADAD'>update.updateParameter.isDefined</span><span style=''> then
-</span>69 <span style=''>        </span><span style='background: #F0ADAD'>val savedCourses: List[(SavedCourse, Boolean)] = updateParameter.get.asInstanceOf[List[(SavedCourse, Boolean)]]
-</span>70 <span style=''></span><span style='background: #F0ADAD'>        case class CourseToPrint(savedCourse: SavedCourse, isSelected: Boolean)
-</span>71 <span style=''></span><span style='background: #F0ADAD'>        var coursesToPrint: ListBuffer[CourseToPrint] = ListBuffer()
-</span>72 <span style=''></span><span style='background: #F0ADAD'>        setButtonEnable(standardGameButton, blitzGameButton, customGameButton)
-</span>73 <span style=''></span><span style='background: #F0ADAD'>
-</span>74 <span style=''></span><span style='background: #F0ADAD'>        savedCourses.foreach(course =&gt;
-</span>75 <span style=''></span><span style='background: #F0ADAD'>          coursesToPrint += CourseToPrint(course._1, course._2)
-</span>76 <span style=''></span><span style='background: #F0ADAD'>        )
-</span>77 <span style=''></span><span style='background: #F0ADAD'>        Platform.runLater { () =&gt;
-</span>78 <span style=''></span><span style='background: #F0ADAD'>          coursesVBox.getChildren.clear()
-</span>79 <span style=''></span><span style='background: #F0ADAD'>          checkBoxList.clear()
-</span>80 <span style=''></span><span style='background: #F0ADAD'>          coursesToPrint.foreach(courseToPrint =&gt;
-</span>81 <span style=''></span><span style='background: #F0ADAD'>            val checkbox: CheckBox = new CheckBox(s&quot;${courseToPrint.savedCourse.courseId.courseName} (${courseToPrint.savedCourse.quizList.size} quiz)&quot;);
-</span>82 <span style=''></span><span style='background: #F0ADAD'>            checkbox.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
-</span>83 <span style=''></span><span style='background: #F0ADAD'>              sendEvent(Selection(Option(coursesVBox.getChildren.indexOf(checkbox))))
-</span>84 <span style=''></span><span style='background: #F0ADAD'>            );
-</span>85 <span style=''></span><span style='background: #F0ADAD'>            checkbox.setSelected(courseToPrint.isSelected);
-</span>86 <span style=''></span><span style='background: #F0ADAD'>            checkBoxList += checkbox;
-</span>87 <span style=''></span><span style='background: #F0ADAD'>            checkbox.getStyleClass.add(&quot;label-dark&quot;);
-</span>88 <span style=''></span><span style='background: #F0ADAD'>            coursesVBox.getChildren.add(checkbox)
-</span>89 <span style=''></span><span style='background: #F0ADAD'>          )
-</span>90 <span style=''></span><span style='background: #F0ADAD'>        }</span><span style=''>
-</span>91 <span style=''>    </span><span style='background: #F0ADAD'>case CourseUnplayableUpdate</span><span style=''> =&gt;
-</span>92 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(&quot;Corsi selezionati invalidi per la modalità di gioco&quot;)</span><span style=''>
-</span>93 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
-</span>94 <span style=''>
-</span>95 <span style=''>  /* function to check if at least one course is selected before starting a game */
-</span>96 <span style=''>  </span><span style='background: #F0ADAD'>private def isCourseSelected</span><span style=''>: Boolean =
-</span>97 <span style=''>    </span><span style='background: #F0ADAD'>checkBoxList.exists(checkBox =&gt; checkBox.isSelected)</span><span style=''>
-</span>98 <span style=''>
-</span>99 <span style=''>  </span><span style='background: #F0ADAD'>private def setButtonEnable</span><span style=''>(buttons: Button*): Unit = </span><span style='background: #F0ADAD'>buttons.foreach(button =&gt; button.setDisable(!isCourseSelected))</span><span style=''>
+</span>21 <span style=''>object GraphicSelectMenu
+</span>22 <span style=''>
+</span>23 <span style=''>/** Select menu graphic interface */
+</span>24 <span style=''>class GraphicSelectMenu(stage: Stage) extends GraphicView :
+</span>25 <span style=''>
+</span>26 <span style=''>  @FXML
+</span>27 <span style=''>  var backButton: Button = _
+</span>28 <span style=''>
+</span>29 <span style=''>  @FXML
+</span>30 <span style=''>  var menuLabel: Label = _
+</span>31 <span style=''>
+</span>32 <span style=''>  @FXML
+</span>33 <span style=''>  var coursesVBox: VBox = _
+</span>34 <span style=''>
+</span>35 <span style=''>  @FXML
+</span>36 <span style=''>  var standardGameButton: Button = _
+</span>37 <span style=''>
+</span>38 <span style=''>  @FXML
+</span>39 <span style=''>  var blitzGameButton: Button = _
+</span>40 <span style=''>
+</span>41 <span style=''>  @FXML
+</span>42 <span style=''>  var customGameButton: Button = _
+</span>43 <span style=''>
+</span>44 <span style=''>  @FXML
+</span>45 <span style=''>  var selectCourseLabel: Label = _
+</span>46 <span style=''>
+</span>47 <span style=''>  @FXML
+</span>48 <span style=''>  var feedbackLabel: Label = _
+</span>49 <span style=''>
+</span>50 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>51 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
+</span>52 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
+</span>53 <span style=''>
+</span>54 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>55 <span style=''></span><span style='background: #F0ADAD'>  def standardGameButtonClicked</span><span style=''>(): Unit =
+</span>56 <span style=''>    if </span><span style='background: #F0ADAD'>isCourseSelected</span><span style=''> then </span><span style='background: #F0ADAD'>sendEvent(Start)</span><span style=''>
+</span>57 <span style=''>
+</span>58 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>59 <span style=''></span><span style='background: #F0ADAD'>  def blitzGameButtonClicked</span><span style=''>(): Unit =
+</span>60 <span style=''>    if </span><span style='background: #F0ADAD'>isCourseSelected</span><span style=''> then </span><span style='background: #F0ADAD'>sendEvent(Blitz)</span><span style=''>
+</span>61 <span style=''>
+</span>62 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>63 <span style=''></span><span style='background: #F0ADAD'>  def customGameButtonClicked</span><span style=''>(): Unit =
+</span>64 <span style=''>    if </span><span style='background: #F0ADAD'>isCourseSelected</span><span style=''> then </span><span style='background: #F0ADAD'>sendEvent(Custom)</span><span style=''>
+</span>65 <span style=''>
+</span>66 <span style=''>  var checkBoxList: ListBuffer[CheckBox] = </span><span style='background: #F0ADAD'>ListBuffer()</span><span style=''>
+</span>67 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;select_menu.fxml&quot;)</span><span style=''>
+</span>68 <span style=''>  </span><span style='background: #F0ADAD'>backButton.setText(Vocabulary.BACK)</span><span style=''>
+</span>69 <span style=''>  </span><span style='background: #F0ADAD'>menuLabel.setText(Vocabulary.GAME_MODE)</span><span style=''>
+</span>70 <span style=''>  </span><span style='background: #F0ADAD'>standardGameButton.setText(Vocabulary.STANDARD_GAME)</span><span style=''>
+</span>71 <span style=''>  </span><span style='background: #F0ADAD'>blitzGameButton.setText(Vocabulary.BLITZ_GAME)</span><span style=''>
+</span>72 <span style=''>  </span><span style='background: #F0ADAD'>customGameButton.setText(Vocabulary.CUSTOM_GAME)</span><span style=''>
+</span>73 <span style=''>  </span><span style='background: #F0ADAD'>selectCourseLabel.setText(Vocabulary.SELECT_AT_LEAST_A_COURSE)</span><span style=''>
+</span>74 <span style=''>
+</span>75 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>76 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt;
+</span>77 <span style=''>      </span><span style='background: #F0ADAD'>setButtonEnable(standardGameButton, blitzGameButton, customGameButton)</span><span style=''>
+</span>78 <span style=''>    </span><span style='background: #F0ADAD'>case CourseUpdate(updateParameter)</span><span style=''> =&gt;
+</span>79 <span style=''>      if </span><span style='background: #F0ADAD'>update.updateParameter.isDefined</span><span style=''> then
+</span>80 <span style=''>        </span><span style='background: #F0ADAD'>val savedCourses: List[(SavedCourse, Boolean)] = updateParameter.get.asInstanceOf[List[(SavedCourse, Boolean)]]
+</span>81 <span style=''></span><span style='background: #F0ADAD'>        case class CourseToPrint(savedCourse: SavedCourse, isSelected: Boolean)
+</span>82 <span style=''></span><span style='background: #F0ADAD'>        var coursesToPrint: ListBuffer[CourseToPrint] = ListBuffer()
+</span>83 <span style=''></span><span style='background: #F0ADAD'>        setButtonEnable(standardGameButton, blitzGameButton, customGameButton)
+</span>84 <span style=''></span><span style='background: #F0ADAD'>
+</span>85 <span style=''></span><span style='background: #F0ADAD'>        savedCourses.foreach(course =&gt;
+</span>86 <span style=''></span><span style='background: #F0ADAD'>          coursesToPrint += CourseToPrint(course._1, course._2)
+</span>87 <span style=''></span><span style='background: #F0ADAD'>        )
+</span>88 <span style=''></span><span style='background: #F0ADAD'>        Platform.runLater { () =&gt;
+</span>89 <span style=''></span><span style='background: #F0ADAD'>          coursesVBox.getChildren.clear()
+</span>90 <span style=''></span><span style='background: #F0ADAD'>          checkBoxList.clear()
+</span>91 <span style=''></span><span style='background: #F0ADAD'>          coursesToPrint.foreach(courseToPrint =&gt;
+</span>92 <span style=''></span><span style='background: #F0ADAD'>            val checkbox: CheckBox = new CheckBox(s&quot;${courseToPrint.savedCourse.courseId.courseName} (${courseToPrint.savedCourse.quizList.size} quiz)&quot;);
+</span>93 <span style=''></span><span style='background: #F0ADAD'>            checkbox.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+</span>94 <span style=''></span><span style='background: #F0ADAD'>              sendEvent(Selection(Option(coursesVBox.getChildren.indexOf(checkbox))))
+</span>95 <span style=''></span><span style='background: #F0ADAD'>            );
+</span>96 <span style=''></span><span style='background: #F0ADAD'>            checkbox.setSelected(courseToPrint.isSelected);
+</span>97 <span style=''></span><span style='background: #F0ADAD'>            checkBoxList += checkbox;
+</span>98 <span style=''></span><span style='background: #F0ADAD'>            checkbox.getStyleClass.add(&quot;label-dark&quot;);
+</span>99 <span style=''></span><span style='background: #F0ADAD'>            coursesVBox.getChildren.add(checkbox)
+</span>100 <span style=''></span><span style='background: #F0ADAD'>          )
+</span>101 <span style=''></span><span style='background: #F0ADAD'>        }</span><span style=''>
+</span>102 <span style=''>    </span><span style='background: #F0ADAD'>case CourseUnplayableUpdate</span><span style=''> =&gt;
+</span>103 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(Vocabulary.INVALID_COURSES_SELECTED)</span><span style=''>
+</span>104 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
+</span>105 <span style=''>
+</span>106 <span style=''>  /* function to check if at least one course is selected before starting a game */
+</span>107 <span style=''>  </span><span style='background: #F0ADAD'>private def isCourseSelected</span><span style=''>: Boolean =
+</span>108 <span style=''>    </span><span style='background: #F0ADAD'>checkBoxList.exists(checkBox =&gt; checkBox.isSelected)</span><span style=''>
+</span>109 <span style=''>
+</span>110 <span style=''>  </span><span style='background: #F0ADAD'>private def setButtonEnable</span><span style=''>(buttons: Button*): Unit = </span><span style='background: #F0ADAD'>buttons.foreach(button =&gt; button.setDisable(!isCourseSelected))</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -135,15 +146,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          45
+          50
         </td>
         <td>
-          1939
+          2429
         </td>
         <td>
-          990
+          1045
           -
-          1019
+          1074
         </td>
         <td>
           DefDef
@@ -160,15 +171,15 @@
         </td>
       </tr><tr>
         <td>
-          46
+          51
         </td>
         <td>
-          1938
+          2428
         </td>
         <td>
-          1034
+          1089
           -
-          1049
+          1104
         </td>
         <td>
           Apply
@@ -184,15 +195,15 @@
         </td>
       </tr><tr>
         <td>
-          49
+          54
         </td>
         <td>
-          1943
+          2433
         </td>
         <td>
-          1053
+          1108
           -
-          1090
+          1145
         </td>
         <td>
           DefDef
@@ -209,15 +220,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          55
         </td>
         <td>
-          1940
+          2430
         </td>
         <td>
-          1108
+          1163
           -
-          1124
+          1179
         </td>
         <td>
           Select
@@ -233,15 +244,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          55
         </td>
         <td>
-          1942
+          2432
         </td>
         <td>
-          1130
+          1185
           -
-          1146
+          1201
         </td>
         <td>
           Block
@@ -257,15 +268,15 @@
         </td>
       </tr><tr>
         <td>
-          50
+          55
         </td>
         <td>
-          1941
+          2431
         </td>
         <td>
-          1130
+          1185
           -
-          1146
+          1201
         </td>
         <td>
           Apply
@@ -281,15 +292,15 @@
         </td>
       </tr><tr>
         <td>
-          53
+          58
         </td>
         <td>
-          1947
+          2437
         </td>
         <td>
-          1150
+          1205
           -
-          1184
+          1239
         </td>
         <td>
           DefDef
@@ -306,63 +317,15 @@
         </td>
       </tr><tr>
         <td>
-          54
+          59
         </td>
         <td>
-          1946
+          2434
         </td>
         <td>
-          1224
+          1257
           -
-          1240
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendEvent(Blitz)
-        </td>
-      </tr><tr>
-        <td>
-          54
-        </td>
-        <td>
-          1945
-        </td>
-        <td>
-          1224
-          -
-          1240
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendEvent
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendEvent(Blitz)
-        </td>
-      </tr><tr>
-        <td>
-          54
-        </td>
-        <td>
-          1944
-        </td>
-        <td>
-          1202
-          -
-          1218
+          1273
         </td>
         <td>
           Select
@@ -378,15 +341,63 @@
         </td>
       </tr><tr>
         <td>
-          57
+          59
         </td>
         <td>
-          1951
+          2436
         </td>
         <td>
-          1244
-          -
           1279
+          -
+          1295
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Blitz)
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          2435
+        </td>
+        <td>
+          1279
+          -
+          1295
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(Blitz)
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          2441
+        </td>
+        <td>
+          1299
+          -
+          1334
         </td>
         <td>
           DefDef
@@ -403,15 +414,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          63
         </td>
         <td>
-          1949
+          2439
         </td>
         <td>
-          1319
+          1374
           -
-          1336
+          1391
         </td>
         <td>
           Apply
@@ -427,15 +438,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          63
         </td>
         <td>
-          1948
+          2438
         </td>
         <td>
-          1297
+          1352
           -
-          1313
+          1368
         </td>
         <td>
           Select
@@ -451,15 +462,15 @@
         </td>
       </tr><tr>
         <td>
-          58
+          63
         </td>
         <td>
-          1950
+          2440
         </td>
         <td>
-          1319
+          1374
           -
-          1336
+          1391
         </td>
         <td>
           Block
@@ -475,15 +486,15 @@
         </td>
       </tr><tr>
         <td>
-          60
+          65
         </td>
         <td>
-          1952
+          2442
         </td>
         <td>
-          1381
+          1436
           -
-          1393
+          1448
         </td>
         <td>
           Apply
@@ -499,15 +510,15 @@
         </td>
       </tr><tr>
         <td>
-          61
+          66
         </td>
         <td>
-          1953
+          2443
         </td>
         <td>
-          1396
+          1451
           -
-          1436
+          1491
         </td>
         <td>
           Apply
@@ -523,15 +534,303 @@
         </td>
       </tr><tr>
         <td>
-          63
+          67
         </td>
         <td>
-          1988
+          2445
         </td>
         <td>
-          1440
+          1494
           -
-          1461
+          1529
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          backButton.setText(Vocabulary.BACK)
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          2444
+        </td>
+        <td>
+          1513
+          -
+          1528
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          BACK
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.BACK
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          2447
+        </td>
+        <td>
+          1532
+          -
+          1571
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          menuLabel.setText(Vocabulary.GAME_MODE)
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          2446
+        </td>
+        <td>
+          1550
+          -
+          1570
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          GAME_MODE
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.GAME_MODE
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          2448
+        </td>
+        <td>
+          1601
+          -
+          1625
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          STANDARD_GAME
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.STANDARD_GAME
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          2449
+        </td>
+        <td>
+          1574
+          -
+          1626
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          standardGameButton.setText(Vocabulary.STANDARD_GAME)
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          2451
+        </td>
+        <td>
+          1629
+          -
+          1675
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          blitzGameButton.setText(Vocabulary.BLITZ_GAME)
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          2450
+        </td>
+        <td>
+          1653
+          -
+          1674
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          BLITZ_GAME
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.BLITZ_GAME
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          2452
+        </td>
+        <td>
+          1703
+          -
+          1725
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          CUSTOM_GAME
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.CUSTOM_GAME
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          2453
+        </td>
+        <td>
+          1678
+          -
+          1726
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          customGameButton.setText(Vocabulary.CUSTOM_GAME)
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          2454
+        </td>
+        <td>
+          1755
+          -
+          1790
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          SELECT_AT_LEAST_A_COURSE
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.SELECT_AT_LEAST_A_COURSE
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          2455
+        </td>
+        <td>
+          1729
+          -
+          1791
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          selectCourseLabel.setText(Vocabulary.SELECT_AT_LEAST_A_COURSE)
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          2491
+        </td>
+        <td>
+          1795
+          -
+          1816
         </td>
         <td>
           DefDef
@@ -547,15 +846,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          75
         </td>
         <td>
-          1955
+          2457
         </td>
         <td>
-          1515
+          1870
           -
-          1533
+          1888
         </td>
         <td>
           Block
@@ -571,15 +870,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          76
         </td>
         <td>
-          1954
+          2456
         </td>
         <td>
-          1543
+          1898
           -
-          1613
+          1968
         </td>
         <td>
           Apply
@@ -595,15 +894,15 @@
         </td>
       </tr><tr>
         <td>
-          66
+          77
         </td>
         <td>
-          1984
+          2486
         </td>
         <td>
-          1618
+          1973
           -
-          1652
+          2007
         </td>
         <td>
           Block
@@ -619,15 +918,15 @@
         </td>
       </tr><tr>
         <td>
-          67
+          78
         </td>
         <td>
-          1956
+          2458
         </td>
         <td>
-          1665
+          2020
           -
-          1697
+          2052
         </td>
         <td>
           Select
@@ -643,15 +942,15 @@
         </td>
       </tr><tr>
         <td>
-          68
+          79
         </td>
         <td>
-          1957
+          2459
         </td>
         <td>
-          1760
+          2115
           -
-          1779
+          2134
         </td>
         <td>
           Select
@@ -667,15 +966,15 @@
         </td>
       </tr><tr>
         <td>
-          68
+          79
         </td>
         <td>
-          1983
+          2485
         </td>
         <td>
-          1711
+          2066
           -
-          2872
+          3227
         </td>
         <td>
           Block
@@ -712,15 +1011,15 @@
         </td>
       </tr><tr>
         <td>
-          70
+          81
         </td>
         <td>
-          1958
+          2460
         </td>
         <td>
-          1959
+          2314
           -
-          1971
+          2326
         </td>
         <td>
           Apply
@@ -736,15 +1035,15 @@
         </td>
       </tr><tr>
         <td>
-          71
+          82
         </td>
         <td>
-          1959
+          2461
         </td>
         <td>
-          1980
+          2335
           -
-          2050
+          2405
         </td>
         <td>
           Apply
@@ -760,15 +1059,15 @@
         </td>
       </tr><tr>
         <td>
-          73
+          84
         </td>
         <td>
-          1963
+          2465
         </td>
         <td>
-          2060
+          2415
           -
-          2164
+          2519
         </td>
         <td>
           Apply
@@ -786,15 +1085,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          85
         </td>
         <td>
-          1961
+          2463
         </td>
         <td>
-          2144
+          2499
           -
-          2153
+          2508
         </td>
         <td>
           Select
@@ -810,15 +1109,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          85
         </td>
         <td>
-          1960
+          2462
         </td>
         <td>
-          2133
+          2488
           -
-          2142
+          2497
         </td>
         <td>
           Select
@@ -834,15 +1133,15 @@
         </td>
       </tr><tr>
         <td>
-          74
+          85
         </td>
         <td>
-          1962
+          2464
         </td>
         <td>
-          2101
+          2456
           -
-          2154
+          2509
         </td>
         <td>
           Apply
@@ -858,15 +1157,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          87
         </td>
         <td>
-          1982
+          2484
         </td>
         <td>
-          2173
+          2528
           -
-          2872
+          3227
         </td>
         <td>
           Apply
@@ -895,15 +1194,15 @@
         </td>
       </tr><tr>
         <td>
-          77
+          88
         </td>
         <td>
-          1964
+          2466
         </td>
         <td>
-          2209
+          2564
           -
-          2232
+          2587
         </td>
         <td>
           Apply
@@ -919,15 +1218,15 @@
         </td>
       </tr><tr>
         <td>
-          77
+          88
         </td>
         <td>
-          1965
+          2467
         </td>
         <td>
-          2209
+          2564
           -
-          2240
+          2595
         </td>
         <td>
           Apply
@@ -943,15 +1242,15 @@
         </td>
       </tr><tr>
         <td>
-          78
+          89
         </td>
         <td>
-          1966
+          2468
         </td>
         <td>
-          2251
+          2606
           -
-          2271
+          2626
         </td>
         <td>
           Apply
@@ -967,15 +1266,15 @@
         </td>
       </tr><tr>
         <td>
-          79
+          90
         </td>
         <td>
-          1981
+          2483
         </td>
         <td>
-          2282
+          2637
           -
-          2862
+          3217
         </td>
         <td>
           Apply
@@ -1000,63 +1299,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          91
         </td>
         <td>
-          1967
+          2470
         </td>
         <td>
-          2426
+          2727
           -
-          2465
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          size
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseToPrint.savedCourse.quizList.size
-        </td>
-      </tr><tr>
-        <td>
-          80
-        </td>
-        <td>
-          1969
-        </td>
-        <td>
-          2359
-          -
-          2474
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          &lt;init&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          new CheckBox(s&quot;${courseToPrint.savedCourse.courseId.courseName} (${courseToPrint.savedCourse.quizList.size} quiz)&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          80
-        </td>
-        <td>
-          1968
-        </td>
-        <td>
-          2372
-          -
-          2473
+          2828
         </td>
         <td>
           Apply
@@ -1072,15 +1323,63 @@
         </td>
       </tr><tr>
         <td>
-          81
+          91
         </td>
         <td>
-          1974
+          2469
         </td>
         <td>
-          2488
+          2781
           -
-          2647
+          2820
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseToPrint.savedCourse.quizList.size
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          2471
+        </td>
+        <td>
+          2714
+          -
+          2829
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          new CheckBox(s&quot;${courseToPrint.savedCourse.courseId.courseName} (${courseToPrint.savedCourse.quizList.size} quiz)&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          2476
+        </td>
+        <td>
+          2843
+          -
+          3002
         </td>
         <td>
           Apply
@@ -1098,15 +1397,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          93
         </td>
         <td>
-          1970
+          2472
         </td>
         <td>
-          2589
+          2944
           -
-          2612
+          2967
         </td>
         <td>
           Apply
@@ -1122,15 +1421,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          93
         </td>
         <td>
-          1973
+          2475
         </td>
         <td>
-          2562
+          2917
           -
-          2633
+          2988
         </td>
         <td>
           Apply
@@ -1146,15 +1445,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          93
         </td>
         <td>
-          1972
+          2474
         </td>
         <td>
-          2582
+          2937
           -
-          2631
+          2986
         </td>
         <td>
           Apply
@@ -1170,15 +1469,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          93
         </td>
         <td>
-          1971
+          2473
         </td>
         <td>
-          2589
+          2944
           -
-          2630
+          2985
         </td>
         <td>
           Apply
@@ -1194,15 +1493,15 @@
         </td>
       </tr><tr>
         <td>
-          84
+          95
         </td>
         <td>
-          1975
+          2477
         </td>
         <td>
-          2661
+          3016
           -
-          2707
+          3062
         </td>
         <td>
           Apply
@@ -1218,15 +1517,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          96
         </td>
         <td>
-          1976
+          2478
         </td>
         <td>
-          2721
+          3076
           -
-          2745
+          3100
         </td>
         <td>
           Apply
@@ -1242,39 +1541,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          97
         </td>
         <td>
-          1978
+          2479
         </td>
         <td>
-          2759
+          3114
           -
-          2799
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          add
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          checkbox.getStyleClass.add(&quot;label-dark&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          86
-        </td>
-        <td>
-          1977
-        </td>
-        <td>
-          2759
-          -
-          2781
+          3136
         </td>
         <td>
           Apply
@@ -1290,15 +1565,39 @@
         </td>
       </tr><tr>
         <td>
-          87
+          97
         </td>
         <td>
-          1979
+          2480
         </td>
         <td>
-          2813
+          3114
           -
-          2836
+          3154
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          add
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          checkbox.getStyleClass.add(&quot;label-dark&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          98
+        </td>
+        <td>
+          2481
+        </td>
+        <td>
+          3168
+          -
+          3191
         </td>
         <td>
           Apply
@@ -1314,15 +1613,15 @@
         </td>
       </tr><tr>
         <td>
-          87
+          98
         </td>
         <td>
-          1980
+          2482
         </td>
         <td>
-          2813
+          3168
           -
-          2850
+          3205
         </td>
         <td>
           Apply
@@ -1338,15 +1637,15 @@
         </td>
       </tr><tr>
         <td>
-          90
+          101
         </td>
         <td>
-          1986
+          2489
         </td>
         <td>
-          2877
+          3232
           -
-          2904
+          3259
         </td>
         <td>
           Block
@@ -1362,15 +1661,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          102
         </td>
         <td>
-          1985
+          2488
         </td>
         <td>
-          2914
+          3269
           -
-          2990
+          3327
         </td>
         <td>
           Apply
@@ -1382,19 +1681,43 @@
           
         </td>
         <td style="background: #F0ADAD">
-          feedbackLabel.setText(&quot;Corsi selezionati invalidi per la modalità di gioco&quot;)
+          feedbackLabel.setText(Vocabulary.INVALID_COURSES_SELECTED)
         </td>
       </tr><tr>
         <td>
-          92
+          102
         </td>
         <td>
-          1987
+          2487
         </td>
         <td>
-          2995
+          3291
           -
-          3001
+          3326
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          INVALID_COURSES_SELECTED
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.INVALID_COURSES_SELECTED
+        </td>
+      </tr><tr>
+        <td>
+          103
+        </td>
+        <td>
+          2490
+        </td>
+        <td>
+          3332
+          -
+          3338
         </td>
         <td>
           Block
@@ -1410,15 +1733,15 @@
         </td>
       </tr><tr>
         <td>
-          95
+          106
         </td>
         <td>
-          1991
+          2494
         </td>
         <td>
-          3095
+          3432
           -
-          3123
+          3460
         </td>
         <td>
           DefDef
@@ -1434,15 +1757,15 @@
         </td>
       </tr><tr>
         <td>
-          96
+          107
         </td>
         <td>
-          1990
+          2493
         </td>
         <td>
-          3139
+          3476
           -
-          3191
+          3528
         </td>
         <td>
           Apply
@@ -1458,15 +1781,15 @@
         </td>
       </tr><tr>
         <td>
-          96
+          107
         </td>
         <td>
-          1989
+          2492
         </td>
         <td>
-          3171
+          3508
           -
-          3190
+          3527
         </td>
         <td>
           Apply
@@ -1482,39 +1805,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          109
         </td>
         <td>
-          1994
+          2496
         </td>
         <td>
-          3249
+          3612
           -
-          3312
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          foreach
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          buttons.foreach(button =&gt; button.setDisable(!isCourseSelected))
-        </td>
-      </tr><tr>
-        <td>
-          98
-        </td>
-        <td>
-          1993
-        </td>
-        <td>
-          3275
-          -
-          3311
+          3648
         </td>
         <td>
           Apply
@@ -1530,15 +1829,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          109
         </td>
         <td>
-          1992
+          2495
         </td>
         <td>
-          3294
+          3631
           -
-          3310
+          3647
         </td>
         <td>
           Select
@@ -1554,15 +1853,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          109
         </td>
         <td>
-          1995
+          2498
         </td>
         <td>
-          3195
+          3532
           -
-          3222
+          3559
         </td>
         <td>
           DefDef
@@ -1575,6 +1874,30 @@
         </td>
         <td style="background: #F0ADAD">
           private def setButtonEnable
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          2497
+        </td>
+        <td>
+          3586
+          -
+          3649
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          buttons.foreach(button =&gt; button.setDisable(!isCourseSelected))
         </td>
       </tr>
     </table>

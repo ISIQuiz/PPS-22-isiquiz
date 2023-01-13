@@ -36,93 +36,99 @@
 </span>12 <span style=''>import utils.{GUILoader, Timer}
 </span>13 <span style=''>import view.StandardGameMenuView.*
 </span>14 <span style=''>import view.View.{GraphicView, sendEvent}
-</span>15 <span style=''>import view.updates.ViewUpdate
-</span>16 <span style=''>
-</span>17 <span style=''>object GraphicBlitzGameMenu
-</span>18 <span style=''>
-</span>19 <span style=''>/** Blitz Game menu graphic interface */
-</span>20 <span style=''>class GraphicBlitzGameMenu(stage: Stage) extends GraphicView:
-</span>21 <span style=''>
-</span>22 <span style=''>  @FXML
-</span>23 <span style=''>  var backButton: Button = _
-</span>24 <span style=''>
-</span>25 <span style=''>  @FXML
-</span>26 <span style=''>  var courseLabel: Label = _
-</span>27 <span style=''>
-</span>28 <span style=''>  @FXML
-</span>29 <span style=''>  var timeRemainingLabel: Label = _
-</span>30 <span style=''>
-</span>31 <span style=''>  @FXML
-</span>32 <span style=''>  var pointsLabel: Label = _
-</span>33 <span style=''>
-</span>34 <span style=''>  @FXML
-</span>35 <span style=''>  var timeProgressBar: ProgressBar = _
-</span>36 <span style=''>
-</span>37 <span style=''>  @FXML
-</span>38 <span style=''>  var quizLabel: Label = _
-</span>39 <span style=''>
-</span>40 <span style=''>  @FXML
-</span>41 <span style=''>  var firstAnswerButton: Button = _
-</span>42 <span style=''>
-</span>43 <span style=''>  @FXML
-</span>44 <span style=''>  var secondAnswerButton: Button = _
-</span>45 <span style=''>
-</span>46 <span style=''>  @FXML
-</span>47 <span style=''>  var thirdAnswerButton: Button = _
-</span>48 <span style=''>
-</span>49 <span style=''>  @FXML
-</span>50 <span style=''>  var fourthAnswerButton: Button = _
-</span>51 <span style=''>
-</span>52 <span style=''>  @FXML
-</span>53 <span style=''>  var nextButton: Button = _
-</span>54 <span style=''>
-</span>55 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>56 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
-</span>57 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
-</span>58 <span style=''>
-</span>59 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>60 <span style=''></span><span style='background: #F0ADAD'>  def firstAnswerButtonClicked</span><span style=''>(): Unit =
-</span>61 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(0)))</span><span style=''>
-</span>62 <span style=''>
-</span>63 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>64 <span style=''></span><span style='background: #F0ADAD'>  def secondAnswerButtonClicked</span><span style=''>(): Unit =
-</span>65 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(1)))</span><span style=''>
-</span>66 <span style=''>
-</span>67 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>68 <span style=''></span><span style='background: #F0ADAD'>  def thirdAnswerButtonClicked</span><span style=''>(): Unit =
-</span>69 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(2)))</span><span style=''>
-</span>70 <span style=''>
-</span>71 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>72 <span style=''></span><span style='background: #F0ADAD'>  def fourthAnswerButtonClicked</span><span style=''>(): Unit =
-</span>73 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(3)))</span><span style=''>
-</span>74 <span style=''>
-</span>75 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
-</span>76 <span style=''></span><span style='background: #F0ADAD'>  def nextButtonClicked</span><span style=''>(): Unit =
-</span>77 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(NextQuiz)</span><span style=''>
-</span>78 <span style=''>
-</span>79 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;blitz_game.fxml&quot;)</span><span style=''>
-</span>80 <span style=''>
-</span>81 <span style=''>  val answerButtons: List[Button] = </span><span style='background: #F0ADAD'>List(firstAnswerButton, secondAnswerButton, thirdAnswerButton, fourthAnswerButton)</span><span style=''>
-</span>82 <span style=''>
-</span>83 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
-</span>84 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt; {}
-</span>85 <span style=''>    </span><span style='background: #F0ADAD'>case CurrentGameUpdate(updateParameter)</span><span style=''> =&gt;
-</span>86 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
-</span>87 <span style=''></span><span style='background: #F0ADAD'>        val gameStage: GameStage = updateParameter.get
-</span>88 <span style=''></span><span style='background: #F0ADAD'>        courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
-</span>89 <span style=''></span><span style='background: #F0ADAD'>        quizLabel.setText(gameStage.quizInGame.quiz.question)
-</span>90 <span style=''></span><span style='background: #F0ADAD'>        pointsLabel.setText(gameStage.quizInGame.quiz.maxScore + &quot; punti&quot;)
-</span>91 <span style=''></span><span style='background: #F0ADAD'>        firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
-</span>92 <span style=''></span><span style='background: #F0ADAD'>        secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
-</span>93 <span style=''></span><span style='background: #F0ADAD'>        thirdAnswerButton.setText(gameStage.quizInGame.answers(2).text)
-</span>94 <span style=''></span><span style='background: #F0ADAD'>        fourthAnswerButton.setText(gameStage.quizInGame.answers(3).text)
-</span>95 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
-</span>96 <span style=''>    </span><span style='background: #F0ADAD'>case TimerUpdate(updateParameter)</span><span style=''> =&gt;
-</span>97 <span style=''>      val timer: Timer = </span><span style='background: #F0ADAD'>updateParameter.get</span><span style=''>
-</span>98 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
-</span>99 <span style=''></span><span style='background: #F0ADAD'>        timeRemainingLabel.setText(s&quot;${timer.getRemainingTime.toInt}&quot;)
-</span>100 <span style=''></span><span style='background: #F0ADAD'>        timeProgressBar.setProgress(timer.getCompletionPercentage)
+</span>15 <span style=''>import view.Vocabulary
+</span>16 <span style=''>import view.updates.ViewUpdate
+</span>17 <span style=''>
+</span>18 <span style=''>object GraphicBlitzGameMenu
+</span>19 <span style=''>
+</span>20 <span style=''>/** Blitz Game menu graphic interface */
+</span>21 <span style=''>class GraphicBlitzGameMenu(stage: Stage) extends GraphicView:
+</span>22 <span style=''>
+</span>23 <span style=''>  @FXML
+</span>24 <span style=''>  var backButton: Button = _
+</span>25 <span style=''>
+</span>26 <span style=''>  @FXML
+</span>27 <span style=''>  var courseLabel: Label = _
+</span>28 <span style=''>
+</span>29 <span style=''>  @FXML
+</span>30 <span style=''>  var timeRemainingLabel: Label = _
+</span>31 <span style=''>
+</span>32 <span style=''>  @FXML
+</span>33 <span style=''>  var pointsLabel: Label = _
+</span>34 <span style=''>
+</span>35 <span style=''>  @FXML
+</span>36 <span style=''>  var timeProgressBar: ProgressBar = _
+</span>37 <span style=''>
+</span>38 <span style=''>  @FXML
+</span>39 <span style=''>  var quizLabel: Label = _
+</span>40 <span style=''>
+</span>41 <span style=''>  @FXML
+</span>42 <span style=''>  var firstAnswerButton: Button = _
+</span>43 <span style=''>
+</span>44 <span style=''>  @FXML
+</span>45 <span style=''>  var secondAnswerButton: Button = _
+</span>46 <span style=''>
+</span>47 <span style=''>  @FXML
+</span>48 <span style=''>  var thirdAnswerButton: Button = _
+</span>49 <span style=''>
+</span>50 <span style=''>  @FXML
+</span>51 <span style=''>  var fourthAnswerButton: Button = _
+</span>52 <span style=''>
+</span>53 <span style=''>  @FXML
+</span>54 <span style=''>  var nextButton: Button = _
+</span>55 <span style=''>
+</span>56 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>57 <span style=''></span><span style='background: #F0ADAD'>  def backButtonClicked</span><span style=''>(): Unit =
+</span>58 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(Back)</span><span style=''>
+</span>59 <span style=''>
+</span>60 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>61 <span style=''></span><span style='background: #F0ADAD'>  def firstAnswerButtonClicked</span><span style=''>(): Unit =
+</span>62 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(0)))</span><span style=''>
+</span>63 <span style=''>
+</span>64 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>65 <span style=''></span><span style='background: #F0ADAD'>  def secondAnswerButtonClicked</span><span style=''>(): Unit =
+</span>66 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(1)))</span><span style=''>
+</span>67 <span style=''>
+</span>68 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>69 <span style=''></span><span style='background: #F0ADAD'>  def thirdAnswerButtonClicked</span><span style=''>(): Unit =
+</span>70 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(2)))</span><span style=''>
+</span>71 <span style=''>
+</span>72 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>73 <span style=''></span><span style='background: #F0ADAD'>  def fourthAnswerButtonClicked</span><span style=''>(): Unit =
+</span>74 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(SelectAnswer(Option(3)))</span><span style=''>
+</span>75 <span style=''>
+</span>76 <span style=''>  </span><span style='background: #F0ADAD'>@FXML
+</span>77 <span style=''></span><span style='background: #F0ADAD'>  def nextButtonClicked</span><span style=''>(): Unit =
+</span>78 <span style=''>    </span><span style='background: #F0ADAD'>sendEvent(NextQuiz)</span><span style=''>
+</span>79 <span style=''>
+</span>80 <span style=''>  </span><span style='background: #F0ADAD'>loadGUI(stage, this, &quot;blitz_game.fxml&quot;)</span><span style=''>
+</span>81 <span style=''>  </span><span style='background: #F0ADAD'>backButton.setText(Vocabulary.BACK)</span><span style=''>
+</span>82 <span style=''>  </span><span style='background: #F0ADAD'>nextButton.setText(Vocabulary.NEXT)</span><span style=''>
+</span>83 <span style=''>  </span><span style='background: #F0ADAD'>quizLabel.setText(Vocabulary.QUESTION)</span><span style=''>
+</span>84 <span style=''>  </span><span style='background: #F0ADAD'>courseLabel.setText(Vocabulary.COURSE)</span><span style=''>
+</span>85 <span style=''>  
+</span>86 <span style=''>
+</span>87 <span style=''>  val answerButtons: List[Button] = </span><span style='background: #F0ADAD'>List(firstAnswerButton, secondAnswerButton, thirdAnswerButton, fourthAnswerButton)</span><span style=''>
+</span>88 <span style=''>
+</span>89 <span style=''>  </span><span style='background: #F0ADAD'>override def updateUI</span><span style=''>[T](update: ViewUpdate[Any]): Unit = update match
+</span>90 <span style=''>    </span><span style='background: #F0ADAD'>case DefaultUpdate</span><span style=''> =&gt; {}
+</span>91 <span style=''>    </span><span style='background: #F0ADAD'>case CurrentGameUpdate(updateParameter)</span><span style=''> =&gt;
+</span>92 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
+</span>93 <span style=''></span><span style='background: #F0ADAD'>        val gameStage: GameStage = updateParameter.get
+</span>94 <span style=''></span><span style='background: #F0ADAD'>        courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
+</span>95 <span style=''></span><span style='background: #F0ADAD'>        quizLabel.setText(gameStage.quizInGame.quiz.question)
+</span>96 <span style=''></span><span style='background: #F0ADAD'>        pointsLabel.setText(gameStage.quizInGame.quiz.maxScore +&quot; &quot;+ Vocabulary.POINTS)
+</span>97 <span style=''></span><span style='background: #F0ADAD'>        firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
+</span>98 <span style=''></span><span style='background: #F0ADAD'>        secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
+</span>99 <span style=''></span><span style='background: #F0ADAD'>        thirdAnswerButton.setText(gameStage.quizInGame.answers(2).text)
+</span>100 <span style=''></span><span style='background: #F0ADAD'>        fourthAnswerButton.setText(gameStage.quizInGame.answers(3).text)
 </span>101 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
+</span>102 <span style=''>    </span><span style='background: #F0ADAD'>case TimerUpdate(updateParameter)</span><span style=''> =&gt;
+</span>103 <span style=''>      val timer: Timer = </span><span style='background: #F0ADAD'>updateParameter.get</span><span style=''>
+</span>104 <span style=''>      </span><span style='background: #F0ADAD'>Platform.runLater(() =&gt; {
+</span>105 <span style=''></span><span style='background: #F0ADAD'>        timeRemainingLabel.setText(s&quot;${timer.getRemainingTime.toInt}&quot;)
+</span>106 <span style=''></span><span style='background: #F0ADAD'>        timeProgressBar.setProgress(timer.getCompletionPercentage)
+</span>107 <span style=''></span><span style='background: #F0ADAD'>      })</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -137,15 +143,15 @@
         <th>Code</th>
       </tr><tr>
         <td>
-          55
+          56
         </td>
         <td>
-          1560
+          1942
         </td>
         <td>
-          1126
+          1149
           -
-          1155
+          1178
         </td>
         <td>
           DefDef
@@ -162,15 +168,15 @@
         </td>
       </tr><tr>
         <td>
-          56
+          57
         </td>
         <td>
-          1559
+          1941
         </td>
         <td>
-          1170
+          1193
           -
-          1185
+          1208
         </td>
         <td>
           Apply
@@ -186,15 +192,15 @@
         </td>
       </tr><tr>
         <td>
-          59
+          60
         </td>
         <td>
-          1563
+          1945
         </td>
         <td>
-          1189
+          1212
           -
-          1225
+          1248
         </td>
         <td>
           DefDef
@@ -211,39 +217,15 @@
         </td>
       </tr><tr>
         <td>
-          60
+          61
         </td>
         <td>
-          1562
+          1943
         </td>
         <td>
-          1240
+          1286
           -
-          1274
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendEvent
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendEvent(SelectAnswer(Option(0)))
-        </td>
-      </tr><tr>
-        <td>
-          60
-        </td>
-        <td>
-          1561
-        </td>
-        <td>
-          1263
-          -
-          1272
+          1295
         </td>
         <td>
           Apply
@@ -259,15 +241,39 @@
         </td>
       </tr><tr>
         <td>
-          63
+          61
         </td>
         <td>
-          1566
+          1944
         </td>
         <td>
-          1278
+          1263
           -
-          1315
+          1297
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(SelectAnswer(Option(0)))
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          1948
+        </td>
+        <td>
+          1301
+          -
+          1338
         </td>
         <td>
           DefDef
@@ -284,39 +290,15 @@
         </td>
       </tr><tr>
         <td>
-          64
+          65
         </td>
         <td>
-          1565
+          1946
         </td>
         <td>
-          1330
+          1376
           -
-          1364
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendEvent
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendEvent(SelectAnswer(Option(1)))
-        </td>
-      </tr><tr>
-        <td>
-          64
-        </td>
-        <td>
-          1564
-        </td>
-        <td>
-          1353
-          -
-          1362
+          1385
         </td>
         <td>
           Apply
@@ -332,15 +314,39 @@
         </td>
       </tr><tr>
         <td>
-          67
+          65
         </td>
         <td>
-          1569
+          1947
         </td>
         <td>
-          1368
+          1353
           -
-          1404
+          1387
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(SelectAnswer(Option(1)))
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1951
+        </td>
+        <td>
+          1391
+          -
+          1427
         </td>
         <td>
           DefDef
@@ -357,39 +363,15 @@
         </td>
       </tr><tr>
         <td>
-          68
+          69
         </td>
         <td>
-          1568
+          1949
         </td>
         <td>
-          1419
+          1465
           -
-          1453
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendEvent
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendEvent(SelectAnswer(Option(2)))
-        </td>
-      </tr><tr>
-        <td>
-          68
-        </td>
-        <td>
-          1567
-        </td>
-        <td>
-          1442
-          -
-          1451
+          1474
         </td>
         <td>
           Apply
@@ -405,15 +387,39 @@
         </td>
       </tr><tr>
         <td>
-          71
+          69
         </td>
         <td>
-          1572
+          1950
         </td>
         <td>
-          1457
+          1442
           -
-          1494
+          1476
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(SelectAnswer(Option(2)))
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          1954
+        </td>
+        <td>
+          1480
+          -
+          1517
         </td>
         <td>
           DefDef
@@ -430,39 +436,15 @@
         </td>
       </tr><tr>
         <td>
-          72
+          73
         </td>
         <td>
-          1571
+          1952
         </td>
         <td>
-          1509
+          1555
           -
-          1543
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendEvent
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendEvent(SelectAnswer(Option(3)))
-        </td>
-      </tr><tr>
-        <td>
-          72
-        </td>
-        <td>
-          1570
-        </td>
-        <td>
-          1532
-          -
-          1541
+          1564
         </td>
         <td>
           Apply
@@ -478,15 +460,39 @@
         </td>
       </tr><tr>
         <td>
-          75
+          73
         </td>
         <td>
-          1574
+          1953
         </td>
         <td>
-          1547
+          1532
           -
-          1576
+          1566
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          sendEvent
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          sendEvent(SelectAnswer(Option(3)))
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          1956
+        </td>
+        <td>
+          1570
+          -
+          1599
         </td>
         <td>
           DefDef
@@ -503,15 +509,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          77
         </td>
         <td>
-          1573
+          1955
         </td>
         <td>
-          1591
+          1614
           -
-          1610
+          1633
         </td>
         <td>
           Apply
@@ -527,15 +533,15 @@
         </td>
       </tr><tr>
         <td>
-          78
+          79
         </td>
         <td>
-          1575
+          1957
         </td>
         <td>
-          1614
+          1637
           -
-          1653
+          1676
         </td>
         <td>
           Apply
@@ -554,12 +560,204 @@
           80
         </td>
         <td>
-          1576
+          1958
         </td>
         <td>
-          1691
+          1698
           -
+          1713
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          BACK
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.BACK
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          1959
+        </td>
+        <td>
+          1679
+          -
+          1714
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          backButton.setText(Vocabulary.BACK)
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          1961
+        </td>
+        <td>
+          1717
+          -
+          1752
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          nextButton.setText(Vocabulary.NEXT)
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          1960
+        </td>
+        <td>
+          1736
+          -
+          1751
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          NEXT
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.NEXT
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          1963
+        </td>
+        <td>
+          1755
+          -
+          1793
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          quizLabel.setText(Vocabulary.QUESTION)
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          1962
+        </td>
+        <td>
           1773
+          -
+          1792
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          QUESTION
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.QUESTION
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          1964
+        </td>
+        <td>
+          1816
+          -
+          1833
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          COURSE
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.COURSE
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          1965
+        </td>
+        <td>
+          1796
+          -
+          1834
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseLabel.setText(Vocabulary.COURSE)
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          1966
+        </td>
+        <td>
+          1875
+          -
+          1957
         </td>
         <td>
           Apply
@@ -575,15 +773,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          88
         </td>
         <td>
-          1601
+          1993
         </td>
         <td>
-          1777
+          1961
           -
-          1798
+          1982
         </td>
         <td>
           DefDef
@@ -599,15 +797,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          89
         </td>
         <td>
-          1577
+          1967
         </td>
         <td>
-          1852
+          2036
           -
-          1870
+          2054
         </td>
         <td>
           Block
@@ -623,15 +821,15 @@
         </td>
       </tr><tr>
         <td>
-          84
+          90
         </td>
         <td>
-          1592
+          1984
         </td>
         <td>
-          1881
+          2065
           -
-          1920
+          2104
         </td>
         <td>
           Block
@@ -647,15 +845,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          91
         </td>
         <td>
-          1591
+          1983
         </td>
         <td>
-          1930
+          2114
           -
-          2523
+          2720
         </td>
         <td>
           Apply
@@ -671,7 +869,7 @@
         val gameStage: GameStage = updateParameter.get
         courseLabel.setText(gameStage.quizInGame.course.courseId.courseName)
         quizLabel.setText(gameStage.quizInGame.quiz.question)
-        pointsLabel.setText(gameStage.quizInGame.quiz.maxScore + &quot; punti&quot;)
+        pointsLabel.setText(gameStage.quizInGame.quiz.maxScore +&quot; &quot;+ Vocabulary.POINTS)
         firstAnswerButton.setText(gameStage.quizInGame.answers(0).text)
         secondAnswerButton.setText(gameStage.quizInGame.answers(1).text)
         thirdAnswerButton.setText(gameStage.quizInGame.answers(2).text)
@@ -680,15 +878,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          92
         </td>
         <td>
-          1578
+          1968
         </td>
         <td>
-          1991
+          2175
           -
-          2010
+          2194
         </td>
         <td>
           Select
@@ -704,15 +902,15 @@
         </td>
       </tr><tr>
         <td>
-          87
+          93
         </td>
         <td>
-          1580
+          1970
         </td>
         <td>
-          2019
+          2203
           -
-          2087
+          2271
         </td>
         <td>
           Apply
@@ -728,15 +926,15 @@
         </td>
       </tr><tr>
         <td>
-          87
+          93
         </td>
         <td>
-          1579
+          1969
         </td>
         <td>
-          2039
+          2223
           -
-          2075
+          2259
         </td>
         <td>
           Select
@@ -752,15 +950,15 @@
         </td>
       </tr><tr>
         <td>
-          88
+          94
         </td>
         <td>
-          1581
+          1971
         </td>
         <td>
-          2096
+          2280
           -
-          2149
+          2333
         </td>
         <td>
           Apply
@@ -776,15 +974,63 @@
         </td>
       </tr><tr>
         <td>
-          89
+          95
         </td>
         <td>
-          1582
+          1973
         </td>
         <td>
-          2158
+          2362
           -
-          2224
+          2420
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          gameStage.quizInGame.quiz.maxScore +&quot; &quot;+ Vocabulary.POINTS
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          1972
+        </td>
+        <td>
+          2403
+          -
+          2420
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          POINTS
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.POINTS
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          1974
+        </td>
+        <td>
+          2342
+          -
+          2421
         </td>
         <td>
           Apply
@@ -796,19 +1042,19 @@
           
         </td>
         <td style="background: #F0ADAD">
-          pointsLabel.setText(gameStage.quizInGame.quiz.maxScore + &quot; punti&quot;)
+          pointsLabel.setText(gameStage.quizInGame.quiz.maxScore +&quot; &quot;+ Vocabulary.POINTS)
         </td>
       </tr><tr>
         <td>
-          90
+          96
         </td>
         <td>
-          1584
+          1976
         </td>
         <td>
-          2233
+          2430
           -
-          2296
+          2493
         </td>
         <td>
           Apply
@@ -824,15 +1070,15 @@
         </td>
       </tr><tr>
         <td>
-          90
+          96
         </td>
         <td>
-          1583
+          1975
         </td>
         <td>
-          2259
+          2456
           -
-          2290
+          2487
         </td>
         <td>
           Apply
@@ -848,15 +1094,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          97
         </td>
         <td>
-          1586
+          1978
         </td>
         <td>
-          2305
+          2502
           -
-          2369
+          2566
         </td>
         <td>
           Apply
@@ -872,15 +1118,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          97
         </td>
         <td>
-          1585
+          1977
         </td>
         <td>
-          2332
+          2529
           -
-          2363
+          2560
         </td>
         <td>
           Apply
@@ -896,15 +1142,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          98
         </td>
         <td>
-          1587
+          1979
         </td>
         <td>
-          2404
+          2601
           -
-          2435
+          2632
         </td>
         <td>
           Apply
@@ -920,15 +1166,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          98
         </td>
         <td>
-          1588
+          1980
         </td>
         <td>
-          2378
+          2575
           -
-          2441
+          2638
         </td>
         <td>
           Apply
@@ -944,15 +1190,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          99
         </td>
         <td>
-          1590
+          1982
         </td>
         <td>
-          2450
+          2647
           -
-          2514
+          2711
         </td>
         <td>
           Apply
@@ -968,15 +1214,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          99
         </td>
         <td>
-          1589
+          1981
         </td>
         <td>
-          2477
+          2674
           -
-          2508
+          2705
         </td>
         <td>
           Apply
@@ -992,15 +1238,15 @@
         </td>
       </tr><tr>
         <td>
-          95
+          101
         </td>
         <td>
-          1600
+          1992
         </td>
         <td>
-          2528
+          2725
           -
-          2561
+          2758
         </td>
         <td>
           Block
@@ -1016,15 +1262,15 @@
         </td>
       </tr><tr>
         <td>
-          96
+          102
         </td>
         <td>
-          1593
+          1985
         </td>
         <td>
-          2590
+          2787
           -
-          2609
+          2806
         </td>
         <td>
           Select
@@ -1040,15 +1286,15 @@
         </td>
       </tr><tr>
         <td>
-          97
+          103
         </td>
         <td>
-          1599
+          1991
         </td>
         <td>
-          2616
+          2813
           -
-          2788
+          2985
         </td>
         <td>
           Apply
@@ -1067,15 +1313,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          104
         </td>
         <td>
-          1596
+          1988
         </td>
         <td>
-          2650
+          2847
           -
-          2712
+          2909
         </td>
         <td>
           Apply
@@ -1091,15 +1337,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          104
         </td>
         <td>
-          1595
+          1987
         </td>
         <td>
-          2677
+          2874
           -
-          2711
+          2908
         </td>
         <td>
           Apply
@@ -1115,15 +1361,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          104
         </td>
         <td>
-          1594
+          1986
         </td>
         <td>
-          2681
+          2878
           -
-          2703
+          2900
         </td>
         <td>
           Select
@@ -1139,15 +1385,15 @@
         </td>
       </tr><tr>
         <td>
-          99
+          105
         </td>
         <td>
-          1598
+          1990
         </td>
         <td>
-          2721
+          2918
           -
-          2779
+          2976
         </td>
         <td>
           Apply
@@ -1163,15 +1409,15 @@
         </td>
       </tr><tr>
         <td>
-          99
+          105
         </td>
         <td>
-          1597
+          1989
         </td>
         <td>
-          2749
+          2946
           -
-          2778
+          2975
         </td>
         <td>
           Select
