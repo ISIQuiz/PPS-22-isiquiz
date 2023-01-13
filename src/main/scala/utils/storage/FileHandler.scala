@@ -1,7 +1,7 @@
 package utils.storage
 
 import java.nio.file.{Files, Paths}
-import scala.io.Source
+import scala.io.{Codec, Source}
 import scala.util.{Try, Using}
 
 /** Object of [[FileHandler]] */
@@ -25,7 +25,7 @@ object FileHandler:
    */
   def writeFile(filePath: String, fileContent: String): Try[String] =
     Try {
-      Files.writeString(Paths.get(filePath), fileContent)
+      Files.write(Paths.get(filePath), fileContent.getBytes())
       filePath
     }
 
