@@ -175,6 +175,7 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
           radioButton.setToggleGroup(toggleCourseInStatsGroup);
           radioButton.getStyleClass.add("label-dark");
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
+            radioButton.setSelected(true);
             val playerStats = updatePlayerStats(List(courseInStats))
             setTextLabels(
               courseInStats.course.courseId.courseName,
@@ -199,6 +200,7 @@ class GraphicStatisticsMenu(stage: Stage) extends GraphicView:
           radioButton.setToggleGroup(toggleQuizGroup);
           radioButton.getStyleClass.add("label-dark");
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
+            radioButton.setSelected(true);
             setTextLabels(
               question,
               quizInStats.totalScore,

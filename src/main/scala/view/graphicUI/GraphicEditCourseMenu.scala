@@ -119,6 +119,7 @@ class GraphicEditCourseMenu(stage: Stage) extends GraphicView:
           radioButton.setToggleGroup(toggleGroup);
           radioButton.getStyleClass.add("label-dark");
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
+            radioButton.setSelected(true);
             courseNameTextField.setText(savedCourse.courseId.courseName);
             degreeNameTextField.setText(savedCourse.courseId.degreeName);
             universityNameTextField.setText(savedCourse.courseId.universityName);

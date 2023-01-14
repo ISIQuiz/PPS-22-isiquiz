@@ -133,6 +133,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
           radioButton.setToggleGroup(toggleGroup);
           radioButton.getStyleClass.add("label-dark");
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
+            radioButton.setSelected(true);
             sendEvent(SelectCourseAction(Option(savedCourse)))
           );
           coursesVBox.getChildren.addAll(radioButton)

@@ -154,6 +154,8 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
           radioButton.setToggleGroup(toggleCourseGroup);
           radioButton.getStyleClass.add("label-dark");
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
+            radioButton.setSelected(true);
+            clearAllFields();
             import controller.EditQuizMenuController.SelectCourseAction
             sendEvent(SelectCourseAction(Option(savedCourse)));
           );
@@ -168,6 +170,7 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
           radioButton.setToggleGroup(toggleQuizGroup);
           radioButton.getStyleClass.add("label-dark");
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =>
+            radioButton.setSelected(true);
             questionTextField.setText(quiz.question);
             imagePathTextField.setText(if quiz.imagePath.isDefined then quiz.imagePath.get else "");
             scoreIntegerField.setText(quiz.maxScore.toString);
