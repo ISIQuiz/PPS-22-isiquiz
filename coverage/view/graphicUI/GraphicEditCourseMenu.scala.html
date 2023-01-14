@@ -143,38 +143,39 @@
 </span>119 <span style=''></span><span style='background: #F0ADAD'>          radioButton.setToggleGroup(toggleGroup);
 </span>120 <span style=''></span><span style='background: #F0ADAD'>          radioButton.getStyleClass.add(&quot;label-dark&quot;);
 </span>121 <span style=''></span><span style='background: #F0ADAD'>          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
-</span>122 <span style=''></span><span style='background: #F0ADAD'>            courseNameTextField.setText(savedCourse.courseId.courseName);
-</span>123 <span style=''></span><span style='background: #F0ADAD'>            degreeNameTextField.setText(savedCourse.courseId.degreeName);
-</span>124 <span style=''></span><span style='background: #F0ADAD'>            universityNameTextField.setText(savedCourse.courseId.universityName);
-</span>125 <span style=''></span><span style='background: #F0ADAD'>            descriptionCourseTextField.setText(savedCourse.description match
-</span>126 <span style=''></span><span style='background: #F0ADAD'>              case Some(text) =&gt; text
-</span>127 <span style=''></span><span style='background: #F0ADAD'>              case _ =&gt; &quot;&quot;
-</span>128 <span style=''></span><span style='background: #F0ADAD'>            );
-</span>129 <span style=''></span><span style='background: #F0ADAD'>            import controller.EditCourseMenuController.SelectCourseAction
-</span>130 <span style=''></span><span style='background: #F0ADAD'>            sendEvent(SelectCourseAction(Option(savedCourse)));
-</span>131 <span style=''></span><span style='background: #F0ADAD'>          );
-</span>132 <span style=''></span><span style='background: #F0ADAD'>          coursesVBox.getChildren.addAll(radioButton)
-</span>133 <span style=''></span><span style='background: #F0ADAD'>        )
-</span>134 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
-</span>135 <span style=''>    </span><span style='background: #F0ADAD'>case CourseEditedUpdate</span><span style=''> =&gt;
-</span>136 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(Vocabulary.COURSE_EDITED)</span><span style=''>
-</span>137 <span style=''>      </span><span style='background: #F0ADAD'>clearAllFields()</span><span style=''>
-</span>138 <span style=''>    </span><span style='background: #F0ADAD'>case CourseDeletedUpdate</span><span style=''> =&gt;
-</span>139 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(Vocabulary.COURSE_DELETED)</span><span style=''>
-</span>140 <span style=''>      </span><span style='background: #F0ADAD'>clearAllFields()</span><span style=''>
-</span>141 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
-</span>142 <span style=''>
-</span>143 <span style=''>  </span><span style='background: #F0ADAD'>private def checkInputs</span><span style=''>: Boolean =
-</span>144 <span style=''>    </span><span style='background: #F0ADAD'>courseNameTextField.getText.nonEmpty</span><span style=''> &amp;&amp; </span><span style='background: #F0ADAD'>checkSelections</span><span style=''>
-</span>145 <span style=''>
-</span>146 <span style=''>  </span><span style='background: #F0ADAD'>private def checkSelections</span><span style=''>: Boolean =
-</span>147 <span style=''>    </span><span style='background: #F0ADAD'>toggleGroup.getToggles.removeIf(_.isSelected)</span><span style=''>
-</span>148 <span style=''>
-</span>149 <span style=''>  </span><span style='background: #F0ADAD'>private def clearAllFields</span><span style=''>(): Unit =
-</span>150 <span style=''>    </span><span style='background: #F0ADAD'>courseNameTextField.clear()</span><span style=''>
-</span>151 <span style=''>    </span><span style='background: #F0ADAD'>degreeNameTextField.clear()</span><span style=''>
-</span>152 <span style=''>    </span><span style='background: #F0ADAD'>universityNameTextField.clear()</span><span style=''>
-</span>153 <span style=''>    </span><span style='background: #F0ADAD'>descriptionCourseTextField.clear()</span><span style=''>
+</span>122 <span style=''></span><span style='background: #F0ADAD'>            radioButton.setSelected(true);
+</span>123 <span style=''></span><span style='background: #F0ADAD'>            courseNameTextField.setText(savedCourse.courseId.courseName);
+</span>124 <span style=''></span><span style='background: #F0ADAD'>            degreeNameTextField.setText(savedCourse.courseId.degreeName);
+</span>125 <span style=''></span><span style='background: #F0ADAD'>            universityNameTextField.setText(savedCourse.courseId.universityName);
+</span>126 <span style=''></span><span style='background: #F0ADAD'>            descriptionCourseTextField.setText(savedCourse.description match
+</span>127 <span style=''></span><span style='background: #F0ADAD'>              case Some(text) =&gt; text
+</span>128 <span style=''></span><span style='background: #F0ADAD'>              case _ =&gt; &quot;&quot;
+</span>129 <span style=''></span><span style='background: #F0ADAD'>            );
+</span>130 <span style=''></span><span style='background: #F0ADAD'>            import controller.EditCourseMenuController.SelectCourseAction
+</span>131 <span style=''></span><span style='background: #F0ADAD'>            sendEvent(SelectCourseAction(Option(savedCourse)));
+</span>132 <span style=''></span><span style='background: #F0ADAD'>          );
+</span>133 <span style=''></span><span style='background: #F0ADAD'>          coursesVBox.getChildren.addAll(radioButton)
+</span>134 <span style=''></span><span style='background: #F0ADAD'>        )
+</span>135 <span style=''></span><span style='background: #F0ADAD'>      }</span><span style=''>
+</span>136 <span style=''>    </span><span style='background: #F0ADAD'>case CourseEditedUpdate</span><span style=''> =&gt;
+</span>137 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(Vocabulary.COURSE_EDITED)</span><span style=''>
+</span>138 <span style=''>      </span><span style='background: #F0ADAD'>clearAllFields()</span><span style=''>
+</span>139 <span style=''>    </span><span style='background: #F0ADAD'>case CourseDeletedUpdate</span><span style=''> =&gt;
+</span>140 <span style=''>      </span><span style='background: #F0ADAD'>feedbackLabel.setText(Vocabulary.COURSE_DELETED)</span><span style=''>
+</span>141 <span style=''>      </span><span style='background: #F0ADAD'>clearAllFields()</span><span style=''>
+</span>142 <span style=''>    </span><span style='background: #F0ADAD'>case _</span><span style=''> =&gt; {}
+</span>143 <span style=''>
+</span>144 <span style=''>  </span><span style='background: #F0ADAD'>private def checkInputs</span><span style=''>: Boolean =
+</span>145 <span style=''>    </span><span style='background: #F0ADAD'>courseNameTextField.getText.nonEmpty</span><span style=''> &amp;&amp; </span><span style='background: #F0ADAD'>checkSelections</span><span style=''>
+</span>146 <span style=''>
+</span>147 <span style=''>  </span><span style='background: #F0ADAD'>private def checkSelections</span><span style=''>: Boolean =
+</span>148 <span style=''>    </span><span style='background: #F0ADAD'>toggleGroup.getToggles.removeIf(_.isSelected)</span><span style=''>
+</span>149 <span style=''>
+</span>150 <span style=''>  </span><span style='background: #F0ADAD'>private def clearAllFields</span><span style=''>(): Unit =
+</span>151 <span style=''>    </span><span style='background: #F0ADAD'>courseNameTextField.clear()</span><span style=''>
+</span>152 <span style=''>    </span><span style='background: #F0ADAD'>degreeNameTextField.clear()</span><span style=''>
+</span>153 <span style=''>    </span><span style='background: #F0ADAD'>universityNameTextField.clear()</span><span style=''>
+</span>154 <span style=''>    </span><span style='background: #F0ADAD'>descriptionCourseTextField.clear()</span><span style=''>
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -192,7 +193,7 @@
           23
         </td>
         <td>
-          2021
+          2022
         </td>
         <td>
           694
@@ -216,7 +217,7 @@
           71
         </td>
         <td>
-          2023
+          2024
         </td>
         <td>
           1400
@@ -241,7 +242,7 @@
           72
         </td>
         <td>
-          2022
+          2023
         </td>
         <td>
           1444
@@ -265,7 +266,7 @@
           75
         </td>
         <td>
-          2038
+          2039
         </td>
         <td>
           1463
@@ -290,7 +291,7 @@
           76
         </td>
         <td>
-          2024
+          2025
         </td>
         <td>
           1516
@@ -314,7 +315,7 @@
           77
         </td>
         <td>
-          2034
+          2035
         </td>
         <td>
           1539
@@ -350,7 +351,7 @@
           79
         </td>
         <td>
-          2025
+          2026
         </td>
         <td>
           1625
@@ -374,7 +375,7 @@
           80
         </td>
         <td>
-          2026
+          2027
         </td>
         <td>
           1677
@@ -398,7 +399,7 @@
           81
         </td>
         <td>
-          2027
+          2028
         </td>
         <td>
           1733
@@ -422,7 +423,7 @@
           83
         </td>
         <td>
-          2028
+          2029
         </td>
         <td>
           1798
@@ -446,7 +447,7 @@
           84
         </td>
         <td>
-          2029
+          2030
         </td>
         <td>
           1849
@@ -470,7 +471,7 @@
           85
         </td>
         <td>
-          2030
+          2031
         </td>
         <td>
           1875
@@ -494,7 +495,7 @@
           86
         </td>
         <td>
-          2031
+          2032
         </td>
         <td>
           1919
@@ -521,30 +522,6 @@
           2033
         </td>
         <td>
-          2003
-          -
-          2046
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          sendEvent
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          sendEvent(EditCourseAction(Option(course)))
-        </td>
-      </tr><tr>
-        <td>
-          89
-        </td>
-        <td>
-          2032
-        </td>
-        <td>
           2030
           -
           2044
@@ -563,34 +540,34 @@
         </td>
       </tr><tr>
         <td>
-          91
+          89
         </td>
         <td>
-          2036
+          2034
         </td>
         <td>
-          2062
+          2003
           -
-          2117
+          2046
         </td>
         <td>
           Apply
         </td>
         <td>
-          setText
+          sendEvent
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          feedbackLabel.setText(Vocabulary.INVALID_CONFIGURATION)
+          sendEvent(EditCourseAction(Option(course)))
         </td>
       </tr><tr>
         <td>
           91
         </td>
         <td>
-          2035
+          2036
         </td>
         <td>
           2084
@@ -614,7 +591,7 @@
           91
         </td>
         <td>
-          2037
+          2038
         </td>
         <td>
           2062
@@ -635,10 +612,34 @@
         </td>
       </tr><tr>
         <td>
+          91
+        </td>
+        <td>
+          2037
+        </td>
+        <td>
+          2062
+          -
+          2117
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          feedbackLabel.setText(Vocabulary.INVALID_CONFIGURATION)
+        </td>
+      </tr><tr>
+        <td>
           94
         </td>
         <td>
-          2046
+          2047
         </td>
         <td>
           2121
@@ -663,7 +664,7 @@
           95
         </td>
         <td>
-          2039
+          2040
         </td>
         <td>
           2176
@@ -687,7 +688,7 @@
           96
         </td>
         <td>
-          2042
+          2043
         </td>
         <td>
           2203
@@ -712,7 +713,7 @@
           97
         </td>
         <td>
-          2041
+          2042
         </td>
         <td>
           2269
@@ -736,7 +737,7 @@
           97
         </td>
         <td>
-          2040
+          2041
         </td>
         <td>
           2296
@@ -768,30 +769,6 @@
           2373
         </td>
         <td>
-          Block
-        </td>
-        <td>
-          &lt;none&gt;
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          feedbackLabel.setText(Vocabulary.SELECT_COURSE)
-        </td>
-      </tr><tr>
-        <td>
-          99
-        </td>
-        <td>
-          2044
-        </td>
-        <td>
-          2326
-          -
-          2373
-        </td>
-        <td>
           Apply
         </td>
         <td>
@@ -808,7 +785,7 @@
           99
         </td>
         <td>
-          2043
+          2044
         </td>
         <td>
           2348
@@ -829,10 +806,34 @@
         </td>
       </tr><tr>
         <td>
+          99
+        </td>
+        <td>
+          2046
+        </td>
+        <td>
+          2326
+          -
+          2373
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          feedbackLabel.setText(Vocabulary.SELECT_COURSE)
+        </td>
+      </tr><tr>
+        <td>
           101
         </td>
         <td>
-          2047
+          2048
         </td>
         <td>
           2377
@@ -856,31 +857,7 @@
           102
         </td>
         <td>
-          2048
-        </td>
-        <td>
-          2444
-          -
-          2459
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          BACK
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Vocabulary.BACK
-        </td>
-      </tr><tr>
-        <td>
-          102
-        </td>
-        <td>
-          2049
+          2050
         </td>
         <td>
           2425
@@ -901,34 +878,34 @@
         </td>
       </tr><tr>
         <td>
-          103
+          102
         </td>
         <td>
-          2051
+          2049
         </td>
         <td>
-          2463
+          2444
           -
-          2504
+          2459
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          setText
+          BACK
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          menuLabel.setText(Vocabulary.EDIT_COURSE)
+          Vocabulary.BACK
         </td>
       </tr><tr>
         <td>
           103
         </td>
         <td>
-          2050
+          2051
         </td>
         <td>
           2481
@@ -949,15 +926,15 @@
         </td>
       </tr><tr>
         <td>
-          104
+          103
         </td>
         <td>
-          2053
+          2052
         </td>
         <td>
-          2507
+          2463
           -
-          2558
+          2504
         </td>
         <td>
           Apply
@@ -969,14 +946,14 @@
           
         </td>
         <td style="background: #F0ADAD">
-          selectCourseLabel.setText(Vocabulary.SELECT_COURSE)
+          menuLabel.setText(Vocabulary.EDIT_COURSE)
         </td>
       </tr><tr>
         <td>
           104
         </td>
         <td>
-          2052
+          2053
         </td>
         <td>
           2533
@@ -997,10 +974,34 @@
         </td>
       </tr><tr>
         <td>
+          104
+        </td>
+        <td>
+          2054
+        </td>
+        <td>
+          2507
+          -
+          2558
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          selectCourseLabel.setText(Vocabulary.SELECT_COURSE)
+        </td>
+      </tr><tr>
+        <td>
           105
         </td>
         <td>
-          2055
+          2056
         </td>
         <td>
           2561
@@ -1024,7 +1025,7 @@
           105
         </td>
         <td>
-          2054
+          2055
         </td>
         <td>
           2585
@@ -1051,30 +1052,6 @@
           2057
         </td>
         <td>
-          2611
-          -
-          2658
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          setText
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          degreeNameLabel.setText(Vocabulary.DEGREE_NAME)
-        </td>
-      </tr><tr>
-        <td>
-          106
-        </td>
-        <td>
-          2056
-        </td>
-        <td>
           2635
           -
           2657
@@ -1093,10 +1070,34 @@
         </td>
       </tr><tr>
         <td>
+          106
+        </td>
+        <td>
+          2058
+        </td>
+        <td>
+          2611
+          -
+          2658
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          degreeNameLabel.setText(Vocabulary.DEGREE_NAME)
+        </td>
+      </tr><tr>
+        <td>
           107
         </td>
         <td>
-          2059
+          2060
         </td>
         <td>
           2661
@@ -1120,7 +1121,7 @@
           107
         </td>
         <td>
-          2058
+          2059
         </td>
         <td>
           2689
@@ -1144,31 +1145,7 @@
           108
         </td>
         <td>
-          2060
-        </td>
-        <td>
-          2750
-          -
-          2779
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          DESCRIPTION_COURSE
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          Vocabulary.DESCRIPTION_COURSE
-        </td>
-      </tr><tr>
-        <td>
-          108
-        </td>
-        <td>
-          2061
+          2062
         </td>
         <td>
           2719
@@ -1189,34 +1166,34 @@
         </td>
       </tr><tr>
         <td>
-          109
+          108
         </td>
         <td>
-          2062
+          2061
         </td>
         <td>
-          2808
+          2750
           -
-          2830
+          2779
         </td>
         <td>
           Select
         </td>
         <td>
-          EDIT_COURSE
+          DESCRIPTION_COURSE
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          Vocabulary.EDIT_COURSE
+          Vocabulary.DESCRIPTION_COURSE
         </td>
       </tr><tr>
         <td>
           109
         </td>
         <td>
-          2063
+          2064
         </td>
         <td>
           2783
@@ -1237,10 +1214,34 @@
         </td>
       </tr><tr>
         <td>
+          109
+        </td>
+        <td>
+          2063
+        </td>
+        <td>
+          2808
+          -
+          2830
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          EDIT_COURSE
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          Vocabulary.EDIT_COURSE
+        </td>
+      </tr><tr>
+        <td>
           110
         </td>
         <td>
-          2065
+          2066
         </td>
         <td>
           2834
@@ -1264,7 +1265,7 @@
           110
         </td>
         <td>
-          2064
+          2065
         </td>
         <td>
           2861
@@ -1288,7 +1289,7 @@
           112
         </td>
         <td>
-          2096
+          2098
         </td>
         <td>
           2890
@@ -1312,7 +1313,7 @@
           113
         </td>
         <td>
-          2086
+          2088
         </td>
         <td>
           2965
@@ -1336,12 +1337,12 @@
           114
         </td>
         <td>
-          2085
+          2087
         </td>
         <td>
           3013
           -
-          3992
+          4035
         </td>
         <td>
           Apply
@@ -1360,6 +1361,7 @@
           radioButton.setToggleGroup(toggleGroup);
           radioButton.getStyleClass.add(&quot;label-dark&quot;);
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+            radioButton.setSelected(true);
             courseNameTextField.setText(savedCourse.courseId.courseName);
             degreeNameTextField.setText(savedCourse.courseId.degreeName);
             universityNameTextField.setText(savedCourse.courseId.universityName);
@@ -1379,31 +1381,7 @@
           115
         </td>
         <td>
-          2066
-        </td>
-        <td>
-          3047
-          -
-          3070
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getChildren
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          coursesVBox.getChildren
-        </td>
-      </tr><tr>
-        <td>
-          115
-        </td>
-        <td>
-          2067
+          2068
         </td>
         <td>
           3047
@@ -1424,50 +1402,34 @@
         </td>
       </tr><tr>
         <td>
-          116
+          115
         </td>
         <td>
-          2084
+          2067
         </td>
         <td>
-          3087
+          3047
           -
-          3984
+          3070
         </td>
         <td>
           Apply
         </td>
         <td>
-          foreach
+          getChildren
         </td>
         <td>
           
         </td>
         <td style="background: #F0ADAD">
-          updateParameter.get.foreach(savedCourse =&gt;
-          val radioButton = RadioButton(savedCourse.courseId.courseName);
-          radioButton.setToggleGroup(toggleGroup);
-          radioButton.getStyleClass.add(&quot;label-dark&quot;);
-          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
-            courseNameTextField.setText(savedCourse.courseId.courseName);
-            degreeNameTextField.setText(savedCourse.courseId.degreeName);
-            universityNameTextField.setText(savedCourse.courseId.universityName);
-            descriptionCourseTextField.setText(savedCourse.description match
-              case Some(text) =&gt; text
-              case _ =&gt; &quot;&quot;
-            );
-            import controller.EditCourseMenuController.SelectCourseAction
-            sendEvent(SelectCourseAction(Option(savedCourse)));
-          );
-          coursesVBox.getChildren.addAll(radioButton)
-        )
+          coursesVBox.getChildren
         </td>
       </tr><tr>
         <td>
           116
         </td>
         <td>
-          2068
+          2069
         </td>
         <td>
           3087
@@ -1488,10 +1450,51 @@
         </td>
       </tr><tr>
         <td>
+          116
+        </td>
+        <td>
+          2086
+        </td>
+        <td>
+          3087
+          -
+          4027
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          updateParameter.get.foreach(savedCourse =&gt;
+          val radioButton = RadioButton(savedCourse.courseId.courseName);
+          radioButton.setToggleGroup(toggleGroup);
+          radioButton.getStyleClass.add(&quot;label-dark&quot;);
+          radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+            radioButton.setSelected(true);
+            courseNameTextField.setText(savedCourse.courseId.courseName);
+            degreeNameTextField.setText(savedCourse.courseId.degreeName);
+            universityNameTextField.setText(savedCourse.courseId.universityName);
+            descriptionCourseTextField.setText(savedCourse.description match
+              case Some(text) =&gt; text
+              case _ =&gt; &quot;&quot;
+            );
+            import controller.EditCourseMenuController.SelectCourseAction
+            sendEvent(SelectCourseAction(Option(savedCourse)));
+          );
+          coursesVBox.getChildren.addAll(radioButton)
+        )
+        </td>
+      </tr><tr>
+        <td>
           117
         </td>
         <td>
-          2069
+          2070
         </td>
         <td>
           3158
@@ -1515,7 +1518,7 @@
           118
         </td>
         <td>
-          2070
+          2071
         </td>
         <td>
           3214
@@ -1539,31 +1542,7 @@
           119
         </td>
         <td>
-          2071
-        </td>
-        <td>
-          3265
-          -
-          3290
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getStyleClass
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          radioButton.getStyleClass
-        </td>
-      </tr><tr>
-        <td>
-          119
-        </td>
-        <td>
-          2072
+          2073
         </td>
         <td>
           3265
@@ -1584,15 +1563,39 @@
         </td>
       </tr><tr>
         <td>
+          119
+        </td>
+        <td>
+          2072
+        </td>
+        <td>
+          3265
+          -
+          3290
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getStyleClass
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.getStyleClass
+        </td>
+      </tr><tr>
+        <td>
           120
         </td>
         <td>
-          2081
+          2083
         </td>
         <td>
           3320
           -
-          3919
+          3962
         </td>
         <td>
           Apply
@@ -1605,6 +1608,7 @@
         </td>
         <td style="background: #F0ADAD">
           radioButton.addEventHandler(MouseEvent.MOUSE_PRESSED, event =&gt;
+            radioButton.setSelected(true);
             courseNameTextField.setText(savedCourse.courseId.courseName);
             degreeNameTextField.setText(savedCourse.courseId.degreeName);
             universityNameTextField.setText(savedCourse.courseId.universityName);
@@ -1621,12 +1625,36 @@
           121
         </td>
         <td>
-          2073
+          2074
         </td>
         <td>
           3395
           -
-          3455
+          3424
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setSelected
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          radioButton.setSelected(true)
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          2075
+        </td>
+        <td>
+          3438
+          -
+          3498
         </td>
         <td>
           Apply
@@ -1642,15 +1670,15 @@
         </td>
       </tr><tr>
         <td>
-          122
+          123
         </td>
         <td>
-          2074
+          2076
         </td>
         <td>
-          3469
+          3512
           -
-          3529
+          3572
         </td>
         <td>
           Apply
@@ -1666,15 +1694,15 @@
         </td>
       </tr><tr>
         <td>
-          123
+          124
         </td>
         <td>
-          2075
+          2077
         </td>
         <td>
-          3543
+          3586
           -
-          3611
+          3654
         </td>
         <td>
           Apply
@@ -1690,15 +1718,15 @@
         </td>
       </tr><tr>
         <td>
-          124
+          125
         </td>
         <td>
-          2078
+          2080
         </td>
         <td>
-          3625
+          3668
           -
-          3768
+          3811
         </td>
         <td>
           Apply
@@ -1717,15 +1745,15 @@
         </td>
       </tr><tr>
         <td>
-          125
+          126
         </td>
         <td>
-          2076
+          2078
         </td>
         <td>
-          3704
+          3747
           -
-          3719
+          3762
         </td>
         <td>
           Block
@@ -1741,15 +1769,15 @@
         </td>
       </tr><tr>
         <td>
-          126
+          127
         </td>
         <td>
-          2077
+          2079
         </td>
         <td>
-          3742
+          3785
           -
-          3748
+          3791
         </td>
         <td>
           Block
@@ -1765,15 +1793,15 @@
         </td>
       </tr><tr>
         <td>
-          129
+          130
         </td>
         <td>
-          2080
+          2082
         </td>
         <td>
-          3856
+          3899
           -
-          3906
+          3949
         </td>
         <td>
           Apply
@@ -1789,15 +1817,15 @@
         </td>
       </tr><tr>
         <td>
-          129
+          130
         </td>
         <td>
-          2079
+          2081
         </td>
         <td>
-          3885
+          3928
           -
-          3904
+          3947
         </td>
         <td>
           Apply
@@ -1813,39 +1841,15 @@
         </td>
       </tr><tr>
         <td>
-          131
+          132
         </td>
         <td>
-          2083
+          2084
         </td>
         <td>
-          3931
-          -
           3974
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          addAll
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          coursesVBox.getChildren.addAll(radioButton)
-        </td>
-      </tr><tr>
-        <td>
-          131
-        </td>
-        <td>
-          2082
-        </td>
-        <td>
-          3931
           -
-          3954
+          3997
         </td>
         <td>
           Apply
@@ -1861,15 +1865,39 @@
         </td>
       </tr><tr>
         <td>
-          134
+          132
         </td>
         <td>
-          2090
+          2085
         </td>
         <td>
-          3997
+          3974
           -
-          4020
+          4017
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addAll
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          coursesVBox.getChildren.addAll(radioButton)
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          2092
+        </td>
+        <td>
+          4040
+          -
+          4063
         </td>
         <td>
           Block
@@ -1885,15 +1913,15 @@
         </td>
       </tr><tr>
         <td>
-          135
+          136
         </td>
         <td>
-          2087
+          2089
         </td>
         <td>
-          4052
+          4095
           -
-          4076
+          4119
         </td>
         <td>
           Select
@@ -1909,15 +1937,15 @@
         </td>
       </tr><tr>
         <td>
-          135
+          136
         </td>
         <td>
-          2088
+          2090
         </td>
         <td>
-          4030
+          4073
           -
-          4077
+          4120
         </td>
         <td>
           Apply
@@ -1933,15 +1961,15 @@
         </td>
       </tr><tr>
         <td>
-          136
+          137
         </td>
         <td>
-          2089
+          2091
         </td>
         <td>
-          4084
+          4127
           -
-          4100
+          4143
         </td>
         <td>
           Apply
@@ -1957,15 +1985,15 @@
         </td>
       </tr><tr>
         <td>
-          137
+          138
         </td>
         <td>
-          2094
+          2096
         </td>
         <td>
-          4105
+          4148
           -
-          4129
+          4172
         </td>
         <td>
           Block
@@ -1981,39 +2009,15 @@
         </td>
       </tr><tr>
         <td>
-          138
+          139
         </td>
         <td>
-          2092
+          2093
         </td>
         <td>
-          4139
+          4204
           -
-          4187
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          setText
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          feedbackLabel.setText(Vocabulary.COURSE_DELETED)
-        </td>
-      </tr><tr>
-        <td>
-          138
-        </td>
-        <td>
-          2091
-        </td>
-        <td>
-          4161
-          -
-          4186
+          4229
         </td>
         <td>
           Select
@@ -2032,12 +2036,36 @@
           139
         </td>
         <td>
-          2093
+          2094
         </td>
         <td>
-          4194
+          4182
           -
-          4210
+          4230
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          feedbackLabel.setText(Vocabulary.COURSE_DELETED)
+        </td>
+      </tr><tr>
+        <td>
+          140
+        </td>
+        <td>
+          2095
+        </td>
+        <td>
+          4237
+          -
+          4253
         </td>
         <td>
           Apply
@@ -2053,15 +2081,15 @@
         </td>
       </tr><tr>
         <td>
-          140
+          141
         </td>
         <td>
-          2095
+          2097
         </td>
         <td>
-          4215
+          4258
           -
-          4221
+          4264
         </td>
         <td>
           Block
@@ -2077,15 +2105,15 @@
         </td>
       </tr><tr>
         <td>
-          142
+          143
         </td>
         <td>
-          2101
+          2103
         </td>
         <td>
-          4231
+          4274
           -
-          4254
+          4297
         </td>
         <td>
           DefDef
@@ -2101,39 +2129,15 @@
         </td>
       </tr><tr>
         <td>
-          143
+          144
         </td>
         <td>
-          2098
+          2102
         </td>
         <td>
-          4270
+          4353
           -
-          4297
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          augmentString
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseNameTextField.getText
-        </td>
-      </tr><tr>
-        <td>
-          143
-        </td>
-        <td>
-          2100
-        </td>
-        <td>
-          4310
-          -
-          4325
+          4368
         </td>
         <td>
           Select
@@ -2149,39 +2153,15 @@
         </td>
       </tr><tr>
         <td>
-          143
+          144
         </td>
         <td>
-          2097
+          2101
         </td>
         <td>
-          4270
+          4313
           -
-          4297
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getText
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          courseNameTextField.getText
-        </td>
-      </tr><tr>
-        <td>
-          143
-        </td>
-        <td>
-          2099
-        </td>
-        <td>
-          4270
-          -
-          4306
+          4349
         </td>
         <td>
           Select
@@ -2197,15 +2177,63 @@
         </td>
       </tr><tr>
         <td>
-          145
+          144
         </td>
         <td>
-          2105
+          2100
         </td>
         <td>
-          4329
+          4313
           -
-          4356
+          4340
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          augmentString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseNameTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          144
+        </td>
+        <td>
+          2099
+        </td>
+        <td>
+          4313
+          -
+          4340
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getText
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          courseNameTextField.getText
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          2107
+        </td>
+        <td>
+          4372
+          -
+          4399
         </td>
         <td>
           DefDef
@@ -2221,63 +2249,15 @@
         </td>
       </tr><tr>
         <td>
-          146
+          147
         </td>
         <td>
-          2102
+          2105
         </td>
         <td>
-          4372
+          4447
           -
-          4394
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          getToggles
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          toggleGroup.getToggles
-        </td>
-      </tr><tr>
-        <td>
-          146
-        </td>
-        <td>
-          2104
-        </td>
-        <td>
-          4372
-          -
-          4417
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          removeIf
-        </td>
-        <td>
-          
-        </td>
-        <td style="background: #F0ADAD">
-          toggleGroup.getToggles.removeIf(_.isSelected)
-        </td>
-      </tr><tr>
-        <td>
-          146
-        </td>
-        <td>
-          2103
-        </td>
-        <td>
-          4404
-          -
-          4416
+          4459
         </td>
         <td>
           Apply
@@ -2293,15 +2273,63 @@
         </td>
       </tr><tr>
         <td>
-          148
+          147
         </td>
         <td>
-          2110
+          2104
         </td>
         <td>
-          4421
+          4415
           -
-          4447
+          4437
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getToggles
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          toggleGroup.getToggles
+        </td>
+      </tr><tr>
+        <td>
+          147
+        </td>
+        <td>
+          2106
+        </td>
+        <td>
+          4415
+          -
+          4460
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          removeIf
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          toggleGroup.getToggles.removeIf(_.isSelected)
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2112
+        </td>
+        <td>
+          4464
+          -
+          4490
         </td>
         <td>
           DefDef
@@ -2317,15 +2345,15 @@
         </td>
       </tr><tr>
         <td>
-          149
+          150
         </td>
         <td>
-          2106
+          2108
         </td>
         <td>
-          4462
+          4505
           -
-          4489
+          4532
         </td>
         <td>
           Apply
@@ -2341,15 +2369,15 @@
         </td>
       </tr><tr>
         <td>
-          150
+          151
         </td>
         <td>
-          2107
+          2109
         </td>
         <td>
-          4494
+          4537
           -
-          4521
+          4564
         </td>
         <td>
           Apply
@@ -2365,15 +2393,15 @@
         </td>
       </tr><tr>
         <td>
-          151
+          152
         </td>
         <td>
-          2108
+          2110
         </td>
         <td>
-          4526
+          4569
           -
-          4557
+          4600
         </td>
         <td>
           Apply
@@ -2389,15 +2417,15 @@
         </td>
       </tr><tr>
         <td>
-          152
+          153
         </td>
         <td>
-          2109
+          2111
         </td>
         <td>
-          4562
+          4605
           -
-          4596
+          4639
         </td>
         <td>
           Apply
