@@ -516,7 +516,7 @@ object DefaultDataList:
             Answer(text = "There were", false),
             Answer(text = "There wasn't", false),
             Answer(text = "There is", false),
-            Answer(text = "There are", true),
+            Answer(text = "There are", false),
             Answer(text = "There aren't", true)
           )
         ),
