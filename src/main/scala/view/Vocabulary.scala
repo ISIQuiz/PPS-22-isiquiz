@@ -249,7 +249,7 @@ object Vocabulary:
     case _ => "Name missing"
 
   def INVALID_CONFIGURATION = LANGUAGE_SELECTED match
-    case IT => "Congigurazione Invalida"
+    case IT => "Configurazione Invalida"
     case _ => "Invalid configuration"
 
   def INVALID_SELECTION = LANGUAGE_SELECTED match
