@@ -117,14 +117,12 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
   menuLabel.setText(Vocabulary.ADD_QUIZ)
   selectCourseLabel.setText(Vocabulary.SELECT_COURSE)
   questionLabel.setText(Vocabulary.QUESTION)
-  questionTextField.requestFocus()
   imagePathLabel.setText(Vocabulary.IMAGE_PATH)
   scoreLabel.setText(Vocabulary.POINTS)
-  scoreIntegerField.setText("1")
-  addAnswerGUI()
   addAnswerButton.setText(Vocabulary.ADD_ANSWER)
   removeAnswerButton.setText(Vocabulary.REMOVE_ANSWER)
   addQuizButton.setText(Vocabulary.ADD_QUIZ)
+  clearPageInputs()
   stage.getScene.addEventHandler(KeyEvent.KEY_RELEASED, e => {
     if KeyCodeCombination(KeyCode.ENTER, KeyCombination.CONTROL_DOWN).`match`(e) then addQuizButtonClicked()
   })
@@ -146,12 +144,16 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
       }
     case QuizAddedUpdate =>
       feedbackLabel.setText(Vocabulary.QUIZ_ADDED)
-      questionTextField.clear()
-      imagePathTextField.clear()
-      scoreIntegerField.setText("1")
-      while answersVBox.getChildren.size()>0 do answersVBox.getChildren.remove(0)
-      addAnswerGUI()
+      clearPageInputs()
     case _ => {}
+
+  private def clearPageInputs(): Unit =
+    questionTextField.clear()
+    questionTextField.requestFocus()
+    imagePathTextField.clear()
+    scoreIntegerField.setText("1")
+    while answersVBox.getChildren.size() > 0 do answersVBox.getChildren.remove(0)
+    addAnswerGUI()
 
   private def checkInputs: Boolean =
     questionTextField.getText.nonEmpty && scoreIntegerField.getText().toIntOption.nonEmpty && checkSelections
