@@ -5,7 +5,8 @@ import controller.AddQuizMenuController.{Back, SelectCourseAction}
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.*
-import javafx.scene.input.MouseEvent
+import javafx.event.EventHandler
+import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination, KeyEvent, MouseEvent}
 import javafx.scene.layout.VBox
 import javafx.scene.layout.HBox
 import javafx.stage.Stage
@@ -116,10 +117,11 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
   menuLabel.setText(Vocabulary.ADD_QUIZ)
   selectCourseLabel.setText(Vocabulary.SELECT_COURSE)
   questionLabel.setText(Vocabulary.QUESTION)
+  questionTextField.requestFocus()
   imagePathLabel.setText(Vocabulary.IMAGE_PATH)
   scoreLabel.setText(Vocabulary.POINTS)
-  answerLabel.setText(Vocabulary.ANSWER+" ")
-  answerCorrectCheckBox0.setText(Vocabulary.CORRECT)
+  scoreIntegerField.setText("1")
+  addAnswerGUI()
   addAnswerButton.setText(Vocabulary.ADD_ANSWER)
   removeAnswerButton.setText(Vocabulary.REMOVE_ANSWER)
   addQuizButton.setText(Vocabulary.ADD_QUIZ)
@@ -143,7 +145,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
       feedbackLabel.setText(Vocabulary.QUIZ_ADDED)
       questionTextField.clear()
       imagePathTextField.clear()
-      scoreIntegerField.setText("0")
+      scoreIntegerField.setText("1")
       while answersVBox.getChildren.size()>0 do answersVBox.getChildren.remove(0)
       addAnswerGUI()
     case _ => {}
@@ -152,7 +154,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
     questionTextField.getText.nonEmpty && scoreIntegerField.getText().toIntOption.nonEmpty && checkSelections
 
   private def checkSelections: Boolean =
-    toggleGroup.getToggles.removeIf(_.isSelected)
+    toggleGroup.getToggles.filtered(_.isSelected).size() > 0
 
   private def addAnswerGUI(): Unit =
     Platform.runLater { () =>
@@ -167,6 +169,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
       checkBox.setText(Vocabulary.CORRECT)
       checkBox.setId("answerCorrectCheckBox" + idNum)
       checkBox.getStyleClass.add("checkbox")
+      if idNum==0 then checkBox.setSelected(true)
       answerBox.getChildren.addAll(Label(Vocabulary.ANSWER+" "), textField, checkBox)
       answersVBox.getChildren.addAll(answerBox)
     }
