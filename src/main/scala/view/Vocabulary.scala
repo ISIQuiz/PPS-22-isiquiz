@@ -60,7 +60,7 @@ object Vocabulary:
 
   def BLITZ_GAME = LANGUAGE_SELECTED match
     case IT => "Partita Blitz"
-    case _ => "Blitz Game"
+    case _ => "Time Attack Game"
 
   def CUSTOM_GAME = LANGUAGE_SELECTED match
     case IT => "Partita personalizzata"
