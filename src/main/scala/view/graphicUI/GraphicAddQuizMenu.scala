@@ -125,6 +125,9 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
   addAnswerButton.setText(Vocabulary.ADD_ANSWER)
   removeAnswerButton.setText(Vocabulary.REMOVE_ANSWER)
   addQuizButton.setText(Vocabulary.ADD_QUIZ)
+  stage.getScene.addEventHandler(KeyEvent.KEY_RELEASED, e => {
+    if KeyCodeCombination(KeyCode.ENTER, KeyCombination.CONTROL_DOWN).`match`(e) then addQuizButtonClicked()
+  })
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case CourseListUpdate(updateParameter) =>
