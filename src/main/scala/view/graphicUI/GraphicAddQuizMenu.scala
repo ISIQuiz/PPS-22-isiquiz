@@ -50,6 +50,9 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
   var questionTextField: TextField = _
 
   @FXML
+  var imagePathBox: HBox = _
+
+  @FXML
   var imagePathLabel: Label = _
 
   @FXML
@@ -118,6 +121,8 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
   selectCourseLabel.setText(Vocabulary.SELECT_COURSE)
   questionLabel.setText(Vocabulary.QUESTION)
   imagePathLabel.setText(Vocabulary.IMAGE_PATH)
+  imagePathBox.setVisible(false)
+  imagePathBox.setManaged(false)
   scoreLabel.setText(Vocabulary.POINTS)
   addAnswerButton.setText(Vocabulary.ADD_ANSWER)
   removeAnswerButton.setText(Vocabulary.REMOVE_ANSWER)
