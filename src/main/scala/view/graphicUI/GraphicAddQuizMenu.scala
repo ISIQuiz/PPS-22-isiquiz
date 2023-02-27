@@ -154,7 +154,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
 
   private def clearPageInputs(): Unit =
     questionTextField.clear()
-    questionTextField.requestFocus()
+    if checkSelections then questionTextField.requestFocus()
     imagePathTextField.clear()
     scoreIntegerField.setText("1")
     while answersVBox.getChildren.size() > 0 do answersVBox.getChildren.remove(0)
