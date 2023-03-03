@@ -53,4 +53,4 @@ class AddQuizMenuController extends PageController :
     ExportHandler.exportDataToPersonalDirectory(newListCourses) // Export saved course list to personal directory
     sendUpdate(QuizPrintUpdate(quizToAdd))
     sendUpdate(QuizAddedUpdate)
-    courseSelected = None
+    courseSelected = Option(newSavedCourse)

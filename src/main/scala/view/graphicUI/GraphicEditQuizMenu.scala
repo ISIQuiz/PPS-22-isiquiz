@@ -56,6 +56,9 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
   var questionTextField: TextField = _
 
   @FXML
+  var imagePathBox: HBox = _
+
+  @FXML
   var imagePathLabel: Label = _
 
   @FXML
@@ -136,6 +139,8 @@ class GraphicEditQuizMenu(stage: Stage) extends GraphicView:
   selectQuizLabel.setText(Vocabulary.SELECT_QUIZ)
   questionLabel.setText(Vocabulary.QUESTION)
   imagePathLabel.setText(Vocabulary.IMAGE_PATH)
+  imagePathBox.setVisible(false)
+  imagePathBox.setManaged(false)
   scoreLabel.setText(Vocabulary.POINTS)
   answerLabel.setText(Vocabulary.ANSWER + " ")
   answerCorrectCheckBox0.setText(Vocabulary.CORRECT)

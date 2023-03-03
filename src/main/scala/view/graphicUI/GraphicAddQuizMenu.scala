@@ -5,7 +5,8 @@ import controller.AddQuizMenuController.{Back, SelectCourseAction}
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.*
-import javafx.scene.input.MouseEvent
+import javafx.event.EventHandler
+import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination, KeyEvent, MouseEvent}
 import javafx.scene.layout.VBox
 import javafx.scene.layout.HBox
 import javafx.stage.Stage
@@ -47,6 +48,9 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
   
   @FXML
   var questionTextField: TextField = _
+
+  @FXML
+  var imagePathBox: HBox = _
 
   @FXML
   var imagePathLabel: Label = _
@@ -117,12 +121,16 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
   selectCourseLabel.setText(Vocabulary.SELECT_COURSE)
   questionLabel.setText(Vocabulary.QUESTION)
   imagePathLabel.setText(Vocabulary.IMAGE_PATH)
+  imagePathBox.setVisible(false)
+  imagePathBox.setManaged(false)
   scoreLabel.setText(Vocabulary.POINTS)
-  answerLabel.setText(Vocabulary.ANSWER+" ")
-  answerCorrectCheckBox0.setText(Vocabulary.CORRECT)
   addAnswerButton.setText(Vocabulary.ADD_ANSWER)
   removeAnswerButton.setText(Vocabulary.REMOVE_ANSWER)
   addQuizButton.setText(Vocabulary.ADD_QUIZ)
+  clearPageInputs()
+  stage.getScene.addEventHandler(KeyEvent.KEY_RELEASED, e => {
+    if KeyCodeCombination(KeyCode.ENTER, KeyCombination.CONTROL_DOWN).`match`(e) then addQuizButtonClicked()
+  })
 
   override def updateUI[T](update: ViewUpdate[Any]): Unit = update match
     case CourseListUpdate(updateParameter) =>
@@ -141,18 +149,22 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
       }
     case QuizAddedUpdate =>
       feedbackLabel.setText(Vocabulary.QUIZ_ADDED)
-      questionTextField.clear()
-      imagePathTextField.clear()
-      scoreIntegerField.setText("0")
-      while answersVBox.getChildren.size()>0 do answersVBox.getChildren.remove(0)
-      addAnswerGUI()
+      clearPageInputs()
     case _ => {}
+
+  private def clearPageInputs(): Unit =
+    questionTextField.clear()
+    if checkSelections then questionTextField.requestFocus()
+    imagePathTextField.clear()
+    scoreIntegerField.setText("1")
+    while answersVBox.getChildren.size() > 0 do answersVBox.getChildren.remove(0)
+    addAnswerGUI()
 
   private def checkInputs: Boolean =
     questionTextField.getText.nonEmpty && scoreIntegerField.getText().toIntOption.nonEmpty && checkSelections
 
   private def checkSelections: Boolean =
-    toggleGroup.getToggles.removeIf(_.isSelected)
+    toggleGroup.getToggles.filtered(_.isSelected).size() > 0
 
   private def addAnswerGUI(): Unit =
     Platform.runLater { () =>
@@ -167,6 +179,7 @@ class GraphicAddQuizMenu(stage: Stage) extends GraphicView:
       checkBox.setText(Vocabulary.CORRECT)
       checkBox.setId("answerCorrectCheckBox" + idNum)
       checkBox.getStyleClass.add("checkbox")
+      if idNum==0 then checkBox.setSelected(true)
       answerBox.getChildren.addAll(Label(Vocabulary.ANSWER+" "), textField, checkBox)
       answersVBox.getChildren.addAll(answerBox)
     }

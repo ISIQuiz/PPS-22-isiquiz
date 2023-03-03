@@ -60,7 +60,7 @@ object Vocabulary:
 
   def BLITZ_GAME = LANGUAGE_SELECTED match
     case IT => "Partita Blitz"
-    case _ => "Blitz Game"
+    case _ => "Time Attack Game"
 
   def CUSTOM_GAME = LANGUAGE_SELECTED match
     case IT => "Partita personalizzata"
@@ -249,7 +249,7 @@ object Vocabulary:
     case _ => "Name missing"
 
   def INVALID_CONFIGURATION = LANGUAGE_SELECTED match
-    case IT => "Congigurazione Invalida"
+    case IT => "Configurazione Invalida"
     case _ => "Invalid configuration"
 
   def INVALID_SELECTION = LANGUAGE_SELECTED match

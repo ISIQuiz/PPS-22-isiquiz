@@ -66,7 +66,7 @@ class GraphicSelectMenu(stage: Stage) extends GraphicView :
   var checkBoxList: ListBuffer[CheckBox] = ListBuffer()
   loadGUI(stage, this, "select_menu.fxml")
   backButton.setText(Vocabulary.BACK)
-  menuLabel.setText(Vocabulary.GAME_MODE)
+  menuLabel.setText(Vocabulary.PLAY)
   standardGameButton.setText(Vocabulary.STANDARD_GAME)
   blitzGameButton.setText(Vocabulary.BLITZ_GAME)
   customGameButton.setText(Vocabulary.CUSTOM_GAME)
